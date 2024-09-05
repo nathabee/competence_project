@@ -1,0 +1,43 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# Ignore .env files (if you store sensitive information there)
+*.env
+
+
+# Virtual environment
+venv/
+ENV/
+
+# Django specific files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+staticfiles/
+
+# Frontend specific
+node_modules/
+dist/
+build/
+
+# Django migrations
+**/migrations/**
+
+# IDE specific files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+
+ 
+
