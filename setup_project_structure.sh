@@ -1,1 +1,0 @@
-tools/setup_project_structure.sh

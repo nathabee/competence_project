@@ -126,42 +126,6 @@ create_django_app() {
     deactivate
 }
  
-# Function to configure Django settings for MySQL
-configure_django_mysql() {
-    echo "Configuring Django settings for MySQL..."
-
-    read -p "Enter your MySQL database name: " db_name
-    read -p "Enter your MySQL user: " db_user
-    read -s -p "Enter your MySQL password: " db_pass
-    echo
-    read -p "Enter your MySQL host (default: localhost): " db_host
-    db_host=${db_host:-localhost}
-    read -p "Enter your MySQL port (default: 3306): " db_port
-    db_port=${db_port:-3306}
-
-    settings_file="$(find . -name settings.py)"
-    
-    # Remove existing DATABASES configuration
-    sed -i "/^DATABASES = {/,/^}/d" "$settings_file"
-
-    # Update settings.py with MySQL configurations
-    sed -i "/# Database/a\
-DATABASES = {\n\
-    'default': {\n\
-        'ENGINE': 'django.db.backends.mysql',\n\
-        'NAME': '$db_name',\n\
-        'USER': '$db_user',\n\
-        'PASSWORD': '$db_pass',\n\
-        'HOST': '$db_host',\n\
-        'PORT': '$db_port',\n\
-    }\n\
-}\n" "$settings_file"
-
-    # Update ALLOWED_HOSTS to include '0.0.0.0' and 'localhost'
-    sed -i "/^ALLOWED_HOSTS = \[/c\ALLOWED_HOSTS = ['0.0.0.0', 'localhost']" "$settings_file"
-
-    echo "Django settings configured for MySQL and ALLOWED_HOSTS updated."
-}
 
 
 # Function to run Django migrations
@@ -192,8 +156,8 @@ start_django_server() {
     echo "Activating the virtual environment..."
     source venv/bin/activate
 
-    echo "Starting Django development server on 0.0.0.0:8000..."
-    python manage.py runserver 0.0.0.0:8000
+    echo "Starting Django development server on 0.0.0.0:8080..."
+    python manage.py runserver 0.0.0.0:8080
 
     deactivate
 }
@@ -217,9 +181,6 @@ case "$1" in
         fi
         if prompt_continue "Create a new Django app"; then
             create_django_app
-        fi
-        if prompt_continue "Configure Django settings for MySQL"; then
-            configure_django_mysql
         fi
         if prompt_continue "Run Django migrations"; then
             run_django_migrations

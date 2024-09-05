@@ -7,6 +7,7 @@ show_help() {
     echo "Options:"
     echo "  -h, --help       Show this help message and exit."
     echo "  -i, --install    Install Git, configure Git, and clone the repository."
+    echo "  -c, --clone      Clone the repository."
 }
 
 # Function to install Git and configure it
@@ -30,8 +31,8 @@ install_and_configure_git() {
 
 # Function to clone the GitHub repository
 clone_repository() {
-    local repo_url="https://github.com/nathabee/django-asteroid.git"
-    local project_dir="django-asteroid"
+    local repo_url="https://github.com/nathabee/competence_project.git"
+    local project_dir="competence_project"
 
     echo "Cloning repository from $repo_url..."
 
@@ -53,6 +54,9 @@ case "$1" in
         ;;
     -i|--install)
         install_and_configure_git
+        clone_repository
+        ;;
+    -c|--clone) 
         clone_repository
         ;;
     *)

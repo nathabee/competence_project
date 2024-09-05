@@ -1,1 +1,0 @@
-tools/setup_django_loaddata.sh

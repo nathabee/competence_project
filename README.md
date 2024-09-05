@@ -47,39 +47,65 @@ We are actively working on adding features and improvements. Be aware that the c
 
 To set up and run this project, follow these instructions:
 
-### 0. Project Initialization
+### 0. Project Initialization get the code from git
+To get the code and set up the server, follow these steps:
 
-The project is initialized from GitHub. To get the code and set up the server, follow these steps:
+The project is initialized from GitHub. You can simply clone this repository. Or you can use this script from tools/setup_project_server.sh to initialise git on a min server and clone.
 
-```bash
-chmod +x tools/setup_project_server.sh
-./setup_project_server.sh
-cd competence_project
-chmod +x tools/*.sh
+
+init git on a min server and clone : 
+```bash 
+./setup_project_server.sh -i
 ```
+
+just clone : 
+```bash 
+./setup_project_server.sh -c
+```
+
+just clone : 
+```bash 
+cd competence_project 
+ln -s tools/*.sh .
+```
+
 
 ### 1. Server and Database Setup
 
-Run the environment setup script for Apache, Python, and MySQL installation:
+if you have an empty mint server, you may want install with tools/setup_environment.sh. this script is doing (if andwer yes for installation): 
 
-```bash
-cd competence_project
-tools/setup_environment.sh
-```
+    # 1. Install Web Server (Apache)  
+    # 2. Install Python and pip  
+    # 3. Set up Python Virtual Environment 
+    # 4. Install build tools and libraries for mysqlclient
+    # 5. Create a virtual environment and install Django
+        pip install --upgrade pip  # Always good to ensure pip is up-to-date
+    # 6. Install MySQL Server
+    # 7. Secure MySQL installation and create a new user and database
 
+Create the database with the correct parameters
 - The database will be set up with:
   - **Database Name**: `competencedb`
   - **User**: `competence_user`
 
 
+```bash 
+# to test
+./setup_environment.sh -t
+# to install
+./setup_environment.sh -i
+```
 
-modify the  .venv file
+
+###   3 . environment file
+
+modify the  .venv file which is installed in the same repository as manage.py
 ```bash
 cd competence_project
-nano .venv
+nano .env
 ``` 
 
-#   environment 
+
 ```bash
 DJANGO_SECRET_KEY="your_production_secret_key"
 DJANGO_SERVER_IP="your_production_server_ip"
@@ -92,33 +118,45 @@ DBPORT="your_production_dbport"
 ALLOWED_HOSTS=0.0.0.0,xxx.xxx.xxx.xxx,my_domain
 ```
 
-### 2. Django Setup
+### 4. Django Setup
 
 Set up your Python virtual environment and install the necessary dependencies:
 
 ```bash
 cd competence_project
-tools/setup_django.sh
-
-
-### 3. Database Initialization
-
-Run the database scripts located in the `db_scripts/` directory to initialize the required tables:
-
-```bash
-cd db_scripts
-mysql -u competence_user -p competencedb < init_db.sql
+# start the file from tools/setup_django.sh it start the server in port 8080
+./setup_django.sh
 ```
 
-### 4. Run the Server
 
-Start the Django development server on a custom port (e.g., 8080):
+### 5. Database migration and initialisation
 
+Run the database scripts  directory to initialize the required tables:
+ 
 ```bash
-python manage.py runserver 0.0.0.0:8080
+cd competence_project
+./setup_django_migration.sh
+./setup_django_loaddata.sh
 ```
 
+### 6. Run the Server
+
+Start the Django development server on a custom port (python manage.py runserver 0.0.0.0:8080) after activation the local pip env :
+
+```bash
+cd competence_project
+./start_django.sh
+``` 
 Your server should now be running and accessible via the specified IP and port.
+
+
+### 7. Rest API is available
+
+http://your_server:8080/api
+
+
+
+
 
 ## 📢 Contributing
 
@@ -138,6 +176,4 @@ MIT License
 
 Copyright (c) 2024 Natha Bee
 
----
-
-This README is now tailored to your "competence" project and provides clear setup and usage instructions. Let me know if you'd like any adjustments or additions!
+ 
