@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competence Project - REST API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 20px;
+        }
+        h1, h2, h3 {
+            color: #1e90ff;
+        }
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        code {
+            color: #d63384;
+        }
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Competence Project REST API</h1>
+        <p>This document defines the REST API for the Competence Project, which allows the management of evaluations for kindergarten students, including adding and retrieving data about students, evaluations, results, and more.</p>
+
+        <h2>Base URL</h2>
+        <p>The base URL for all API requests is:</p>
+        <pre><code>http://your-server-domain/api/</code></pre>
+
+        <h2>Endpoints Overview</h2>
+        <ul>
+            <li><a href="#eleve">/eleves/</a>: Manage students (Eleves)</li>
+            <li><a href="#resultat">/resultats/</a>: Manage evaluation results (Resultats)</li>
+            <li><a href="#catalogue">/catalogues/</a>: Manage evaluation catalogues (Catalogues)</li>
+            <li><a href="#item">/items/</a>: Manage evaluation items (Items)</li>
+            <li><a href="#niveau">/niveaux/</a>: Manage class levels (Niveaux)</li>
+            <li><a href="#etape">/etapes/</a>: Manage evaluation stages (Etapes)</li>
+            <li><a href="#annee">/annees/</a>: Manage academic years (Annees)</li>
+        </ul>
+
+        <h2 id="eleve">/eleves/ - Manage Students</h2>
+        <h3>GET /eleves/</h3>
+        <p>Retrieve a list of students.</p>
+        <pre><code>
+GET /api/eleves/
+Response:
+[
+    {
+        "id": 1,
+        "nom": "Doe",
+        "prenom": "John",
+        "classe": "CP",
+        "textnote1": "Good progress",
+        "textnote2": "",
+        "textnote3": "",
+        "professeurs": [1, 2]  // IDs of professeurs
+    },
+    ...
+]
+        </code></pre>
+
+        <h3>POST /eleves/</h3>
+        <p>Create a new student.</p>
+        <pre><code>
+POST /api/eleves/
+Request:
+{
+    "nom": "Doe",
+    "prenom": "Jane",
+    "classe": "CE1",
+    "professeurs": [1]  // List of professor IDs
+}
+Response:
+{
+    "id": 2,
+    "nom": "Doe",
+    "prenom": "Jane",
+    "classe": "CE1",
+    "textnote1": "",
+    "textnote2": "",
+    "textnote3": "",
+    "professeurs": [1]
+}
+        </code></pre>
+
+        <h3>GET /eleves/{id}/</h3>
+        <p>Retrieve details of a specific student.</p>
+        <pre><code>
+GET /api/eleves/1/
+Response:
+{
+    "id": 1,
+    "nom": "Doe",
+    "prenom": "John",
+    "classe": "CP",
+    "textnote1": "Good progress",
+    "professeurs": [1, 2]
+}
+        </code></pre>
+
+        <h3>PUT /eleves/{id}/</h3>
+        <p>Update details of a specific student.</p>
+        <pre><code>
+PUT /api/eleves/1/
+Request:
+{
+    "nom": "Doe",
+    "prenom": "John",
+    "classe": "CE2",
+    "textnote1": "Improved significantly",
+    "professeurs": [1, 2]
+}
+Response:
+{
+    "id": 1,
+    "nom": "Doe",
+    "prenom": "John",
+    "classe": "CE2",
+    "textnote1": "Improved significantly",
+    "professeurs": [1, 2]
+}
+        </code></pre>
+
+        <h3>DELETE /eleves/{id}/</h3>
+        <p>Delete a student record.</p>
+        <pre><code>
+DELETE /api/eleves/1/
+Response: 204 No Content
+        </code></pre>
+
+        <h2 id="resultat">/resultats/ - Manage Evaluation Results</h2>
+        <h3>GET /resultats/</h3>
+        <p>Retrieve a list of evaluation results.</p>
+        <pre><code>
+GET /api/resultats/
+Response:
+[
+    {
+        "id": 1,
+        "eleve": 1,  // Student ID
+        "catalogue": 1,  // Catalogue ID
+        "item": 1,  // Item ID
+        "score": 8,
+        "seuil1_percent": 80.0,
+        "seuil2_percent": 60.0,
+        "seuil3_percent": 40.0,
+        "professeur": 2  // Professor ID
+    },
+    ...
+]
+        </code></pre>
+
+        <h3>POST /resultats/</h3>
+        <p>Create a new evaluation result.</p>
+        <pre><code>
+POST /api/resultats/
+Request:
+{
+    "eleve": 1,
+    "catalogue": 1,
+    "item": 1,
+    "score": 9,
+    "seuil1_percent": 90.0,
+    "seuil2_percent": 70.0,
+    "seuil3_percent": 50.0,
+    "professeur": 2
+}
+Response:
+{
+    "id": 2,
+    "eleve": 1,
+    "catalogue": 1,
+    "item": 1,
+    "score": 9,
+    "seuil1_percent": 90.0,
+    "seuil2_percent": 70.0,
+    "seuil3_percent": 50.0,
+    "professeur": 2
+}
+        </code></pre>
+
+        <!-- Repeat similar blocks for Catalogue, Item, Niveau, Etape, Annee -->
+
+        <h2>Authentication</h2>
+        <p>Most API endpoints require user authentication via JSON Web Tokens (JWT). You will need to obtain a token using the login endpoint:</p>
+        <pre><code>
+POST /api/auth/login/
+Request:
+{
+    "username": "your_username",
+    "password": "your_password"
+}
+Response:
+{
+    "token": "your_jwt_token"
+}
+        </code></pre>
+
+        <p>After obtaining the token, include it in the Authorization header for all requests:</p>
+        <pre><code>
+Authorization: Bearer your_jwt_token
+        </code></pre>
+
+        <h2>Conclusion</h2>
+        <p>This REST API provides all the endpoints required to manage the Competence Project's data for evaluating student progress, including students, results, catalogues, and items. Use the provided API endpoints to interact with the backend efficiently.</p>
+    </div>
+</body>
+</html>

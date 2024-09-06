@@ -1,0 +1,37 @@
+id,description,etape,niveau,matiere,annee
+1,CP Point Repere Mathematiques 24-25,2,3,MATH,3
+2,CP Point Etape Mathematiques 24-25,3,3,MATH,3
+3,CP Bilan Fin annee Mathematiques 24-25,4,3,MATH,3
+4,E1 Point Repere Mathematiques 24-25,2,4,MATH,3
+5,E1 Point Etape Mathematiques 24-25,3,4,MATH,3
+6,E1 Bilan Fin annee Mathematiques 24-25,4,4,MATH,3
+7,E2 Point Repere Mathematiques 24-25,2,5,MATH,3
+8,E2 Point Etape Mathematiques 24-25,3,5,MATH,3
+9,E2 Bilan Fin annee Mathematiques 24-25,4,5,MATH,3
+10,M1 Point Repere Mathematiques 24-25,2,6,MATH,3
+11,M1 Point Etape Mathematiques 24-25,3,6,MATH,3
+12,M1 Bilan Fin annee Mathematiques 24-25,4,6,MATH,3
+13,M2 Point Repere Mathematiques 24-25,2,7,MATH,3
+14,M2 Point Etape Mathematiques 24-25,3,7,MATH,3
+15,M2 Bilan Fin annee Mathematiques 24-25,4,7,MATH,3
+16,CP Point Repere Francais 24-25,2,3,FRAN,3
+17,CP Point Etape Francais 24-25,3,3,FRAN,3
+18,CP Bilan Fin annee Francais 24-25,4,3,FRAN,3
+19,E1 Point Repere Francais 24-25,2,4,FRAN,3
+20,E1 Point Etape Francais 24-25,3,4,FRAN,3
+21,E1 Bilan Fin annee Francais 24-25,4,4,FRAN,3
+22,E2 Point Repere Francais 24-25,2,5,FRAN,3
+23,E2 Point Etape Francais 24-25,3,5,FRAN,3
+24,E2 Bilan Fin annee Francais 24-25,4,5,FRAN,3
+25,M1 Point Repere Francais 24-25,2,6,FRAN,3
+26,M1 Point Etape Francais 24-25,3,6,FRAN,3
+27,M1 Bilan Fin annee Francais 24-25,4,6,FRAN,3
+28,M2 Point Repere Francais 24-25,2,7,FRAN,3
+29,M2 Point Etape Francais 24-25,3,7,FRAN,3
+30,M2 Bilan Fin annee Francais 24-25,4,7,FRAN,3
+31,GS Point Repere Mathematiques 24-25,2,2,MATH,3
+32,GS Point Etape Mathematiques 24-25,3,2,MATH,3
+33,GS Bilan Fin annee Mathematiques 24-25,4,2,MATH,3
+34,GS Point Repere Francais 24-25,2,2,FRAN,3
+35,GS Point Etape Francais 24-25,3,2,FRAN,3
+36,GS Bilan Fin annee Francais 24-25,4,2,FRAN,3

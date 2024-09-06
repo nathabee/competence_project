@@ -1,0 +1,5 @@
+id,etape,description
+1,?,Etape par default
+2,DEBUT,Etape repere
+3,INTER,Point Etape
+4,FINAL,Bilan fin d'annee
