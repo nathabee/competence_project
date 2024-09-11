@@ -4,4 +4,5 @@ djangorestframework
 drf_yasg
 python-decouple
 setuptools
+django-cors-headers
 

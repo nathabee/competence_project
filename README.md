@@ -116,6 +116,7 @@ DBPASSWORD="your_production_dbpassword"
 DBHOST="your_production_dbhost"
 DBPORT="your_production_dbport"
 ALLOWED_HOSTS=0.0.0.0,xxx.xxx.xxx.xxx,my_domain
+PROF_ID_DEFAULT="default_user"
 ```
 
 ### 4. Django Setup
