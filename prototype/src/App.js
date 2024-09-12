@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './styles/prototype.css';  // Import your CSS file
 import RadarChart from './components/RadarChart';  // Import RadarChart component 
 import inputData from './data/inputData';
 // import logo from './logo.png'; // Import the image
 import { calculateAvancement, getMatiereDescription, safeStringify } from './utils/utils';
 
-
+import { Chart } from 'chart.js';
 
 
 

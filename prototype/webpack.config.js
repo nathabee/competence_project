@@ -6,7 +6,7 @@ module.exports = {
     entry: './src/index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'public'),
+        path: path.resolve(__dirname, 'build'),
     },
     module: {
         rules: [
@@ -24,16 +24,12 @@ module.exports = {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader'],
             },
-            {
-                test: /\.(png|jpg|jpeg|gif|svg)$/, // Add image file types here
-                type: 'asset/resource', // Use asset/resource for file handling
-            },
         ],
     },
     plugins: [
         new HtmlWebpackPlugin({
-            template: './public/index.html', // Ensure this points to your custom HTML file
-            inject: 'body', // Injects script tags at the end of the body
+            template: './public/index.html', // Use the public/index.html as a template
+            inject: true, // Automatically inject the script tags
         }),
         new BundleAnalyzerPlugin({
             analyzerMode: 'static',

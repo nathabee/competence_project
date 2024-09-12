@@ -1,3 +1,68 @@
+# PROTOTYPE APP
+
+## retrieve from git 
+cd your_competence_project_root_directory
+git pull origin main 
+
+
+## installation
+cd prototype
+npm install
+
+
+# starting app
+
+ 
+development 
+npm start 
+start per default on port 3000, to specifiy another port
+PORT=8084 npm start
+
+production
+npm run build
+serve -s build -l 8084
+
+### for standalone packaged experience
+npm run build
+serve -s build  
+start per default on port 3000, to specifiy another port
+serve -s build -l 8084
+npm run electron-start
+
+
+#### config for beginner (default)
+ in the package-json there was 
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  the file webpack.config.js is not used
+
+
+
+#### config expert (change settings in package.json)
+
+i have moddified with package.json
+ "scripts": {
+   "start": "webpack serve --mode development",
+   "build": "webpack --mode production",
+   "test": "react-scripts test",
+   "eject": "react-scripts eject"
+ },
+  the file webpack.config.js is   used
+
+
+ 
+## packaging your app with Electron for a smoother user experience
+
+ for a more user-friendly solution (e.g., a single-click executable), Electron can wrap your React app into a desktop application.
+
+
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
