@@ -6,7 +6,6 @@ import PrintHeader from './components/PrintHeader';  // Import   component
 import RadarChart from './components/RadarChart';  // Import RadarChart component 
 import inputData from './data/inputData';
 import SummaryScore from './components/SummaryScore';
-import GroupageData from './components/GroupageData';
 import ScoreEleve from './components/ScoreEleve';
 // import logo from './logo.png'; // Import the image
 import { calculateAvancement, getMatiereDescription, safeStringify } from './utils/utils';
@@ -16,7 +15,7 @@ import { Chart } from 'chart.js';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';  // Import jsPDF autotable plugin if you are using tables
 
-import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
 
 //import logo from './assets/logo.png';
 
@@ -44,20 +43,6 @@ class App extends React.Component {
       invalidData: [],
       aggregatedData: [],
       config: defaultConfig, // Load default configuration
-      groupage_gs: [
-        { groupage: 'CATEGORISATION', label_groupage: 'CATEGORISATION', max_point: 6, seuil1: 2, seuil2: 3, max_item: 6, matiere: 'C' },
-        { groupage: 'LA RÉSOLUTION DE PROBLEMES', label_groupage: 'LA RÉSOLUTION DE PROBLEMES', max_point: 6, seuil1: 1, seuil2: 2, max_item: 3, matiere: 'C' },
-        { groupage: 'LA SUITE NUMÉRIQUE', label_groupage: 'LA SUITE NUMÉRIQUE', max_point: 15, seuil1: 2, seuil2: 3, max_item: 8, matiere: 'C' },
-        { groupage: 'LES COULEURS', label_groupage: 'LES COULEURS', max_point: 22, seuil1: 5, seuil2: 8, max_item: 22, matiere: 'P' },
-        { groupage: 'MEMORISATION HISTOIRE', label_groupage: 'MEMORISATION HISTOIRE', max_point: 10, seuil1: 2, seuil2: 3, max_item: 7, matiere: 'C' },
-        { groupage: 'PHONOLOGIE', label_groupage: 'PHONOLOGIE COGNITIVE', max_point: 11, seuil1: 2, seuil2: 3, max_item: 6, matiere: 'C' },
-        { groupage: 'PHONOLOGIE', label_groupage: 'PHONOLOGIE SENSORIELLE', max_point: 20, seuil1: 2, seuil2: 4, max_item: 10, matiere: 'P' },
-        { groupage: 'RECONNAISSANCE PRENOM', label_groupage: 'RECONNAISSANCE PRENOM', max_point: 5, seuil1: 2, seuil2: 3, max_item: 8, matiere: 'C' },
-        { groupage: 'REPÉRAGE SPATIAL ET TOPOLOGIE', label_groupage: 'REPÉRAGE SPATIAL ET TOPOLOGIE COGNITIVE', max_point: 16, seuil1: 2, seuil2: 3, max_item: 8, matiere: 'C' },
-        { groupage: 'REPÉRAGE SPATIAL ET TOPOLOGIE', label_groupage: 'REPÉRAGE SPATIAL ET TOPOLOGIE PERCEPTIVE', max_point: 16, seuil1: 2, seuil2: 3, max_item: 8, matiere: 'P' }
-      ],
-
-
       activeTab: 'section0' // Default active tab
     };
   }
@@ -137,9 +122,10 @@ class App extends React.Component {
 
 
   aggregateData = () => {
-    const { parsedData, groupage_gs } = this.state;
-    const groupedData = {};
+    const { parsedData, config } = this.state;
+    const groupage_gs = config.groupage_gs; // Access groupage_gs from config
     const aggregatedDataByMatiere = {};  // Initialize this variable here
+    const groupedData = {};
 
     // Create a map for quick lookup of groupage_gs data
     const groupageMap = new Map(groupage_gs.map(item => [item.groupage, item]));
@@ -257,6 +243,20 @@ class App extends React.Component {
       });
     }
   };
+
+
+  // Method to handle row updates
+  handleRowUpdate = (index, fieldName, value) => {
+    const updatedParsedData = [...this.state.parsedData];
+    updatedParsedData[index] = {
+      ...updatedParsedData[index],
+      [fieldName]: value
+    };
+    this.setState({ parsedData: updatedParsedData });
+  };
+
+  
+
   componentWillUnmount() {
     this._isMounted = false; // Corrected line
     const { chartInstances } = this.state;
@@ -270,18 +270,16 @@ class App extends React.Component {
   }
 
 
-
-  handleGroupageChange = (index, field, value) => {
-    const { groupage_gs } = this.state;
-    const updatedGroupageGs = [...groupage_gs];
-    updatedGroupageGs[index][field] = value;
-    this.setState({ groupage_gs: updatedGroupageGs });
+  componentDidMount() {
+    this.setState({ activeTab: 'section0' });
   }
 
 
 
+
+
   render() {
-    const { parsedData, invalidData, aggregatedDataByMatiere, groupage_gs, inputData, config, activeTab } = this.state;
+    const { parsedData, invalidData, aggregatedDataByMatiere, inputData, config, activeTab } = this.state;
 
     return (
       <Router>
@@ -300,7 +298,7 @@ class App extends React.Component {
             </li>
             <li className="nav-item">
               <Link className={`nav-link ${activeTab === 'section2' ? 'active' : ''}`} to="/initscore" onClick={() => this.setState({ activeTab: 'section2' })}>
-                Données export CSV Excel
+                Import scores
               </Link>
             </li>
             <li className="nav-item">
@@ -442,134 +440,128 @@ class App extends React.Component {
                 </div>
 
                 <div className="form-group shadow-section">
-                  <p>Informations de score de l'élève extraite du CSV (5 premières lignes)</p>
-                  <ScoreEleve parsedData={this.state.parsedData} nbrows={5} />
-                </div>
-                <div className="form-group shadow-section">
                   <SummaryScore aggregatedDataByMatiere={this.state.aggregatedDataByMatiere} />
+                </div>
+
+
+                <div className="form-group shadow-section">
+                  <p>Informations des tests de l'élève </p>
+                  <div className="form-group  scrolling-section">
+                    <ScoreEleve parsedData={parsedData} editMode={false} />
+                  </div>
+
                 </div>
               </div>
             } />
 
-            < Route path="/config" element={
-              < div className="tab-content mt-3" >
-                <div className="form-group shadow-section">
-                  <Config config={config} setConfig={this.setConfig} defaultConfig={defaultConfig} />
-                </div>
-                <div className="form-group shadow-section">
-                  <GroupageData groupage_gs={groupage_gs} />
-                </div>
-                <div className="form-group shadow-section scrolling-section">
-                  <h2 className="section-title">Donnee d'initialisation :</h2>
-                </div>
-                <div className="form-group shadow-section">
-                  <GroupageData groupage_gs={groupage_gs} />
-                </div>
-              </div >
-            } />
-            < Route path="/initscore" element={
-              < div className="tab-content mt-3" >
-                <div className="form-group shadow-section scrolling-section">
-                  <h2 className="section-title">Enter your data :</h2>
-                  <label htmlFor="dataInput">
-                    Copier les données ici (format: Temps;Description;Resultat;Observation;Points;Max_Point;Categorie;Type;ItemId;Vide;):
-                  </label>
-                  <textarea
-                    className="form-control"
-                    id="dataInput"
-                    rows="5"
-                    value={inputData}
-                    onChange={this.handleInputChange}
-                  ></textarea>
-                </div>
-              </div >
-            } />
-            < Route path="/score" element={
-              < div className="tab-content mt-3" >
-                <div className="form-group shadow-section scrolling-section">
-                  <ScoreEleve parsedData={parsedData} />
-                </div>
-              </div >
-            } />
-            < Route path="/rejected" element={
-              < div className="tab-content mt-3" >
-                <div className="form-group shadow-section">
-                  <h2 className="section-title">Invalid Data</h2>
-                  <div className="invalid-data">
-                    {invalidData.length === 0 ? (
-                      <p>No invalid data found.</p>
-                    ) : (
-                      <ul>
-                        {invalidData.map((row, index) => (
-                          <li key={index}>{row}</li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-                </div>
-              </div >
-            } />
-            < Route path="/sumup" element={
-              < div className="tab-content mt-3" >
-                <div className="tab-pane fade show active">
-                  <SummaryScore aggregatedDataByMatiere={aggregatedDataByMatiere} />
-                </div>
-              </div >
-            } />
-            < Route path="/pdf" element={
-              < div className="tab-content mt-3" >
-                <div className="form-group shadow-section">
-                  <button id="print-button" onClick={this.handlePrintPDF}>Impression PDF</button>
-                  <div id="printable-section">
-                    <PrintHeader key={config.timestamp} config={config} />
-                    <div id="info-header-container">
-                      <div id="professor-header">
-                        <h2 className="print-info">Informations Professeur</h2>
-                      </div>
-                      <div id="empty-column-1"></div>
-                      <div id="student-header">
-                        <h2 className="print-info">Informations Élève</h2>
-                      </div>
-                      <div id="empty-column-2"></div>
+                < Route path="/config" element={
+                  < div className="tab-content mt-3" >
+                    <Config config={config} setConfig={this.setConfig} defaultConfig={defaultConfig} />
+                  </div >
+                } />
+                < Route path="/initscore" element={
+                  < div className="tab-content mt-3" >
+                    <div className="form-group shadow-section scrolling-section">
+                      <h2 className="section-title">Enter your data :</h2>
+                      <label htmlFor="dataInput">
+                        Copier les données ici (format: Temps;Description;Resultat;Observation;Points;Max_Point;Categorie;Type;ItemId;Vide;):
+                      </label>
+                      <textarea
+                        className="form-control"
+                        id="dataInput"
+                        rows="5"
+                        value={inputData}
+                        onChange={this.handleInputChange}
+                      ></textarea>
                     </div>
-                    <div id="info-container">
-                      <div id="professor-info" className="print-info">
-                        <p>Nom: {this.state.profNom}</p>
-                        <p>Prénom: {this.state.profPrenom}</p>
+                  </div >
+                } />
+                < Route path="/score" element={ 
+                  < div className="tab-content mt-3" > 
+                      <ScoreEleve parsedData={parsedData} editMode={true} handleUpdate={this.handleRowUpdate} />
+                    </div> 
+                } />
+                < Route path="/rejected" element={
+                  < div className="tab-content mt-3" >
+                    <div className="form-group shadow-section">
+                      <h2 className="section-title">Invalid Data</h2>
+                      <div className="invalid-data">
+                        {invalidData.length === 0 ? (
+                          <p>No invalid data found.</p>
+                        ) : (
+                          <ul>
+                            {invalidData.map((row, index) => (
+                              <li key={index}>{row}</li>
+                            ))}
+                          </ul>
+                        )}
                       </div>
-                      <div id="empty-column-3"></div>
-                      <div id="student-info" className="print-info">
-                        <p>Nom: {this.state.eleveNom}</p>
-                        <p>Prénom: {this.state.elevePrenom}</p>
-                        <p>Niveau: {this.state.eleveNiveau}</p>
-                      </div>
-                      <div id="empty-column-4"></div>
                     </div>
-                    <div id="chart-container">
-                      <h2 className="section-title">Radar Charts by Matiere</h2>
-                      {Object.keys(this.state.aggregatedDataByMatiere).map((matiere, index) => {
-                        const data = this.state.aggregatedDataByMatiere[matiere].map(item => item.avancement);
-                        const labels = this.state.aggregatedDataByMatiere[matiere].map(item => item.groupage);
-
-                        return (
-                          <div className="col-6" key={index}>
-                            <h3>{getMatiereDescription(matiere)}</h3>
-                            <RadarChart
-                              matiere={matiere}
-                              chartData={{ labels: labels, data: data }}
-                              onChartReady={(matiere, chartInstance) => {
-                                console.log(`${matiere} chart is ready`, chartInstance);
-                              }}
-                            />
+                  </div >
+                } />
+                < Route path="/sumup" element={
+                  < div className="tab-content mt-3" >
+                    <div className="tab-pane fade show active">
+                      <SummaryScore aggregatedDataByMatiere={aggregatedDataByMatiere} />
+                    </div>
+                  </div >
+                } />
+                < Route path="/pdf" element={
+                  < div className="tab-content mt-3" >
+                    <div className="form-group shadow-section">
+                      <button id="print-button" onClick={this.handlePrintPDF}>Impression PDF</button>
+                      <div id="printable-section">
+                        <PrintHeader key={config.timestamp} config={config} />
+                        <div id="info-header-container">
+                          <div id="professor-header">
+                            <h2 className="print-info">Informations Professeur</h2>
                           </div>
-                        );
-                      })}
+                          <div id="empty-column-1"></div>
+                          <div id="student-header">
+                            <h2 className="print-info">Informations Élève</h2>
+                          </div>
+                          <div id="empty-column-2"></div>
+                        </div>
+                        <div id="info-container">
+                          <div id="professor-info" className="print-info">
+                            <p>Nom: {this.state.profNom}</p>
+                            <p>Prénom: {this.state.profPrenom}</p>
+                          </div>
+                          <div id="empty-column-3"></div>
+                          <div id="student-info" className="print-info">
+                            <p>Nom: {this.state.eleveNom}</p>
+                            <p>Prénom: {this.state.elevePrenom}</p>
+                            <p>Niveau: {this.state.eleveNiveau}</p>
+                          </div>
+                          <div id="empty-column-4"></div>
+                        </div>
+                        <div id="chart-container">
+                          <h2 className="section-title">Radar Charts by Matiere</h2>
+                          {Object.keys(this.state.aggregatedDataByMatiere).map((matiere, index) => {
+                            const data = this.state.aggregatedDataByMatiere[matiere].map(item => item.avancement);
+                            const labels = this.state.aggregatedDataByMatiere[matiere].map(item => item.groupage);
+
+                            return (
+                              <div className="col-6" key={index}>
+                                <h3>{getMatiereDescription(matiere)}</h3>
+                                <RadarChart
+                                  matiere={matiere}
+                                  chartData={{ labels: labels, data: data }}
+                                  onChartReady={(matiere, chartInstance) => {
+                                    console.log(`${matiere} chart is ready`, chartInstance);
+                                  }}
+                                />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div >
-            } />
-          </Routes >
+                  </div >
+                } />
+
+                <Route path="*" element={<Navigate to="/" />} />
+              </Routes >
         </div >
       </Router >
     );

@@ -1,0 +1,33 @@
+/* Container for the resizable column */
+.table-container {
+    position: relative;
+  }
+  
+ 
+  
+ 
+  
+  /* Style for editable cells */
+  .editable-cell {
+    background-color: #d0e6f4; /* Light blue color */
+    border: 1px solid #a0c4e1; /* Slightly darker blue border */
+    padding: 5px;
+  }
+  
+  /* Style for the Description column */
+  .description-cell { 
+    width: 350px; /* Set width to fit content */
+    white-space: normal; /* Allow text wrapping */ 
+    word-break: break-word; /* Ensure long words break */ 
+    text-size-adjust: auto;
+    background-color: #f4d8d0; /* Light blue color */
+  }
+  
+  /* Style for observation cells */
+  .observation-cell {
+    width: 350px; /* Set width to fit content */
+    white-space: normal; /* Allow text wrapping */
+    overflow-wrap: break-word; /* Break long words */
+    resize: vertical; /* Allow vertical resizing of textarea */
+  }
+  

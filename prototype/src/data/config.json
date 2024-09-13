@@ -1,4 +1,97 @@
 {
     "schoolName": "Ecole Privee Catholiques des Cotes d Armor",
-    "logoURL": "https://ecolepriveecatholique22.fr/wp-content/uploads/2020/12/enseignementpriveecatholique22-logo-300x102.png"
-}
+    "logoURL": "https://ecolepriveecatholique22.fr/wp-content/uploads/2020/12/enseignementpriveecatholique22-logo-300x102.png",
+    "groupage_gs": [
+      {
+        "groupage": "CATEGORISATION",
+        "label_groupage": "CATEGORISATION",
+        "max_point": 6,
+        "seuil1": 2,
+        "seuil2": 3,
+        "max_item": 6,
+        "matiere": "C"
+      },
+      {
+        "groupage": "LA RÉSOLUTION DE PROBLEMES",
+        "label_groupage": "LA RÉSOLUTION DE PROBLEMES",
+        "max_point": 6,
+        "seuil1": 1,
+        "seuil2": 2,
+        "max_item": 3,
+        "matiere": "C"
+      },
+      {
+        "groupage": "LA SUITE NUMÉRIQUE",
+        "label_groupage": "LA SUITE NUMÉRIQUE",
+        "max_point": 15,
+        "seuil1": 2,
+        "seuil2": 3,
+        "max_item": 8,
+        "matiere": "C"
+      },
+      {
+        "groupage": "LES COULEURS",
+        "label_groupage": "LES COULEURS",
+        "max_point": 22,
+        "seuil1": 5,
+        "seuil2": 8,
+        "max_item": 22,
+        "matiere": "P"
+      },
+      {
+        "groupage": "MEMORISATION HISTOIRE",
+        "label_groupage": "MEMORISATION HISTOIRE",
+        "max_point": 10,
+        "seuil1": 2,
+        "seuil2": 3,
+        "max_item": 7,
+        "matiere": "C"
+      },
+      {
+        "groupage": "PHONOLOGIE",
+        "label_groupage": "PHONOLOGIE COGNITIVE",
+        "max_point": 11,
+        "seuil1": 2,
+        "seuil2": 3,
+        "max_item": 6,
+        "matiere": "C"
+      },
+      {
+        "groupage": "PHONOLOGIE",
+        "label_groupage": "PHONOLOGIE SENSORIELLE",
+        "max_point": 20,
+        "seuil1": 2,
+        "seuil2": 4,
+        "max_item": 10,
+        "matiere": "P"
+      },
+      {
+        "groupage": "RECONNAISSANCE PRENOM",
+        "label_groupage": "RECONNAISSANCE PRENOM",
+        "max_point": 5,
+        "seuil1": 2,
+        "seuil2": 3,
+        "max_item": 8,
+        "matiere": "C"
+      },
+      {
+        "groupage": "REPÉRAGE SPATIAL ET TOPOLOGIE",
+        "label_groupage": "REPÉRAGE SPATIAL ET TOPOLOGIE COGNITIVE",
+        "max_point": 16,
+        "seuil1": 2,
+        "seuil2": 3,
+        "max_item": 8,
+        "matiere": "C"
+      },
+      {
+        "groupage": "REPÉRAGE SPATIAL ET TOPOLOGIE",
+        "label_groupage": "REPÉRAGE SPATIAL ET TOPOLOGIE PERCEPTIVE",
+        "max_point": 16,
+        "seuil1": 2,
+        "seuil2": 3,
+        "max_item": 8,
+        "matiere": "P"
+      }
+    ]
+  }
+  

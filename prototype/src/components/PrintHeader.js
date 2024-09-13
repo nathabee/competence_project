@@ -1,9 +1,9 @@
 import React from 'react';
 
 const PrintHeader = ({ config }) => (
-  <div id="print-header-container" style={{ width: '100%' }}>
-    <div id="print-header-logo" style={{ width: '100%' }}>
-      <img src={config.logoURL} alt="Logo" style={{ width: '100px', height: 'auto' }} />
+  <div id="print-header-container"  >
+    <div id="print-header-logo"  >
+      <img src={config.logoURL} alt="Logo" style={{ width: 'auto', height: '40px' }} />
     </div>
     <div id="print-header-schule">
       <h1>{config.schoolName}</h1>
