@@ -126,7 +126,13 @@ Set up your Python virtual environment and install the necessary dependencies:
 ```bash
 cd competence_project
 # start the file from tools/setup_django.sh it start the server in port 8080
-./setup_django.sh
+./setup_django.sh -s
+
+after cloning the git (say no to new project and new app):
+Start a new Django project (y/n): n
+Create a new Django app (y/n): n
+Run Django migrations (y/n): y
+
 ```
 
 
@@ -154,6 +160,19 @@ Your server should now be running and accessible via the specified IP and port.
 ### 7. Rest API is available
 
 http://your_server:8080/api
+
+
+
+### 8. Prototype api
+
+code is in prototype app, after cloning :
+
+```bash
+cd prototype
+npm install
+npm run build
+``` 
+
 
 
 

@@ -16,7 +16,7 @@ start_django_server() {
     source venv/bin/activate
 
     echo "Starting Django development server on 0.0.0.0:8080..."
-    python manage.py runserver 0.0.0.0:8080
+    nohup python manage.py runserver 0.0.0.0:8080 &
 
     deactivate
 }
