@@ -1,3 +1,6 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+
 .invalid-data {
     background-color: #4a5748;
     color: rgb(78, 4, 4);
