@@ -78,25 +78,4 @@ useEffect(() => {
 
 export default RadarChart;
 
-
-/*
-
-                        <canvas
-                        id={`chart-${matiere}`}
-                        ref={(ref) => {
-                          if (ref && !this.state.chartRefs[matiere]) {
-                            this.setState(
-                              (prevState) => ({
-                                chartRefs: { ...prevState.chartRefs, [matiere]: ref }
-                              }),
-                              () => {
-                                console.log("draw chart for matiere", matiere);
-                                this.drawRadarCharts(matiere);  // Draw the chart specifically for this matiere
-                              }
-                            );
-                          }
-                        }}
-                        style={{ width: '100%', height: '400px' }}
-                      ></canvas>
-
-*/
+ 
