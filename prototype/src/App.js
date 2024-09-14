@@ -7,17 +7,16 @@ import RadarChart from './components/RadarChart';  // Import RadarChart componen
 import inputData from './data/inputData';
 import SummaryScore from './components/SummaryScore';
 import ScoreEleve from './components/ScoreEleve';
-// import logo from './logo.png'; // Import the image
+//import logo from './logo.png'; // Import the image
 import { calculateAvancement, getMatiereDescription, safeStringify } from './utils/utils';
 import defaultConfig from './data/config.json'; // Default configuration
+import logo from './assets/logo.png';
 
-import { Chart } from 'chart.js';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';  // Import jsPDF autotable plugin if you are using tables
 
 import { BrowserRouter as Router, Route, Routes, Link, Navigate } from 'react-router-dom';
 
-//import logo from './assets/logo.png';
 
 import html2canvas from 'html2canvas';
 
@@ -41,15 +40,20 @@ class App extends React.Component {
       inputData: inputData,
       parsedData: [],
       invalidData: [],
-      aggregatedData: [],
-      config: defaultConfig, // Load default configuration
+      aggregatedData: [], 
+      // Load default configuration and override logoImg with imported logo
+      config: {
+        ...defaultConfig,  // Spread the rest of the config
+        logoImg: logo,     // Replace or add the logoImg field with the imported logo
+      },
       activeTab: 'section0' // Default active tab
     };
   }
   _isMounted = false;
 
-  setConfig = (newConfig) => {
-    this.setState({ config: newConfig });
+  setConfig = (newConfig) => { 
+
+    this.setState({ config: newConfig }); 
   };
 
 
@@ -58,32 +62,38 @@ class App extends React.Component {
     this.setState({ activeTab: tab });
   };
 
+ 
+ 
+handlePrintPDF = () => {
+  // Hide button before capture
+  const printButton = document.querySelector('.btn');
+  printButton.style.display = 'none'; // Hide the print button
 
-  handlePrintPDF = () => {
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4', // A4 size
-    });
+  const doc = new jsPDF({
+    orientation: 'portrait',
+    unit: 'mm',
+    format: 'a4', // A4 size
+  });
 
-    // Capture the printable section using html2canvas
-    const printableSection = document.getElementById('printable-section-1');
+  const printableSection = document.getElementById('printable-section-1'); 
 
-    html2canvas(printableSection, {
-      scale: 2, // Increase scale for better resolution
-    }).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
+  // Capture the printable section using html2canvas
+  html2canvas(printableSection, {
+    scale: 2, // Increase scale for better resolution
+  }).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
 
-      // Add the captured content to the PDF
-      doc.addImage(imgData, 'PNG', 0, 0, 210, 297); // Fill A4 page
+    // Add the captured content to the PDF
+    doc.addImage(imgData, 'PNG', 0, 0, 210, 297); // Fill A4 page
 
-      // Save the PDF
-      doc.save('report.pdf');
-    });
-  };
+    // Reset the button display after PDF is generated
+    printButton.style.display = 'inline-block'; // Show the button again
 
-
-
+    // Save the PDF
+    doc.save('report.pdf');
+  });
+};
+ 
 
   handleInputChange = (e) => {
     this.setState({ inputData: e.target.value });
@@ -250,7 +260,7 @@ class App extends React.Component {
               <div className="tab-content mt-3">
                 <div className="banner-section">
                   <div className="d-flex">
-                    <img src={config.logoURL} alt="Logo" className="logo" />
+                    <img src={config.logoImg} alt="Logo" className="logo" style={{ maxWidth: '100px', maxHeight: '50px' }}  />
                     <h1 className="title">Analyse des Données</h1>
                   </div>
                   <p className="mb-2">
@@ -428,20 +438,21 @@ class App extends React.Component {
             } />
 
             <Route path="/pdf" element={
-                <div>
-                  <button className="btn btn-primary" onClick={this.handlePrintPDF}>Impression PDF</button>
-                  <div id="printable-section-1" className="print-container">
+              <div>
+                <button className="btn btn-primary" onClick={this.handlePrintPDF}>Impression PDF</button>
+                <div id="printable-section-1" className="print-container">
                   <PrintHeader key={config.timestamp} config={config} />
                   <div className="print-banner">
- 
+
 
                     <div id="print-banner-col-1" className="print-banner-col">
                       <div className="print-banner-header">Professeur:</div>
                       <div id="professor-info" className="print-banner-info">
                         <div>Nom: {this.state.profNom}</div>
                         <div>Prénom: {this.state.profPrenom}</div> 
+
                       </div>
-                    </div>  
+                    </div>
 
 
                     <div id="print-banner-col-2" className="print-banner-col">
@@ -450,45 +461,45 @@ class App extends React.Component {
                         <div>Nom: {this.state.eleveNom}</div>
                         <div>Prénom: {this.state.elevePrenom}</div>
                         <div>Niveau: {this.state.eleveNiveau}<div>
-                      </div>
-                    </div> 
-                    </div> 
-
-                    </div> 
-
-
-                </div>
-                <div className="print-charts">
-                  <h2 className="print-charts-title">Resultats de l'evaluation :</h2>
-                  <div className="print-chart-container">
-                    {Object.keys(this.state.aggregatedDataByMatiere).map((matiere, index) => {
-                      const data = this.state.aggregatedDataByMatiere[matiere].map(item => item.avancement);
-                      const labels = this.state.aggregatedDataByMatiere[matiere].map(item => item.groupage);
-
-                      return (
-                        <div className="print-chart" key={index}>
-                          <h3>{getMatiereDescription(matiere)}</h3>
-                          <RadarChart
-                            matiere={matiere}
-                            chartData={{ labels: labels, data: data }}
-                          />
                         </div>
-                      );
-                    })}
+                        </div>
+                      </div>
+
+                    </div>
+
+
+                  </div>
+                  <div className="print-charts">
+                    <h2 className="print-charts-title">Resultats de l'evaluation :</h2>
+                    <div className="print-chart-container">
+                      {Object.keys(this.state.aggregatedDataByMatiere).map((matiere, index) => {
+                        const data = this.state.aggregatedDataByMatiere[matiere].map(item => item.avancement);
+                        const labels = this.state.aggregatedDataByMatiere[matiere].map(item => item.groupage);
+
+                        return (
+                          <div className="print-chart" key={index}>
+                            <h3>{getMatiereDescription(matiere)}</h3>
+                            <RadarChart
+                              matiere={matiere}
+                              chartData={{ labels: labels, data: data }}
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  <div className="print-footer">
+                    <div className="print-footer-title"><strong>{this.state.config.footerPDFTitre}</strong></div>
+                    <div className="print-footer-message">{this.state.config.footerPDFMessage1}</div>
+                    <div className="print-footer-message">{this.state.config.footerPDFMessage2}</div>
                   </div>
                 </div>
-                <div className="print-footer">
-                  <div className="print-footer-title"><strong>{this.state.config.footerPDFTitre}</strong></div>
-                  <div className="print-footer-message">{this.state.config.footerPDFMessage1}</div>
-                  <div className="print-footer-message">{this.state.config.footerPDFMessage2}</div>
-                </div>
-              </div>
               </div>
             } />
 
 
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes >
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes >
         </div >
       </Router >
     );

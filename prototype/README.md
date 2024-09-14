@@ -8,6 +8,10 @@ git pull origin main
 ## installation
 cd prototype
 npm install
+npm run build
+cp build/* InYourWebServerPrototypeAppDirectory
+
+
 
 
 # starting app

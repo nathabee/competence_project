@@ -1,11 +1,31 @@
 @import "~bootstrap/dist/css/bootstrap.min.css";
 
+/* Set A4 size for the printable section */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  .tab-content {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+ 
+ 
+  #print-header-logo img {
+    visibility: visible !important;
+    display: block !important;
+  }
+}
+
+
 
 /* Canvas Container */
 #canvas-container {
   width: 210mm;  /* A4 width */
   height: 148.5mm; /* 50% of A4 height */
-  background-color: #fff; /* White background for canvas area */ 
+  /*background-color: #fff;   */ 
   box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
@@ -16,14 +36,13 @@
 /* Canvas Styling */
 canvas {
   width: 100% !important; /* Canvas takes full container width */
-  height: 100% !important; /* Canvas takes full container height */
-  background-color: #fff; /* Ensure canvas background is white */
+  height: 100% !important; /* Canvas takes full container height */ 
 }
 
 
 
 /* General PDF Styling */
-.print-container {
+.print-container  {
   width: 210mm;  /* A4 width */
   height: 297mm; /* A4 height */ 
   /*box-sizing: border-box;*/
@@ -37,38 +56,39 @@ canvas {
 
 
 /* Header Section +++++++++++++++++++++++++++++++++++++*/
+ 
 .print-header-container {
   margin-top: 0mm;
-  display: flex; 
-  /*background: linear-gradient(#83d1b1, #18d5db); /* Gradient background */
-  height: 47mm; /* Ensure you provide a height value */
-  align-items: center; /* Vertically center items if needed */
-  border-bottom: 2px solid #000; /* Underline */
+  display: flex;  
+  height: 47mm;  
+  align-items: center;  
+  border-bottom: 2px solid #000; 
 }
 
-/* Flex Items */
-#print-header-logo {
-  flex: 1; /* Flex grows to fill available space; you’ll set specific width using flex-basis */
+#print-header-logo { 
+  flex: 1; 
   max-width: 500mm;
   max-height: 350mm;
   display: flex;
-  align-items: center; /* Vertically center content */
-  justify-content: center; /* Horizontally center content */
+  align-items: center; 
+  justify-content: center;
   margin:10mm;
 }
 
-#print-header-logo img {
-  width: 100%; /* Ensure image scales to fit the container */
-  height: auto;
-}
 
+#print-header-logo {
+  flex: 0 1 20%; 
+} 
 #print-header-schule {
-  flex: 4; /* Flex grows to 4 times the size of the first item */
-  display: flex;
-  align-items: center; /* Vertically center content */
-  justify-content: center; /* Horizontally center content */
+  flex: 0 1 80%;  
 }
-
+ 
+#print-header-schule {
+  flex: 4; 
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+} 
 #print-header-schule h1 {
   font-size: 20px;
   margin: 0;
