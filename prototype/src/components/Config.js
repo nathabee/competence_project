@@ -112,7 +112,43 @@ const Config = ({ config, setConfig, defaultConfig }) => {
                         style={{ width: '100%' }}
                     />
                 </div>
-            </div>
+
+                <div>
+                    <label>Message en bas du PDF - Footer Titre: </label>
+                    <input
+                        type="text"
+                        name="footerPDFTitre"
+                        value={tempConfig.footerPDFTitre || ''}
+                        onChange={handleInputChange}
+                        style={{ width: '100%' }}
+                    />
+                </div>
+
+
+                <div>
+                    <label>Message en bas du PDF - Footer Message 1: </label>
+                    <input
+                        type="text"
+                        name="footerPDFMessage1"
+                        value={tempConfig.footerPDFMessage1 || ''}
+                        onChange={handleInputChange}
+                        style={{ width: '100%' }}
+                    />
+                </div>
+
+
+                <div>
+                    <label>Message en bas du PDF - Footer Message 2: </label>
+                    <input
+                        type="text"
+                        name="footerPDFMessage2"
+                        value={tempConfig.footerPDFMessage2 || ''}
+                        onChange={handleInputChange}
+                        style={{ width: '100%' }}
+                    />
+                </div>
+
+              </div>
             <div className="form-group shadow-section">
                 {/* Groupage Data Section */}
                 <GroupageData groupage_gs={tempConfig.groupage_gs} onGroupageChange={handleGroupageChange} />

@@ -1,6 +1,9 @@
 {
     "schoolName": "Ecole Privee Catholiques des Cotes d Armor",
     "logoURL": "https://ecolepriveecatholique22.fr/wp-content/uploads/2020/12/enseignementpriveecatholique22-logo-300x102.png",
+    "footerPDFTitre": "Interprétation du Graphique Radar",
+    "footerPDFMessage1": "Ce graphique radar illustre les résultats d'un test cognitif varié. Les niveaux de compétence sont indiqués par les gradations +, ++, et +++, symbolisant la progression de l'élève dans différentes compétences.",
+    "footerPDFMessage2": "Les domaines évalués touchent à des aspects clés du développement cognitif. L'élève est amené à classer des objets selon des critères (catégorisation), résoudre des tâches pratiques (résolution de problèmes), et comprendre les séquences numériques (suite numérique). La reconnaissance des couleurs, la mémoire d'histoires, et la manipulation des sons (phonologie cognitive et sensorielle) sont également testées. De plus, la reconnaissance du prénom et le repérage spatial complètent cette évaluation.",
     "groupage_gs": [
       {
         "groupage": "CATEGORISATION",

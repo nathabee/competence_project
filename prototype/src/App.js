@@ -67,7 +67,7 @@ class App extends React.Component {
     });
 
     // Capture the printable section using html2canvas
-    const printableSection = document.getElementById('printable-section');
+    const printableSection = document.getElementById('printable-section-1');
 
     html2canvas(printableSection, {
       scale: 2, // Increase scale for better resolution
@@ -119,7 +119,15 @@ class App extends React.Component {
     this.setState({ parsedData, invalidData }, this.aggregateData);
   }
 
-
+  // Method to handle row updates
+  handleRowUpdate = (index, fieldName, value) => {
+    const updatedParsedData = [...this.state.parsedData];
+    updatedParsedData[index] = {
+      ...updatedParsedData[index],
+      [fieldName]: value
+    };
+    this.setState({ parsedData: updatedParsedData });
+  };
 
   aggregateData = () => {
     const { parsedData, config } = this.state;
@@ -171,103 +179,15 @@ class App extends React.Component {
 
     });
 
-    this.setState({ aggregatedDataByMatiere }, this.drawRadarCharts);  // Update state
+    this.setState({ aggregatedDataByMatiere });  // Keep this line
+
   };
 
 
-  drawRadarCharts = (matiere) => {
-    const { aggregatedDataByMatiere, chartRefs, chartInstances } = this.state;
-
-    if (matiere) {
-      // Draw only for the specific 'matiere'
-      const data = aggregatedDataByMatiere[matiere];
-      const labels = data.map(item => item.groupage);
-      const avancementData = data.map(item => item.avancement);
 
 
-      console.log("********drawRadarCharts for matiere ******", matiere);  // Log the resultat value  
-      console.log("aggregatedDataByMatiere:", safeStringify(aggregatedDataByMatiere));
-      console.log("data for matiere ", data);  // Log the resultat value 
-      console.log("labels for matiere ", labels);  // Log the resultat value 
-      console.log("avancementData for matiere ", avancementData);  // Log the resultat value  
-
-      const chartData = {
-        labels: labels,
-        datasets: [
-          {
-            label: 'Avancement',
-            data: avancementData,
-            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-            borderColor: 'rgba(255, 99, 132, 1)',
-            borderWidth: 1,
-            fill: true,
-          }
-        ]
-      };
-
-      const chartRef = chartRefs[matiere];
-      if (chartRef) {
-        const ctx = chartRef.getContext('2d');
-
-        // Check if a chart instance already exists and destroy it
-        if (chartInstances[matiere]) {
-          chartInstances[matiere].destroy();
-        }
-
-        // Create and store the new chart instance
-        const newChart = new Chart(ctx, {
-          type: 'radar',
-          data: chartData,
-          options: {
-            scales: {
-              r: {
-                min: 0,
-                max: 3,
-                beginAtZero: true,
-              }
-            }
-          }
-        });
-
-        // Update the chartInstances in state
-        this.setState(prevState => ({
-          chartInstances: { ...prevState.chartInstances, [matiere]: newChart }
-        }));
-      } else {
-        console.error(`Canvas reference for ${matiere} is not available.`);
-      }
-    } else {
-      // Draw charts for all matiere if no specific matiere is passed
-      Object.keys(aggregatedDataByMatiere).forEach(matiere => {
-        this.drawRadarCharts(matiere);
-      });
-    }
-  };
 
 
-  // Method to handle row updates
-  handleRowUpdate = (index, fieldName, value) => {
-    const updatedParsedData = [...this.state.parsedData];
-    updatedParsedData[index] = {
-      ...updatedParsedData[index],
-      [fieldName]: value
-    };
-    this.setState({ parsedData: updatedParsedData });
-  };
-
-  
-
-  componentWillUnmount() {
-    this._isMounted = false; // Corrected line
-    const { chartInstances } = this.state;
-
-    // Destroy all chart instances when the component is unmounted
-    Object.keys(chartInstances).forEach(matiere => {
-      if (chartInstances[matiere]) {
-        chartInstances[matiere].destroy();
-      }
-    });
-  }
 
 
   componentDidMount() {
@@ -454,114 +374,121 @@ class App extends React.Component {
               </div>
             } />
 
-                < Route path="/config" element={
-                  < div className="tab-content mt-3" >
-                    <Config config={config} setConfig={this.setConfig} defaultConfig={defaultConfig} />
-                  </div >
-                } />
-                < Route path="/initscore" element={
-                  < div className="tab-content mt-3" >
-                    <div className="form-group shadow-section scrolling-section">
-                      <h2 className="section-title">Enter your data :</h2>
-                      <label htmlFor="dataInput">
-                        Copier les données ici (format: Temps;Description;Resultat;Observation;Points;Max_Point;Categorie;Type;ItemId;Vide;):
-                      </label>
-                      <textarea
-                        className="form-control"
-                        id="dataInput"
-                        rows="5"
-                        value={inputData}
-                        onChange={this.handleInputChange}
-                      ></textarea>
-                    </div>
-                  </div >
-                } />
-                < Route path="/score" element={ 
-                  < div className="tab-content mt-3" > 
-                      <ScoreEleve parsedData={parsedData} editMode={true} handleUpdate={this.handleRowUpdate} />
+            < Route path="/config" element={
+              < div className="tab-content mt-3" >
+                <Config config={config} setConfig={this.setConfig} defaultConfig={defaultConfig} />
+              </div >
+            } />
+            < Route path="/initscore" element={
+              < div className="tab-content mt-3" >
+                <div className="form-group shadow-section scrolling-section">
+                  <h2 className="section-title">Enter your data :</h2>
+                  <label htmlFor="dataInput">
+                    Copier les données ici (format: Temps;Description;Resultat;Observation;Points;Max_Point;Categorie;Type;ItemId;Vide;):
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="dataInput"
+                    rows="5"
+                    value={inputData}
+                    onChange={this.handleInputChange}
+                  ></textarea>
+                </div>
+              </div >
+            } />
+            < Route path="/score" element={
+              < div className="tab-content mt-3" >
+                <ScoreEleve parsedData={parsedData} editMode={true} handleUpdate={this.handleRowUpdate} />
+              </div>
+            } />
+            < Route path="/rejected" element={
+              < div className="tab-content mt-3" >
+                <div className="form-group shadow-section">
+                  <h2 className="section-title">Invalid Data</h2>
+                  <div className="invalid-data">
+                    {invalidData.length === 0 ? (
+                      <p>No invalid data found.</p>
+                    ) : (
+                      <ul>
+                        {invalidData.map((row, index) => (
+                          <li key={index}>{row}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                </div>
+              </div >
+            } />
+            < Route path="/sumup" element={
+              < div className="tab-content mt-3" >
+                <div className="tab-pane fade show active">
+                  <SummaryScore aggregatedDataByMatiere={aggregatedDataByMatiere} />
+                </div>
+              </div >
+            } />
+
+            <Route path="/pdf" element={
+                <div>
+                  <button className="btn btn-primary" onClick={this.handlePrintPDF}>Impression PDF</button>
+                  <div id="printable-section-1" className="print-container">
+                  <PrintHeader key={config.timestamp} config={config} />
+                  <div className="print-banner">
+ 
+
+                    <div id="print-banner-col-1" className="print-banner-col">
+                      <div className="print-banner-header">Professeur:</div>
+                      <div id="professor-info" className="print-banner-info">
+                        <div>Nom: {this.state.profNom}</div>
+                        <div>Prénom: {this.state.profPrenom}</div> 
+                      </div>
+                    </div>  
+
+
+                    <div id="print-banner-col-2" className="print-banner-col">
+                      <div className="print-banner-header">Élève:</div>
+                      <div id="student-info" className="print-banner-info">
+                        <div>Nom: {this.state.eleveNom}</div>
+                        <div>Prénom: {this.state.elevePrenom}</div>
+                        <div>Niveau: {this.state.eleveNiveau}<div>
+                      </div>
                     </div> 
-                } />
-                < Route path="/rejected" element={
-                  < div className="tab-content mt-3" >
-                    <div className="form-group shadow-section">
-                      <h2 className="section-title">Invalid Data</h2>
-                      <div className="invalid-data">
-                        {invalidData.length === 0 ? (
-                          <p>No invalid data found.</p>
-                        ) : (
-                          <ul>
-                            {invalidData.map((row, index) => (
-                              <li key={index}>{row}</li>
-                            ))}
-                          </ul>
-                        )}
-                      </div>
-                    </div>
-                  </div >
-                } />
-                < Route path="/sumup" element={
-                  < div className="tab-content mt-3" >
-                    <div className="tab-pane fade show active">
-                      <SummaryScore aggregatedDataByMatiere={aggregatedDataByMatiere} />
-                    </div>
-                  </div >
-                } />
-                < Route path="/pdf" element={
-                  < div className="tab-content mt-3" >
-                    <div className="form-group shadow-section">
-                      <button id="print-button" onClick={this.handlePrintPDF}>Impression PDF</button>
-                      <div id="printable-section">
-                        <PrintHeader key={config.timestamp} config={config} />
-                        <div id="info-header-container">
-                          <div id="professor-header">
-                            <h2 className="print-info">Informations Professeur</h2>
-                          </div>
-                          <div id="empty-column-1"></div>
-                          <div id="student-header">
-                            <h2 className="print-info">Informations Élève</h2>
-                          </div>
-                          <div id="empty-column-2"></div>
-                        </div>
-                        <div id="info-container">
-                          <div id="professor-info" className="print-info">
-                            <p>Nom: {this.state.profNom}</p>
-                            <p>Prénom: {this.state.profPrenom}</p>
-                          </div>
-                          <div id="empty-column-3"></div>
-                          <div id="student-info" className="print-info">
-                            <p>Nom: {this.state.eleveNom}</p>
-                            <p>Prénom: {this.state.elevePrenom}</p>
-                            <p>Niveau: {this.state.eleveNiveau}</p>
-                          </div>
-                          <div id="empty-column-4"></div>
-                        </div>
-                        <div id="chart-container">
-                          <h2 className="section-title">Radar Charts by Matiere</h2>
-                          {Object.keys(this.state.aggregatedDataByMatiere).map((matiere, index) => {
-                            const data = this.state.aggregatedDataByMatiere[matiere].map(item => item.avancement);
-                            const labels = this.state.aggregatedDataByMatiere[matiere].map(item => item.groupage);
+                    </div> 
 
-                            return (
-                              <div className="col-6" key={index}>
-                                <h3>{getMatiereDescription(matiere)}</h3>
-                                <RadarChart
-                                  matiere={matiere}
-                                  chartData={{ labels: labels, data: data }}
-                                  onChartReady={(matiere, chartInstance) => {
-                                    console.log(`${matiere} chart is ready`, chartInstance);
-                                  }}
-                                />
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    </div>
-                  </div >
-                } />
+                    </div> 
 
-                <Route path="*" element={<Navigate to="/" />} />
-              </Routes >
+
+                </div>
+                <div className="print-charts">
+                  <h2 className="print-charts-title">Resultats de l'evaluation :</h2>
+                  <div className="print-chart-container">
+                    {Object.keys(this.state.aggregatedDataByMatiere).map((matiere, index) => {
+                      const data = this.state.aggregatedDataByMatiere[matiere].map(item => item.avancement);
+                      const labels = this.state.aggregatedDataByMatiere[matiere].map(item => item.groupage);
+
+                      return (
+                        <div className="print-chart" key={index}>
+                          <h3>{getMatiereDescription(matiere)}</h3>
+                          <RadarChart
+                            matiere={matiere}
+                            chartData={{ labels: labels, data: data }}
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div className="print-footer">
+                  <div className="print-footer-title"><strong>{this.state.config.footerPDFTitre}</strong></div>
+                  <div className="print-footer-message">{this.state.config.footerPDFMessage1}</div>
+                  <div className="print-footer-message">{this.state.config.footerPDFMessage2}</div>
+                </div>
+              </div>
+              </div>
+            } />
+
+
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes >
         </div >
       </Router >
     );

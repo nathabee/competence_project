@@ -3,7 +3,8 @@
 
 const Matieres = {
     'C': "Tests cognitifs",
-    'P': "Tests liés aux problèmes perceptifs et sensoriels"
+    'P': "Tests liés aux problèmes perceptifs et sensoriels",
+    'F': ""
 };
 
 function calculateAvancement(item, resultat) { 
@@ -32,7 +33,7 @@ function calculateAvancement(item, resultat) {
 
 // Fonction pour accéder à la description en fonction de la lettre
 function getMatiereDescription(letter) {
-    return Matieres[letter] || "Matiere non reconnue";
+    return Matieres[letter] || "";
 }
 
  		// utils.js
