@@ -1,28 +1,27 @@
 # urls.py
-from django.urls import path, include 
+from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    EleveViewSet, ResultatViewSet, NiveauViewSet, EtapeViewSet, AnneeViewSet,
-    CatalogueViewSet, ItemViewSet, UserViewSet
+    NiveauViewSet, EtapeViewSet, AnneeViewSet, EleveViewSet, CatalogueViewSet, GroupageDataViewSet,
+    ItemViewSet, ResultatViewSet, ResultatDetailViewSet,MatiereViewSet,ScoreRuleViewSet,ScoreRulePointViewSet
 )
-#from .views import EleveViewSet
 
-# Define the router and register your viewsets
-router = DefaultRouter() 
-
-
- 
-router.register(r'eleves', EleveViewSet)
-router.register(r'resultats', ResultatViewSet)
+# Create a router and register our viewsets with it
+router = DefaultRouter()
 router.register(r'niveaux', NiveauViewSet)
 router.register(r'etapes', EtapeViewSet)
 router.register(r'annees', AnneeViewSet)
+router.register(r'matieres', MatiereViewSet)
+router.register(r'scorerules', ScoreRuleViewSet)
+router.register(r'scorerulepoints', ScoreRulePointViewSet)
+router.register(r'eleves', EleveViewSet)
 router.register(r'catalogues', CatalogueViewSet)
+router.register(r'groupages', GroupageDataViewSet)
 router.register(r'items', ItemViewSet)
-router.register(r'users', UserViewSet)
+router.register(r'resultats', ResultatViewSet)
+router.register(r'resultat-details', ResultatDetailViewSet)
 
-
-# Define the urlpatterns list
+# The API URLs are now determined automatically by the router
 urlpatterns = [
-    path('', include(router.urls)),  # No 'api/' prefix here
-   ]
+    path('', include(router.urls)),
+]

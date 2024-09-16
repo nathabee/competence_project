@@ -12,16 +12,16 @@ class Command(BaseCommand):
     notes = ["Excellent", "Très bien", "Bien", "Assez bien", "Passable", "Insuffisant", "Médiocre", "Très insuffisant", "Satisfaisant", "Admissible"]
 
     def handle(self, *args, **kwargs):
-        # Retrieve professeur IDs
-        professeurs = User.objects.filter(id__range=(14,22))
+        # Retrieve professeur IDs with usernames like 'prof%'
+        professeurs = User.objects.filter(username__startswith='prof')
 
         if not professeurs:
-            self.stdout.write(self.style.ERROR('No professeurs found in the specified range.'))
+            self.stdout.write(self.style.ERROR('No professeurs found with usernames like prof%.'))
             return
 
         # Create 20 Eleve entries
         for i in range(20):
-            classe = 'CP' if i < 18 else 'E1'  # 18 in CP, 2 in C1
+            classe = 'CP' if i < 18 else 'E1'  # 18 in CP, 2 in E1
             eleve = Eleve.objects.create(
                 nom=random.choice(self.last_names),
                 prenom=random.choice(self.first_names),
@@ -36,4 +36,4 @@ class Command(BaseCommand):
             assigned_professeurs = random.sample(list(professeurs), random.randint(1, num_professeurs))
             eleve.professeurs.add(*assigned_professeurs)
 
-        self.stdout.write(self.style.SUCCESS('Successfully populated the Eleve table with test data'))
+        self.stdout.write(self.style.SUCCESS('Successfully populated the Eleve table with test data.'))

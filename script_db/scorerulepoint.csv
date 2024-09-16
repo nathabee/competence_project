@@ -1,0 +1,14 @@
+id,scorerule,resultat,score,description
+1,1,?,0,Rule 1 default:  0 point
+2,2,A,1,Rule 2 : A=1 point
+3,2,NA,0,Rule 2 : NA=0 point
+4,3,NA,0,Rule 3 : NA=0 point
+5,3,ECA,1,Rule 3 : ECA=1 point
+6,3,A,2,Rule 3 : A=2 points
+7,4,Oui,1,Rule 4 : Oui=1 point
+8,4,Non,0,Rule 4 : Non=0 point
+9,5,Non,1,Rule 5 : Non=1 point
+10,5,Oui,0,Rule 5 : Oui=0 point
+11,6,Non,0,Rule 6 : Moins de 10 =0 point
+12,6,Non,1,Rule 6 : de 10 a 20=1 point
+13,6,Oui,2,Rule 6 : plus de 20=2 points

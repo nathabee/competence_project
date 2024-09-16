@@ -1,39 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .config_utils import ConfigCache
+ 
 
-# Table: Eleve (Student)
-class Eleve(models.Model):
-    nom = models.CharField(max_length=100)  # Last name
-    prenom = models.CharField(max_length=100)  # First name
-    classe = models.CharField(max_length=10)  # Class level (CP, CE1, etc.)
-    textnote1 = models.TextField(blank=True, null=True)  # Optional note 1
-    textnote2 = models.TextField(blank=True, null=True)  # Optional note 2
-    textnote3 = models.TextField(blank=True, null=True)  # Optional note 3
-    professeurs = models.ManyToManyField(
-        User, related_name='eleves', blank=True
-    )  # Many-to-Many relation with Professeurs
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    schoolName = models.CharField(max_length=255, blank=True, null=True)
 
     def __str__(self):
-        return f"{self.nom} {self.prenom} - {self.classe}"
-
-# Table: Resultat (Evaluation Results)
-class Resultat(models.Model):
-    eleve = models.ForeignKey(Eleve, on_delete=models.CASCADE)  # Link to Eleve
-    catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)  # Link to Catalogue
-    item = models.ForeignKey('Item', on_delete=models.CASCADE)  # Link to Item
-    score = models.IntegerField()  # Actual score obtained
-    seuil1_percent = models.FloatField(default=0.0)  # Percent of Seuil 1 achieved
-    seuil2_percent = models.FloatField(default=0.0)  # Percent of Seuil 2 achieved
-    seuil3_percent = models.FloatField(default=0.0)  #   threshold 3 percent
-    professeur = models.ForeignKey(
-        User,
-        on_delete=models.SET_DEFAULT,
-        default=ConfigCache.get('PROF_ID_DEFAULT', None)  # Use cached default value
-    )
-
-    def __str__(self):
-        return f"Result for {self.eleve} - {self.item}"
+        return f"{self.user.username} - {self.schoolName}"
+ 
+    
 
 # Table: Niveau (Class Level & Evaluation Stage)
 class Niveau(models.Model):
@@ -43,11 +20,10 @@ class Niveau(models.Model):
         ('E2', 'E2'),
         ('M1', 'M1'),
         ('M2', 'M2'),
-        ('?','?')
+        ('?', '?')
     ]
-
-    niveau = models.CharField(max_length=10, choices=NIVEAU_CHOICES,default='?')  # Class level
-    description = models.CharField(max_length=30,blank=True, null=True)  # Description
+    niveau = models.CharField(max_length=10, choices=NIVEAU_CHOICES, default='?')  # Class level
+    description = models.CharField(max_length=30, blank=True, null=True)  # Description
 
     def __str__(self):
         return f"{self.niveau} - {self.description}"
@@ -60,8 +36,8 @@ class Etape(models.Model):
         ('FINAL', 'FINAL'),
         ('?', '?'),
     ]
-    etape = models.CharField(max_length=10, choices=ETAPE_CHOICES,default='?')  # Etape
-    description = models.CharField(max_length=30,blank=True, null=True)  # Description
+    etape = models.CharField(max_length=10, choices=ETAPE_CHOICES, default='?')  # Etape
+    description = models.CharField(max_length=30, blank=True, null=True)  # Description
 
     def __str__(self):
         return f"{self.etape} - {self.description}"
@@ -74,31 +50,128 @@ class Annee(models.Model):
     def __str__(self):
         return f"{self.annee} - {self.description}"
 
+
+
+# Table: Matiere
+class Matiere(models.Model):
+    matiere = models.CharField(max_length=1)  # F Francais, M Mathematique
+    description = models.CharField(max_length=30, blank=True, null=True)  # Description
+
+    def __str__(self):
+        return f"{self.matiere} - {self.description}"
+
+ 
+
+# Table: ScoreRule 
+
+class ScoreRule(models.Model): 
+    description = models.CharField(max_length=50, blank=True, null=True)  # Explaination
+
+    def __str__(self):
+        return f"{self.id} - {self.description}"
+
+ # Table: ScoreRule 
+
+class ScoreRulePoint(models.Model):
+    resultat = models.CharField(max_length=20)  # A/ NA / 
+    score = models.IntegerField()  # score that is associated to a resultat
+    description = models.CharField(max_length=50, blank=True, null=True)  # Explaination
+
+    def __str__(self):
+        return f"{self.resultat} -{self.score} - {self.description}"
+
+ 
+
+
+
+# Table: Eleve (Student)
+class Eleve(models.Model):
+    nom = models.CharField(max_length=100)
+    prenom = models.CharField(max_length=100)
+    classe = models.CharField(max_length=10)
+    textnote1 = models.TextField(blank=True, null=True)
+    textnote2 = models.TextField(blank=True, null=True)
+    textnote3 = models.TextField(blank=True, null=True)
+    professeurs = models.ManyToManyField(User, related_name='eleves', blank=True)
+
+    def __str__(self):
+        return f"{self.nom} {self.prenom} - {self.classe}"
+
+
+
 # Table: Catalogue (Evaluation Catalog)
 class Catalogue(models.Model):
-    niveau = models.ForeignKey(Niveau, on_delete=models.CASCADE,default=1)  # Link to Niveau
-    etape = models.ForeignKey(Etape, on_delete=models.CASCADE,default=1)  # Link to Etape
-    annee = models.ForeignKey(Annee, on_delete=models.CASCADE,default=1)  # Link to Annee
+    niveau = models.ForeignKey('Niveau', on_delete=models.CASCADE, default=1)
+    etape = models.ForeignKey('Etape', on_delete=models.CASCADE, default=1)
+    annee = models.ForeignKey('Annee', on_delete=models.CASCADE, default=1)
+    matiere = models.ForeignKey('Matiere', on_delete=models.CASCADE, default=1)
 
-    MATIERE_CHOICES = [
-        ('MATH', 'MATH'),
-        ('FRAN', 'FRAN'),
-    ]
-    matiere = models.CharField(max_length=4, choices=MATIERE_CHOICES,default='FRAN')  # Subject
-    description = models.TextField(blank=True, null=True)  # Description of the catalog
+ 
+    description = models.TextField(blank=True, null=True)
 
     def __str__(self):
         return f"Catalogue for {self.description}"
 
-# Table: Item (Evaluation Item)
-class Item(models.Model):
-    catalogue = models.ForeignKey(Catalogue, on_delete=models.CASCADE)  # Link to Catalogue
-    position = models.IntegerField( )  # Position in the evaluation
-    description = models.TextField(blank=True, null=True)  # Description of the item
-    link = models.TextField(blank=True, null=True)  # HTTP link (now nullable)
-    total = models.IntegerField()  # Total score for this item
+# Table: GroupageData 
+class GroupageData(models.Model):
+    catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)  # Link to Catalogue
+    position = models.IntegerField()  # Position in the evaluation
+    desc_groupage = models.CharField(max_length=100)  # Grouping name (e.g., CATEGORISATION)  in combo box 
+    label_groupage = models.CharField(max_length=100)  # Label for groupage in graph to be displayed
+    link = models.CharField(max_length=500)  # http adresse to open a doc about these test set
+    max_point = models.IntegerField()  # Maximum points available for the group
     seuil1 = models.IntegerField()  # Threshold 1 score
     seuil2 = models.IntegerField()  # Threshold 2 score
+    max_item = models.IntegerField()  # Maximum items in the group
 
     def __str__(self):
-        return f"Item {self.position} - {self.description}"
+        return f"Groupage {self.groupage} - Position {self.position}"
+
+ 
+# Table: Item (Details for each test in a GroupageData)
+class Item(models.Model):
+    groupagedata = models.ForeignKey('GroupageData', on_delete=models.CASCADE )  # Link to GroupageData
+    temps = models.CharField(max_length=100)  # Time (e.g., Temps 1)
+    description = models.CharField(max_length=255)  # Test description (e.g., identifying a color)
+    observation = models.TextField(blank=True, null=True)  # Observations 
+    scorerule = models.ForeignKey('ScoreRule', on_delete=models.CASCADE, default=1)
+    max_score = models.FloatField()  # Max score possible 
+    itempos = models.IntegerField()  # Identifier for the test within the item
+    link = models.CharField(max_length=500)  # http adresse to open a doc about these test set
+
+    def __str__(self):
+        return f"Test {self.groupage} -  {self.temps} - {self.description}"
+
+# Table: Resultat (Evaluation Results)
+class Resultat(models.Model):
+    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)
+    groupage = models.ForeignKey('GroupageData', on_delete=models.CASCADE)
+    score = models.IntegerField()
+    resultat = models.CharField(max_length=20, blank=True, null=True)  # Result (e.g., NA)
+    seuil1_percent = models.FloatField(default=0.0)
+    seuil2_percent = models.FloatField(default=0.0)
+    seuil3_percent = models.FloatField(default=0.0)
+    professeur = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        default=ConfigCache.get('PROF_ID_DEFAULT', None)
+    )
+
+    def __str__(self):
+        return f"Result for {self.eleve} - {self.groupage}"
+
+# Table: ResultatDetail (Evaluation Results per TestDetail)
+class ResultatDetail(models.Model):
+    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)
+    testdetail = models.ForeignKey('Item', on_delete=models.CASCADE) 
+    resultat = models.CharField(max_length=50, blank=True, null=True)  # Result (e.g., NA)
+    observation = models.TextField(blank=True, null=True)  # Observations
+    score = models.FloatField()  # Score for this test
+    professeur = models.ForeignKey(
+        User,
+        on_delete=models.SET_DEFAULT,
+        default=ConfigCache.get('PROF_ID_DEFAULT', None)
+    )
+
+    def __str__(self):
+        return f"Result for {self.eleve} - {self.testdetail}"
