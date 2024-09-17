@@ -42,5 +42,8 @@ Thumbs.db
 setme
 
 
+# Swaggerdoc  is used to make REST API spec for doc
+#  git clone https://github.com/swagger-api/swagger-ui.git
+swagger-ui/
  
 
