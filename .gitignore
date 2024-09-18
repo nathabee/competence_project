@@ -43,7 +43,10 @@ setme
 
 
 # Swaggerdoc  is used to make REST API spec for doc
+# 
+# curl -o swagger.json http://127.0.0.1:8000/swagger/?format=openapi
 #  git clone https://github.com/swagger-api/swagger-ui.git
+# 
 swagger-ui/
  
 

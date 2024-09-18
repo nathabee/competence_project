@@ -11,6 +11,9 @@ from django.urls import path, re_path
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+
 
 
 # Define the schema view for drf-yasg
@@ -28,8 +31,10 @@ schema_view = get_schema_view(
 )
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('api/', include('competence.urls')),    
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('admin/', admin.site.urls),   
+    path('api/', include('competence.urls')),  
 ]
 
 # Serve Swagger UI only in DEBUG mode

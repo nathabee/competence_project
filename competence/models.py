@@ -2,13 +2,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from .config_utils import ConfigCache
  
+ 
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    schoolName = models.CharField(max_length=255, blank=True, null=True)
+#class Profile(models.Model):
+#    user = models.OneToOneField(User, on_delete=models.CASCADE)
+#    schoolName = models.CharField(max_length=255, blank=True, null=True)
 
-    def __str__(self):
-        return f"{self.user.username} - {self.schoolName}"
+#    def __str__(self):
+#        return f"{self.user.username} - {self.schoolName}"
  
     
 
@@ -62,26 +63,24 @@ class Matiere(models.Model):
 
  
 
-# Table: ScoreRule 
-
-class ScoreRule(models.Model): 
-    description = models.CharField(max_length=50, blank=True, null=True)  # Explaination
-
-    def __str__(self):
-        return f"{self.id} - {self.description}"
-
- # Table: ScoreRule 
-
-class ScoreRulePoint(models.Model):
-    resultat = models.CharField(max_length=20)  # A/ NA / 
-    score = models.IntegerField()  # score that is associated to a resultat
-    description = models.CharField(max_length=50, blank=True, null=True)  # Explaination
+# Table: ScoreRule
+class ScoreRule(models.Model):
+    description = models.CharField(max_length=50, blank=True, null=True)  # Explanation
 
     def __str__(self):
-        return f"{self.resultat} -{self.score} - {self.description}"
+        return f"Rule:{self.id} - {self.description}"
 
  
 
+# Table: ScoreRulePoint
+class ScoreRulePoint(models.Model):
+    score_rule = models.ForeignKey('ScoreRule', related_name='points', on_delete=models.CASCADE, default=1)  # Assuming you want to use ScoreRule with ID 1 as default
+    resultat = models.CharField(max_length=20)  # A/NA
+    score = models.IntegerField()  # Score that is associated with a resultat
+    description = models.CharField(max_length=50, blank=True, null=True)  # Explanation
+
+    def __str__(self):
+        return f"Rule:{self.score_rule.id} - {self.resultat} - {self.score} - {self.description}"
 
 
 # Table: Eleve (Student)
@@ -125,7 +124,7 @@ class GroupageData(models.Model):
     max_item = models.IntegerField()  # Maximum items in the group
 
     def __str__(self):
-        return f"Groupage {self.groupage} - Position {self.position}"
+        return f"Groupage {self.desc_groupage} - Position {self.position}"
 
  
 # Table: Item (Details for each test in a GroupageData)
@@ -140,7 +139,7 @@ class Item(models.Model):
     link = models.CharField(max_length=500)  # http adresse to open a doc about these test set
 
     def __str__(self):
-        return f"Test {self.groupage} -  {self.temps} - {self.description}"
+        return f"Test {self.groupagedata} -  {self.temps} - {self.description}"
 
 # Table: Resultat (Evaluation Results)
 class Resultat(models.Model):

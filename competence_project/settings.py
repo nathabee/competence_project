@@ -1,5 +1,9 @@
 from pathlib import Path
 from decouple import config
+from datetime import timedelta
+#import os
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -13,9 +17,13 @@ def get_env_variable(var_name, default=None):
 
 # Application settings
 SECRET_KEY = get_env_variable('DJANGO_SECRET_KEY', default='your_default_secret_key')
-DEBUG = get_env_variable('DEBUG', default='False') == 'True'
-ALLOWED_HOSTS = get_env_variable('ALLOWED_HOSTS', default='localhost').split(',')
-DJANGO_SERVER_IP = get_env_variable('DJANGO_SERVER_IP', default='127.0.0.1')
+DEBUG = get_env_variable('DEBUG', default='False') == 'True' 
+JWT_SECRET_KEY = get_env_variable('JWT_SECRET_KEY', default='your_default_secret_key')
+  
+# Fetch CORS_ALLOWED_ORIGINS from the environment, split by comma
+CORS_ALLOWED_ORIGINS = get_env_variable('CORS_ALLOWED_ORIGINS', default='http://localhost:3000').split(',')
+
+ 
 
 # Database configuration
 DATABASES = {
@@ -49,7 +57,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',  
+    "corsheaders.middleware.CorsMiddleware",  
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -59,9 +67,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CORS_ALLOWED_ORIGINS = [
-    get_env_variable('DJANGO_SERVER_IP', default='http://localhost:3000'), 
-]
+ 
 
 
 ROOT_URLCONF = "competence_project.urls"
@@ -109,3 +115,20 @@ USE_TZ = True
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Add on for autorisation and authentification
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+ 
+
+SIMPLE_JWT = {
+    'SIGNING_KEY': JWT_SECRET_KEY,
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+}

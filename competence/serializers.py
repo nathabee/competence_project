@@ -7,7 +7,7 @@ from .models import (
 
 # Serializer for User (Professeur) 
 class UserSerializer(serializers.ModelSerializer):
-    schoolName = serializers.CharField(source='profile.schoolName', read_only=True)
+    #schoolName = serializers.CharField(source='profile.schoolName', read_only=True)
 
     class Meta:
         model = User
@@ -97,14 +97,35 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 # Serializer for Resultat
+ 
+ 
+
 class ResultatSerializer(serializers.ModelSerializer):
-    eleve = EleveSerializer(read_only=True)
-    groupage = GroupageDataSerializer(read_only=True)
+    eleve_nom = serializers.CharField(write_only=True)  # Input by name
+    groupage_label = serializers.CharField(write_only=True)  # Input by label
+    eleve = EleveSerializer(read_only=True)  # Read-only
+    groupage = GroupageDataSerializer(read_only=True)  # Read-only
     professeur = UserSerializer(read_only=True)
+
 
     class Meta:
         model = Resultat
-        fields = ['id', 'eleve', 'groupage', 'score', 'resultat', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'professeur']
+        fields = ['id', 'eleve', 'eleve_nom', 'groupage', 'groupage_label', 'score', 'resultat', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'professeur']
+
+    def create(self, validated_data):
+        eleve_name = validated_data.pop('eleve_nom')
+        groupage_label = validated_data.pop('groupage_label')
+        
+        # Retrieve related objects based on provided names
+        eleve = Eleve.objects.get(nom=eleve_name)
+        groupage = GroupageData.objects.get(label_groupage=groupage_label)
+        
+        # Create the Resultat object
+        return Resultat.objects.create(
+            eleve=eleve,
+            groupage=groupage,
+            **validated_data
+        )
 
 
 # Serializer for ResultatDetail
