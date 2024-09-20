@@ -5,6 +5,9 @@ from datetime import timedelta
 
 
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -23,6 +26,8 @@ JWT_SECRET_KEY = get_env_variable('JWT_SECRET_KEY', default='your_default_secret
 # Fetch CORS_ALLOWED_ORIGINS from the environment, split by comma
 CORS_ALLOWED_ORIGINS = get_env_variable('CORS_ALLOWED_ORIGINS', default='http://localhost:3000').split(',')
 
+ 
+ALLOWED_HOSTS = get_env_variable('ALLOWED_HOSTS', default="localhost,127.0.0.1,nathabee.de,159.69.0.127").split(',')
  
 
 # Database configuration
@@ -132,3 +137,10 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
 }
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://nathabee.de',
+    'http://127.0.0.1:8080',  # Add this if you're testing locally
+    'http://nathabee.de:3000',  # Add this if you're testing locally
+]
+

@@ -9,8 +9,11 @@ export default function HomePage() {
 
   useEffect(() => {
     // Example: redirect or other side effects
-    router.push('/dashboard');
+    router.push('/about');
   }, [router]);
 
   return <div>Welcome to Competence App!</div>;
 }
+
+
+

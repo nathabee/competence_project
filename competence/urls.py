@@ -5,6 +5,8 @@ from .views import (
     NiveauViewSet, EtapeViewSet, AnneeViewSet, EleveViewSet, CatalogueViewSet, GroupageDataViewSet,
     ItemViewSet, ResultatViewSet, ResultatDetailViewSet,MatiereViewSet,ScoreRuleViewSet,ScoreRulePointViewSet
 )
+from .views import api_overview
+
 
 # Create a router and register our viewsets with it
 router = DefaultRouter()
@@ -23,5 +25,6 @@ router.register(r'resultat-details', ResultatDetailViewSet)
 
 # The API URLs are now determined automatically by the router
 urlpatterns = [
+    path('overview/', api_overview, name='api-overview'),  
     path('', include(router.urls)),
 ]

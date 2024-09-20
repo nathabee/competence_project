@@ -17,6 +17,25 @@ from .serializers import (
     ScoreRulePointSerializer
 )
  
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+
+@api_view(['GET'])
+def api_overview(request):
+    return Response({
+        "niveaux": request.build_absolute_uri('/api/niveaux/'),
+        "etapes": request.build_absolute_uri('/api/etapes/'),
+        "annees": request.build_absolute_uri('/api/annees/'),
+        "matieres": request.build_absolute_uri('/api/matieres/'),
+        "scorerules": request.build_absolute_uri('/api/scorerules/'),
+        "scorerulepoints": request.build_absolute_uri('/api/scorerulepoints/'),
+        "eleves": request.build_absolute_uri('/api/eleves/'),
+        "catalogues": request.build_absolute_uri('/api/catalogues/'),
+        "groupages": request.build_absolute_uri('/api/groupages/'),
+        "items": request.build_absolute_uri('/api/items/'),
+        "resultats": request.build_absolute_uri('/api/resultats/'),
+        "resultat-details": request.build_absolute_uri('/api/resultat-details/'),
+    })
 
 
 def custom_404(request, exception):

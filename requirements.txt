@@ -5,4 +5,6 @@ drf_yasg
 python-decouple
 setuptools
 django-cors-headers
+djangorestframework-simplejwt
+gunicorn
 
