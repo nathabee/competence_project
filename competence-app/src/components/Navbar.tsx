@@ -1,60 +1,90 @@
-'use client'; // Mark this as a Client Component
+'use client';
 
+ 
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Navbar, Nav, Container } from 'react-bootstrap';
+import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
 
-const Navbar = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+export default function CustomNavbar() {
+  const { userRoles, isLoggedIn, logout } = useAuth(); // Now getting 'logout' directly from context
+  const [isSticky, setIsSticky] = useState(false);
   const router = useRouter();
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation'; // Set basePath
 
   useEffect(() => {
-    const token = localStorage.getItem('token'); // Assuming token is stored in localStorage
-    if (token) {
-      setIsLoggedIn(true);
-    }
+    const handleScroll = () => {
+      setIsSticky(window.scrollY > 100);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, []);
 
-  const handleLogout = async () => {
-    localStorage.removeItem('token');
-    setIsLoggedIn(false);
-    router.push('/'); // Redirect to home after logging out
+  const handleLogout = () => {
+    logout(); // Use logout function from AuthContext
+    router.push('/');
   };
 
   return (
-    <nav className="navbar navbar-expand-lg" style={{ backgroundColor: 'var(--custom-blue)' }}>
-      <div className="container">
-        <div className="row w-100">
-          <div className="col-sm-4">
-            <Link className="navbar-brand" href="/">Competence App</Link>
-          </div>
-          <div className="col-sm-8">
-            <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span className="navbar-toggler-icon"></span>
-            </button>
-            <div className="collapse navbar-collapse" id="navbarNav">
-              <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-                <li className="nav-item">
-                  <Link className="nav-link" href="/">Home</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" href="/admin/login">Administration</Link>
-                </li>
-                <li className="nav-item">
-                  <Link className="nav-link" href="/dashboard">Evaluation</Link>
-                </li>
-                {isLoggedIn && (
-                  <li className="nav-item">
-                    <button className="btn btn-outline-light nav-link" onClick={handleLogout}>Logout</button>
-                  </li>
+    <Navbar
+      expand="lg"
+      fixed="top"
+      className={`navbar ${isSticky ? 'sticky-navbar navbar-large' : 'navbar-small'}`}
+    >
+      <Container>
+        <Navbar.Brand as={Link} href="/">
+          Competence App
+        </Navbar.Brand>
+        <Navbar.Toggle aria-controls="navbar-nav" />
+        <Navbar.Collapse id="navbar-nav">
+          <Nav className="me-auto">
+            {isLoggedIn ? (
+              <>
+                {userRoles.includes('admin') && (
+                  <Nav.Link href={process.env.NEXT_PUBLIC_ADMIN_URL}>
+                    Administration
+                  </Nav.Link>
                 )}
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </nav>
+                {userRoles.includes('teacher') && (
+                  <>
+                    <Nav.Link href={`${basePath}/configuration`}>Configuration</Nav.Link>
+                    <Nav.Link href={`${basePath}/test`}>Test</Nav.Link>
+                    <Nav.Link href={`${basePath}/resume`}>Resume</Nav.Link>
+                    <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
+                  </>
+                )}
+                {userRoles.includes('statistic') && (
+                  <Nav.Link href={`${basePath}/statistiques`}>
+                    Statistiques
+                    <Nav className="dropdown-menu">
+                      <Nav.Link href={`${basePath}/statistiques/configuration`}>
+                        Configuration Statistiques
+                      </Nav.Link>
+                      <Nav.Link href={`${basePath}/statistiques/pdf`}>
+                        PDF Statistiques
+                      </Nav.Link>
+                    </Nav>
+                  </Nav.Link>
+                )}
+              </>
+            ) : (
+              <Nav.Link href={`${basePath}/login`}>Login</Nav.Link>
+            )}
+          </Nav>
+          {isLoggedIn && (
+            <Nav className="ml-auto">
+              <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+            </Nav>
+          )}
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
-};
-
-export default Navbar;
+}
+ 

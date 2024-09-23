@@ -1,3 +1,28 @@
 :root {
   --custom-blue: #47cab4; /* Customize this with your preferred blue shade */
 }
+
+
+/* Sticky Navbar Size Changes */
+.navbar-small {
+  background-color: #00ffbf;
+  transition: all 0.3s ease;
+  padding: 0.5rem 1rem;
+}
+
+.sticky-navbar {
+  background-color: #61daa1;
+  padding: 1.5rem 1rem;
+}
+
+.navbar-large {
+  transition: all 0.3s ease;
+}
+
+.navbar-large .navbar-brand {
+  font-size: 1.5rem;
+}
+
+.navbar-small .navbar-brand {
+  font-size: 1rem;
+}

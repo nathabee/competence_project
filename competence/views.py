@@ -46,6 +46,7 @@ def custom_404(request, exception):
 
 from rest_framework import viewsets
 from .permissions import IsTeacher, IsAdmin, IsAnalytics
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import (
     Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
     Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint
@@ -53,8 +54,28 @@ from .models import (
 from .serializers import (
     NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer,
     CatalogueSerializer, GroupageDataSerializer, ItemSerializer, ResultatSerializer,
-    ResultatDetailSerializer, UserSerializer, ScoreRuleSerializer, ScoreRulePointSerializer
+    ResultatDetailSerializer, UserSerializer, ScoreRuleSerializer, ScoreRulePointSerializer 
 )
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+ 
+ 
+class UserRolesView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user_groups = request.user.groups.all()  # Get all groups for the user
+        roles = [group.name for group in user_groups]  # Collect group names as roles
+        return Response({'roles': roles})
+
+
+
+class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated, IsAdminUser]
 
 
 class EleveViewSet(viewsets.ModelViewSet):
@@ -70,11 +91,6 @@ class EleveViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
  
-
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
 
 class NiveauViewSet(viewsets.ModelViewSet):
     queryset = Niveau.objects.all()

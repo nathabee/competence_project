@@ -1,12 +1,10 @@
-# urls.py
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
     NiveauViewSet, EtapeViewSet, AnneeViewSet, EleveViewSet, CatalogueViewSet, GroupageDataViewSet,
-    ItemViewSet, ResultatViewSet, ResultatDetailViewSet,MatiereViewSet,ScoreRuleViewSet,ScoreRulePointViewSet
+    ItemViewSet, ResultatViewSet, ResultatDetailViewSet, MatiereViewSet, ScoreRuleViewSet, ScoreRulePointViewSet,
+    UserViewSet, UserRolesView, api_overview
 )
-from .views import api_overview
-
 
 # Create a router and register our viewsets with it
 router = DefaultRouter()
@@ -22,9 +20,11 @@ router.register(r'groupages', GroupageDataViewSet)
 router.register(r'items', ItemViewSet)
 router.register(r'resultats', ResultatViewSet)
 router.register(r'resultat-details', ResultatDetailViewSet)
+router.register(r'users', UserViewSet)  # Register UserViewSet with the router
 
 # The API URLs are now determined automatically by the router
 urlpatterns = [
-    path('overview/', api_overview, name='api-overview'),  
-    path('', include(router.urls)),
+    path('overview/', api_overview, name='api-overview'),
+    path('user/roles/', UserRolesView.as_view(), name='user-roles'),  # Keep this for roles retrieval
+    path('', include(router.urls)), 
 ]

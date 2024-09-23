@@ -1,17 +1,22 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from .models import (
     Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
     Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint
 )
 
-# Serializer for User (Professeur) 
+
+ 
 class UserSerializer(serializers.ModelSerializer):
-    #schoolName = serializers.CharField(source='profile.schoolName', read_only=True)
+    roles = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'schoolName']
+        fields = ['id', 'username', 'first_name', 'last_name', 'roles']
+
+    def get_roles(self, obj):
+        roles = [group.name for group in obj.groups.all()]  # Get all group names for the user
+        return roles
 
 
 # Serializer for Eleve (Student)

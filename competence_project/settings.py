@@ -3,9 +3,10 @@ from decouple import config
 from datetime import timedelta
 #import os
 
-
-
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = False
+
+ 
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -27,7 +28,7 @@ JWT_SECRET_KEY = get_env_variable('JWT_SECRET_KEY', default='your_default_secret
 CORS_ALLOWED_ORIGINS = get_env_variable('CORS_ALLOWED_ORIGINS', default='http://localhost:3000').split(',')
 
  
-ALLOWED_HOSTS = get_env_variable('ALLOWED_HOSTS', default="localhost,127.0.0.1,nathabee.de,159.69.0.127").split(',')
+ALLOWED_HOSTS = get_env_variable('ALLOWED_HOSTS', default="192.168.178.71,localhost,127.0.0.1,nathabee.de,159.69.0.127").split(',')
  
 
 # Database configuration
@@ -140,7 +141,7 @@ SIMPLE_JWT = {
 
 CSRF_TRUSTED_ORIGINS = [
     'https://nathabee.de',
-    'http://127.0.0.1:8080',  # Add this if you're testing locally
+    'https://localhost:8080',  # Add this if you're testing locally
     'http://nathabee.de:3000',  # Add this if you're testing locally
 ]
 
