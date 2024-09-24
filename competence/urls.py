@@ -25,6 +25,8 @@ router.register(r'users', UserViewSet)  # Register UserViewSet with the router
 # The API URLs are now determined automatically by the router
 urlpatterns = [
     path('overview/', api_overview, name='api-overview'),
-    path('user/roles/', UserRolesView.as_view(), name='user-roles'),  # Keep this for roles retrieval
+    path('user/roles/', UserRolesView.as_view(), name='user-roles'),  # Keep this for roles retrieval 
+    #path('users/me/', UserViewSet.as_view({'get': 'me'}), name='user-me'),   # Authenticated users
+
     path('', include(router.urls)), 
 ]

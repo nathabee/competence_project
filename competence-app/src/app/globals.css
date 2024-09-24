@@ -2,6 +2,9 @@
   --custom-blue: #47cab4; /* Customize this with your preferred blue shade */
 }
 
+.selected-row td {
+  background-color: var(--custom-blue) !important;
+}
 
 /* Sticky Navbar Size Changes */
 .navbar-small { 

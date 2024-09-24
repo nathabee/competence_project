@@ -11,6 +11,7 @@ import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
 export default function CustomNavbar() {
   const { userRoles, isLoggedIn, logout } = useAuth(); // Now getting 'logout' directly from context
   const [isSticky, setIsSticky] = useState(false);
+  const [isHovered, setIsHovered] = useState(false); // Track hover state
   const router = useRouter();
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation'; // Set basePath
 
@@ -39,7 +40,7 @@ export default function CustomNavbar() {
     >
       <Container>
         <Navbar.Brand as={Link} href="/">
-          Competence App
+          Home
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />
         <Navbar.Collapse id="navbar-nav">
@@ -59,19 +60,29 @@ export default function CustomNavbar() {
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
                   </>
                 )}
-                {userRoles.includes('analytics') && (
-                  <Nav.Link href={`${basePath}/statistiques`}>
-                    Statistiques
-                    <Nav className="dropdown-menu">
-                      <Nav.Link href={`${basePath}/statistiques/configuration`}>
-                        Configuration Statistiques
+                {userRoles.includes('analytics') && (                  <>
+                    {/* Mega menu on hover */}
+                    <div
+                      className="nav-item dropdown"
+                      onMouseEnter={() => setIsHovered(true)}
+                      onMouseLeave={() => setIsHovered(false)}
+                    >
+                      <Nav.Link href={`${basePath}/statistiques`}>
+                      statistiques Menu
                       </Nav.Link>
-                      <Nav.Link href={`${basePath}/statistiques/pdf`}>
-                        PDF Statistiques
-                      </Nav.Link>
-                    </Nav>
-                  </Nav.Link>
-                )}
+                      {isHovered && (
+                        <div className="mega-menu">
+                        <Nav.Link href={`${basePath}/statistiques/configuration`}>
+                          Configuration Statistiques
+                        </Nav.Link>
+                        <Nav.Link href={`${basePath}/statistiques/pdf`}>
+                          PDF Statistiques
+                        </Nav.Link>
+                        </div>
+                      )}
+                    </div>
+                  </>
+                )} 
               </>
             ) : (
               <Nav.Link href={`${basePath}/login`}>Login</Nav.Link>

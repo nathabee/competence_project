@@ -1,145 +1,88 @@
-'use client'; // Mark this as a Client Component
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+'use client';
 
-const Dashboard = () => {
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useRouter } from 'next/navigation';
+import TeacherInfo from '@/components/Teacher';
+import CatalogueSelection from '@/components/CatalogueSelection';
+import EleveList from '@/components/EleveList';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import { Eleve } from '@/types/eleve';
+import { useAuth } from '@/context/AuthContext';
+import { useTestContext } from '@/context/TestContext';
+
+const Dashboard: React.FC = () => {
   const router = useRouter();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation';
+  const { activeCatalogue } = useTestContext(); 
+  const { user, isLoggedIn } = useAuth();
+  const [catalogue, setCatalogue] = useState([]);
+  const [eleves, setEleves] = useState<Eleve[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    const fetchData = async () => {
+      const token = document.cookie.split('authToken=')[1];
+    
+      if (!token) {
+        router.push(`/login`);
+        return;
+      }
+    
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+        // Fetch Catalogue
+        const catalogueResponse = await axios.get(`${apiUrl}/catalogues/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCatalogue(catalogueResponse.data);
 
-    const token = document.cookie.split('authToken=')[1];
-    if (!token) {
-      router.push(`/login`);
-    }
-  }, [router, basePath]);
+        // Fetch Eleves
+        const elevesResponse = await axios.get(`${apiUrl}/eleves/`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setEleves(elevesResponse.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+    
+        if (axios.isAxiosError(error)) {
+          console.error('Response data:', error.response?.data);
+          console.error('Response status:', error.response?.status);
+        } else {
+          console.error('Unexpected error:', error);
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [router]);
+
+  // Make sure this return is properly formatted
+  if (loading) {
+    return <p>Loading data...</p>; // Properly return JSX
+  }
 
   return (
     <div className="container mt-5">
       <h1>Dashboard</h1>
-
-
       <div className="tab-content mt-3">
-        <h2>this is my dashboard, reflect active  contexte </h2>
-        <ul>
-          <li>Teacher (user information)</li>
-          <ul>
-            <li>nom</li>
-          </ul>
-          <li>Catalogue</li>
-          <ul>
-            <li>annee</li>
-            <li>niveau</li>
-            <li>etape</li>
-          </ul>
-          <li>Schuler (depending on the teacher)</li>
-          <ul>
-            <li>nom</li>
-            <li>prenom</li>
-            <li>ecole</li>
-            <li>date de naissance</li>
-          </ul>
-          <ul>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-            <li>la la la </li>
-          </ul>
-        </ul>
+        {isLoggedIn && user && <TeacherInfo />}
+
+        <div>
+          {activeCatalogue ? (
+            <p>Active Catalogue: {activeCatalogue.description}</p>
+          ) : (
+            <p>No active catalogue selected</p>
+          )}
+        </div>
+
+        <CatalogueSelection catalogue={catalogue} />
+        {eleves.length > 0 ? <EleveList eleves={eleves} /> : <p>No students found</p>}
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-
-/*
-      <!-- ul className="nav nav-tabs">
-        <li className="nav-item">
-          <a className="nav-link" onClick={() => router.push(`${basePath}/dashboard/overview`)}>Overview</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" onClick={() => router.push(`${basePath}/dashboard/configuration`)}>Configuration</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" onClick={() => router.push(`${basePath}/dashboard/pdf`)}>PDF</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" onClick={() => router.push(`${basePath}/dashboard/result`)}>Result</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" onClick={() => router.push(`${basePath}/dashboard/test`)}>Test</a>
-        </li>
-        <li className="nav-item">
-          <a className="nav-link" onClick={() => router.push(`${basePath}/dashboard/admin`)}>Administration</a>
-        </li>
-      </ul -->*/

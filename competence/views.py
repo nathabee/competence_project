@@ -44,7 +44,7 @@ def custom_404(request, exception):
 
 # competence/views.py
 
-from rest_framework import viewsets
+from rest_framework import permissions, viewsets
 from .permissions import IsTeacher, IsAdmin, IsAnalytics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from .models import (
@@ -70,13 +70,21 @@ class UserRolesView(APIView):
         roles = [group.name for group in user_groups]  # Collect group names as roles
         return Response({'roles': roles})
 
-
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated, IsAdminUser]
 
+    def get_permissions(self):
+        if self.action == 'list':
+            return [permissions.IsAdminUser()]  # Only admins can list users
+        elif self.action == 'me':
+            return [permissions.IsAuthenticated()]  # Authenticated users can access their own info
+        return super().get_permissions()  # Default permissions for other actions
+
+    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    def me(self, request):
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
 
 class EleveViewSet(viewsets.ModelViewSet):
     queryset = Eleve.objects.all()
