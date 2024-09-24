@@ -1,8 +1,9 @@
+'use client'
 // src/app/layout.tsx
 import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import './globals.css'; // Import global styles
-import Navbar from '../components/Navbar'; // Import Navbar component
 import BootstrapClient from '../components/BootstrapClient'; // Import client-side Bootstrap component
+import Navbar from '../components/Navbar'; // Import Navbar component
 
 import { AuthProvider } from '../context/AuthContext';
 

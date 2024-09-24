@@ -31,8 +31,7 @@ export default function HomePage() {
 
   return (
     <div className="container">
-      <h1>Welcome to Competence App!</h1>
-      <p>Please log in to access your dashboard.</p>
+      <h1>Welcome to Competence App! This is the return of the app/page.tsx</h1> 
     </div>
   );
 }

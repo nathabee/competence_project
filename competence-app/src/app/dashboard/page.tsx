@@ -21,7 +21,100 @@ const Dashboard = () => {
 
 
       <div className="tab-content mt-3">
-        {/* Dynamic routing will load here based on tab selection */}
+        <h2>this is my dashboard, reflect active  contexte </h2>
+        <ul>
+          <li>Teacher (user information)</li>
+          <ul>
+            <li>nom</li>
+          </ul>
+          <li>Catalogue</li>
+          <ul>
+            <li>annee</li>
+            <li>niveau</li>
+            <li>etape</li>
+          </ul>
+          <li>Schuler (depending on the teacher)</li>
+          <ul>
+            <li>nom</li>
+            <li>prenom</li>
+            <li>ecole</li>
+            <li>date de naissance</li>
+          </ul>
+          <ul>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+            <li>la la la </li>
+          </ul>
+        </ul>
       </div>
     </div>
   );

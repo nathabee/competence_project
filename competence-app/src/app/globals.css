@@ -4,19 +4,19 @@
 
 
 /* Sticky Navbar Size Changes */
-.navbar-small {
-  background-color: #00ffbf;
+.navbar-small { 
   transition: all 0.3s ease;
   padding: 0.5rem 1rem;
 }
 
 .sticky-navbar {
-  background-color: #61daa1;
-  padding: 1.5rem 1rem;
+  background-color:  #10db9e7e;
 }
 
 .navbar-large {
+  background-color: #10db9e;
   transition: all 0.3s ease;
+  padding: 1.5rem 1rem;
 }
 
 .navbar-large .navbar-brand {
@@ -25,4 +25,38 @@
 
 .navbar-small .navbar-brand {
   font-size: 1rem;
+}
+
+/* Mega Menu Styling */
+.mega-menu {
+  position: absolute;
+  top: 100%; /* Adjust based on the height of the navbar */
+  left: 0;
+  width: 100%; /* Full width mega menu */
+  background-color: #47dac6; /* Background color */
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  transition: opacity 0.3s ease;
+}
+
+.nav-item:hover .mega-menu {
+  display: block;
+}
+
+.mega-menu a {
+  padding: 0.5rem 0;
+  text-decoration: none;
+  color: #000;
+}
+
+.mega-menu a:hover {
+  color: #007bff; /* Change color on hover */
+}
+
+/* Hide mega menu by default */
+.mega-menu {
+  display: none;
 }

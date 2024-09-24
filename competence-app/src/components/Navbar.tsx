@@ -35,7 +35,7 @@ export default function CustomNavbar() {
     <Navbar
       expand="lg"
       fixed="top"
-      className={`navbar ${isSticky ? 'sticky-navbar navbar-large' : 'navbar-small'}`}
+      className={`navbar ${isSticky ? 'sticky-navbar navbar-small' : 'navbar-large'}`}
     >
       <Container>
         <Navbar.Brand as={Link} href="/">
@@ -59,7 +59,7 @@ export default function CustomNavbar() {
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
                   </>
                 )}
-                {userRoles.includes('statistic') && (
+                {userRoles.includes('analytics') && (
                   <Nav.Link href={`${basePath}/statistiques`}>
                     Statistiques
                     <Nav className="dropdown-menu">
