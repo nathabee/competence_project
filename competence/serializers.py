@@ -28,6 +28,12 @@ class EleveSerializer(serializers.ModelSerializer):
         fields = ['id', 'nom', 'prenom', 'classe', 'textnote1', 'textnote2', 'textnote3', 'professeurs']
 
 
+class EleveAnonymizedSerializer(serializers.ModelSerializer):
+    professeurs = UserSerializer(many=True, read_only=True)
+    class Meta:
+        model = Eleve
+        fields = ['id', 'classe', 'textnote1', 'textnote2', 'textnote3', 'professeurs']
+        
 # Serializer for Niveau
 class NiveauSerializer(serializers.ModelSerializer):
     class Meta:

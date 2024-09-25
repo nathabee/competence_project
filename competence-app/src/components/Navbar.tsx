@@ -54,6 +54,7 @@ export default function CustomNavbar() {
                 )}
                 {userRoles.includes('teacher') && (
                   <>
+                    <Nav.Link href={`${basePath}/dashboard`}>Dashboard</Nav.Link>
                     <Nav.Link href={`${basePath}/configuration`}>Configuration</Nav.Link>
                     <Nav.Link href={`${basePath}/test`}>Test</Nav.Link>
                     <Nav.Link href={`${basePath}/resume`}>Resume</Nav.Link>

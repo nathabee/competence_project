@@ -1,24 +1,32 @@
-# views.py
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.response import Response
-from rest_framework.decorators import action  
-from django.contrib.auth.models import User
-from django.shortcuts import render
+# competence/views.py
 
-from rest_framework import viewsets
-from .permissions import IsTeacher,IsAdmin,IsAnalytics
+from rest_framework import permissions, viewsets
+from .permissions import IsTeacher, IsAdmin, IsAnalytics
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
+
 from .models import (
     Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
     Item , Resultat, ResultatDetail,ScoreRule ,ScoreRulePoint
 )
+ 
 from .serializers import (
-    NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer, CatalogueSerializer,
+    NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer, EleveAnonymizedSerializer, CatalogueSerializer,
     GroupageDataSerializer, ItemSerializer, ResultatSerializer, ResultatDetailSerializer,UserSerializer,ScoreRuleSerializer,
     ScoreRulePointSerializer
 )
- 
-from rest_framework.decorators import api_view
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view 
 from rest_framework.response import Response
+ 
+from rest_framework.decorators import action 
+from django.db.models import F
+ 
+from django.contrib.auth.models import User
+from django.shortcuts import render
+ 
+
+ 
 
 @api_view(['GET'])
 def api_overview(request):
@@ -30,6 +38,7 @@ def api_overview(request):
         "scorerules": request.build_absolute_uri('/api/scorerules/'),
         "scorerulepoints": request.build_absolute_uri('/api/scorerulepoints/'),
         "eleves": request.build_absolute_uri('/api/eleves/'),
+        "eleves_anonymized": request.build_absolute_uri('/api/eleves/anonymized/'), 
         "catalogues": request.build_absolute_uri('/api/catalogues/'),
         "groupages": request.build_absolute_uri('/api/groupages/'),
         "items": request.build_absolute_uri('/api/items/'),
@@ -42,23 +51,6 @@ def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
 
-# competence/views.py
-
-from rest_framework import permissions, viewsets
-from .permissions import IsTeacher, IsAdmin, IsAnalytics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
-from .models import (
-    Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
-    Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint
-)
-from .serializers import (
-    NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer,
-    CatalogueSerializer, GroupageDataSerializer, ItemSerializer, ResultatSerializer,
-    ResultatDetailSerializer, UserSerializer, ScoreRuleSerializer, ScoreRulePointSerializer 
-)
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.response import Response
 
  
  
@@ -86,17 +78,45 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
-class EleveViewSet(viewsets.ModelViewSet):
-    queryset = Eleve.objects.all()
-    serializer_class = EleveSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+ 
 
-    @action(detail=False, methods=['get'])
-    def custom_list(self, request):
-        # Custom action to handle special requests
-        queryset = Eleve.objects.all()  # Customize query as needed
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+class EleveViewSet(viewsets.ModelViewSet):
+    serializer_class = EleveSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Eleve.objects.none()  # Default queryset
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.groups.filter(name='admin').exists():
+            return Eleve.objects.all()
+
+        elif user.groups.filter(name='teacher').exists():
+            return Eleve.objects.filter(professeurs=user)
+
+        return Eleve.objects.none()
+
+
+
+class EleveAnonymizedViewSet(viewsets.ModelViewSet):
+    serializer_class = EleveAnonymizedSerializer
+    permission_classes = [IsAuthenticated]
+    queryset = Eleve.objects.none()  # Default queryset
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # Admin can see all students
+        if user.groups.filter(name='admin').exists():
+            return Eleve.objects.all()
+
+        # Analytics/Statistics users can see all students, but without nom and prenom
+        elif user.groups.filter(name='analytics').exists():
+            return Eleve.objects.all()
+
+        # Other users get no access
+        return Eleve.objects.none()
+
 
  
 

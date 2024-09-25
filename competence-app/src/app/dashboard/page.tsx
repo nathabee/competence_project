@@ -5,70 +5,73 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import TeacherInfo from '@/components/Teacher';
 import CatalogueSelection from '@/components/CatalogueSelection';
-import EleveList from '@/components/EleveList';
+import EleveSelection from '@/components/EleveSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Eleve } from '@/types/eleve';
 import { useAuth } from '@/context/AuthContext';
-import { useTestContext } from '@/context/TestContext';
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
-  const { activeCatalogue } = useTestContext(); 
-  const { user, isLoggedIn } = useAuth();
-  const [catalogue, setCatalogue] = useState([]);
-  const [eleves, setEleves] = useState<Eleve[]>([]);
+  const { activeCatalogue, activeEleve, catalogue, setCatalogue, eleves, setEleves,  user, isLoggedIn } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
       const token = document.cookie.split('authToken=')[1];
-    
+
       if (!token) {
         router.push(`/login`);
         return;
       }
-    
+
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-        // Fetch Catalogue
-        const catalogueResponse = await axios.get(`${apiUrl}/catalogues/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCatalogue(catalogueResponse.data);
+        // Only fetch if catalogue or eleves are not already set
+        if (catalogue.length === 0) {
+          // Fetch Catalogue
+          const catalogueResponse = await axios.get(`${apiUrl}/catalogues/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setCatalogue(catalogueResponse.data);
+        }
 
-        // Fetch Eleves
-        const elevesResponse = await axios.get(`${apiUrl}/eleves/`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setEleves(elevesResponse.data);
+        if (eleves.length === 0) {
+          // Fetch Eleves
+          const elevesResponse = await axios.get(`${apiUrl}/eleves/`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setEleves(elevesResponse.data);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
-    
-        if (axios.isAxiosError(error)) {
-          console.error('Response data:', error.response?.data);
-          console.error('Response status:', error.response?.status);
-        } else {
-          console.error('Unexpected error:', error);
-        }
+        // Optionally handle error state here
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [router]);
+  }, [router, catalogue, eleves, setCatalogue, setEleves]);
 
-  // Make sure this return is properly formatted
   if (loading) {
-    return <p>Loading data...</p>; // Properly return JSX
+    return <p>Loading data...</p>;
   }
 
   return (
     <div className="container mt-5">
       <h1>Dashboard</h1>
       <div className="tab-content mt-3">
+        <h2>Professeur :</h2>
         {isLoggedIn && user && <TeacherInfo />}
+
+        <h2>Donnees selectionnees :</h2>
+        <div>
+          {activeEleve ? (
+            <p>Active Eleve: {activeEleve.nom} {activeEleve.prenom} {activeEleve.classe}</p>
+          ) : (
+            <p>No active eleve selected</p>
+          )}
+        </div>
 
         <div>
           {activeCatalogue ? (
@@ -78,11 +81,16 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
+        <h2>Selection :</h2>
         <CatalogueSelection catalogue={catalogue} />
-        {eleves.length > 0 ? <EleveList eleves={eleves} /> : <p>No students found</p>}
+        <EleveSelection eleve={eleves} />
       </div>
     </div>
   );
 };
 
 export default Dashboard;
+
+
+/*
+        {eleves.length > 0 ? <EleveList eleves={eleves} /> : <p>No students found</p>}*/

@@ -5,8 +5,7 @@ import './globals.css'; // Import global styles
 import BootstrapClient from '@/components/BootstrapClient'; // Import client-side Bootstrap component
 import Navbar from '@/components/Navbar'; // Import Navbar component
 
-import { AuthProvider } from '@/context/AuthContext';
-import { TestProvider } from '@/context/TestContext';
+import { AuthProvider } from '@/context/AuthContext'; 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -14,13 +13,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body>
 
-        <AuthProvider>
-        <TestProvider>
+        <AuthProvider> 
           <BootstrapClient /> {/* Handle Bootstrap JS in client-side */}
           <Navbar />
           <main>{children}</main>
-
-          </TestProvider>
+ 
         </AuthProvider>
       </body>
     </html>

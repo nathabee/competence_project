@@ -11,4 +11,8 @@ export interface Catalogue {
 
 export interface CatalogueSelectionProps {
     catalogue: Catalogue[];
+    //activeCatalogue: Catalogue | null;
+    //setActiveCatalogue: (catalogue: Catalogue) => void;
 }
+
+

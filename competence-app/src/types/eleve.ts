@@ -10,3 +10,9 @@ export interface Eleve {
   textnote3: string | null;
   professeurs: User[];  // Array of User (Teachers)
 }
+
+ 
+
+export interface EleveSelectionProps {
+  eleve: Eleve[];
+}

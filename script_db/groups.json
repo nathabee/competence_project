@@ -3,7 +3,7 @@
     "model": "auth.group",
     "pk": 1,
     "fields": {
-        "name": "Admin",
+        "name": "admin",
         "permissions": [
             1,
             2,
@@ -92,7 +92,7 @@
     "model": "auth.group",
     "pk": 2,
     "fields": {
-        "name": "Teacher",
+        "name": "teacher",
         "permissions": [
             4,
             12,
@@ -141,7 +141,7 @@
     "model": "auth.group",
     "pk": 3,
     "fields": {
-        "name": "Analyst",
+        "name": "analytics",
         "permissions": [
             4,
             12,

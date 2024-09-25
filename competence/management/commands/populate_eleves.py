@@ -2,6 +2,9 @@ from django.core.management.base import BaseCommand
 from competence.models import Eleve
 from django.contrib.auth.models import User
 import random
+from django.db.models import Q
+
+
 
 class Command(BaseCommand):
     help = 'Populate the Eleve table with test data'
@@ -13,15 +16,18 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         # Retrieve professeur IDs with usernames like 'prof%'
-        professeurs = User.objects.filter(username__startswith='prof')
+        professeurs = User.objects.filter(
+                        Q(username__startswith='tea') |
+                        Q(username__in=['adm', 'all'])
+                    )
 
         if not professeurs:
-            self.stdout.write(self.style.ERROR('No professeurs found with usernames like prof%.'))
+            self.stdout.write(self.style.ERROR('No professeurs found with usernames like tea-  or adm or sta'))
             return
 
         # Create 20 Eleve entries
         for i in range(20):
-            classe = 'CP' if i < 18 else 'E1'  # 18 in CP, 2 in E1
+            classe = 'GS' if i < 18 else 'CP'  # 18 in GS, 2 in CP
             eleve = Eleve.objects.create(
                 nom=random.choice(self.last_names),
                 prenom=random.choice(self.first_names),
