@@ -23,7 +23,7 @@ const Pdf = () => {
       <h2>Donnees selectionnees :</h2>
       <div>
         {activeEleve ? (
-          <p>Active Eleve: {activeEleve.nom} {activeEleve.prenom} {activeEleve.classe}</p>
+          <p>Active Eleve: {activeEleve.nom} {activeEleve.prenom} {activeEleve.niveau}</p>
         ) : (
           <p>No active eleve selected</p>
         )}

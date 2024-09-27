@@ -6,7 +6,8 @@ from datetime import timedelta
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = False
 
- 
+APPEND_SLASH = True
+#CORS_ALLOW_CREDENTIALS = True  # If sending cookies
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +27,16 @@ JWT_SECRET_KEY = get_env_variable('JWT_SECRET_KEY', default='your_default_secret
   
 # Fetch CORS_ALLOWED_ORIGINS from the environment, split by comma
 CORS_ALLOWED_ORIGINS = get_env_variable('CORS_ALLOWED_ORIGINS', default='http://localhost:3000').split(',')
+CORS_ALLOW_HEADERS = [
+    'authorization',
+    'content-type',
+    'accept',
+    'x-requested-with',
+    'x-csrftoken',
+    'origin',
+    'accept-encoding',
+    'authorization',
+]
 
  
 ALLOWED_HOSTS = get_env_variable('ALLOWED_HOSTS', default="192.168.178.71,localhost,127.0.0.1,nathabee.de,159.69.0.127").split(',')
@@ -128,12 +139,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
 }
  
 
 SIMPLE_JWT = {
     'SIGNING_KEY': JWT_SECRET_KEY,
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,

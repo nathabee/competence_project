@@ -65,27 +65,27 @@ class ScoreRule(models.Model):
 
 # Table: ScoreRulePoint
 class ScoreRulePoint(models.Model):
-    score_rule = models.ForeignKey('ScoreRule', related_name='points', on_delete=models.CASCADE, default=1)  # Assuming you want to use ScoreRule with ID 1 as default
-    resultat = models.CharField(max_length=20)  # A/NA
+    scorerule = models.ForeignKey('ScoreRule', related_name='points', on_delete=models.CASCADE, default=1)  # Assuming you want to use ScoreRule with ID 1 as default
+    scorelabel = models.CharField(max_length=20)  # A/NA
     score = models.IntegerField()  # Score that is associated with a resultat
     description = models.CharField(max_length=50, blank=True, null=True)  # Explanation
 
     def __str__(self):
-        return f"Rule:{self.score_rule.id} - {self.resultat} - {self.score} - {self.description}"
+        return f"Rule:{self.scorerule.id} - {self.scorelabel} - {self.score} - {self.description}"
 
 
 # Table: Eleve (Student)
 class Eleve(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
-    classe = models.CharField(max_length=10)
+    niveau = models.CharField(max_length=10)
     textnote1 = models.TextField(blank=True, null=True)
     textnote2 = models.TextField(blank=True, null=True)
     textnote3 = models.TextField(blank=True, null=True)
     professeurs = models.ManyToManyField(User, related_name='eleves', blank=True)
 
-    def __str__(self):
-        return f"{self.nom} {self.prenom} - {self.classe}"
+    def __str__(self): 
+        return f"{self.nom} {self.prenom} - {self.niveau}"
 
 
 
@@ -106,9 +106,9 @@ class Catalogue(models.Model):
 class GroupageData(models.Model):
     catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)  # Link to Catalogue
     position = models.IntegerField()  # Position in the evaluation
-    desc_groupage = models.CharField(max_length=100)  # Grouping name (e.g., CATEGORISATION)  in combo box 
+    desc_groupage = models.CharField(max_length=100)  # Grouping name (e.g., CATEGORISATION)
     label_groupage = models.CharField(max_length=100)  # Label for groupage in graph to be displayed
-    link = models.CharField(max_length=500)  # http adresse to open a doc about these test set
+    link = models.CharField(max_length=500)  # Link to documentation about these test sets
     max_point = models.IntegerField()  # Maximum points available for the group
     seuil1 = models.IntegerField()  # Threshold 1 score
     seuil2 = models.IntegerField()  # Threshold 2 score
@@ -117,51 +117,47 @@ class GroupageData(models.Model):
     def __str__(self):
         return f"Groupage {self.desc_groupage} - Position {self.position}"
 
+
  
 # Table: Item (Details for each test in a GroupageData)
 class Item(models.Model):
-    groupagedata = models.ForeignKey('GroupageData', on_delete=models.CASCADE )  # Link to GroupageData
+    groupagedata = models.ForeignKey('GroupageData', on_delete=models.CASCADE)  # Link to GroupageData
     temps = models.CharField(max_length=100)  # Time (e.g., Temps 1)
     description = models.CharField(max_length=255)  # Test description (e.g., identifying a color)
     observation = models.TextField(blank=True, null=True)  # Observations 
-    scorerule = models.ForeignKey('ScoreRule', on_delete=models.CASCADE, default=1)
+    scorerule = models.ForeignKey('ScoreRule', on_delete=models.CASCADE, default=1)  # Link to score rule
     max_score = models.FloatField()  # Max score possible 
     itempos = models.IntegerField()  # Identifier for the test within the item
-    link = models.CharField(max_length=500)  # http adresse to open a doc about these test set
+    link = models.CharField(max_length=500)  # Link to documentation about this test
 
     def __str__(self):
-        return f"Test {self.groupagedata} -  {self.temps} - {self.description}"
+        return f"Test {self.groupagedata} - {self.temps} - {self.description}"
+
 
 # Table: Resultat (Evaluation Results)
 class Resultat(models.Model):
-    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)
-    groupage = models.ForeignKey('GroupageData', on_delete=models.CASCADE)
-    score = models.IntegerField()
-    resultat = models.CharField(max_length=20, blank=True, null=True)  # Result (e.g., NA)
-    seuil1_percent = models.FloatField(default=0.0)
-    seuil2_percent = models.FloatField(default=0.0)
-    seuil3_percent = models.FloatField(default=0.0)
-    professeur = models.ForeignKey(
-        User,
-        on_delete=models.SET_DEFAULT,
-        default=ConfigCache.get('PROF_ID_DEFAULT', None)
-    )
+    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)  # Link to Eleve
+    groupage = models.ForeignKey('GroupageData', on_delete=models.CASCADE)  # Link to GroupageData
+    score = models.IntegerField()  # Overall score for the Resultat 
+    seuil1_percent = models.FloatField(default=0.0)  # Threshold 1 percentage
+    seuil2_percent = models.FloatField(default=0.0)  # Threshold 2 percentage
+    seuil3_percent = models.FloatField(default=0.0)  # Threshold 3 percentage
+    professeur = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=ConfigCache.get('PROF_ID_DEFAULT', None))  # Link to User
 
     def __str__(self):
         return f"Result for {self.eleve} - {self.groupage}"
 
-# Table: ResultatDetail (Evaluation Results per TestDetail)
+
+# Table: ResultatDetail (Evaluation Results per TestDetail) 
+
 class ResultatDetail(models.Model):
-    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)
-    testdetail = models.ForeignKey('Item', on_delete=models.CASCADE) 
-    resultat = models.CharField(max_length=50, blank=True, null=True)  # Result (e.g., NA)
+    resultat = models.ForeignKey('Resultat', on_delete=models.CASCADE, related_name='details')  # Link to Resultat
+    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)  # Link to Eleve
+    testdetail = models.ForeignKey('Item', on_delete=models.CASCADE)  # Link to Item
+    scorelabel = models.CharField(max_length=50, blank=True, null=True)  # Result (e.g., NA)
     observation = models.TextField(blank=True, null=True)  # Observations
     score = models.FloatField()  # Score for this test
-    professeur = models.ForeignKey(
-        User,
-        on_delete=models.SET_DEFAULT,
-        default=ConfigCache.get('PROF_ID_DEFAULT', None)
-    )
+    professeur = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=ConfigCache.get('PROF_ID_DEFAULT', None))  # Link to User
 
     def __str__(self):
         return f"Result for {self.eleve} - {self.testdetail}"

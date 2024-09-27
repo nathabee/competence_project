@@ -25,7 +25,8 @@ from django.db.models import F
 from django.contrib.auth.models import User
 from django.shortcuts import render
  
-
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
  
 
 @api_view(['GET'])
@@ -165,14 +166,55 @@ class ItemViewSet(viewsets.ModelViewSet):
     serializer_class = ItemSerializer
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
-class ResultatViewSet(viewsets.ModelViewSet):
-    queryset = Resultat.objects.all()
-    serializer_class = ResultatSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+ 
+     
+ 
 
 class ResultatDetailViewSet(viewsets.ModelViewSet):
-    queryset = ResultatDetail.objects.all()
+    queryset = ResultatDetail.objects.select_related('testdetail__groupagedata').order_by('testdetail__itempos')
     serializer_class = ResultatDetailSerializer
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
  
- 
+    def get_queryset(self):
+        resultat_id = self.request.query_params.get('id', None)  # Change to 'id'
+        if resultat_id is not None:
+            return self.queryset.filter(id=resultat_id)  # Use 'id' here
+        return self.queryset
+     
+
+
+class ResultatViewSet(viewsets.ModelViewSet):
+    queryset = Resultat.objects.all().order_by('eleve_id', 'groupage__id', 'groupage__position')
+    serializer_class = ResultatSerializer
+    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+
+    @swagger_auto_schema(
+        manual_parameters=[
+            openapi.Parameter(
+                'eleve_id', openapi.IN_QUERY, 
+                description="Filter results by eleve ID", 
+                type=openapi.TYPE_INTEGER
+            ),
+            openapi.Parameter(
+                'id', openapi.IN_QUERY, 
+                description="Filter result by Resultat ID", 
+                type=openapi.TYPE_INTEGER
+            )
+        ]
+    )
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        eleve_id = self.request.query_params.get('eleve_id', None)
+        resultat_id = self.request.query_params.get('id', None)  # Fetch 'id' for filtering
+
+        if resultat_id is not None:
+            return queryset.filter(id=resultat_id)  # Filter by Resultat ID
+        
+        if eleve_id is not None:
+            # Ensure that the user is associated with the Eleve
+            if self.request.user.groups.filter(name='teacher').exists():
+                queryset = queryset.filter(eleve__professeurs=self.request.user, eleve__id=eleve_id)
+            else:
+                queryset = queryset.filter(eleve__id=eleve_id)  # For admins or other roles
+
+        return queryset

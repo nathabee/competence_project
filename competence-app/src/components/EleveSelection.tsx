@@ -15,12 +15,12 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleve }) => {
     if (!eleve.length) return <p>Loading Eleve...</p>;
 
     // Get unique classes
-    const uniqueClasses = Array.from(new Set(eleve.map(cat => cat.classe)));
+    const uniqueClasses = Array.from(new Set(eleve.map(cat => cat.niveau)));
 
     // Filter eleves based on selected class and search criteria
     const filteredEleve = eleve.filter(cat => {
         return (
-            (!selectedClasse || cat.classe === selectedClasse) &&
+            (!selectedClasse || cat.niveau === selectedClasse) &&
             (searchNom === '' || cat.nom.toLowerCase().includes(searchNom.toLowerCase())) &&
             (searchPrenom === '' || cat.prenom.toLowerCase().includes(searchPrenom.toLowerCase()))
         );
@@ -92,7 +92,7 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleve }) => {
                         >
                             <td>{cat.nom}</td>
                             <td>{cat.prenom}</td>
-                            <td>{cat.classe}</td>
+                            <td>{cat.niveau}</td>
                             <td>{cat.textnote1}</td>
                             <td>{cat.textnote2}</td>
                             <td>{cat.textnote3}</td>

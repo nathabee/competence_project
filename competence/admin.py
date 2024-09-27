@@ -47,16 +47,16 @@ class ScoreRuleAdmin(admin.ModelAdmin):
 
 @admin.register(ScoreRulePoint)
 class ScoreRulePointAdmin(admin.ModelAdmin):
-    list_display = ('score_rule', 'resultat', 'score', 'description')
-    list_filter = ('score_rule',)
-    search_fields = ('resultat', 'description')
+    list_display = ('scorerule', 'scorelabel', 'score', 'description')
+    list_filter = ('scorerule',)
+    search_fields = ('scorelabel', 'description')
 
 
 
 @admin.register(Eleve)
 class EleveAdmin(admin.ModelAdmin):
-    list_display = ('nom', 'prenom', 'classe')
-    search_fields = ('nom', 'prenom', 'classe')
+    list_display = ('nom', 'prenom', 'niveau')
+    search_fields = ('nom', 'prenom', 'niveau')
     filter_horizontal = ('professeurs',)  # For ManyToMany fields
 
 @admin.register(Catalogue)

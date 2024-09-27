@@ -16,7 +16,7 @@ const EleveComponent: React.FC<EleveProps> = ({ eleve }) => {
   return (
     <div>
       <h2>{eleve.nom} {eleve.prenom}</h2>
-      <p>Class: {eleve.classe}</p>
+      <p>Class: {eleve.niveau}</p>
       <p>Notes:</p>
       <ul>
         <li>{eleve.textnote1 || 'No note 1'}</li>

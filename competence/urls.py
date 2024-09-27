@@ -20,9 +20,11 @@ router.register(r'eleves', EleveViewSet, basename='eleve')  # Specify a basename
 router.register(r'eleves/anonymized', EleveAnonymizedViewSet, basename='eleve-anonymized')  # Unique basename
 router.register(r'catalogues', CatalogueViewSet)
 router.register(r'groupages', GroupageDataViewSet)
-router.register(r'items', ItemViewSet)
-router.register(r'resultats', ResultatViewSet)
-router.register(r'resultat-details', ResultatDetailViewSet)
+router.register(r'items', ItemViewSet) 
+router.register(r'resultats', ResultatViewSet, basename='resultat')  # Specify the basename
+router.register(r'resultat-details', ResultatDetailViewSet, basename='resultat-detail')  # Specify the basename
+
+
 router.register(r'users', UserViewSet)
 
 urlpatterns = [

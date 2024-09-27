@@ -27,11 +27,11 @@ class Command(BaseCommand):
 
         # Create 20 Eleve entries
         for i in range(20):
-            classe = 'GS' if i < 18 else 'CP'  # 18 in GS, 2 in CP
+            niveau = 'GS' if i < 18 else 'CP'  # 18 in GS, 2 in CP
             eleve = Eleve.objects.create(
                 nom=random.choice(self.last_names),
                 prenom=random.choice(self.first_names),
-                classe=classe,
+                niveau=niveau,
                 textnote1=random.choice(self.notes),
                 textnote2=random.choice(self.notes),
                 textnote3="Test",

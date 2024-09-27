@@ -6,13 +6,14 @@ import { useRouter } from 'next/navigation';
 import TeacherInfo from '@/components/Teacher';
 import CatalogueSelection from '@/components/CatalogueSelection';
 import EleveSelection from '@/components/EleveSelection';
+import ResultatSelection from '@/components/ResultatSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext'; 
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
   const { activeCatalogue, activeEleve, catalogue, setCatalogue, eleves, setEleves,  user, isLoggedIn } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(true); 
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,6 +26,11 @@ const Dashboard: React.FC = () => {
 
       try {
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+        console.log(`DASHBOARD Token: Bearer ${token}`);
+        console.log(`DASHBOARD Request URL: ${apiUrl}/catalogues/`);
+        console.log(`DASHBOARD Request URL: ${apiUrl}/eleves/`);
+
 
         // Only fetch if catalogue or eleves are not already set
         if (catalogue.length === 0) {
@@ -51,7 +57,13 @@ const Dashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [router, catalogue, eleves, setCatalogue, setEleves]);
+  }, [router ]);
+
+
+ 
+
+
+
 
   if (loading) {
     return <p>Loading data...</p>;
@@ -67,7 +79,7 @@ const Dashboard: React.FC = () => {
         <h2>Donnees selectionnees :</h2>
         <div>
           {activeEleve ? (
-            <p>Active Eleve: {activeEleve.nom} {activeEleve.prenom} {activeEleve.classe}</p>
+            <p>Active Eleve: {activeEleve.nom} {activeEleve.prenom} {activeEleve.niveau}</p>
           ) : (
             <p>No active eleve selected</p>
           )}
@@ -84,6 +96,8 @@ const Dashboard: React.FC = () => {
         <h2>Selection :</h2>
         <CatalogueSelection catalogue={catalogue} />
         <EleveSelection eleve={eleves} />
+        <h2>Resultats obtenus par l eleve selectionne :</h2>
+        <ResultatSelection    />
       </div>
     </div>
   );
@@ -91,6 +105,3 @@ const Dashboard: React.FC = () => {
 
 export default Dashboard;
 
-
-/*
-        {eleves.length > 0 ? <EleveList eleves={eleves} /> : <p>No students found</p>}*/

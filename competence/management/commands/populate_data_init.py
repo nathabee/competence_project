@@ -139,7 +139,7 @@ class Command(BaseCommand):
                 ScoreRulePoint.objects.update_or_create( 
                     id=row['id'],  # Use 'id' to update or create
                     defaults={ 
-                        'resultat':  row['resultat'],
+                        'scorelabel':  row['scorelabel'],
                         'score': row['score'],
                         'description': row['description'],
                     }

@@ -25,14 +25,14 @@ class EleveSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Eleve
-        fields = ['id', 'nom', 'prenom', 'classe', 'textnote1', 'textnote2', 'textnote3', 'professeurs']
+        fields = ['id', 'nom', 'prenom', 'niveau', 'textnote1', 'textnote2', 'textnote3', 'professeurs']
 
 
 class EleveAnonymizedSerializer(serializers.ModelSerializer):
     professeurs = UserSerializer(many=True, read_only=True)
     class Meta:
         model = Eleve
-        fields = ['id', 'classe', 'textnote1', 'textnote2', 'textnote3', 'professeurs']
+        fields = ['id', 'niveau', 'textnote1', 'textnote2', 'textnote3', 'professeurs']
         
 # Serializer for Niveau
 class NiveauSerializer(serializers.ModelSerializer):
@@ -73,11 +73,30 @@ class ScoreRuleSerializer(serializers.ModelSerializer):
 class ScoreRulePointSerializer(serializers.ModelSerializer):
     class Meta:
         model = ScoreRulePoint
-        fields = ['id', 'resultat', 'score', 'description']
+        fields = ['id', 'scorelabel', 'score', 'description']
+
 
 
 # Serializer for Catalogue
 class CatalogueSerializer(serializers.ModelSerializer):
+    niveau_id = serializers.PrimaryKeyRelatedField(
+        queryset=Niveau.objects.all(),
+        source='niveau'  # Allows the use of niveau_id while creating
+    )
+    etape_id = serializers.PrimaryKeyRelatedField(
+        queryset=Etape.objects.all(),
+        source='etape'  # Allows the use of etape_id while creating
+    )
+    annee_id = serializers.PrimaryKeyRelatedField(
+        queryset=Annee.objects.all(),
+        source='annee'  # Allows the use of annee_id while creating
+    )
+    matiere_id = serializers.PrimaryKeyRelatedField(
+        queryset=Matiere.objects.all(),
+        source='matiere'  # Allows the use of matiere_id while creating
+    )
+
+    # Include the nested serializers for read operations
     niveau = NiveauSerializer(read_only=True)
     etape = EtapeSerializer(read_only=True)
     annee = AnneeSerializer(read_only=True)
@@ -85,8 +104,11 @@ class CatalogueSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Catalogue
-        fields = ['id', 'niveau', 'etape', 'annee', 'matiere', 'description']
+        fields = ['id', 'niveau_id', 'etape_id', 'annee_id', 'matiere_id', 'description', 'niveau', 'etape', 'annee', 'matiere']
 
+    def create(self, validated_data):
+        return super().create(validated_data)
+    
 
 # Serializer for GroupageData
 class GroupageDataSerializer(serializers.ModelSerializer):
@@ -106,45 +128,53 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = ['id', 'groupagedata', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link']
 
-
-# Serializer for Resultat
  
  
+ 
+ 
+################################################################################
 
-class ResultatSerializer(serializers.ModelSerializer):
-    eleve_nom = serializers.CharField(write_only=True)  # Input by name
-    groupage_label = serializers.CharField(write_only=True)  # Input by label
-    eleve = EleveSerializer(read_only=True)  # Read-only
-    groupage = GroupageDataSerializer(read_only=True)  # Read-only
-    professeur = UserSerializer(read_only=True)
-
-
-    class Meta:
-        model = Resultat
-        fields = ['id', 'eleve', 'eleve_nom', 'groupage', 'groupage_label', 'score', 'resultat', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'professeur']
-
-    def create(self, validated_data):
-        eleve_name = validated_data.pop('eleve_nom')
-        groupage_label = validated_data.pop('groupage_label')
-        
-        # Retrieve related objects based on provided names
-        eleve = Eleve.objects.get(nom=eleve_name)
-        groupage = GroupageData.objects.get(label_groupage=groupage_label)
-        
-        # Create the Resultat object
-        return Resultat.objects.create(
-            eleve=eleve,
-            groupage=groupage,
-            **validated_data
-        )
-
-
-# Serializer for ResultatDetail
+    # Use the updated ResultatDetailSerializer
 class ResultatDetailSerializer(serializers.ModelSerializer):
     eleve = EleveSerializer(read_only=True)
     testdetail = ItemSerializer(read_only=True)  # Include detailed TestDetail info
     professeur = UserSerializer(read_only=True)
 
+    # Include resultat_id instead of the full resultat object to avoid a loop
+    resultat_id = serializers.PrimaryKeyRelatedField(read_only=True, source='resultat.id')
+
     class Meta:
         model = ResultatDetail
-        fields = ['id', 'eleve', 'testdetail', 'resultat', 'observation', 'score', 'professeur']
+        fields = ['id', 'resultat_id', 'eleve', 'testdetail', 'scorelabel', 'observation', 'score', 'professeur']
+
+################################################################################
+class ResultatSerializer(serializers.ModelSerializer):
+    eleve = EleveSerializer(read_only=True)
+    eleve_id = serializers.PrimaryKeyRelatedField(
+        queryset=Eleve.objects.all(),
+        source='eleve',
+    )
+    groupage_id = serializers.PrimaryKeyRelatedField(
+        queryset=GroupageData.objects.all(),
+        source='groupage',
+    )
+    groupage = GroupageDataSerializer(read_only=True)
+    professeur = UserSerializer(read_only=True)
+    professeur_id = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(),  
+        source='professeur',
+    )
+
+    # Use the updated ResultatDetailSerializer
+    resultat_details = ResultatDetailSerializer(many=True, read_only=True, source='resultatdetail_set')
+
+    class Meta:
+        model = Resultat
+        fields = ['id', 'eleve', 'eleve_id', 'groupage_id', 'groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'professeur', 'professeur_id', 'resultat_details']
+
+    def create(self, validated_data):
+        resultat_details_data = validated_data.pop('resultatdetail_set', [])
+        resultat = Resultat.objects.create(**validated_data)
+        for detail_data in resultat_details_data:
+            ResultatDetail.objects.create(resultat=resultat, **detail_data)  # Link detail to the newly created resultat
+        return resultat
