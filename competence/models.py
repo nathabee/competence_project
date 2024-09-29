@@ -7,14 +7,14 @@ from .config_utils import ConfigCache
 # Table: Niveau (Class Level & Evaluation Stage)
 class Niveau(models.Model):
     NIVEAU_CHOICES = [
+        ('GS', 'GS'),
         ('CP', 'CP'),
         ('E1', 'E1'),
         ('E2', 'E2'),
         ('M1', 'M1'),
-        ('M2', 'M2'),
-        ('?', '?')
+        ('M2', 'M2'), 
     ]
-    niveau = models.CharField(max_length=10, choices=NIVEAU_CHOICES, default='?')  # Class level
+    niveau = models.CharField(max_length=10, choices=NIVEAU_CHOICES, default='GS')  # Class level
     description = models.CharField(max_length=30, blank=True, null=True)  # Description
 
     def __str__(self):
@@ -25,10 +25,9 @@ class Etape(models.Model):
     ETAPE_CHOICES = [
         ('DEBUT', 'DEBUT'),
         ('INTER', 'INTER'),
-        ('FINAL', 'FINAL'),
-        ('?', '?'),
+        ('FINAL', 'FINAL'), 
     ]
-    etape = models.CharField(max_length=10, choices=ETAPE_CHOICES, default='?')  # Etape
+    etape = models.CharField(max_length=10, choices=ETAPE_CHOICES, default='DEBUT')  # Etape
     description = models.CharField(max_length=30, blank=True, null=True)  # Description
 
     def __str__(self):
@@ -74,6 +73,7 @@ class ScoreRulePoint(models.Model):
         return f"Rule:{self.scorerule.id} - {self.scorelabel} - {self.score} - {self.description}"
 
 
+
 # Table: Eleve (Student)
 class Eleve(models.Model):
     nom = models.CharField(max_length=100)
@@ -86,6 +86,8 @@ class Eleve(models.Model):
 
     def __str__(self): 
         return f"{self.nom} {self.prenom} - {self.niveau}"
+    
+     
 
 
 
@@ -132,32 +134,67 @@ class Item(models.Model):
 
     def __str__(self):
         return f"Test {self.groupagedata} - {self.temps} - {self.description}"
+ 
+
+# Table: PDFLayout (Defining the PDF structure)
+class PDFLayout(models.Model):
+    header_icon = models.CharField(max_length=255)  # Link to header icon
+    footer_message = models.TextField(blank=True, null=True)  # Footer message
+
+    def __str__(self):
+        return f"PDF Layout: {self.id}"
+  
+
+# Table: Report 
+
+class Report(models.Model):
+    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE, related_name='reports')
+    professeur = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    pdflayout = models.ForeignKey('PDFLayout', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Report for {self.eleve} - Created by {self.professeur}"
 
 
-# Table: Resultat (Evaluation Results)
-class Resultat(models.Model):
-    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)  # Link to Eleve
-    groupage = models.ForeignKey('GroupageData', on_delete=models.CASCADE)  # Link to GroupageData
-    score = models.IntegerField()  # Overall score for the Resultat 
-    seuil1_percent = models.FloatField(default=0.0)  # Threshold 1 percentage
-    seuil2_percent = models.FloatField(default=0.0)  # Threshold 2 percentage
-    seuil3_percent = models.FloatField(default=0.0)  # Threshold 3 percentage
-    professeur = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=ConfigCache.get('PROF_ID_DEFAULT', None))  # Link to User
+
+# Table: ReportCatalogue 
+
+class ReportCatalogue(models.Model):
+    report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='report_catalogues')
+    catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"Report Catalogue for {self.catalogue}"
+
+
+# Table: Resultat 
 
     def __str__(self):
         return f"Result for {self.eleve} - {self.groupage}"
 
-
-# Table: ResultatDetail (Evaluation Results per TestDetail) 
-
-class ResultatDetail(models.Model):
-    resultat = models.ForeignKey('Resultat', on_delete=models.CASCADE, related_name='details')  # Link to Resultat
-    eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE)  # Link to Eleve
-    testdetail = models.ForeignKey('Item', on_delete=models.CASCADE)  # Link to Item
-    scorelabel = models.CharField(max_length=50, blank=True, null=True)  # Result (e.g., NA)
-    observation = models.TextField(blank=True, null=True)  # Observations
-    score = models.FloatField()  # Score for this test
-    professeur = models.ForeignKey(User, on_delete=models.SET_DEFAULT, default=ConfigCache.get('PROF_ID_DEFAULT', None))  # Link to User
+class Resultat(models.Model):
+    report_catalogue = models.ForeignKey('ReportCatalogue', on_delete=models.CASCADE, related_name='resultats')
+    groupage = models.ForeignKey('GroupageData', on_delete=models.CASCADE)
+    score = models.FloatField()
+    seuil1_percent = models.FloatField(default=0.0)  # Threshold 1 percentage
+    seuil2_percent = models.FloatField(default=0.0)  # Threshold 2 percentage
+    seuil3_percent = models.FloatField(default=0.0)  # Threshold 3 percentage
 
     def __str__(self):
-        return f"Result for {self.eleve} - {self.testdetail}"
+        return f"Resultat for {self.report_catalogue}"
+
+
+# Table: ResultatDetail 
+
+class ResultatDetail(models.Model):
+    resultat = models.ForeignKey('Resultat', on_delete=models.CASCADE, related_name='resultat_details')
+    item = models.ForeignKey('Item', on_delete=models.CASCADE)
+    score = models.FloatField()
+    scorelabel = models.CharField(max_length=50, blank=True, null=True)  # Result (e.g., NA)
+    observation = models.TextField(blank=True, null=True)  # Observations
+
+    def __str__(self):
+        return f"Resultat Detail for {self.resultat}"
+

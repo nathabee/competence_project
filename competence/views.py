@@ -1,33 +1,33 @@
 # competence/views.py
 
+
 from rest_framework import permissions, viewsets
 from .permissions import IsTeacher, IsAdmin, IsAnalytics
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import (
     Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
-    Item , Resultat, ResultatDetail,ScoreRule ,ScoreRulePoint
+    Item , Resultat, ResultatDetail,ScoreRule ,ScoreRulePoint,PDFLayout,Report,ReportCatalogue
 )
  
 from .serializers import (
     NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer, EleveAnonymizedSerializer, CatalogueSerializer,
-    GroupageDataSerializer, ItemSerializer, ResultatSerializer, ResultatDetailSerializer,UserSerializer,ScoreRuleSerializer,
-    ScoreRulePointSerializer
+    ReportCatalogueSerializer,ResultatDetailSerializer,ReportSerializer,ResultatSerializer,UserSerializer,ScoreRuleSerializer,   ScoreRulePointSerializer,
+    PDFLayoutSerializer,
+    GroupageDataSerializer,ItemSerializer
 )
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
-from rest_framework.decorators import api_view 
-from rest_framework.response import Response
  
-from rest_framework.decorators import action 
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.decorators import api_view, action
 from django.db.models import F
  
 from django.contrib.auth.models import User
 from django.shortcuts import render
  
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
- 
+#from drf_yasg.utils import swagger_auto_schema
+#from drf_yasg import openapi
+  
 
 @api_view(['GET'])
 def api_overview(request):
@@ -44,8 +44,13 @@ def api_overview(request):
         "groupages": request.build_absolute_uri('/api/groupages/'),
         "items": request.build_absolute_uri('/api/items/'),
         "resultats": request.build_absolute_uri('/api/resultats/'),
-        "resultat-details": request.build_absolute_uri('/api/resultat-details/'),
+        "resultatdetails": request.build_absolute_uri('/api/resultatdetails/'),
+        "eleve_reports": request.build_absolute_uri('/api/eleve/<int:eleve_id>/reports/'),  # Update this accordingly
+        "pdf_layouts": request.build_absolute_uri('/api/pdf-layouts/'),  # New endpoint for PDF layouts
     })
+
+
+handler404 = 'yourapp.views.custom_404'
 
 
 def custom_404(request, exception):
@@ -159,62 +164,79 @@ class CatalogueViewSet(viewsets.ModelViewSet):
 class GroupageDataViewSet(viewsets.ModelViewSet):
     queryset = GroupageData.objects.all()
     serializer_class = GroupageDataSerializer
+
+    
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
+
+    #def get_serializer_class(self):
+    #   if self.action in ['list', 'retrieve'] and 'biggi' in self.request.path:
+    #return ItemBiggiSerializer
+    #   return ItemMiniSerializer
+    
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
- 
-     
- 
-
-class ResultatDetailViewSet(viewsets.ModelViewSet):
-    queryset = ResultatDetail.objects.select_related('testdetail__groupagedata').order_by('testdetail__itempos')
-    serializer_class = ResultatDetailSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
- 
-    def get_queryset(self):
-        resultat_id = self.request.query_params.get('id', None)  # Change to 'id'
-        if resultat_id is not None:
-            return self.queryset.filter(id=resultat_id)  # Use 'id' here
-        return self.queryset
-     
 
 
 class ResultatViewSet(viewsets.ModelViewSet):
-    queryset = Resultat.objects.all().order_by('eleve_id', 'groupage__id', 'groupage__position')
+    queryset = Resultat.objects.all()
     serializer_class = ResultatSerializer
+ 
+    
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
-    @swagger_auto_schema(
-        manual_parameters=[
-            openapi.Parameter(
-                'eleve_id', openapi.IN_QUERY, 
-                description="Filter results by eleve ID", 
-                type=openapi.TYPE_INTEGER
-            ),
-            openapi.Parameter(
-                'id', openapi.IN_QUERY, 
-                description="Filter result by Resultat ID", 
-                type=openapi.TYPE_INTEGER
-            )
-        ]
-    )
     def get_queryset(self):
         queryset = super().get_queryset()
         eleve_id = self.request.query_params.get('eleve_id', None)
-        resultat_id = self.request.query_params.get('id', None)  # Fetch 'id' for filtering
-
-        if resultat_id is not None:
-            return queryset.filter(id=resultat_id)  # Filter by Resultat ID
-        
         if eleve_id is not None:
-            # Ensure that the user is associated with the Eleve
-            if self.request.user.groups.filter(name='teacher').exists():
-                queryset = queryset.filter(eleve__professeurs=self.request.user, eleve__id=eleve_id)
-            else:
-                queryset = queryset.filter(eleve__id=eleve_id)  # For admins or other roles
-
+            queryset = queryset.filter(eleve_id=eleve_id)
         return queryset
+
+class ResultatDetailViewSet(viewsets.ModelViewSet):
+    queryset = ResultatDetail.objects.all()
+    serializer_class = ResultatDetailSerializer
+ 
+    
+    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        resultat_id = self.request.query_params.get('resultat_id', None)
+        if resultat_id is not None:
+            queryset = queryset.filter(resultat_id=resultat_id)
+        return queryset
+  
+
+class PDFLayoutViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+
+    queryset = PDFLayout.objects.all()
+    serializer_class = PDFLayoutSerializer
+ 
+
+
+class ReportViewSet(viewsets.ModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = ReportSerializer
+
+    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+
+
+class EleveReportsView(APIView):
+
+    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    def get(self, request, eleve_id):
+        reports = Report.objects.filter(eleve_id=eleve_id)
+        serializer = ReportSerializer(reports, many=True)
+        return Response(serializer.data)
+    
+
+class ReportCatalogueViewSet(viewsets.ModelViewSet):
+
+    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    queryset = ReportCatalogue.objects.all()
+    serializer_class = ReportCatalogueSerializer
+

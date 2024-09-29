@@ -12,6 +12,10 @@ from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from django.conf.urls import handler404
+from competence.views import custom_404  # Adjust the import based on your app structure
+
+handler404 = custom_404
 
 
 

@@ -146,23 +146,28 @@ class Command(BaseCommand):
                 )
         self.stdout.write(self.style.SUCCESS('Successfully imported scorerulepoint data'))
 
- 
-        # Load Item data# Load Item data
-        with open('script_db/item.csv', mode='r') as file: 
+  
 
+        # Load Item data
+        with open('script_db/item.csv', mode='r') as file: 
             reader = csv.DictReader(file) 
             for row in reader:
-                # Ensure that 'groupagedata' and 'scorerule' exist in the database 
-                groupagedata = GroupageData.objects.get(id=row['groupagedata'])
-                scorerule = ScoreRule.objects.get(id=row['scorerule'])
+                try:
+                    groupagedata = GroupageData.objects.get(id=row['groupagedata'])
+                    scorerule = ScoreRule.objects.get(id=row['scorerule'])
+                except GroupageData.DoesNotExist:
+                    self.stdout.write(self.style.ERROR(f"GroupageData ID {row['groupagedata']} does not exist."))
+                    continue
+                except ScoreRule.DoesNotExist:
+                    self.stdout.write(self.style.ERROR(f"ScoreRule ID {row['scorerule']} does not exist."))
+                    continue
 
-                # Use 'id' to get or create the Item, and set the other fields in 'defaults'
                 Item.objects.update_or_create(
-                    id=row['id'],  # Use 'id' for the lookup
+                    id=row['id'],
                     defaults={
                         'groupagedata': groupagedata,
                         'temps': row['temps'],
-                        'description': row['description'], 
+                        'description': row['description'],
                         'observation': row['observation'],
                         'scorerule': scorerule,
                         'max_score': row['max_score'],
@@ -172,5 +177,5 @@ class Command(BaseCommand):
                 )
 
 
+
         self.stdout.write(self.style.SUCCESS('Successfully imported Item data'))
- 

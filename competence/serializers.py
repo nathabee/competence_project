@@ -1,22 +1,37 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
 from .models import (
-    Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
-    Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint
+    Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,PDFLayout,
+    Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint, Report, ReportCatalogue
 )
 
+from rest_framework import serializers
+from django.contrib.auth.models import User, Group
 
- 
 class UserSerializer(serializers.ModelSerializer):
-    roles = serializers.SerializerMethodField()
+    roles = serializers.ListField(child=serializers.CharField(), write_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'roles']
+        fields = ['id', 'username', 'first_name', 'last_name', 'roles', 'password']
 
     def get_roles(self, obj):
-        roles = [group.name for group in obj.groups.all()]  # Get all group names for the user
-        return roles
+        return [group.name for group in obj.groups.all()]
+
+    def create(self, validated_data):
+        roles = validated_data.pop('roles', [])
+        password = validated_data.pop('password')  # Ensure password is popped
+        user = User(**validated_data)
+        user.set_password(password)
+        user.save()
+
+        # Assign groups based on roles
+        for role in roles:
+            group, created = Group.objects.get_or_create(name=role)
+            user.groups.add(group)  # Add user to the group
+
+        return user
+
 
 
 # Serializer for Eleve (Student)
@@ -109,6 +124,13 @@ class CatalogueSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         return super().create(validated_data)
     
+ 
+
+class CatalogueDescriptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Catalogue
+        fields = ['description']
+
 
 # Serializer for GroupageData
 class GroupageDataSerializer(serializers.ModelSerializer):
@@ -117,7 +139,7 @@ class GroupageDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = GroupageData 
         fields = ['id', 'catalogue', 'position', 'desc_groupage', 'label_groupage', 'max_point', 'seuil1', 'seuil2', 'max_item', 'link']
-
+ 
 
 # Serializer for Item
 class ItemSerializer(serializers.ModelSerializer):
@@ -128,53 +150,72 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = ['id', 'groupagedata', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link']
 
- 
- 
- 
- 
-################################################################################
 
-    # Use the updated ResultatDetailSerializer
-class ResultatDetailSerializer(serializers.ModelSerializer):
-    eleve = EleveSerializer(read_only=True)
-    testdetail = ItemSerializer(read_only=True)  # Include detailed TestDetail info
-    professeur = UserSerializer(read_only=True)
 
-    # Include resultat_id instead of the full resultat object to avoid a loop
-    resultat_id = serializers.PrimaryKeyRelatedField(read_only=True, source='resultat.id')
+
+class PDFLayoutSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PDFLayout
+        fields = ['id', 'header_icon', 'footer_message']  # Include necessary fields
+
+
+
+class ReportCatalogueSerializer(serializers.ModelSerializer):
+    report = serializers.PrimaryKeyRelatedField(queryset=Report.objects.all())
+    catalogue_desc = CatalogueDescriptionSerializer(read_only=True)  # Use the lightweight serializer
 
     class Meta:
-        model = ResultatDetail
-        fields = ['id', 'resultat_id', 'eleve', 'testdetail', 'scorelabel', 'observation', 'score', 'professeur']
+        model = ReportCatalogue
+        fields = ['id', 'report', 'catalogue_desc']
 
-################################################################################
+ 
+class ReportSerializer(serializers.ModelSerializer):
+    eleve = serializers.StringRelatedField()  
+    professeur = serializers.StringRelatedField()  
+    report_catalogues = ReportCatalogueSerializer(many=True, read_only=True)  # Read-only for now.
+
+    class Meta:
+        model = Report
+        fields = ['id', 'eleve', 'professeur', 'report_catalogues']
+
+    def create(self, validated_data):
+        report_catalogues_data = validated_data.pop('report_catalogues')
+        report = Report.objects.create(**validated_data)
+
+        for catalogue_data in report_catalogues_data:
+            ReportCatalogue.objects.create(report=report, **catalogue_data)
+
+        return report
+
+
+
+
+ 
+# Serializer for Resultat 
+
 class ResultatSerializer(serializers.ModelSerializer):
-    eleve = EleveSerializer(read_only=True)
-    eleve_id = serializers.PrimaryKeyRelatedField(
-        queryset=Eleve.objects.all(),
-        source='eleve',
-    )
-    groupage_id = serializers.PrimaryKeyRelatedField(
-        queryset=GroupageData.objects.all(),
-        source='groupage',
-    )
+    groupage_label = serializers.CharField(write_only=True)
     groupage = GroupageDataSerializer(read_only=True)
-    professeur = UserSerializer(read_only=True)
-    professeur_id = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.all(),  
-        source='professeur',
-    )
-
-    # Use the updated ResultatDetailSerializer
-    resultat_details = ResultatDetailSerializer(many=True, read_only=True, source='resultatdetail_set')
+    report_catalogue = serializers.PrimaryKeyRelatedField(queryset=ReportCatalogue.objects.all())
 
     class Meta:
         model = Resultat
-        fields = ['id', 'eleve', 'eleve_id', 'groupage_id', 'groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'professeur', 'professeur_id', 'resultat_details']
+        fields = ['id', 'report_catalogue', 'groupage', 'groupage_label', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent']
 
     def create(self, validated_data):
-        resultat_details_data = validated_data.pop('resultatdetail_set', [])
-        resultat = Resultat.objects.create(**validated_data)
-        for detail_data in resultat_details_data:
-            ResultatDetail.objects.create(resultat=resultat, **detail_data)  # Link detail to the newly created resultat
-        return resultat
+        groupage_label = validated_data.pop('groupage_label')
+        groupage = GroupageData.objects.get(label_groupage=groupage_label)
+        return Resultat.objects.create(groupage=groupage, **validated_data)
+
+
+# Serializer for ResultatDetail 
+
+
+class ResultatDetailSerializer(serializers.ModelSerializer):
+    item = ItemSerializer(read_only=True)
+    resultat = serializers.PrimaryKeyRelatedField(queryset=Resultat.objects.all())
+
+    class Meta:
+        model = ResultatDetail
+        fields = ['id', 'observation', 'score', 'scorelabel', 'item', 'resultat']
+
