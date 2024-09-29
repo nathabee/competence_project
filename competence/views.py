@@ -25,6 +25,7 @@ from django.db.models import F
 from django.contrib.auth.models import User
 from django.shortcuts import render
  
+from rest_framework import status
 #from drf_yasg.utils import swagger_auto_schema
 #from drf_yasg import openapi
   
@@ -86,20 +87,18 @@ class UserViewSet(viewsets.ModelViewSet):
 
  
 
+ 
+
 class EleveViewSet(viewsets.ModelViewSet):
     serializer_class = EleveSerializer
     permission_classes = [IsAuthenticated]
-    queryset = Eleve.objects.none()  # Default queryset
 
     def get_queryset(self):
         user = self.request.user
-
         if user.groups.filter(name='admin').exists():
             return Eleve.objects.all()
-
         elif user.groups.filter(name='teacher').exists():
             return Eleve.objects.filter(professeurs=user)
-
         return Eleve.objects.none()
 
 
@@ -161,25 +160,32 @@ class CatalogueViewSet(viewsets.ModelViewSet):
     serializer_class = CatalogueSerializer
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
-class GroupageDataViewSet(viewsets.ModelViewSet):
-    queryset = GroupageData.objects.all()
-    serializer_class = GroupageDataSerializer
+ 
 
-    
+
+class GroupageDataViewSet(viewsets.ModelViewSet):
+    serializer_class = GroupageDataSerializer
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+
+    def get_queryset(self):
+        catalogue_id = self.request.query_params.get('catalogue', None)
+        if catalogue_id:
+            return GroupageData.objects.filter(catalogue_id=catalogue_id).prefetch_related('item_set')
+        return GroupageData.objects.all()
+    
 
 class ItemViewSet(viewsets.ModelViewSet):
     queryset = Item.objects.all()
     serializer_class = ItemSerializer
 
-    #def get_serializer_class(self):
-    #   if self.action in ['list', 'retrieve'] and 'biggi' in self.request.path:
-    #return ItemBiggiSerializer
-    #   return ItemMiniSerializer
     
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
 
+    #def get_serializer_class(self):
+    #   if self.action in ['list', 'retrieve'] and 'biggi' in self.request.path:
+    #return ItemBiggiSerializer
+    #   return ItemMiniSerializer
 
 class ResultatViewSet(viewsets.ModelViewSet):
     queryset = Resultat.objects.all()
@@ -225,13 +231,27 @@ class ReportViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
 
-class EleveReportsView(APIView):
+ 
+    
 
+# path('eleve/<int:eleve_id>/reports/', EleveReportsView.as_view(), name='eleve-reports'), 
+class EleveReportsView(APIView):
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
     def get(self, request, eleve_id):
-        reports = Report.objects.filter(eleve_id=eleve_id)
+        # Check if the Eleve exists
+        try:
+            eleve = Eleve.objects.get(id=eleve_id)
+        except Eleve.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the authenticated user is associated with the Eleve
+        if request.user not in eleve.professeurs.all():
+            return Response(status=status.HTTP_403_FORBIDDEN)
+
+        # Retrieve reports for the Eleve
+        reports = eleve.reports.all()
         serializer = ReportSerializer(reports, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
 
 class ReportCatalogueViewSet(viewsets.ModelViewSet):

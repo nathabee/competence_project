@@ -78,10 +78,8 @@ class ScoreRulePoint(models.Model):
 class Eleve(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
-    niveau = models.CharField(max_length=10)
-    textnote1 = models.TextField(blank=True, null=True)
-    textnote2 = models.TextField(blank=True, null=True)
-    textnote3 = models.TextField(blank=True, null=True)
+    niveau = models.CharField(max_length=10) 
+    datenaissance = models.DateField(null=True, blank=True)  # Allows birthdate to be optional    
     professeurs = models.ManyToManyField(User, related_name='eleves', blank=True)
 
     def __str__(self): 

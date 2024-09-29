@@ -32,15 +32,48 @@ class UserSerializer(serializers.ModelSerializer):
 
         return user
 
+from rest_framework import serializers
+from django.contrib.auth.models import User
+from .models import Eleve
+ 
 
-
-# Serializer for Eleve (Student)
 class EleveSerializer(serializers.ModelSerializer):
-    professeurs = UserSerializer(many=True, read_only=True)
+    # Only used for creation and updating
+    professeurs = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.filter(groups__name='teacher'),  # Only teachers can be professeurs
+        many=True,  # Allow multiple professors
+        write_only=True  # This field is only writable for creation and updating
+    )
+
+    # To serialize the professors back to the response
+    professeurs_details = UserSerializer(many=True, read_only=True, source='professeurs')
 
     class Meta:
         model = Eleve
-        fields = ['id', 'nom', 'prenom', 'niveau', 'textnote1', 'textnote2', 'textnote3', 'professeurs']
+        fields = ['id', 'nom', 'prenom', 'niveau', 'datenaissance', 'professeurs', 'professeurs_details']  # Include all fields
+
+    def create(self, validated_data):
+        professeurs = validated_data.pop('professeurs', [])  # Get the professors list or empty list
+        eleve = Eleve.objects.create(**validated_data)
+        eleve.professeurs.set(professeurs)  # Assign professors
+        return eleve
+    
+
+    def update(self, instance, validated_data):
+        # (set(professeurs)) replaces the entire professor list with whatever is provided in the request.
+        professeurs = validated_data.pop('professeurs', None)  # Get the professeurs if provided
+        instance.nom = validated_data.get('nom', instance.nom)
+        instance.prenom = validated_data.get('prenom', instance.prenom)
+        instance.niveau = validated_data.get('niveau', instance.niveau)
+        instance.datenaissance = validated_data.get('datenaissance', instance.datenaissance)
+
+        if professeurs is not None:
+            # Replace the current professors with the provided list
+            instance.professeurs.set(professeurs)  # Replace the professors list with the new list
+
+        instance.save()  # Save the instance after making changes
+        return instance
+
 
 
 class EleveAnonymizedSerializer(serializers.ModelSerializer):
@@ -90,8 +123,6 @@ class ScoreRulePointSerializer(serializers.ModelSerializer):
         model = ScoreRulePoint
         fields = ['id', 'scorelabel', 'score', 'description']
 
-
-
 # Serializer for Catalogue
 class CatalogueSerializer(serializers.ModelSerializer):
     niveau_id = serializers.PrimaryKeyRelatedField(
@@ -131,24 +162,20 @@ class CatalogueDescriptionSerializer(serializers.ModelSerializer):
         model = Catalogue
         fields = ['description']
 
-
-# Serializer for GroupageData
-class GroupageDataSerializer(serializers.ModelSerializer):
-    catalogue = CatalogueSerializer(read_only=True)  # Include detailed Catalogue info
-
-    class Meta:
-        model = GroupageData 
-        fields = ['id', 'catalogue', 'position', 'desc_groupage', 'label_groupage', 'max_point', 'seuil1', 'seuil2', 'max_item', 'link']
- 
-
 # Serializer for Item
 class ItemSerializer(serializers.ModelSerializer):
-    groupagedata = GroupageDataSerializer(read_only=True)  # Include detailed GroupageData info
-    scorerule = ScoreRuleSerializer(read_only=True)
-
+    
     class Meta:
         model = Item
-        fields = ['id', 'groupagedata', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link']
+        fields = ['id', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link']
+
+# Serializer for GroupageData, including the nested items
+class GroupageDataSerializer(serializers.ModelSerializer): 
+    items = ItemSerializer(many=True, read_only=True, source='item_set')  
+
+    class Meta:
+        model = GroupageData
+        fields = ['id', 'catalogue', 'catalogue_id', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item', 'items']
 
 
 

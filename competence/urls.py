@@ -17,16 +17,13 @@ router.register(r'matieres', MatiereViewSet)
 router.register(r'scorerules', ScoreRuleViewSet)
 router.register(r'scorerulepoints', ScoreRulePointViewSet)
 router.register(r'eleves', EleveViewSet, basename='eleve')  # Specify a basename here
-router.register(r'eleves/anonymized', EleveAnonymizedViewSet, basename='eleve-anonymized')  # Unique basename
+router.register(r'eleves/anonymized', EleveAnonymizedViewSet, basename='eleve-anonymized')  
 router.register(r'catalogues', CatalogueViewSet)
-router.register(r'groupages', GroupageDataViewSet)
+router.register(r'groupages', GroupageDataViewSet , basename='groupagedata')
 router.register(r'items', ItemViewSet) 
-router.register(r'resultats', ResultatViewSet)  # Specify the basename 
+router.register(r'resultats', ResultatViewSet)   
 router.register(r'resultatdetails', ResultatDetailViewSet)
 router.register(r'pdf_layouts', PDFLayoutViewSet, basename='pdf_layouts')
-
-
-
 router.register(r'reports', ReportViewSet)
 router.register(r'reportcatalogues', ReportCatalogueViewSet)
 

@@ -136,9 +136,17 @@ class Command(BaseCommand):
 
             for row in reader:
 
+                try: 
+                    scorerule = ScoreRule.objects.get(id=row['scorerule']) 
+                except ScoreRule.DoesNotExist:
+                    self.stdout.write(self.style.ERROR(f"ScoreRule ID {row['scorerule']} does not exist."))
+                    continue
+
+
                 ScoreRulePoint.objects.update_or_create( 
                     id=row['id'],  # Use 'id' to update or create
                     defaults={ 
+                        'scorerule':   scorerule ,
                         'scorelabel':  row['scorelabel'],
                         'score': row['score'],
                         'description': row['description'],
@@ -146,7 +154,7 @@ class Command(BaseCommand):
                 )
         self.stdout.write(self.style.SUCCESS('Successfully imported scorerulepoint data'))
 
-  
+ 
 
         # Load Item data
         with open('script_db/item.csv', mode='r') as file: 
