@@ -5,8 +5,12 @@ from .models import (
     Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint, Report, ReportCatalogue
 )
 
-from rest_framework import serializers
-from django.contrib.auth.models import User, Group
+from rest_framework import serializers  
+
+ 
+
+ 
+ 
 
 class UserSerializer(serializers.ModelSerializer):
     roles = serializers.ListField(child=serializers.CharField(), write_only=True)
@@ -14,28 +18,28 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'username', 'first_name', 'last_name', 'roles', 'password']
-
-    def get_roles(self, obj):
-        return [group.name for group in obj.groups.all()]
+        extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
         roles = validated_data.pop('roles', [])
-        password = validated_data.pop('password')  # Ensure password is popped
+        password = validated_data.pop('password')  # Extract the password
         user = User(**validated_data)
-        user.set_password(password)
+        user.set_password(password)  # Hash the password
         user.save()
 
-        # Assign groups based on roles
+        # Assign the user to the specified roles (groups)
         for role in roles:
             group, created = Group.objects.get_or_create(name=role)
-            user.groups.add(group)  # Add user to the group
+            user.groups.add(group)
 
         return user
 
-from rest_framework import serializers
-from django.contrib.auth.models import User
-from .models import Eleve
- 
+    def to_representation(self, instance):
+        """Modify the output to include the user's groups as roles."""
+        rep = super().to_representation(instance)
+        rep['roles'] = [group.name for group in instance.groups.all()]
+        return rep
+    
 
 class EleveSerializer(serializers.ModelSerializer):
     # Only used for creation and updating

@@ -12,6 +12,10 @@ __pycache__/
 venv/
 ENV/
 
+
+#debug or old code
+**/to_ignore/**
+
 # Django specific files
 *.log
 *.pot

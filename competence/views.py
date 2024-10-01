@@ -22,7 +22,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from django.db.models import F
  
-from django.contrib.auth.models import User
+from rest_framework import serializers 
+from django.contrib.auth.models import User, Group
 from django.shortcuts import render
  
 from rest_framework import status
@@ -33,6 +34,11 @@ from rest_framework import status
 @api_view(['GET'])
 def api_overview(request):
     return Response({
+        "overview": request.build_absolute_uri('/api/overview/'),
+        "login": request.build_absolute_uri('/user/token/'),
+        "users": request.build_absolute_uri('/api/users/'),
+        "users_me": request.build_absolute_uri('/api/users/me/'),
+        "user_roles": request.build_absolute_uri('/api/user/roles/'),   
         "niveaux": request.build_absolute_uri('/api/niveaux/'),
         "etapes": request.build_absolute_uri('/api/etapes/'),
         "annees": request.build_absolute_uri('/api/annees/'),
@@ -40,15 +46,18 @@ def api_overview(request):
         "scorerules": request.build_absolute_uri('/api/scorerules/'),
         "scorerulepoints": request.build_absolute_uri('/api/scorerulepoints/'),
         "eleves": request.build_absolute_uri('/api/eleves/'),
-        "eleves_anonymized": request.build_absolute_uri('/api/eleves/anonymized/'), 
+        "eleves_anonymized": request.build_absolute_uri('/api/eleves/anonymized/'),
         "catalogues": request.build_absolute_uri('/api/catalogues/'),
         "groupages": request.build_absolute_uri('/api/groupages/'),
         "items": request.build_absolute_uri('/api/items/'),
         "resultats": request.build_absolute_uri('/api/resultats/'),
         "resultatdetails": request.build_absolute_uri('/api/resultatdetails/'),
-        "eleve_reports": request.build_absolute_uri('/api/eleve/<int:eleve_id>/reports/'),  # Update this accordingly
-        "pdf_layouts": request.build_absolute_uri('/api/pdf-layouts/'),  # New endpoint for PDF layouts
+        "eleve_reports": request.build_absolute_uri('/api/eleve/{eleve_id}/reports/'),    
+        "pdf_layouts": request.build_absolute_uri('/api/pdf-layouts/'),
     })
+
+
+ 
 
 
 handler404 = 'yourapp.views.custom_404'
@@ -60,7 +69,6 @@ def custom_404(request, exception):
 
 
  
- 
 class UserRolesView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -68,6 +76,12 @@ class UserRolesView(APIView):
         user_groups = request.user.groups.all()  # Get all groups for the user
         roles = [group.name for group in user_groups]  # Collect group names as roles
         return Response({'roles': roles})
+
+
+ 
+
+ 
+    
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -85,9 +99,8 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
 
- 
 
- 
+
 
 class EleveViewSet(viewsets.ModelViewSet):
     serializer_class = EleveSerializer
