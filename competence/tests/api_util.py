@@ -6,12 +6,14 @@ class ApiUtil:
         "get_user": 0,
         "get_user_roles" : 0,
         "get_user_me": 0,
+        "get_teacher_list": 0,
         "create_user": 0,
         "login_user": 0,
         "get_user_list": 0,
         "get_eleve_list": 0,
         "get_eleve": 0,
         "delete_eleve": 0,
+        "create_eleve":0,
         "create_niveau": 0,
         "get_niveau": 0,
         "get_niveau_list": 0,
@@ -44,6 +46,11 @@ class ApiUtil:
         self.call_counts["get_user_list"] += 1
         return self.client.get(f"/api/users/")
 
+    def _get_teacher_list(self):
+        self.call_counts["get_teacher_list"] += 1
+        return self.client.get(f"/api/users/teacher_list/")
+
+ 
 
 
     def _get_user_me(self):
@@ -76,12 +83,12 @@ class ApiUtil:
         return self.client.post('/api/token/', data, format='json') 
 
 
-    def _create_eleve(self, nom, prenom, niveau_id, datenaissance, professeurs):
+    def _create_eleve(self, nom, prenom, niveau, datenaissance, professeurs):
         self.call_counts["create_eleve"] += 1
         data = {
                 "nom": nom,
                 "prenom": prenom,
-                "niveau": niveau_id,
+                "niveau": niveau,
                 "datenaissance": datenaissance,
                 "professeurs": professeurs
         }
@@ -140,14 +147,24 @@ class ApiUtil:
         self.call_counts["get_etape_list"] += 1
         return self.client.get(f"/api/etapes/")
     
-    # Annee-related methods 
-    def _create_annee(self,  annee, description):
+    # Annee-related methods
+    def _create_annee(self, is_active, start_date, stop_date, description):
         self.call_counts["create_annee"] += 1
+        
         data = {
-            "annee": annee,
+            "is_active": is_active,
             "description": description
         }
+
+        if start_date:
+            data["start_date"] = start_date
+        
+        if stop_date:
+            data["stop_date"] = stop_date
+
+        print(f"POST /api/annees/", data)
         return self.client.post("/api/annees/", data, format='json')
+
  
     def _get_annee(self,  annee_id):
         self.call_counts["get_annee"] += 1
@@ -167,10 +184,11 @@ class ApiUtil:
         }
         return self.client.post("/api/matieres/", data, format='json')
  
-    def _get_matiere(self,  matiere_id):
-        self.call_counts["get_matiere"] += 1
-        return self.get(f"/api/matieres/{matiere_id}/")
+ 
 
+    def _get_matiere(self, matiere_id):
+        self.call_counts["get_matiere"] += 1
+        return self.client.get(f"/api/matieres/{matiere_id}/")
 
     def _get_matiere_list(self):
         self.call_counts["get_matiere_list"] += 1

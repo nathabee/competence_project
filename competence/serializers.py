@@ -6,6 +6,7 @@ from .models import (
 )
 
 from rest_framework import serializers  
+from django.utils import timezone
 
  
 
@@ -102,10 +103,34 @@ class EtapeSerializer(serializers.ModelSerializer):
 
 # Serializer for Annee
 class AnneeSerializer(serializers.ModelSerializer):
+    start_date = serializers.DateField(input_formats=['%Y-%m-%d' ], required=False)
+    stop_date = serializers.DateField(input_formats=['%Y-%m-%d'], required=False)
+
     class Meta:
         model = Annee
-        fields = ['id', 'annee', 'description']
+        fields = ['id', 'is_active', 'start_date', 'stop_date', 'description']
+        
+    def perform_create(self, serializer):
+        # If start_date is None, set it to today
+        if not serializer.validated_data.get('start_date'):
+            serializer.validated_data['start_date'] = timezone.now().date()
+        serializer.save()
 
+    def validate(self, attrs):
+        is_active = attrs.get('is_active')
+        start_date = attrs.get('start_date')
+        stop_date = attrs.get('stop_date')
+
+        if is_active and stop_date is not None:
+            raise serializers.ValidationError("stop_date must be None if is_active is True.")
+
+        if start_date and stop_date:
+            if stop_date < start_date:
+                raise serializers.ValidationError("stop_date must be after start_date.")
+
+        return attrs
+
+ 
 
 # Serializer for Matiere
 class MatiereSerializer(serializers.ModelSerializer):

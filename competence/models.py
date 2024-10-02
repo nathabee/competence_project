@@ -1,20 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 from .config_utils import ConfigCache
+from django.utils import timezone
  
   
 
 # Table: Niveau (Class Level & Evaluation Stage)
 class Niveau(models.Model):
-    NIVEAU_CHOICES = [
-        ('GS', 'GS'),
-        ('CP', 'CP'),
-        ('E1', 'E1'),
-        ('E2', 'E2'),
-        ('M1', 'M1'),
-        ('M2', 'M2'), 
-    ]
-    niveau = models.CharField(max_length=10, choices=NIVEAU_CHOICES, default='GS')  # Class level
+    niveau = models.CharField(max_length=10)  # Class level without predefined choices
     description = models.CharField(max_length=30, blank=True, null=True)  # Description
 
     def __str__(self):
@@ -22,24 +15,30 @@ class Niveau(models.Model):
 
 # Table: Etape (Evaluation Stage)
 class Etape(models.Model):
-    ETAPE_CHOICES = [
-        ('DEBUT', 'DEBUT'),
-        ('INTER', 'INTER'),
-        ('FINAL', 'FINAL'), 
-    ]
-    etape = models.CharField(max_length=10, choices=ETAPE_CHOICES, default='DEBUT')  # Etape
+    etape = models.CharField(max_length=10)  # Etape without predefined choices
     description = models.CharField(max_length=30, blank=True, null=True)  # Description
 
     def __str__(self):
         return f"{self.etape} - {self.description}"
+ 
+ 
 
 # Table: Annee
 class Annee(models.Model):
-    annee = models.CharField(max_length=9)  # Year "2024-2025"
-    description = models.CharField(max_length=30, blank=True, null=True)  # Description
+    is_active = models.BooleanField(default=False)  # Whether the year is active
+    start_date = models.DateField(blank=True, null=True)  # Start date of the academic year
+    stop_date = models.DateField(blank=True, null=True)  # Stop date of the academic year
+    description = models.CharField(max_length=100, blank=True, null=True)  # Optional description
+
+    def save(self, *args, **kwargs):
+        # Set start_date to today's date if it's not provided
+        if not self.start_date:
+            self.start_date = timezone.now().date()
+
+        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.annee} - {self.description}"
+        return f"{self.start_date.year} - {self.description}"
 
 
 

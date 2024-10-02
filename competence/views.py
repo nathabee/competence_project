@@ -27,6 +27,7 @@ from django.contrib.auth.models import User, Group
 from django.shortcuts import render
  
 from rest_framework import status
+from django.utils import timezone
 #from drf_yasg.utils import swagger_auto_schema
 #from drf_yasg import openapi
   
@@ -77,11 +78,7 @@ class UserRolesView(APIView):
         roles = [group.name for group in user_groups]  # Collect group names as roles
         return Response({'roles': roles})
 
-
  
-
- 
-    
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -92,12 +89,23 @@ class UserViewSet(viewsets.ModelViewSet):
             return [permissions.IsAdminUser()]  # Only admins can list users
         elif self.action == 'me':
             return [permissions.IsAuthenticated()]  # Authenticated users can access their own info
+        elif self.action == 'teacher_list':
+            return [IsAuthenticated()]  # Authenticated users can access the teacher list
         return super().get_permissions()  # Default permissions for other actions
 
-    @action(detail=False, methods=['get'], permission_classes=[permissions.IsAuthenticated])
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
     def me(self, request):
         serializer = self.get_serializer(request.user)
         return Response(serializer.data)
+
+    @action(detail=False, methods=['get'], permission_classes=[IsAuthenticated])
+    def teacher_list(self, request):
+        # Find all users who belong to the 'teacher' group
+        teacher_group = Group.objects.get(name="teacher")
+        teachers = User.objects.filter(groups=teacher_group)
+        serializer = self.get_serializer(teachers, many=True)
+        return Response(serializer.data)
+ 
 
 
 
@@ -148,10 +156,27 @@ class EtapeViewSet(viewsets.ModelViewSet):
     serializer_class = EtapeSerializer
     permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
+
+ 
+
+
+
 class AnneeViewSet(viewsets.ModelViewSet):
     queryset = Annee.objects.all()
     serializer_class = AnneeSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated]  # Adjusted for simplicity
+
+    def perform_create(self, serializer):
+        # Custom logic when creating a new Annee
+        # Note: The default start_date is handled by the model's save method
+        serializer.save()
+
+    def perform_update(self, serializer):
+        # Custom logic when updating an Annee
+        if not serializer.validated_data.get('stop_date') and not serializer.validated_data.get('is_active'):
+            serializer.validated_data['stop_date'] = timezone.now().date()
+        serializer.save()
+
 
 class MatiereViewSet(viewsets.ModelViewSet):
     queryset = Matiere.objects.all()

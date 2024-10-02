@@ -1,6 +1,8 @@
 import csv
 from django.core.management.base import BaseCommand
 from competence.models import Annee, Catalogue, Etape, GroupageData, Niveau, Matiere, Item, ScoreRule,ScoreRulePoint
+from django.utils.timezone import make_aware
+from datetime import datetime
 
 
 class Command(BaseCommand):
@@ -11,17 +13,32 @@ class Command(BaseCommand):
 
  # Load Catalogue data
 
-         # Import Annee
+        # Import Annee
         with open('script_db/annee.csv', mode='r') as file:
             reader = csv.DictReader(file)
             for row in reader:
+                # Parse date fields and handle empty dates
+                start_date = row['start_date'] if row['start_date'] else None
+                stop_date = row['stop_date'] if row['stop_date'] else None
+                
+                # Make dates timezone-aware if provided
+                if start_date:
+                    start_date = make_aware(datetime.strptime(start_date, '%Y-%m-%d'))
+                if stop_date:
+                    stop_date = make_aware(datetime.strptime(stop_date, '%Y-%m-%d'))
+                
+                # Create or update the Annee instance
                 Annee.objects.update_or_create(
                     id=row['id'],  # Force the creation with specific ID
                     defaults={
-                        'annee': row['annee'],
+                        'is_active': row['is_active'].lower() == 'true',  # Convert string 'true/false' to boolean
+                        'start_date': start_date,
+                        'stop_date': stop_date,
                         'description': row['description']
                     }
                 )
+
+         
         self.stdout.write(self.style.SUCCESS('Successfully imported Annee data'))
 
         # Import Niveau

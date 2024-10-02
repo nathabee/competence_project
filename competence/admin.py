@@ -30,10 +30,10 @@ class EtapeAdmin(admin.ModelAdmin):
     list_filter = ('etape',)
     search_fields = ('etape', 'description')
 
-@admin.register(Annee)
+@admin.register(Annee) 
 class AnneeAdmin(admin.ModelAdmin):
-    list_display = ('annee', 'description')
-    search_fields = ('annee', 'description')
+    list_display = ('is_active', 'start_date', 'stop_date', 'description')  # Replace 'annee' with valid fields
+ 
 
 @admin.register(Matiere)
 class MatiereAdmin(admin.ModelAdmin):
