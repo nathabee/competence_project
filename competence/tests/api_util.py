@@ -12,7 +12,7 @@ class ApiUtil:
         "get_user_list": 0,
         "get_eleve_list": 0,
         "get_eleve": 0,
-        "delete_eleve": 0,
+        "delete_eleve": 0,    
         "create_eleve":0,
         "create_niveau": 0,
         "get_niveau": 0,
@@ -26,7 +26,38 @@ class ApiUtil:
         "create_matiere": 0,
         "get_matiere": 0, 
         "get_matiere_list": 0, 
-        # Add counters for other methods as needed
+        "create_pdf_layout": 0,
+        "get_pdf_layout": 0,
+        "get_pdf_layout_list": 0, 
+        "get_eleve_report": 0,
+        "create_report": 0,
+        "create_full_report":0,
+        "get_report": 0,
+        "get_report_list": 0,
+        "create_report_catalogue": 0,
+        "get_report_catalogue": 0,
+        "get_report_catalogue_list": 0,
+        "create_resultat": 0,
+        "get_resultat": 0,
+        "get_resultat_eleve": 0,
+        "get_resultat_list": 0,
+        "create_resultat_detail": 0,
+        "get_resultat_detail": 0,
+        "get_resultat_detail_list": 0,
+        "create_score_rule_point": 0,
+        "get_score_rule_point": 0,
+        "get_score_rule_point_list": 0, 
+        "create_catalogue": 0,
+        "get_catalogue": 0,
+        "get_catalogue_list": 0,
+        "create_groupagedata": 0,
+        "get_groupagedata": 0,
+        "get_groupagedata_list": 0,
+        "get_groupagedata_catalogue": 0,
+        "create_item": 0,
+        "get_item": 0,
+        "get_item_list": 0,
+        "get_item_groupagedata": 0,
     }
 
     def __init__(self, client: APIClient):
@@ -162,7 +193,7 @@ class ApiUtil:
         if stop_date:
             data["stop_date"] = stop_date
 
-        print(f"POST /api/annees/", data)
+        #print(f"POST /api/annees/", data)
         return self.client.post("/api/annees/", data, format='json')
 
  
@@ -193,6 +224,232 @@ class ApiUtil:
     def _get_matiere_list(self):
         self.call_counts["get_matiere_list"] += 1
         return self.client.get(f"/api/matieres/")
+
+
+
+    # ScoreRulePoint API Calls
+    def _create_score_rule_point(self, scorelabel, score, description):
+        self.call_counts["create_score_rule_point"] += 1
+        data = {
+            "scorelabel": scorelabel,
+            "score": score,
+            "description": description
+        }
+        return self.client.post("/api/scorerulepoints/", data, format='json')
+
+    def _get_score_rule_point(self, score_rule_point_id):
+        self.call_counts["get_score_rule_point"] += 1
+        return self.client.get(f"/api/scorerulepoints/{score_rule_point_id}/")
+
+    def _get_score_rule_point_list(self):
+        self.call_counts["get_score_rule_point_list"] += 1
+        return self.client.get("/api/scorerulepoints/")
+
+
+
+    def _create_pdf_layout(self, header_icon, footer_message):
+        self.call_counts["create_pdf_layout"] += 1
+        data = {
+            "header_icon": header_icon,
+            "footer_message": footer_message
+        }
+        return self.client.post("/api/pdf_layouts/", data, format='json')
+
+    def _get_pdf_layout(self, pdf_layout_id):
+        self.call_counts["get_pdf_layout"] += 1
+        return self.client.get(f"/api/pdf_layouts/{pdf_layout_id}/")
+
+    def _get_pdf_layout_list(self):
+        self.call_counts["get_pdf_layout_list"] += 1
+        return self.client.get("/api/pdf_layouts/")
+    
+
+    def _create_fullreport(self, data):
+        self.call_counts["create_full_report"] += 1 
+        return self.client.post("/api/full-reports/", data, format='json')
+
+ 
+
+    def _get_eleve_report(self, eleve_id):
+        self.call_counts["get_eleve_report"] += 1
+        return self.client.get("/api/eleve/{}/reports/".format(eleve_id))
+    
+ 
+        
+    def _create_report(self, eleve_id, professeur_id, pdflayout_id, report_catalogues):
+        self.call_counts["create_report"] += 1
+        data = {
+            "eleve": eleve_id,
+            "professeur": professeur_id,
+            "pdflayout": pdflayout_id,
+            "report_catalogues": report_catalogues
+        }
+        #print("Data sent to create report:", data)   
+        return self.client.post("/api/reports/", data, format='json')
+
+
+    def _get_report(self, report_id):
+        self.call_counts["get_report"] += 1
+        return self.client.get(f"/api/reports/{report_id}/")
+
+    def _get_report_list(self):
+        self.call_counts["get_report_list"] += 1
+        return self.client.get("/api/reports/")
+    
+    def _create_report_catalogue(self, report_id, catalogue_id):
+        self.call_counts["create_report_catalogue"] += 1
+        data = {
+            "report": report_id,
+            "catalogue": catalogue_id   
+        }
+        return self.client.post("/api/reportcatalogues/", data, format='json')
+
+
+    def _get_report_catalogue(self, report_catalogue_id):
+        self.call_counts["get_report_catalogue"] += 1
+        return self.client.get(f"/api/reportcatalogues/{report_catalogue_id}/")
+
+    def _get_report_catalogue_list(self):
+        self.call_counts["get_report_catalogue_list"] += 1
+        return self.client.get("/api/reportcatalogues/")
+ 
+
+    def _create_resultat(self, report_catalogue_id, groupage_id, score, seuil1_percent, seuil2_percent, seuil3_percent):
+        self.call_counts["create_resultat"] += 1
+        data = {
+            "report_catalogue": report_catalogue_id,
+            "groupage": groupage_id,   
+            "score": score,
+            "seuil1_percent": seuil1_percent,
+            "seuil2_percent": seuil2_percent,
+            "seuil3_percent": seuil3_percent
+        }
+        #print(f"DEBUG _create_resultat",data)
+        return self.client.post("/api/resultats/", data, format='json')
+
+
+    def _get_resultat(self, resultat_id):
+        self.call_counts["get_resultat"] += 1
+        return self.client.get(f"/api/resultats/{resultat_id}/")
+
+
+    def _get_resultat_eleve(self, eleve_id):
+        self.call_counts["get_resultat_eleve"] += 1
+        return self.client.get(f"/api/resultats/?eleve_id={eleve_id}/")
+ 
+
+
+    def _get_resultat_list(self):
+        self.call_counts["get_resultat_list"] += 1
+        return self.client.get("/api/resultats/")
+
+    # Resultat Detail API Calls
+    def _create_resultat_detail(self, resultat_id, item_id, score, scorelabel=None, observation=None):
+        self.call_counts["create_resultat_detail"] += 1
+        data = {
+            "resultat_id": resultat_id,
+            "item_id": item_id,
+            "score": score,
+            "scorelabel": scorelabel,
+            "observation": observation
+        }
+        #print(f"post /api/resultatdetails/", data)
+        return self.client.post("/api/resultatdetails/", data, format='json')
+ 
+
+
+    def _get_resultat_detail(self, resultat_detail_id):
+        self.call_counts["get_resultat_detail"] += 1
+        return self.client.get(f"/api/resultatdetails/{resultat_detail_id}/")
+
+    def _get_resultat_detail_list(self):
+        self.call_counts["get_resultat_detail_list"] += 1
+        return self.client.get("/api/resultatdetails/")
+
+    # Catalogue API Calls
+    def _create_catalogue(self, niveau_id, etape_id, annee_id, matiere_id, description):
+        self.call_counts["create_catalogue"] += 1
+        data = {
+            "niveau_id": niveau_id,
+            "etape_id": etape_id,
+            "annee_id": annee_id,
+            "matiere_id": matiere_id,
+            "description": description
+        }
+        return self.client.post("/api/catalogues/", data, format='json')
+
+    def _get_catalogue(self, catalogue_id):
+        self.call_counts["get_catalogue"] += 1
+        return self.client.get(f"/api/catalogues/{catalogue_id}/")
+
+    def _get_catalogue_list(self):
+        self.call_counts["get_catalogue_list"] += 1
+        return self.client.get("/api/catalogues/")
+    
+
+ 
+
+    # GroupageData-related methods
+    def _create_groupagedata(self, catalogue_id, position, desc_groupage, label_groupage, link, max_point, seuil1, seuil2, max_item):
+        self.call_counts["create_groupagedata"] += 1
+        data = {
+            "catalogue": catalogue_id,
+            "position": position,
+            "desc_groupage": desc_groupage,
+            "label_groupage": label_groupage,
+            "link": link,
+            "max_point": max_point,
+            "seuil1": seuil1,
+            "seuil2": seuil2,
+            "max_item": max_item
+        }
+        return self.client.post("/api/groupages/", data, format='json')
+
+ 
+
+
+    def _get_groupagedata_catalogue(self, catalogue_id):
+        self.call_counts["get_groupagedata_catalogue"] += 1
+        return self.client.get(f"/api/groupages/?catalogue={catalogue_id}")    
+
+    def _get_groupagedata(self, groupagedata_id):
+        self.call_counts["get_groupagedata"] += 1
+        return self.client.get(f"/api/groupages/{groupagedata_id}/")
+
+    def _get_groupagedata_list(self):
+        self.call_counts["get_groupagedata_list"] += 1
+        return self.client.get("/api/groupages/")
+
+    # Item-related methods
+    def _create_item(self, groupagedata_id, temps, description, observation, scorerule_id, max_score, itempos, link):
+        self.call_counts["create_item"] += 1
+        data = {
+            "groupagedata": groupagedata_id,
+            "temps": temps,
+            "description": description,
+            "observation": observation,
+            "scorerule": scorerule_id,
+            "max_score": max_score,
+            "itempos": itempos,
+            "link": link
+        }
+        return self.client.post("/api/items/", data, format='json')
+ 
+    def _get_item_groupagedata(self, groupagedata_id):
+        self.call_counts["get_item_groupagedata"] += 1
+        return self.client.get(f"/api/items/?groupagedata={groupagedata_id}")    
+ 
+
+
+    def _get_item(self, item_id):
+        self.call_counts["get_item"] += 1
+        return self.client.get(f"/api/items/{item_id}/")
+
+    def _get_item_list(self):
+        self.call_counts["get_item_list"] += 1
+        return self.client.get("/api/items/")
+ 
+
 
 ###########################################################################
 

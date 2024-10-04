@@ -5,7 +5,7 @@ from .views import (
     CatalogueViewSet, GroupageDataViewSet, ItemViewSet,
     ResultatViewSet, ResultatDetailViewSet, MatiereViewSet,
     ScoreRuleViewSet, ScoreRulePointViewSet, UserViewSet,
-    UserRolesView, api_overview, EleveAnonymizedViewSet,
+    UserRolesView, api_overview, EleveAnonymizedViewSet,ReportFRViewSet,
     EleveReportsView,ReportCatalogueViewSet ,ReportViewSet,PDFLayoutViewSet
 )
 
@@ -20,12 +20,13 @@ router.register(r'eleves', EleveViewSet, basename='eleve')  # Specify a basename
 router.register(r'eleves/anonymized', EleveAnonymizedViewSet, basename='eleve-anonymized')  
 router.register(r'catalogues', CatalogueViewSet)
 router.register(r'groupages', GroupageDataViewSet , basename='groupagedata')
-router.register(r'items', ItemViewSet) 
+router.register(r'items', ItemViewSet, basename='item') 
 router.register(r'resultats', ResultatViewSet)   
 router.register(r'resultatdetails', ResultatDetailViewSet)
 router.register(r'pdf_layouts', PDFLayoutViewSet, basename='pdf_layouts')
 router.register(r'reports', ReportViewSet)
 router.register(r'reportcatalogues', ReportCatalogueViewSet)
+router.register(r'full-reports', ReportFRViewSet, basename='full-report')
 
 router.register(r'users', UserViewSet)
 

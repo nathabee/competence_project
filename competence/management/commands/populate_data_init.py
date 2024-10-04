@@ -1,6 +1,6 @@
 import csv
 from django.core.management.base import BaseCommand
-from competence.models import Annee, Catalogue, Etape, GroupageData, Niveau, Matiere, Item, ScoreRule,ScoreRulePoint
+from competence.models import Annee, Catalogue, Etape, GroupageData, Niveau, Matiere, Item, ScoreRule,ScoreRulePoint,PDFLayout
 from django.utils.timezone import make_aware
 from datetime import datetime
 
@@ -204,3 +204,20 @@ class Command(BaseCommand):
 
 
         self.stdout.write(self.style.SUCCESS('Successfully imported Item data'))
+
+
+        # Load Layout data
+        with open('script_db/pdflayout.csv', mode='r') as file: 
+            reader = csv.DictReader(file) 
+            for row in reader: 
+
+                PDFLayout.objects.update_or_create(
+                    id=row['id'],
+                    defaults={
+                        'header_icon': row['header_icon'],
+                        'footer_message': row['footer_message'],
+                    }
+                )
+
+
+        self.stdout.write(self.style.SUCCESS('Successfully imported PDFLayout data'))

@@ -15,11 +15,15 @@ class Command(BaseCommand):
             },
             'analytics': {
                 'permissions': ['view'],  # Analytics can only view data
-            },
+            }, 
+
             'teacher': {
-                'permissions': ['view', 'change', 'delete'],  # Teachers can view, change, and delete data
-                'excluded_models': ['annee', 'etape', 'catalogue', 'niveau', 'matiere', 'groupagedata', 'item', 'user']  # No edit on config models
-            },
+            'permissions': ['view'],
+            'additional_permissions': {
+                'allowed': ['add', 'change', 'delete'],
+                'excluded_models': ['annee', 'etape', 'catalogue', 'niveau', 'matiere', 'groupagedata', 'item', 'user','eleve']  
+            }
+}
         }
 
         for group_name, group_data in groups.items():

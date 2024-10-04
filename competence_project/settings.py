@@ -159,3 +159,4 @@ CSRF_TRUSTED_ORIGINS = [
     'http://nathabee.de:3000',  # Add this if you're testing locally
 ]
 
+ 

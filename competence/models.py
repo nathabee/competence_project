@@ -135,7 +135,7 @@ class Item(models.Model):
 
 # Table: PDFLayout (Defining the PDF structure)
 class PDFLayout(models.Model):
-    header_icon = models.CharField(max_length=255)  # Link to header icon
+    header_icon = models.CharField(max_length=500)  # Link to header icon
     footer_message = models.TextField(blank=True, null=True)  # Footer message
 
     def __str__(self):
@@ -166,10 +166,7 @@ class ReportCatalogue(models.Model):
         return f"Report Catalogue for {self.catalogue}"
 
 
-# Table: Resultat 
-
-    def __str__(self):
-        return f"Result for {self.eleve} - {self.groupage}"
+# Table: Resultat  
 
 class Resultat(models.Model):
     report_catalogue = models.ForeignKey('ReportCatalogue', on_delete=models.CASCADE, related_name='resultats')
@@ -181,7 +178,7 @@ class Resultat(models.Model):
 
     def __str__(self):
         return f"Resultat for {self.report_catalogue}"
-
+  
 
 # Table: ResultatDetail 
 

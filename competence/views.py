@@ -2,8 +2,8 @@
 
 
 from rest_framework import permissions, viewsets
-from .permissions import IsTeacher, IsAdmin, IsAnalytics
-from rest_framework.permissions import IsAuthenticated, IsAdminUser
+from .permissions import isAllowed, isAllowedApiView
+from rest_framework.permissions import IsAuthenticated
 
 from .models import (
     Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
@@ -13,7 +13,7 @@ from .models import (
 from .serializers import (
     NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer, EleveAnonymizedSerializer, CatalogueSerializer,
     ReportCatalogueSerializer,ResultatDetailSerializer,ReportSerializer,ResultatSerializer,UserSerializer,ScoreRuleSerializer,   ScoreRulePointSerializer,
-    PDFLayoutSerializer,
+    PDFLayoutSerializer, ReportFRSerializer,
     GroupageDataSerializer,ItemSerializer
 )
  
@@ -55,6 +55,8 @@ def api_overview(request):
         "resultatdetails": request.build_absolute_uri('/api/resultatdetails/'),
         "eleve_reports": request.build_absolute_uri('/api/eleve/{eleve_id}/reports/'),    
         "pdf_layouts": request.build_absolute_uri('/api/pdf-layouts/'),
+        "full_report_create": request.build_absolute_uri('/api/reports/full-create/'),  # New addition
+
     })
 
 
@@ -68,10 +70,12 @@ def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
 
-
+####################################################################
+#  APIView .... in this case we just have defined a GET
+##############################################################
  
 class UserRolesView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, isAllowedApiView]
 
     def get(self, request):
         user_groups = request.user.groups.all()  # Get all groups for the user
@@ -79,8 +83,53 @@ class UserRolesView(APIView):
         return Response({'roles': roles})
 
  
+ # path('eleve/<int:eleve_id>/reports/', EleveReportsView.as_view(), name='eleve-reports'), 
+
+
+class EleveReportsView(APIView):
+    permission_classes = [IsAuthenticated, isAllowedApiView]
+
+    def get(self, request, eleve_id):
+        # Check if the Eleve exists
+        try:
+            eleve = Eleve.objects.get(id=eleve_id)
+        except Eleve.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        # Check if the authenticated user is associated with the Eleve
+        if request.user not in eleve.professeurs.all():
+            return Response(status=status.HTTP_403_FORBIDDEN)
+            #return Response(status=status.HTTP_407_PROXY_AUTHENTICATION_REQUIRED)
+
+        # Retrieve reports for the Eleve
+        reports = eleve.reports.all()
+        serializer = ReportSerializer(reports, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+ 
+    # Note: No 'create' action is implemented here since reports should be created through the api/reports endpoint.
+
+    def post(self, request, eleve_id):
+        # Logic for creating a report (if allowed for teachers)
+        pass
+
+    def put(self, request, eleve_id):
+        # Logic for updating a report (if allowed for teachers)
+        pass
+
+    def delete(self, request, eleve_id):
+        # Logic for deleting a report (if allowed for teachers)
+        pass
+
+
+
+
+####################################################################
+#  ViewSet
+##############################################################
 
 class UserViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, isAllowed]
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
@@ -112,7 +161,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class EleveViewSet(viewsets.ModelViewSet):
     serializer_class = EleveSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, isAllowed]
 
     def get_queryset(self):
         user = self.request.user
@@ -126,7 +175,7 @@ class EleveViewSet(viewsets.ModelViewSet):
 
 class EleveAnonymizedViewSet(viewsets.ModelViewSet):
     serializer_class = EleveAnonymizedSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated, isAllowed]
     queryset = Eleve.objects.none()  # Default queryset
 
     def get_queryset(self):
@@ -149,12 +198,12 @@ class EleveAnonymizedViewSet(viewsets.ModelViewSet):
 class NiveauViewSet(viewsets.ModelViewSet):
     queryset = Niveau.objects.all()
     serializer_class = NiveauSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
 class EtapeViewSet(viewsets.ModelViewSet):
     queryset = Etape.objects.all()
     serializer_class = EtapeSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
 
  
@@ -164,7 +213,7 @@ class EtapeViewSet(viewsets.ModelViewSet):
 class AnneeViewSet(viewsets.ModelViewSet):
     queryset = Annee.objects.all()
     serializer_class = AnneeSerializer
-    permission_classes = [IsAuthenticated]  # Adjusted for simplicity
+    permission_classes = [IsAuthenticated, isAllowed]
 
     def perform_create(self, serializer):
         # Custom logic when creating a new Annee
@@ -181,56 +230,54 @@ class AnneeViewSet(viewsets.ModelViewSet):
 class MatiereViewSet(viewsets.ModelViewSet):
     queryset = Matiere.objects.all()
     serializer_class = MatiereSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
 class ScoreRuleViewSet(viewsets.ModelViewSet):
     queryset = ScoreRule.objects.all()
     serializer_class = ScoreRuleSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
 class ScoreRulePointViewSet(viewsets.ModelViewSet):
     queryset = ScoreRulePoint.objects.all()
     serializer_class = ScoreRulePointSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
 class CatalogueViewSet(viewsets.ModelViewSet):
     queryset = Catalogue.objects.all()
     serializer_class = CatalogueSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
  
 
 
 class GroupageDataViewSet(viewsets.ModelViewSet):
     serializer_class = GroupageDataSerializer
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
     def get_queryset(self):
         catalogue_id = self.request.query_params.get('catalogue', None)
         if catalogue_id:
             return GroupageData.objects.filter(catalogue_id=catalogue_id).prefetch_related('item_set')
         return GroupageData.objects.all()
-    
+ 
 
 class ItemViewSet(viewsets.ModelViewSet):
-    queryset = Item.objects.all()
     serializer_class = ItemSerializer
+    permission_classes = [IsAuthenticated, isAllowed]
 
-    
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    def get_queryset(self):
+        groupagedata_id = self.request.query_params.get('groupagedata', None)
+        if groupagedata_id:
+            # Filter items based on the groupagedata_id
+            return Item.objects.filter(groupagedata_id=groupagedata_id)
+        return Item.objects.all()
 
 
-    #def get_serializer_class(self):
-    #   if self.action in ['list', 'retrieve'] and 'biggi' in self.request.path:
-    #return ItemBiggiSerializer
-    #   return ItemMiniSerializer
 
 class ResultatViewSet(viewsets.ModelViewSet):
     queryset = Resultat.objects.all()
     serializer_class = ResultatSerializer
- 
-    
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -243,8 +290,7 @@ class ResultatDetailViewSet(viewsets.ModelViewSet):
     queryset = ResultatDetail.objects.all()
     serializer_class = ResultatDetailSerializer
  
-    
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -255,8 +301,7 @@ class ResultatDetailViewSet(viewsets.ModelViewSet):
   
 
 class PDFLayoutViewSet(viewsets.ModelViewSet):
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
-
+    permission_classes = [IsAuthenticated, isAllowed]
     queryset = PDFLayout.objects.all()
     serializer_class = PDFLayoutSerializer
  
@@ -265,36 +310,29 @@ class PDFLayoutViewSet(viewsets.ModelViewSet):
 class ReportViewSet(viewsets.ModelViewSet):
     queryset = Report.objects.all()
     serializer_class = ReportSerializer
+    permission_classes = [IsAuthenticated, isAllowed]
 
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
 
-
- 
-    
-
-# path('eleve/<int:eleve_id>/reports/', EleveReportsView.as_view(), name='eleve-reports'), 
-class EleveReportsView(APIView):
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
-    def get(self, request, eleve_id):
-        # Check if the Eleve exists
-        try:
-            eleve = Eleve.objects.get(id=eleve_id)
-        except Eleve.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        # Check if the authenticated user is associated with the Eleve
-        if request.user not in eleve.professeurs.all():
-            return Response(status=status.HTTP_403_FORBIDDEN)
-
-        # Retrieve reports for the Eleve
-        reports = eleve.reports.all()
-        serializer = ReportSerializer(reports, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-    
 
 class ReportCatalogueViewSet(viewsets.ModelViewSet):
-
-    permission_classes = [IsAuthenticated, IsTeacher | IsAdmin | IsAnalytics]
+    permission_classes = [IsAuthenticated, isAllowed]
     queryset = ReportCatalogue.objects.all()
     serializer_class = ReportCatalogueSerializer
 
+
+############################################################## 
+
+
+class ReportFRViewSet(viewsets.ModelViewSet):
+    queryset = Report.objects.all()
+    serializer_class = ReportFRSerializer
+
+    def create(self, request, *args, **kwargs):
+        # Using the serializer to create the full report with nested data
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        
+        # Return the created report
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+ 
