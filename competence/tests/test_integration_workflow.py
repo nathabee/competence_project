@@ -10,7 +10,7 @@ from competence.models import (
     Eleve,  
 )
 
-DEBUG = True  # Global DEBUG variable
+DEBUG = False  # Global DEBUG variable
 
 
 # Conditional print based on DEBUG setting
@@ -519,7 +519,10 @@ class Workflow_Dashboard(IntegrationTestSetup):
         eleve_id = next((e['id'] for e in eleve_list if e['nom'] == "Jean" and e['prenom'] == "Valjean"), None)
         self.assertIsNotNone(eleve_id, "Eleve was not found in the list.")
 
+        DEBUG=True
         response = self.api_util._get_eleve_report(eleve_id)
+        debug_print("_get_eleve_report  response.data", response.data)
+        DEBUG=False
         self.assertEqual(response.status_code, status.HTTP_200_OK, "Expected a 200 OK status when no reports exist.")
         self.assertEqual(response.data, [], "Expected an empty list when no reports exist.")
 
@@ -588,7 +591,11 @@ class Workflow_Dashboard(IntegrationTestSetup):
                     self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create ResultatDetail failed: {response.status_code} - {response.content}")
                     
         # Step 11: Validate the Report
+        DEBUG=True 
         response = self.api_util._get_eleve_report(eleve1['id'])
+
+        debug_print("_get_eleve_report  response.data", response.data)
+        self.DEBUG=False
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report failed: {response.status_code} - {response.content}")
         report_list = response.data
         self.assertGreater(len(report_list), 0, "Expected at least one report for the Eleve after creation.")
@@ -704,6 +711,18 @@ class Workflow_Dashboard(IntegrationTestSetup):
         debug_print("response to CREATE FULL REPORT:", fullreport)
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Fullreport failed: {response.status_code} - {response.content}")
+
+
+        DEBUG=True 
+        response = self.api_util._get_eleve_report( eleve_id)
+
+        debug_print("_get_eleve_report  response.data", response.data)
+        DEBUG=False
+        self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report failed: {response.status_code} - {response.content}")
+        report_list = response.data
+        self.assertGreater(len(report_list), 0, "Expected at least one report for the Eleve after creation.")
+ 
+        
 
 
 

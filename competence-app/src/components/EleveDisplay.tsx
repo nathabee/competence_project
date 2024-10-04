@@ -63,7 +63,12 @@ const EleveDisplay: React.FC<EleveDisplayProps> = ({ eleves, onEleveSelect }) =>
                             <td>{eleve.nom}</td>
                             <td>{eleve.prenom}</td>
                             <td>{eleve.niveau}</td>
-                            <td>{eleve.datenaissance?.toISOString().substring(0, 10) || 'N/A'}</td>
+                            <td>
+                                {eleve.datenaissance instanceof Date && !isNaN(eleve.datenaissance.getTime())
+                                    ? eleve.datenaissance.toISOString().substring(0, 10)
+                                    : 'N/A'}
+                            </td>
+
                             <td>{eleve.professeurs_details.map(prof => prof.username).join(', ')}</td> {/* Join usernames of professors */}
                         </tr>
                     ))}

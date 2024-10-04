@@ -6,31 +6,32 @@ import { useRouter } from 'next/navigation';
 import TeacherInfo from '@/components/Teacher';
 import CatalogueSelection from '@/components/CatalogueSelection';
 import EleveSelection from '@/components/EleveSelection';
-import ResultatSelection from '@/components/ResultatSelection';
+import ReportEleveSelection from '@/components/ReportEleveSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext';
+import Spinner from 'react-bootstrap/Spinner';
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
   const { activeCatalogue, activeEleve, catalogue, setCatalogue, eleves, setEleves, user, isLoggedIn } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false); // Define error state
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = document.cookie.split('authToken=')[1];
+      const token = document.cookie.split('authToken=')[1]?.split(';')[0]; // Handle cookie parsing more safely
 
       if (!token) {
         router.push(`/login`);
         return;
       }
 
-      try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
+      try {
         console.log(`DASHBOARD Token: Bearer ${token}`);
         console.log(`DASHBOARD Request URL: ${apiUrl}/catalogues/`);
         console.log(`DASHBOARD Request URL: ${apiUrl}/eleves/`);
-
 
         // Only fetch if catalogue or eleves are not already set
         if (catalogue.length === 0) {
@@ -38,10 +39,7 @@ const Dashboard: React.FC = () => {
           const catalogueResponse = await axios.get(`${apiUrl}/catalogues/`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          console.log(`catalogueResponse available  ${catalogueResponse.data} `);
-
           setCatalogue(catalogueResponse.data);
-          console.log('Catalogue:', catalogue);
         }
 
         if (eleves.length === 0) {
@@ -49,30 +47,30 @@ const Dashboard: React.FC = () => {
           const elevesResponse = await axios.get(`${apiUrl}/eleves/`, {
             headers: { Authorization: `Bearer ${token}` },
           });
-          console.log(`elevesResponse  available ${elevesResponse.data} `);
           setEleves(elevesResponse.data);
-
-          console.log('Eleves:', eleves);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
-        // Optionally handle error state here
+        setError(true); // Set error state on fetch failure
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [router]);
-
-
-
-
-
-
+  }, [router, catalogue, eleves]); // Ensure effect runs correctly
 
   if (loading) {
-    return <p>Loading data...</p>;
+    return (
+      <div className="loading-indicator">
+        <p>Loading data...</p>
+        <Spinner animation="border" />
+      </div>
+    );
+  }
+
+  if (error) {
+    return <p>Error fetching data. Please try again.</p>; // Error handling
   }
 
   return (
@@ -114,8 +112,8 @@ const Dashboard: React.FC = () => {
 
         {activeEleve ? (
           <>
-            <h2>Resultats obtenus par l&apos;eleve selectionne :</h2>
-            <ResultatSelection />
+            <h2>Report obtenus par l&apos;eleve selectionne :</h2>
+            <ReportEleveSelection eleve={activeEleve} />
           </>
         ) : (
           <p>Please select an eleve to see results.</p>

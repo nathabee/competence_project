@@ -15,7 +15,8 @@ from django.contrib.auth.models import User
 
 
 from django.contrib import admin
-from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, Eleve, Catalogue, GroupageData, Item
+from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, Eleve, Catalogue, GroupageData, Item, \
+                    PDFLayout,Report,ReportCatalogue,Resultat,ResultatDetail
 
 
 @admin.register(Niveau)
@@ -76,3 +77,37 @@ class ItemAdmin(admin.ModelAdmin):
     list_display = ('groupagedata', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link')
     list_filter = ('groupagedata', 'scorerule')
     search_fields = ('temps', 'description', 'observation', 'link')
+
+
+
+
+
+@admin.register(ResultatDetail)
+class ResultatDetailAdmin(admin.ModelAdmin):
+    list_display = ('resultat', 'item', 'score', 'scorelabel', 'observation')
+    list_filter = ('resultat', 'item')
+    search_fields = ('resultat__id', 'item__description', 'scorelabel')
+
+@admin.register(Resultat)
+class ResultatAdmin(admin.ModelAdmin):
+    list_display = ('report_catalogue', 'groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent')
+    list_filter = ('groupage', 'report_catalogue')
+    search_fields = ('report_catalogue__id', 'groupage__description')
+
+@admin.register(ReportCatalogue)
+class ReportCatalogueAdmin(admin.ModelAdmin):
+    list_display = ('report', 'catalogue')
+    search_fields = ('report__id', 'catalogue__id')
+
+
+@admin.register(Report)
+class ReportAdmin(admin.ModelAdmin):
+    list_display = ('eleve', 'professeur', 'created_at', 'updated_at', 'pdflayout')
+    list_filter = ('professeur', 'created_at')
+    search_fields = ('eleve__nom', 'professeur__username', 'pdflayout__id')
+
+
+@admin.register(PDFLayout)
+class PDFLayoutAdmin(admin.ModelAdmin):
+    list_display = ('id', 'header_icon', 'footer_message')
+    search_fields = ('header_icon', 'footer_message')

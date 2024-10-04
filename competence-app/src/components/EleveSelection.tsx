@@ -1,4 +1,4 @@
-'use client'; // Make sure this is at the top for client-side rendering
+'use client'; // Ensure this is at the top for client-side rendering
 
 import React, { useState } from 'react';
 import { EleveSelectionProps, Eleve } from '@/types/eleve'; // Update import path based on your types
@@ -11,13 +11,15 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
 
   if (eleves.length === 0) return <p>No Eleves found.</p>;
 
-  const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => eleve.niveau))); // Assuming 'niveau' is a property in Eleve
+  // Get unique levels (niveaux)
+  const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => eleve.niveau)));
 
+  // Filter eleves based on selected niveau
   const filteredEleves = eleves.filter(eleve => {
     return !selectedNiveau || eleve.niveau === selectedNiveau;
   });
-  
 
+  // Handle selecting an eleve
   const handleRowClick = (selectedEleve: Eleve) => {
     setActiveEleve(selectedEleve);
   };
@@ -29,15 +31,17 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
       <div className="filters">
         <label>
           Niveau:
-          <select 
-            value={selectedNiveau || ''} 
-            onChange={e => setSelectedNiveau(e.target.value || null)} 
+          <select
+            value={selectedNiveau || ''}
+            onChange={e => setSelectedNiveau(e.target.value || null)}
             style={{ width: '200px', padding: '5px', fontSize: '16px' }} // Inline styling to adjust size
             className="form-select" // Add a class if you want to control via CSS
           >
             <option value="">All</option>
             {uniqueNiveaux.map(niveau => (
-              <option key={niveau} value={niveau}>{niveau}</option>
+              <option key={niveau} value={niveau}>
+                {niveau}
+              </option>
             ))}
           </select>
         </label>
@@ -64,8 +68,14 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
               <td>{eleve.nom}</td>
               <td>{eleve.prenom}</td>
               <td>{eleve.niveau}</td>
-              <td>{eleve.datenaissance?.toISOString().substring(0, 10) || 'N/A'}</td>
-              <td>{eleve.professeurs_details.map(prof => prof.username).join(', ')}</td> {/* Join usernames of professors */}
+              <td>
+                {eleve.datenaissance
+                  ? new Date(eleve.datenaissance).toLocaleDateString() // Only convert if valid date
+                  : 'N/A'}
+              </td>
+              <td>
+                {eleve.professeurs_details?.map(prof => prof.username).join(', ') || 'N/A'}
+              </td>
             </tr>
           ))}
         </tbody>
