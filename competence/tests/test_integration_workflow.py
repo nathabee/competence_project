@@ -12,6 +12,7 @@ from competence.models import (
 
 DEBUG = True  # Global DEBUG variable
 
+
 # Conditional print based on DEBUG setting
 def debug_print(param1, param2=None):
     #DEBUG = settings.DEBUG
@@ -50,7 +51,7 @@ class IntegrationTestSetup(TestCase):
 
 
 class AdminConfigurationTests(IntegrationTestSetup): 
-    #global DEBUG
+    global DEBUG
     #DEBUG = False
     def setUp(self):
         super().setUp()  # Call the parent setUp to load data
@@ -112,7 +113,7 @@ class AdminConfigurationTests(IntegrationTestSetup):
 
 
 class Workflow_Dashboard(IntegrationTestSetup): 
-    #global DEBUG
+    global DEBUG
     #DEBUG = False
     def setUp(self):
         super().setUp()  # Call the parent setUp to load data
@@ -480,9 +481,8 @@ class Workflow_Dashboard(IntegrationTestSetup):
 
     def test_report_modular_workflow(self):
 
-        
-        #global DEBUG
-        #DEBUG = True
+          
+       
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}') 
 
         # Step 1: Create a teacher

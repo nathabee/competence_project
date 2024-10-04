@@ -8,12 +8,12 @@ import CatalogueSelection from '@/components/CatalogueSelection';
 import EleveSelection from '@/components/EleveSelection';
 import ResultatSelection from '@/components/ResultatSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { useAuth } from '@/context/AuthContext'; 
+import { useAuth } from '@/context/AuthContext';
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
-  const { activeCatalogue, activeEleve, catalogue, setCatalogue, eleves, setEleves,  user, isLoggedIn } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true); 
+  const { activeCatalogue, activeEleve, catalogue, setCatalogue, eleves, setEleves, user, isLoggedIn } = useAuth();
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -38,7 +38,10 @@ const Dashboard: React.FC = () => {
           const catalogueResponse = await axios.get(`${apiUrl}/catalogues/`, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          console.log(`catalogueResponse available  ${catalogueResponse.data} `);
+
           setCatalogue(catalogueResponse.data);
+          console.log('Catalogue:', catalogue);
         }
 
         if (eleves.length === 0) {
@@ -46,7 +49,10 @@ const Dashboard: React.FC = () => {
           const elevesResponse = await axios.get(`${apiUrl}/eleves/`, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          console.log(`elevesResponse  available ${elevesResponse.data} `);
           setEleves(elevesResponse.data);
+
+          console.log('Eleves:', eleves);
         }
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -57,10 +63,10 @@ const Dashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [router ]);
+  }, [router]);
 
 
- 
+
 
 
 
@@ -94,14 +100,29 @@ const Dashboard: React.FC = () => {
         </div>
 
         <h2>Selection :</h2>
-        <CatalogueSelection catalogue={catalogue} />
-        <EleveSelection eleve={eleves} />
-        <h2>Resultats obtenus par l eleve selectionne :</h2>
-        <ResultatSelection    />
+        {catalogue.length === 0 ? (
+          <p>No catalogues found.</p>
+        ) : (
+          <CatalogueSelection catalogue={catalogue} />
+        )}
+
+        {eleves.length === 0 ? (
+          <p>No eleves found.</p>
+        ) : (
+          <EleveSelection eleves={eleves} />
+        )}
+
+        {activeEleve ? (
+          <>
+            <h2>Resultats obtenus par l&apos;eleve selectionne :</h2>
+            <ResultatSelection />
+          </>
+        ) : (
+          <p>Please select an eleve to see results.</p>
+        )}
       </div>
     </div>
   );
 };
 
 export default Dashboard;
-

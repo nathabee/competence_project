@@ -1,7 +1,5 @@
 'use client';
 
- 
-
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -9,11 +7,12 @@ import { Navbar, Nav, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
 
 export default function CustomNavbar() {
-  const { userRoles, isLoggedIn, logout } = useAuth(); // Now getting 'logout' directly from context
+  const { userRoles, isLoggedIn, logout } = useAuth();
   const [isSticky, setIsSticky] = useState(false);
-  const [isHovered, setIsHovered] = useState(false); // Track hover state
+  const [isAdminHovered, setIsAdminHovered] = useState(false);
+  const [isAnalyticsHovered, setIsAnalyticsHovered] = useState(false);
   const router = useRouter();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation'; // Set basePath
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -21,14 +20,13 @@ export default function CustomNavbar() {
     };
 
     window.addEventListener('scroll', handleScroll);
-
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const handleLogout = () => {
-    logout(); // Use logout function from AuthContext
+    logout();
     router.push('/');
   };
 
@@ -48,9 +46,22 @@ export default function CustomNavbar() {
             {isLoggedIn ? (
               <>
                 {userRoles.includes('admin') && (
-                  <Nav.Link href={process.env.NEXT_PUBLIC_ADMIN_URL}>
-                    Administration
-                  </Nav.Link>
+                  <div
+                    className="nav-item dropdown"
+                    onMouseEnter={() => setIsAdminHovered(true)}
+                    onMouseLeave={() => setIsAdminHovered(false)}
+                  >
+                    <Nav.Link href={`${basePath}/admin`}>
+                      Administration Menu
+                    </Nav.Link>
+                    {isAdminHovered && (
+                      <div className="mega-menu">
+                        <Nav.Link href={`${basePath}/admin/user`}>Users</Nav.Link>
+                        <Nav.Link href={`${basePath}/admin/eleve`}>Eleves</Nav.Link>
+                        <Nav.Link href={process.env.NEXT_PUBLIC_ADMIN_URL}>Django Admin Console</Nav.Link>
+                      </div>
+                    )}
+                  </div>
                 )}
                 {userRoles.includes('teacher') && (
                   <>
@@ -61,29 +72,27 @@ export default function CustomNavbar() {
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
                   </>
                 )}
-                {userRoles.includes('analytics') && (                  <>
-                    {/* Mega menu on hover */}
-                    <div
-                      className="nav-item dropdown"
-                      onMouseEnter={() => setIsHovered(true)}
-                      onMouseLeave={() => setIsHovered(false)}
-                    >
-                      <Nav.Link href={`${basePath}/statistiques`}>
-                      statistiques Menu
-                      </Nav.Link>
-                      {isHovered && (
-                        <div className="mega-menu">
+                {userRoles.includes('analytics') && (
+                  <div
+                    className="nav-item dropdown"
+                    onMouseEnter={() => setIsAnalyticsHovered(true)}
+                    onMouseLeave={() => setIsAnalyticsHovered(false)}
+                  >
+                    <Nav.Link href={`${basePath}/statistiques`}>
+                      Statistiques Menu
+                    </Nav.Link>
+                    {isAnalyticsHovered && (
+                      <div className="mega-menu">
                         <Nav.Link href={`${basePath}/statistiques/configuration`}>
                           Configuration Statistiques
                         </Nav.Link>
                         <Nav.Link href={`${basePath}/statistiques/pdf`}>
                           PDF Statistiques
                         </Nav.Link>
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )} 
+                      </div>
+                    )}
+                  </div>
+                )}
               </>
             ) : (
               <Nav.Link href={`${basePath}/login`}>Login</Nav.Link>
@@ -99,4 +108,3 @@ export default function CustomNavbar() {
     </Navbar>
   );
 }
- 

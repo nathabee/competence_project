@@ -13,7 +13,7 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
-  if (!catalogue.length) return <p>Loading Catalogue...</p>;
+  if (!catalogue.length) return <p>No Catalogue found...</p>;
 
   const uniqueYears = Array.from(new Set(catalogue.map(cat => cat.annee.annee)));
   const uniqueLevels = Array.from(new Set(catalogue.map(cat => cat.niveau.niveau)));

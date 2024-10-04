@@ -38,7 +38,8 @@
   width: 100%; /* Full width mega menu */
   background-color: #47dac6; /* Background color */
   padding: 1rem;
-  display: flex;
+  /* display: flex; */
+  display: block; /* Ensure it's displayed when hovered */
   flex-direction: column;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   z-index: 9999;
@@ -47,6 +48,11 @@
 
 .nav-item:hover .mega-menu {
   display: block;
+}
+
+ 
+.nav-item.dropdown {
+  position: relative; /* Required for absolute positioning of the mega-menu */
 }
 
 .mega-menu a {

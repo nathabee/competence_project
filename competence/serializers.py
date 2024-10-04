@@ -43,41 +43,42 @@ class UserSerializer(serializers.ModelSerializer):
     
 
 class EleveSerializer(serializers.ModelSerializer):
-    # Only used for creation and updating
     professeurs = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(groups__name='teacher'),  # Only teachers can be professeurs
-        many=True,  # Allow multiple professors
-        write_only=True  # This field is only writable for creation and updating
+        queryset=User.objects.filter(groups__name='teacher'),  
+        many=True,  
+        write_only=True  
     )
 
-    # To serialize the professors back to the response
     professeurs_details = UserSerializer(many=True, read_only=True, source='professeurs')
+
+    # Update niveau to be a ForeignKey
+    niveau = serializers.PrimaryKeyRelatedField(
+        queryset=Niveau.objects.all(),  # Make sure you have access to all Niveau instances
+    )
 
     class Meta:
         model = Eleve
-        fields = ['id', 'nom', 'prenom', 'niveau', 'datenaissance', 'professeurs', 'professeurs_details']  # Include all fields
+        fields = ['id', 'nom', 'prenom', 'niveau', 'datenaissance', 'professeurs', 'professeurs_details'] 
 
     def create(self, validated_data):
-        professeurs = validated_data.pop('professeurs', [])  # Get the professors list or empty list
+        professeurs = validated_data.pop('professeurs', [])  
         eleve = Eleve.objects.create(**validated_data)
-        eleve.professeurs.set(professeurs)  # Assign professors
+        eleve.professeurs.set(professeurs)  
         return eleve
-    
 
     def update(self, instance, validated_data):
-        # (set(professeurs)) replaces the entire professor list with whatever is provided in the request.
-        professeurs = validated_data.pop('professeurs', None)  # Get the professeurs if provided
+        professeurs = validated_data.pop('professeurs', None)  
         instance.nom = validated_data.get('nom', instance.nom)
         instance.prenom = validated_data.get('prenom', instance.prenom)
         instance.niveau = validated_data.get('niveau', instance.niveau)
         instance.datenaissance = validated_data.get('datenaissance', instance.datenaissance)
 
         if professeurs is not None:
-            # Replace the current professors with the provided list
-            instance.professeurs.set(professeurs)  # Replace the professors list with the new list
+            instance.professeurs.set(professeurs)  
 
-        instance.save()  # Save the instance after making changes
+        instance.save()  
         return instance
+
 
 
 

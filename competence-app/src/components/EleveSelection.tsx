@@ -1,108 +1,77 @@
-// src/components/EleveSelection.tsx
-'use client';
+'use client'; // Make sure this is at the top for client-side rendering
 
 import React, { useState } from 'react';
-import { EleveSelectionProps, Eleve } from '@/types/eleve';
-import { useAuth } from '@/context/AuthContext'; // Import AuthContext
-import '@/app/globals.css'; // Import global styles
+import { EleveSelectionProps, Eleve } from '@/types/eleve'; // Update import path based on your types
+import { useAuth } from '@/context/AuthContext'; // Use AuthContext to manage state
+import '@/app/globals.css';
 
-const EleveSelection: React.FC<EleveSelectionProps> = ({ eleve }) => {
-    const { activeEleve, setActiveEleve } = useAuth(); // Use AuthContext
-    const [selectedClasse, setSelectedClasse] = useState<string | null>(null);
-    const [searchNom, setSearchNom] = useState<string>('');
-    const [searchPrenom, setSearchPrenom] = useState<string>('');
+const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
+  const { activeEleve, setActiveEleve } = useAuth(); // Get activeEleve and setter from AuthContext
+  const [selectedNiveau, setSelectedNiveau] = useState<string | null>(null);
 
-    if (!eleve.length) return <p>Loading Eleve...</p>;
+  if (eleves.length === 0) return <p>No Eleves found.</p>;
 
-    // Get unique classes
-    const uniqueClasses = Array.from(new Set(eleve.map(cat => cat.niveau)));
+  const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => eleve.niveau))); // Assuming 'niveau' is a property in Eleve
 
-    // Filter eleves based on selected class and search criteria
-    const filteredEleve = eleve.filter(cat => {
-        return (
-            (!selectedClasse || cat.niveau === selectedClasse) &&
-            (searchNom === '' || cat.nom.toLowerCase().includes(searchNom.toLowerCase())) &&
-            (searchPrenom === '' || cat.prenom.toLowerCase().includes(searchPrenom.toLowerCase()))
-        );
-    });
+  const filteredEleves = eleves.filter(eleve => {
+    return !selectedNiveau || eleve.niveau === selectedNiveau;
+  });
+  
 
-    const handleRowClick = (selectedEleve: Eleve) => {
-        setActiveEleve(selectedEleve); // Set active eleve in context
-    };
+  const handleRowClick = (selectedEleve: Eleve) => {
+    setActiveEleve(selectedEleve);
+  };
 
-    return (
-        <div className="mb-4">
-            <h2>Eleve Selection</h2>
+  return (
+    <div className="mb-4">
+      <h2>Élève Selection</h2>
 
-            {/* Filters */}
-            <div className="filters">
-                <label>
-                    Class:
-                    <select value={selectedClasse || ''} onChange={e => setSelectedClasse(e.target.value || null)}>
-                        <option value="">All</option>
-                        {uniqueClasses.map(classe => (
-                            <option key={classe} value={classe}>{classe}</option>
-                        ))}
-                    </select>
-                </label>
+      <div className="filters">
+        <label>
+          Niveau:
+          <select 
+            value={selectedNiveau || ''} 
+            onChange={e => setSelectedNiveau(e.target.value || null)} 
+            style={{ width: '200px', padding: '5px', fontSize: '16px' }} // Inline styling to adjust size
+            className="form-select" // Add a class if you want to control via CSS
+          >
+            <option value="">All</option>
+            {uniqueNiveaux.map(niveau => (
+              <option key={niveau} value={niveau}>{niveau}</option>
+            ))}
+          </select>
+        </label>
+      </div>
 
-                <label>
-                    Nom:
-                    <input
-                        type="text"
-                        value={searchNom}
-                        onChange={e => setSearchNom(e.target.value)}
-                        placeholder="Search by Nom"
-                    />
-                </label>
-
-                <label>
-                    Prenom:
-                    <input
-                        type="text"
-                        value={searchPrenom}
-                        onChange={e => setSearchPrenom(e.target.value)}
-                        placeholder="Search by Prenom"
-                    />
-                </label>
-            </div>
-
-            {/* Eleve Table */}
-            <table className="table">
-                <thead>
-                    <tr>
-                        <th>Nom</th>
-                        <th>Prenom</th>
-                        <th>Classe</th>
-                        <th>Note 1</th>
-                        <th>Note 2</th>
-                        <th>Note 3</th>
-                        <th>Professeurs</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {filteredEleve.map(cat => (
-                        <tr
-                            key={cat.id}
-                            onClick={() => handleRowClick(cat)}
-                            className={activeEleve?.id === cat.id ? 'selected-row' : ''}
-                            style={{
-                                cursor: 'pointer',
-                            }}
-                        >
-                            <td>{cat.nom}</td>
-                            <td>{cat.prenom}</td>
-                            <td>{cat.niveau}</td>
-                            <td>{cat.textnote1}</td>
-                            <td>{cat.textnote2}</td>
-                            <td>{cat.textnote3}</td>
-                            <td>{cat.professeurs.map(prof => prof.username).join(', ')}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </div>
-    );
+      <table className="table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Niveau</th>
+            <th>Date de Naissance</th>
+            <th>Professeurs</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredEleves.map(eleve => (
+            <tr
+              key={eleve.id} // Ensure your Eleve has an id property
+              onClick={() => handleRowClick(eleve)}
+              className={activeEleve?.id === eleve.id ? 'selected-row' : ''}
+              style={{ cursor: 'pointer' }}
+            >
+              <td>{eleve.nom}</td>
+              <td>{eleve.prenom}</td>
+              <td>{eleve.niveau}</td>
+              <td>{eleve.datenaissance?.toISOString().substring(0, 10) || 'N/A'}</td>
+              <td>{eleve.professeurs_details.map(prof => prof.username).join(', ')}</td> {/* Join usernames of professors */}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 };
 
 export default EleveSelection;

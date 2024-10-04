@@ -77,7 +77,7 @@ class ScoreRulePoint(models.Model):
 class Eleve(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
-    niveau = models.CharField(max_length=10) 
+    niveau = models.ForeignKey('Niveau', on_delete=models.CASCADE, default=1)
     datenaissance = models.DateField(null=True, blank=True)  # Allows birthdate to be optional    
     professeurs = models.ManyToManyField(User, related_name='eleves', blank=True)
 
