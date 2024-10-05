@@ -329,7 +329,7 @@ class ReportFRSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = ['eleve', 'professeur', 'pdflayout', 'report_catalogues']
+        fields = ['eleve', 'professeur', 'pdflayout',  'report_catalogues']
 
 
     def create(self, validated_data):

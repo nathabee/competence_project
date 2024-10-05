@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { useRouter } from 'next/navigation'; // Import useRouter
-import { Report } from '@/types/report';
+import { useRouter } from 'next/navigation';
+import { Report } from '@/types/report'; // Use the defined Report interface
 import { useAuth } from '@/context/AuthContext'; // Use AuthContext to manage state
-import { Eleve } from '@/types/eleve'; // Assuming you have a type for Eleve
+import { Eleve } from '@/types/eleve'; // Use Eleve type from src/types/eleve
 
 interface ReportEleveSelectionProps {
-  eleve: Eleve; // Add the eleve prop of type Eleve
+  eleve: Eleve;
 }
 
 const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [expanded, setExpanded] = useState<boolean>(false);
-  const { setActiveEleve } = useAuth(); // Get setter from AuthContext
-  const router = useRouter(); // Initialize useRouter
+  const { setActiveEleve } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     const fetchReports = async () => {
@@ -22,7 +22,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
         const apiUrl = process.env.NEXT_PUBLIC_API_URL;
         const token = document.cookie.split('authToken=')[1];
 
-        const response = await axios.get(`${apiUrl}/eleve/${eleve.id}/reports/`, { // Use eleve.id to fetch reports
+        const response = await axios.get(`${apiUrl}/eleve/${eleve.id}/reports/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setReports(response.data);
@@ -34,17 +34,16 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
     };
 
     fetchReports();
-  }, [eleve]); // Use eleve as a dependency
+  }, [eleve]);
 
   const toggleExpand = () => setExpanded(!expanded);
-  
-  // Define createReport function to handle redirection and set activeEleve
+
   const createReport = () => {
-    setActiveEleve(eleve); // Set the active eleve
+    setActiveEleve(eleve);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('activeEleve', JSON.stringify(eleve)); // Store selected activeEleve
+      localStorage.setItem('activeEleve', JSON.stringify(eleve));
     }
-    router.push('/test'); // Redirect to the /test page
+    router.push('/test');
   };
 
   if (loading) {
@@ -55,14 +54,14 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
     return (
       <div>
         <button onClick={toggleExpand}>Show Reports</button>
-        <button onClick={createReport}>New Report</button> {/* New Report button */}
+        <button onClick={createReport}>New Report</button>
       </div>
     );
   }
 
   return (
     <div>
-      <button onClick={toggleExpand}>{expanded ? 'Hide Reports' : 'Show Reports'}</button>
+      <button onClick={toggleExpand}>{expanded ? 'Hide Reports' : 'Show Reports'}</button> 
       {reports.length > 0 ? (
         <div>
           {reports.map((report) => (
@@ -70,15 +69,15 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
               <div className="card-body">
                 <h4>Report ID: {report.id}</h4>
                 <p>Professeur ID: {report.professeur}</p>
-                <p>Date Created: {new Date(report.created_at).toLocaleString()}</p>
-                
+                {/*<p>Date Created: {new Date(report.created_at).toLocaleString()}</p>  */}
                 <p>PDF Layout ID: {report.pdflayout}</p>
 
                 <h5>Catalogues:</h5>
                 <ul>
                   {report.report_catalogues.map((catalogue) => (
                     <li key={catalogue.id}>
-                      {catalogue.catalogue_desc.description} (Catalogue ID: {catalogue.catalogue})
+                      Catalogue ID: {catalogue.catalogue}
+                      {/* Adjust as needed based on the catalogue structure */}
                     </li>
                   ))}
                 </ul>
