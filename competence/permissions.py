@@ -4,6 +4,12 @@ from rest_framework.permissions import BasePermission
   
 
 
+#class IsAdminOrReadOnly( BasePermission):
+#    def has_permission(self, request, view):
+#        # Allow read-only access for all users, but restrict write access to admins
+#        if request.method in BasePermission.SAFE_METHODS:
+#            return True
+#        return request.user and request.user.is_staff
 
 ############################################################
 # permission for viewSet 

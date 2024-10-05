@@ -10,7 +10,7 @@ from competence.models import (
     Eleve,  
 )
 
-DEBUG = False  # Global DEBUG variable
+DEBUG = True  # Global DEBUG variable
 
 
 # Conditional print based on DEBUG setting
@@ -48,71 +48,30 @@ class IntegrationTestSetup(TestCase):
         # Set client credentials for admin user
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
 
-
-
-class AdminConfigurationTests(IntegrationTestSetup): 
+ 
+class Workflow_Admin(IntegrationTestSetup): 
     global DEBUG
     #DEBUG = False
     def setUp(self):
         super().setUp()  # Call the parent setUp to load data
-
-        
-
-    def test_user(self):
-        response = self.api_util._create_user('alluser', 'allpass', 'All', 'User', ['admin','teacher','analytics'])        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='alluser').exists())
-        self.alluser_user = response.data
-        debug_print("test_create_user_all")
-        debug_print(response.data)
-        
  
-        response = self.api_util._create_user('newuser', 'newpass', 'New', 'User', ['analytics'])
-        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='newuser').exists())
+ 
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}') 
+
+
          
-        response = self.api_util._create_user('admuser', 'admpass', 'Adm', 'User', ['admin' ])
-        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='admuser').exists())
-        debug_print("test_create_user_admin")
-        debug_print(response.data)
-         
-        response = self.api_util._get_user_list( )
-        
+
+    def test_get_me_authenticated(self):
+        #self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.teacher1_token}')  # Assuming you have a teacher token
+        response = self.api_util._get_user_me( )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_user_list")
+        debug_print("test_get_me_authenticated")
         debug_print(response.data)
 
-        # Assuming response.data contains the list of users
-        users = response.data
-
-        # Find the user with the username 'alluser'
-        alluser = next((user for user in users if user['username'] == 'alluser'), None)
-
-        if alluser:
-            alluser_id = alluser['id']
-            debug_print(f"User 'alluser' has the ID: {alluser_id}")
-        else:
-            debug_print("User 'alluser' not found")
-  
- 
-        alluser_id = self.alluser_user['id']
-        response = self.api_util._get_user( alluser_id)  #retrieve user with id alluser_id
-        
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_user_id")
-        debug_print(response.data)
-    
- 
-        response = self.api_util._delete_user( alluser_id )
-        
-        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(User.objects.filter(username='alluser').exists())
 
 
-class Workflow_Dashboard(IntegrationTestSetup): 
+   
+class Workflow_Teacher(IntegrationTestSetup): 
     global DEBUG
     #DEBUG = False
     def setUp(self):
@@ -164,168 +123,7 @@ class Workflow_Dashboard(IntegrationTestSetup):
         debug_print("test_get_eleves_list")
         debug_print(response.data) 
  
- 
-    def test_get_niveau(self):
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.teacher1_token}')  # Assuming you have a teacher token
-
-        response = self.api_util._get_niveau_list( )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_niveau_list")
-        debug_print(response.data) 
-        value = response.data
-
-
-        response = self.api_util._get_niveau( value[0]['id'])
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_niveau")
-        debug_print(response.data) 
- 
-    def test_create_niveau(self):
-        # Use the admin token to create a Niveau
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
-        
-        response = self.api_util._create_niveau(description="New level",niveau="NL") 
-
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        debug_print("test_create_niveau")
-        debug_print(response.data)
-
-        # Validate the created object
-        self.assertIn("description", response.data)
-        self.assertEqual(response.data['description'], "New level")
-
- 
-    def test_get_etape(self):
-        # Use teacher token to get the list of Etapes
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.teacher1_token}')
-
-        # Get list of Etapes
-        response = self.api_util._get_etape_list()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_etape_list")
-        debug_print(response.data)
-
-        value = response.data
-
-        # Test fetching a specific Etape by its ID
-        response = self.api_util._get_etape(value[0]['id'])
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_etape")
-        debug_print(response.data)
-
-    def test_create_etape(self):
-        # Use the admin token to create an Etape
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
-        
-        response = self.api_util._create_etape(description="New step in the curriculum",etape="DEBUT")
-        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        debug_print("test_create_etape")
-        debug_print(response.data)
-
-        # Validate the created object
-        self.assertIn("description", response.data)
-        self.assertEqual(response.data['description'], "New step in the curriculum")
-
- 
-    def test_get_annee(self):
-        # Use teacher token to get the list of Annees
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.teacher1_token}')
-
-        # Get list of Annees
-        response = self.api_util._get_annee_list()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_annee_list")
-        debug_print(response.data)
-        
-        value = response.data
-
-        # Test fetching a specific Annee by its ID
-        response = self.api_util._get_annee(value[0]['id'])
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_annee")
-        debug_print(response.data)
-
- 
-    def test_create_annee(self):
-        # Use the admin token to create an Annee
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}') 
-
-        response = self.api_util._create_annee(is_active=True,start_date="2023-01-01",stop_date=None, description="New school year 2023 no stopdate")
-        
-        debug_print("test_create_annee")
-        debug_print(response.data)
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED) 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-
-
-        # Validate the created object
-        self.assertIn("is_active", response.data)
-        self.assertEqual(response.data['is_active'], True)
-        self.assertEqual(response.data['description'], "New school year 2023 no stopdate")
-        ######
- 
-        response = self.api_util._create_annee(is_active=False,start_date="2023-01-01",stop_date="2024-01-01", description="New school year 2023-2024")
-        debug_print("test_create_annee")
-        debug_print(response.data)
-        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED) 
-
-        # Validate the created object
-        self.assertIn("is_active", response.data)
-        self.assertEqual(response.data['is_active'], False)
-        self.assertEqual(response.data['description'], "New school year 2023-2024")
-        self.assertEqual(response.data['start_date'],"2023-01-01")
-        self.assertEqual(response.data['stop_date'], "2024-01-01")
-         ######
- 
-        response = self.api_util._create_annee(is_active=True, start_date=None,stop_date=None,description="New school year no date" )
-        debug_print("test_create_annee")
-        debug_print(response.data)
-        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED) 
-
-        # Validate the created object
-        self.assertIn("is_active", response.data)
-        self.assertEqual(response.data['is_active'], True)
-        self.assertEqual(response.data['description'], "New school year no date")
-        #self.assertEqual(response.data['start_date'],"2023-01-01")
-        self.assertEqual(response.data['stop_date'],None)
-
-
-    def test_get_matiere(self):
-        # Use teacher token to get the list of Matieres
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.teacher1_token}')
-
-        # Get list of Matieres
-        response = self.api_util._get_matiere_list()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_matiere_list")
-        debug_print(response.data)
-
-        value = response.data
-
-        # Test fetching a specific Matiere by its ID
-        response = self.api_util._get_matiere(value[0]['id'])
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        debug_print("test_get_matiere")
-        debug_print(response.data)
-
-
-    def test_create_matiere(self):
-        # Use the admin token to create a Matiere
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}')
-        
-        response = self.api_util._create_matiere(description="New subject",matiere="N")
-        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        debug_print("test_create_matiere")
-        debug_print(response.data)
-
-        # Validate the created object
-        self.assertIn("description", response.data)
-        self.assertEqual(response.data['description'], "New subject")
-
+  
  
 
     def test_create_get_delete_eleve(self):
@@ -478,18 +276,76 @@ class Workflow_Dashboard(IntegrationTestSetup):
             debug_print(response.data) 
 
 
+        
+    def update_report_with_max_scores(self, retrieved_report, score_rule_point):
+            updated_catalogue_data = []
 
-    def test_report_modular_workflow(self):
+            # Helper function to get the maximum score for a given scorerule
+            def get_max_scorerule_point(scorerule_id):
+                # Filter score_rule_points by scorerule and get the one with the maximum score
+                relevant_points = [point for point in score_rule_point if point['scorerule'] == scorerule_id]
+                if not relevant_points:
+                    return None  # In case there is no scorerulepoint for the given scorerule
+                return max(relevant_points, key=lambda x: x['score'])
 
-          
-       
+            # Iterate through each report catalogue (each corresponding to a `resultat`)
+            for report_catalogue in retrieved_report['report_catalogues']:
+                for resultat in report_catalogue['resultats']:
+                    # Extract groupage but leave it in the result to keep context
+                    groupage = resultat['groupage']
+                    max_point = groupage['max_point']
+                    resultat['score'] = max_point
+                    
+                    # Set all seuil values to 100
+                    resultat['seuil1_percent'] = 100
+                    resultat['seuil2_percent'] = 100
+                    resultat['seuil3_percent'] = 100
+                    
+                    # Iterate through each `resultat_details` to update their score based on scorerule
+                    for resultat_detail in resultat['resultat_details']:
+                        item = resultat_detail['item']  # Keep item in the result to maintain structure
+                        
+                        # Fetch the maximum scorerulepoint for the item's scorerule
+                        scorerule_id = item['scorerule']
+                        max_scorerule_point = get_max_scorerule_point(scorerule_id)
+                        
+                        if max_scorerule_point:
+                            # Set the `resultat_detail.score` to the maximum scorerulepoint's score
+                            resultat_detail['score'] = max_scorerule_point['score']
+                            resultat_detail['scorelabel'] = max_scorerule_point['scorelabel']
+                            
+                            # Set the observation to the item's description
+                            resultat_detail['observation'] = item['description']
+                        else:
+                            # Handle case where no scorerule point is found for the item
+                            resultat_detail['score'] = 0
+                            resultat_detail['scorelabel'] = "N/A"
+                            resultat_detail['observation'] = "No matching scorerule found"
+                
+                # Append the updated catalogue information
+                updated_catalogue_data.append({
+                    'catalogue': report_catalogue['catalogue'],
+                    'resultats': report_catalogue['resultats']
+                })
+
+            return updated_catalogue_data
+
+    def test_fullreport_workflow(self):
+
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}') 
 
-        # Step 1: Create a teacher
+        # Step 1: Create  teacher
         teacher1 = self.api_util._create_user('teachertest1', 'teachertestnewpass', 'New1', 'Teacher', ['teacher']).data 
         response = self.api_util._login_user('teachertest1', 'teachertestnewpass')
         teachertest1_token = response.data['access']
         debug_print("Created teacher:", teacher1['id'])
+
+
+        teacher2 = self.api_util._create_user('teachertest2', 'teachertestnewpass', 'New2', 'Teacher', ['teacher']).data 
+        response = self.api_util._login_user('teachertest2', 'teachertestnewpass')
+        teachertest2_token = response.data['access']
+        debug_print("Created teacher:", teacher2['id'])
+
 
         # Step 2: Create Eleve using predefined niveau_id
         niveau_id = 2  # Predefined niveau_id
@@ -498,15 +354,34 @@ class Workflow_Dashboard(IntegrationTestSetup):
             prenom="Valjean", 
             niveau=niveau_id, 
             datenaissance="2015-01-02", 
-            professeurs=[teacher1['id']]
+            professeurs=[teacher1['id'],teacher2['id']]
         )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve failed: {response.status_code} - {response.content}")
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve1 failed: {response.status_code} - {response.content}")
         eleve1 = response.data
         debug_print("Created Eleve ID:", eleve1['id'])
 
+
+        response = self.api_util._create_eleve(
+            nom="Louis", 
+            prenom="Duroc", 
+            niveau=niveau_id, 
+            datenaissance="2016-01-02", 
+            professeurs=[teacher2['id']]
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve2 failed: {response.status_code} - {response.content}")
+        eleve2 = response.data
+        debug_print("Created Eleve ID:", eleve2['id'])
+
+
+
+        response = self.api_util._get_score_rule_point_list()
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        score_rule_point = response.data
+        debug_print("get_score_rule_point_list",response.data) 
+
         # Step 3: Set PDF layout and catalogue IDs
         pdflayout_id = 1  # Predefined layout_id
-        catalogue_ids = [31]  # Array of catalogue IDs
+        catalogue_ids = [31,30]  # Array of catalogue IDs
         debug_print("Using pdflayout_id = 1 and catalogue_ids =", catalogue_ids)
 
         # Step 4: Teacher login to list reports
@@ -525,16 +400,18 @@ class Workflow_Dashboard(IntegrationTestSetup):
         DEBUG=False
         self.assertEqual(response.status_code, status.HTTP_200_OK, "Expected a 200 OK status when no reports exist.")
         self.assertEqual(response.data, [], "Expected an empty list when no reports exist.")
-
+ 
+        # Create a list of catalogue IDs
+        catalogue_ids = [3, 4]
         # Step 6: Create an empty report
         debug_print("Creating report with eleve_id:", eleve1['id'])
-        response = self.api_util._create_report(
+        response = self.api_util._create_fullreport(
             eleve_id=eleve1['id'], 
             professeur_id=teacher1['id'], 
-            pdflayout_id=pdflayout_id,
-            report_catalogues=[]
+            pdflayout_id=pdflayout_id, 
+            catalogue_ids=catalogue_ids
         )
-        debug_print("report", response.data)
+        debug_print("_create_fullreport  response.data", response.data)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Report failed: {response.status_code} - {response.content}")
         report_data = response.data
@@ -542,192 +419,71 @@ class Workflow_Dashboard(IntegrationTestSetup):
         self.assertEqual(report_data['eleve'], eleve1['id'])
         report_id = report_data['id']  # Get the newly created report ID
 
-        # Step 7: Create multiple report catalogues and store their IDs
-        report_catalogue_ids = []  # To store created report catalogue IDs
-        for catalogue_id in catalogue_ids:
-            catalogue_response = self.api_util._create_report_catalogue(report_id=report_id, catalogue_id=catalogue_id)
-            debug_print("report_catalogue", catalogue_response.data)
-            self.assertEqual(catalogue_response.status_code, status.HTTP_201_CREATED, f"Create Report Catalogue failed: {catalogue_response.status_code} - {catalogue_response.content}")
-            report_catalogue_ids.append(catalogue_response.data['id'])  # Store the created report catalogue ID
-
-            # Step 8: Retrieve groupagedata for the current catalogue
-            response = self.api_util._get_groupagedata_catalogue(catalogue_id=catalogue_id)
-            self.assertEqual(response.status_code, status.HTTP_200_OK, f"_get_groupagedata_catalogue failed: {response.status_code} - {response.content}")
-            
-            groupage_data_list = response.data
-            self.assertGreater(len(groupage_data_list), 0, "Expected to find groupagedata linked to the catalogue.")
-
-            # Step 9: Create Resultat for each GroupageData using the current report_catalogue_id
-            for groupage in groupage_data_list:
-                item_list = self.api_util._get_item_groupagedata(groupagedata_id=groupage['id']).data
-                debug_print("groupagedata_id:", groupage['id'])
-                debug_print("_get_item_groupagedata", item_list )
-                # Count the number of items
-                item_count = len(item_list )  # or use item_list.data['count'] if paginated
-                debug_print("Number of items retrieved:", item_count)
-
-                response = self.api_util._create_resultat(
-                    report_catalogue_id=report_catalogue_ids[-1],  # Use the last created report_catalogue ID
-                    groupage_id=groupage['id'],  # Pass the groupage ID directly
-                    score=0,
-                    seuil1_percent=100,
-                    seuil2_percent=50,
-                    seuil3_percent=0
-                )
-                debug_print("create_resultat", response.data)
-                self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Resultat failed: {response.status_code} - {response.content}")
-                resultat = response.data
-
-                # Step 10: Create ResultatDetail for each item linked to the groupage
-                for item in item_list:
-                    response = self.api_util._create_resultat_detail(
-                        resultat_id=resultat['id'],
-                        item_id=item['id'],
-                        score=item['max_score'] / 2,  # Example score calculation
-                        scorelabel='A',
-                        observation='test observation'
-                    )
-                    debug_print("create_resultat_detail", response.data)
-                    self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create ResultatDetail failed: {response.status_code} - {response.content}")
-                    
-        # Step 11: Validate the Report
-        DEBUG=True 
-        response = self.api_util._get_eleve_report(eleve1['id'])
-
+        # Step 7: Get Report from eleve and Validate creation
+        response = self.api_util._get_eleve_report( eleve1['id'])
         debug_print("_get_eleve_report  response.data", response.data)
-        self.DEBUG=False
-        self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report failed: {response.status_code} - {response.content}")
-        report_list = response.data
-        self.assertGreater(len(report_list), 0, "Expected at least one report for the Eleve after creation.")
- 
- 
+        self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Report failed: {response.status_code} - {response.content}")
 
 
-    def test_full_report_create(self):
+        # Step 7: Get FullReport with report_id and Validate creation
+        response = self.api_util._get_fullreport(report_id)
+        debug_print("############_get_fullreport  response.data", response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Report failed: {response.status_code} - {response.content}")
+        retrieved_report = response.data
+        self.assertEqual(retrieved_report['id'], report_id, "Report ID mismatch.")
+        self.assertEqual(retrieved_report['eleve'], eleve1['id'], "Eleve ID mismatch in report.")
+        self.assertEqual(retrieved_report['professeur'], teacher1['id'], "Professeur ID mismatch in report.")
+        self.assertEqual(len(retrieved_report['report_catalogues']), 2, "Expected two catalogues in the report.")
 
-
-        global DEBUG
-        DEBUG = False
-        ### init test set ################
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}') 
-
-        # Step 1: Create a teacher
-        professeur = self.api_util._create_user('teachertest1', 'teachertestnewpass', 'New1', 'Teacher', ['teacher']).data 
-        professeur_id = professeur['id']
-        response = self.api_util._login_user('teachertest1', 'teachertestnewpass')
-        professeur_token = response.data['access']
-        pdflayout_id = 1
-        debug_print("Created teacher:", professeur_id)
-
-        # Step 2: Create Eleve using predefined niveau_id
-        niveau_id = 2  # Predefined niveau_id
-        catalogue_ids = [1, 2]  # Example catalogue IDs
-        response = self.api_util._create_eleve(
-            nom="Jean", 
-            prenom="Valjean", 
-            niveau=niveau_id, 
-            datenaissance="2015-01-02", 
-            professeurs=[professeur_id]
+        updated_report_catalogues_data = self.update_report_with_max_scores(retrieved_report,score_rule_point)
+        debug_print("updated_report_catalogues_data", updated_report_catalogues_data)
+        # Step 8: Update Report
+        #updated_catalogue_ids = [catalogue_ids[0]]  # Removing catalogue 30 for update
+        response = self.api_util._update_fullreport(
+            report_id=report_id, 
+            eleve_id=eleve1['id'], 
+            professeur_id=teacher1['id'], 
+            pdflayout_id=pdflayout_id,
+            report_catalogues_data=updated_report_catalogues_data
         )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve failed: {response.status_code} - {response.content}")
-        eleve_id = response.data['id']
-        
-        # Initialize scorerulepoint_list with all score rules
-        response = self.api_util._get_score_rule_point_list()
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        score_rule_point_list = response.data
-        debug_print("score_rule_point_list =", score_rule_point_list)
+        #debug_print("_update_fullreport after update remove catalogue    response.data", response.data)
+        debug_print("_update_fullreport after setting maximum score  response.data", response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, f"Update Report failed: {response.status_code} - {response.content}")
 
-        # Initialize the report data structure
-        report_data = {
-            "eleve": eleve_id,
-            "professeur": professeur_id,
-            "pdflayout": pdflayout_id,
-            "report_catalogues": []
-        }
+        # Step 9: Get Report and Validate update
+        response = self.api_util._get_fullreport(report_id)
+        debug_print("_get_report after update remove catalogue   response.data", response.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get updated Report failed: {response.status_code} - {response.content}")
+        updated_report = response.data
+        self.assertEqual(len(updated_report['report_catalogues']), 1, "Expected only one catalogue after update.")
+        self.assertEqual(updated_report['report_catalogues'][0]['catalogue'], catalogue_ids[0], "Expected catalogue ID 31 after update.")
 
-        ### Step 4: Prepare full report ################
-        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {professeur_token}')
-
-        for catalogue_id in catalogue_ids: 
-            # Assuming _get_groupagedata_catalogue returns already parsed data
-            groupagedata_list = self.api_util._get_groupagedata_catalogue(catalogue_id).data
-            
-            for groupagedata in groupagedata_list:
-                # Prepare the resultat details for this groupagedata
-                resultat_details = []
-                total_score = 0
-
-                debug_print("groupagedata", groupagedata)
-
-                for item in groupagedata['items']:
-                    # Get the associated score rule point from the preloaded scorerule_point_list
-                    scorerule_points = [srp for srp in score_rule_point_list if srp['scorerule'] == item['scorerule']]
-                    
-                    if scorerule_points:
-                        # Assuming you want the last entry for each scorerule
-                        scorerule_point = scorerule_points[-1]  # Fetch the last entry
-                        scorelabel = scorerule_point['scorelabel']
-                        score = scorerule_point['score']
-                    else:
-                        # Default score and label in case no match is found (handle as needed)
-                        scorelabel = "N/A"
-                        score = 0
-
-                    # Create ResultatDetail
-                    resultat_detail = {
-                        "item": item['id'],
-                        "score": score,
-                        "scorelabel": scorelabel,
-                        "observation": "observation ecrit de la main gauche"
-                    }
-
-                    # Append to the resultat details and accumulate total score
-                    resultat_details.append(resultat_detail)
-                    total_score += score
-
-                # Create Resultat
-                resultat_data = {
-                    "groupage": groupagedata['id'],
-                    "score": total_score,
-                    "seuil1_percent": 100,
-                    "seuil2_percent": 50,
-                    "seuil3_percent": 0,
-                    "resultat_details": resultat_details
-                }
-
-                # Append Resultat to the report catalogue
-                report_catalogue = {
-                    "catalogue": catalogue_id,
-                    "resultats": [resultat_data]
-                }
-                report_data['report_catalogues'].append(report_catalogue)
-
-        # Finally, create the report by making an API call
-        debug_print("CREATE FULL REPORT", report_data)
-        response = self.api_util._create_fullreport(report_data)
-
-        fullreport = response.data
-        debug_print("response to CREATE FULL REPORT:", fullreport)
-        
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Fullreport failed: {response.status_code} - {response.content}")
-
-
-        DEBUG=True 
-        response = self.api_util._get_eleve_report( eleve_id)
-
+        # Step 10: Check all Eleve Reports
+        DEBUG=True
+        response = self.api_util._get_eleve_report(eleve1['id'])
         debug_print("_get_eleve_report  response.data", response.data)
         DEBUG=False
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report failed: {response.status_code} - {response.content}")
         report_list = response.data
         self.assertGreater(len(report_list), 0, "Expected at least one report for the Eleve after creation.")
- 
-        
+
+        # Additional steps to test report retrieval with another teacher
+        teacher2 = self.api_util._create_user('teachertest2', 'teachertestnewpass2', 'New2', 'Teacher', ['teacher']).data 
+        response = self.api_util._login_user('teachertest2', 'teachertestnewpass2')
+        teachertest2_token = response.data['access']
+        debug_print("Created second teacher:", teacher2['id'])
+
+        self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {teachertest2_token}')
+
+        # Attempt to get reports as the second teacher
+        response = self.api_util._get_eleve_report(eleve1['id'])
+        self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report by second teacher failed: {response.status_code} - {response.content}")
+        report_list_teacher2 = response.data
+        self.assertEqual(len(report_list_teacher2), 0, "Second teacher should not see any reports for the Eleve.")
+
+        # You can also add more assertions here to ensure that teacher2 doesn't have access to any reports created by teacher1.
 
 
-
- 
- 
     # last methode to see statistiques
     def test_zzz_print_test_statistique(self):
         # Output the call counts

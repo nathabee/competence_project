@@ -12,8 +12,8 @@ from .models import (
  
 from .serializers import (
     NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer, EleveAnonymizedSerializer, CatalogueSerializer,
-    ReportCatalogueSerializer,ResultatDetailSerializer,ReportSerializer,ResultatSerializer,UserSerializer,ScoreRuleSerializer,   ScoreRulePointSerializer,
-    PDFLayoutSerializer, ReportFRSerializer,
+    ReportCatalogueSerializer,ResultatDetailSerializer, ResultatSerializer,UserSerializer,ScoreRuleSerializer,   ScoreRulePointSerializer,
+    PDFLayoutSerializer, FullReportSerializer,ReportSerializer,
     GroupageDataSerializer,ItemSerializer
 )
  
@@ -44,18 +44,18 @@ def api_overview(request):
         "etapes": request.build_absolute_uri('/api/etapes/'),
         "annees": request.build_absolute_uri('/api/annees/'),
         "matieres": request.build_absolute_uri('/api/matieres/'),
-        "scorerules": request.build_absolute_uri('/api/scorerules/'),
+#        "scorerules": request.build_absolute_uri('/api/scorerules/'),
         "scorerulepoints": request.build_absolute_uri('/api/scorerulepoints/'),
         "eleves": request.build_absolute_uri('/api/eleves/'),
         "eleves_anonymized": request.build_absolute_uri('/api/eleves/anonymized/'),
         "catalogues": request.build_absolute_uri('/api/catalogues/'),
         "groupages": request.build_absolute_uri('/api/groupages/'),
         "items": request.build_absolute_uri('/api/items/'),
-        "resultats": request.build_absolute_uri('/api/resultats/'),
-        "resultatdetails": request.build_absolute_uri('/api/resultatdetails/'),
+#        "resultats": request.build_absolute_uri('/api/resultats/'),
+#        "resultatdetails": request.build_absolute_uri('/api/resultatdetails/'),
         "eleve_reports": request.build_absolute_uri('/api/eleve/{eleve_id}/reports/'),    
         "pdf_layouts": request.build_absolute_uri('/api/pdf-layouts/'),
-        "full_report_create": request.build_absolute_uri('/api/reports/full-create/'),  # New addition
+#        "full_report_create": request.build_absolute_uri('/api/reports/full-create/'),  # New addition
 
     })
 
@@ -103,7 +103,7 @@ class EleveReportsView(APIView):
 
         # Retrieve reports for the Eleve
         reports = eleve.reports.all()
-        serializer = ReportSerializer(reports, many=True)
+        serializer = ReportSerializer(reports, many=True) 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
  
@@ -198,7 +198,7 @@ class EleveAnonymizedViewSet(viewsets.ModelViewSet):
 class NiveauViewSet(viewsets.ModelViewSet):
     queryset = Niveau.objects.all()
     serializer_class = NiveauSerializer
-    permission_classes = [IsAuthenticated, isAllowed]
+    permission_classes = [ IsAuthenticated, isAllowed]
 
 class EtapeViewSet(viewsets.ModelViewSet):
     queryset = Etape.objects.all()
@@ -320,19 +320,103 @@ class ReportCatalogueViewSet(viewsets.ModelViewSet):
     serializer_class = ReportCatalogueSerializer
 
 
-############################################################## 
+"""
+class FullReportViewSet(viewsets.ModelViewSet):
+    serializer_class = FullReportSerializer
 
+    def get_queryset(self):
+        user = self.request.user
+        
+        if user.groups.filter(name='admin').exists():
+            return Report.objects.all()  # Admins have full access
 
-class ReportFRViewSet(viewsets.ModelViewSet):
-    queryset = Report.objects.all()
-    serializer_class = ReportFRSerializer
+        if user.groups.filter(name='analytics').exists() and user.is_authenticated:
+            return Report.objects.none()  # Analytics users not allowed to view reports
+
+        if user.groups.filter(name='teacher').exists() and user.is_authenticated:
+            eleve_ids = user.eleves.values_list('id', flat=True)
+            return Report.objects.filter(eleve__in=eleve_ids).distinct()
+        
+        return Report.objects.none()
 
     def create(self, request, *args, **kwargs):
-        # Using the serializer to create the full report with nested data
         serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        serializer.is_valid(raise_exception=True)  # Validate incoming data
         self.perform_create(serializer)
-        
-        # Return the created report
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        # Call the default update method to get the instance
+        instance = self.get_object()
+        # Validate incoming data
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+
+        # Clear existing report catalogues
+        instance.report_catalogues.clear()
+
+        # Save the updated report details
+        self.perform_update(serializer)
+
+        # Set new report catalogues if provided
+        report_catalogues = request.data.get('report_catalogues', [])
+        instance.report_catalogues.set(report_catalogues)
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def retrieve(self, request, *args, **kwargs):
+        return super().retrieve(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        return super().list(request, *args, **kwargs)
+
+"""
+class FullReportViewSet(viewsets.ModelViewSet):
+    serializer_class = FullReportSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        
+        # Check if the user is an admin
+        if user.groups.filter(name='admin').exists():
+            return Report.objects.all()  # Admins have full access
+
+        # Check for analytics permissions
+        if user.groups.filter(name='analytics').exists() and user.is_authenticated:
+            return Report.objects.none()  # Analytics users not allowed to view reports
+
+        # Check for teacher permissions
+        if user.groups.filter(name='teacher').exists() and user.is_authenticated:
+            # Get all Eleves associated with the teacher
+            eleve_ids = user.eleves.values_list('id', flat=True)
+            return Report.objects.filter(eleve__in=eleve_ids).distinct()
+        
+        # Default case: no access
+        return Report.objects.none()
+
+    def create(self, request, *args, **kwargs):
+        # Optional: Add permission checks if needed
+        # if not request.user.has_perm('competence.add_report'):
+        #     return Response({'detail': 'Not authorized to create reports.'}, status=status.HTTP_403_FORBIDDEN)
+
+        # Ensure request data contains only required fields for creation
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)  # Validate incoming data
+        self.perform_create(serializer)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        # Optional: Add permission checks if needed
+        return super().update(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        # Optional: Add permission checks if needed
+        return super().retrieve(request, *args, **kwargs)
+
+    def list(self, request, *args, **kwargs):
+        # Optional: Additional logging or response modification here if needed
+        return super().list(request, *args, **kwargs)
  
+
+############################################################## 
+

@@ -1,12 +1,13 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    NiveauViewSet, EtapeViewSet, AnneeViewSet, EleveViewSet,
-    CatalogueViewSet, GroupageDataViewSet, ItemViewSet,
-    ResultatViewSet, ResultatDetailViewSet, MatiereViewSet,
-    ScoreRuleViewSet, ScoreRulePointViewSet, UserViewSet,
-    UserRolesView, api_overview, EleveAnonymizedViewSet,ReportFRViewSet,
-    EleveReportsView,ReportCatalogueViewSet ,ReportViewSet,PDFLayoutViewSet
+    NiveauViewSet, EtapeViewSet, AnneeViewSet, MatiereViewSet,
+    #ReportCatalogueViewSet ,ReportViewSet, EleveAnonymizedViewSet,
+ #   ResultatViewSet, ResultatDetailViewSet,  ScoreRuleViewSet, ReportFRViewSet,
+     GroupageDataViewSet, ItemViewSet,
+   ScoreRulePointViewSet, UserViewSet,EleveViewSet,CatalogueViewSet,
+    UserRolesView, api_overview,
+    EleveReportsView,PDFLayoutViewSet,FullReportViewSet
 )
 
 router = DefaultRouter()
@@ -14,19 +15,20 @@ router.register(r'niveaux', NiveauViewSet)
 router.register(r'etapes', EtapeViewSet)
 router.register(r'annees', AnneeViewSet)
 router.register(r'matieres', MatiereViewSet)
-router.register(r'scorerules', ScoreRuleViewSet)
+#router.register(r'scorerules', ScoreRuleViewSet)
+#router.register(r'eleves/anonymized', EleveAnonymizedViewSet, basename='eleve-anonymized')  
+#router.register(r'resultats', ResultatViewSet)   
+#router.register(r'resultatdetails', ResultatDetailViewSet)
+#router.register(r'reports', ReportViewSet)
+#router.register(r'reportcatalogues', ReportCatalogueViewSet)
+#router.register(r'full-reports', ReportFRViewSet, basename='full-report')
+router.register(r'eleves', EleveViewSet, basename='eleve')   
 router.register(r'scorerulepoints', ScoreRulePointViewSet)
-router.register(r'eleves', EleveViewSet, basename='eleve')  # Specify a basename here
-router.register(r'eleves/anonymized', EleveAnonymizedViewSet, basename='eleve-anonymized')  
 router.register(r'catalogues', CatalogueViewSet)
 router.register(r'groupages', GroupageDataViewSet , basename='groupagedata')
 router.register(r'items', ItemViewSet, basename='item') 
-router.register(r'resultats', ResultatViewSet)   
-router.register(r'resultatdetails', ResultatDetailViewSet)
 router.register(r'pdf_layouts', PDFLayoutViewSet, basename='pdf_layouts')
-router.register(r'reports', ReportViewSet)
-router.register(r'reportcatalogues', ReportCatalogueViewSet)
-router.register(r'full-reports', ReportFRViewSet, basename='full-report')
+router.register(r'fullreports', FullReportViewSet, basename='fullreport')
 
 router.register(r'users', UserViewSet)
 

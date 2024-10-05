@@ -190,7 +190,7 @@ class CatalogueSerializer(serializers.ModelSerializer):
 class CatalogueDescriptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Catalogue
-        fields = ['description']
+        fields = ['id','description']
 
 # Serializer for Item
 class ItemSerializer(serializers.ModelSerializer):
@@ -223,19 +223,77 @@ class PDFLayoutSerializer(serializers.ModelSerializer):
         fields = ['id', 'header_icon', 'footer_message']  # Include necessary fields
 
 
+class ResultatDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ResultatDetail
+        fields = ['id', 'item', 'score', 'scorelabel', 'observation']
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'score': {'default': -1},
+            'scorelabel': {'default': '?'},
+            'observation': {'default': ''},
+        }
+        depth = 1  # To automatically include related Item details
+
+
+
+
+class ResultatSerializer(serializers.ModelSerializer):
+    resultat_details = ResultatDetailSerializer(many=True)
+
+    class Meta:
+        model = Resultat
+        fields = ['id', 'groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'resultat_details']
+        extra_kwargs = {
+            'id': {'read_only': True},
+            'score': {'default': -1},
+            'seuil1_percent': {'default': -1},
+            'seuil2_percent': {'default': -1},
+            'seuil3_percent': {'default': -1},
+        }
+        depth = 1  # To automatically include related Item details
+
+    def create(self, validated_data):
+        resultat_details_data = validated_data.pop('resultat_details')
+        resultat = Resultat.objects.create(**validated_data)
+
+        for detail_data in resultat_details_data:
+            ResultatDetail.objects.create(resultat=resultat, **detail_data)
+
+        return resultat
+
+
+
  
+
 class ReportCatalogueSerializer(serializers.ModelSerializer):
-    catalogue_desc = CatalogueDescriptionSerializer(source='catalogue', read_only=True)  # Use existing CatalogueDescriptionSerializer
+    resultats = ResultatSerializer(many=True)
+    
+    # Use CatalogueDescriptionSerializer for GET requests (nested read)
+    catalogue = CatalogueDescriptionSerializer(read_only=True)
 
     class Meta:
         model = ReportCatalogue
-        fields = ['id', 'report', 'catalogue', 'catalogue_desc']  # Include catalogue and its description
+        fields = ['id', 'catalogue', 'resultats']
+        extra_kwargs = {
+            'id': {'read_only': True},
+        }
+        depth = 0  # No automatic depth, we handle it manually
 
     def create(self, validated_data):
-        # Remove 'catalogue_desc' from validated_data since it is read-only
-        validated_data.pop('catalogue_desc', None)
-        return ReportCatalogue.objects.create(**validated_data)
- 
+        resultats_data = validated_data.pop('resultats')
+        # Ensure that the catalogue is handled via the foreign key ID on creation
+        catalogue_id = validated_data.pop('catalogue_id')
+        report_catalogue = ReportCatalogue.objects.create(
+            catalogue_id=catalogue_id, **validated_data)
+
+        for resultat_data in resultats_data:
+            Resultat.objects.create(report_catalogue=report_catalogue, **resultat_data)
+
+        return report_catalogue
+
+
+### must see if i use this....
 
 class ReportSerializer(serializers.ModelSerializer):
     eleve = serializers.PrimaryKeyRelatedField(queryset=Eleve.objects.all())
@@ -265,95 +323,95 @@ class ReportSerializer(serializers.ModelSerializer):
 
  
 
-
-
-class ResultatSerializer(serializers.ModelSerializer):
-    groupage = serializers.PrimaryKeyRelatedField(queryset=GroupageData.objects.all())
-    groupage_data = GroupageDataDescriptionSerializer(source='groupage', read_only=True)  # For GET requests
-
-    class Meta:
-        model = Resultat
-        fields = ['id', 'report_catalogue', 'groupage', 'groupage_data', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent']
-
-    def create(self, validated_data):
-        groupage = validated_data.pop('groupage')  # Get the groupage ID directly
-        return Resultat.objects.create(groupage=groupage, **validated_data)
-    
-
- 
-    
-
-class ResultatDetailSerializer(serializers.ModelSerializer):
-    resultat_id = serializers.PrimaryKeyRelatedField(queryset=Resultat.objects.all(), source='resultat', write_only=True)
-    item_id = serializers.PrimaryKeyRelatedField(queryset=Item.objects.all(), source='item', write_only=True)
-
-    class Meta:
-        model = ResultatDetail
-        fields = ['resultat_id', 'item_id', 'score', 'scorelabel', 'observation']
-
-
-################################################################################################################
-######################### to create a report in one Fullreport FR
- 
-class ResultatDetailFRSerializer(serializers.ModelSerializer):
-    item = serializers.PrimaryKeyRelatedField(queryset=Item.objects.all())
-    class Meta:
-        model = ResultatDetail
-        fields = ['item', 'score', 'scorelabel', 'observation']
-
-
-class ResultatFRSerializer(serializers.ModelSerializer):
-    groupage = serializers.PrimaryKeyRelatedField(queryset=GroupageData.objects.all())  # Check that groupage is a valid primary key
-    resultat_details = ResultatDetailFRSerializer(many=True)
-
-    class Meta:
-        model = Resultat
-        fields = ['groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'resultat_details']
-
-
-
-class ReportCatalogueFRSerializer(serializers.ModelSerializer):
-    catalogue = serializers.PrimaryKeyRelatedField(queryset=Catalogue.objects.all())  # Validate catalogue as a primary key
-    resultats = ResultatFRSerializer(many=True)
-
-    class Meta:
-        model = ReportCatalogue
-        fields = ['catalogue', 'resultats']
-
-
-class ReportFRSerializer(serializers.ModelSerializer):
+class FullReportSerializer(serializers.ModelSerializer):
+    catalogue_ids = serializers.ListField(child=serializers.IntegerField(), write_only=True, required=False)  # For creation
+    report_catalogues = ReportCatalogueSerializer(many=True, read_only=True)  # For retrieving data
+    report_catalogues_data = ReportCatalogueSerializer(many=True, write_only=True, required=False)  # For updates
     eleve = serializers.PrimaryKeyRelatedField(queryset=Eleve.objects.all())
     professeur = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    pdflayout = serializers.PrimaryKeyRelatedField(queryset=PDFLayout.objects.all())  # Add this line for pdflayout validation
-    report_catalogues = ReportCatalogueFRSerializer(many=True)  # Nested serializer for report_catalogues
+    pdflayout = serializers.PrimaryKeyRelatedField(queryset=PDFLayout.objects.all())
 
     class Meta:
         model = Report
-        fields = ['eleve', 'professeur', 'pdflayout',  'report_catalogues']
-
+        fields = ['id', 'eleve', 'professeur', 'pdflayout', 'created_at', 'updated_at', 'catalogue_ids', 'report_catalogues', 'report_catalogues_data']
+        read_only_fields = ['created_at', 'updated_at', 'report_catalogues']
+        depth = 1  # To automatically include related Item details
 
     def create(self, validated_data):
-        report_catalogues_data = validated_data.pop('report_catalogues')
+        catalogue_ids = validated_data.pop('catalogue_ids', [])
         report = Report.objects.create(**validated_data)
 
-        # Loop through report catalogues
-        for catalogue_data in report_catalogues_data:
-            resultats_data = catalogue_data.pop('resultats')
+        for catalogue_id in catalogue_ids:
+            try:
+                catalogue = Catalogue.objects.get(id=catalogue_id)
+                report_catalogue = ReportCatalogue.objects.create(report=report, catalogue=catalogue)
+                
+                # Create Resultats for each ReportCatalogue
+                groupages = GroupageData.objects.filter(catalogue=catalogue).order_by('position')
+                for groupage in groupages:
+                    resultat = Resultat.objects.create(
+                        report_catalogue=report_catalogue,
+                        groupage=groupage,
+                        score=-1,
+                        seuil1_percent=-1,
+                        seuil2_percent=-1,
+                        seuil3_percent=-1
+                    )
 
-            # Create ReportCatalogue
-            report_catalogue = ReportCatalogue.objects.create(report=report, catalogue=catalogue_data['catalogue'])
+                    # Create ResultatDetails for each Resultat
+                    items = Item.objects.filter(groupagedata=groupage).order_by('itempos')
+                    for item in items:
+                        ResultatDetail.objects.create(
+                            resultat=resultat,
+                            item=item,
+                            score=-1,
+                            scorelabel='?',
+                            observation=''
+                        )
 
-            # Loop through resultats
-            for resultat_data in resultats_data:
-                resultat_details_data = resultat_data.pop('resultat_details')
-
-                # Create Resultat and link it to the current ReportCatalogue
-                resultat = Resultat.objects.create(report_catalogue=report_catalogue, **resultat_data)
-
-                # Loop through and create ResultatDetails, linking them to the current Resultat
-                for detail_data in resultat_details_data:                      
-                    ResultatDetail.objects.create(resultat=resultat,  **detail_data)
+            except Catalogue.DoesNotExist:
+                raise serializers.ValidationError(f"Catalogue with id {catalogue_id} does not exist.")
 
         return report
 
+    def update(self, instance, validated_data):
+        # Handle the case for updating the report
+        report_catalogues_data = validated_data.pop('report_catalogues_data', [])
+        # Update standard fields
+        instance.eleve = validated_data.get('eleve', instance.eleve)
+        instance.professeur = validated_data.get('professeur', instance.professeur)
+        instance.pdflayout = validated_data.get('pdflayout', instance.pdflayout)
+        instance.save()
 
+        # Update or create ReportCatalogues
+        for catalogue_data in report_catalogues_data:
+            # Assuming each catalogue_data contains a 'catalogue_id' to identify the catalogue
+            catalogue_id = catalogue_data.get('catalogue_id')
+
+            if catalogue_id:  # Check if we have a catalogue_id in the data
+                try:
+                    catalogue = Catalogue.objects.get(id=catalogue_id)
+                    # Update or create the ReportCatalogue
+                    report_catalogue, created = ReportCatalogue.objects.update_or_create(
+                        report=instance,
+                        catalogue=catalogue,
+                        defaults=catalogue_data
+                    )
+                    # If it's a new ReportCatalogue, you might want to handle Resultats creation here
+                except Catalogue.DoesNotExist:
+                    raise serializers.ValidationError(f"Catalogue with id {catalogue_id} does not exist.")
+
+        return instance
+
+    def validate(self, attrs):
+        # Custom validation to ensure required fields for updates
+        if 'report_catalogues_data' in attrs and not attrs['report_catalogues_data']:
+            raise serializers.ValidationError({"report_catalogues_data": "This field is required for updates."})
+
+        # Ensure each catalogue_data has a catalogue_id
+        report_catalogues_data = attrs.get('report_catalogues_data', [])
+        for catalogue_data in report_catalogues_data:
+            if 'catalogue_id' not in catalogue_data:
+                raise serializers.ValidationError({"catalogue_id": "This field is required for each report_catalogue_data."})
+
+        return super().validate(attrs)

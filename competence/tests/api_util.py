@@ -58,6 +58,10 @@ class ApiUtil:
         "get_item": 0,
         "get_item_list": 0,
         "get_item_groupagedata": 0,
+        "create_fullreport": 0,
+        "get_fullreport": 0,
+        "get_fullreport_list": 0,
+        "update_fullreport": 0,
     }
 
     def __init__(self, client: APIClient):
@@ -450,6 +454,38 @@ class ApiUtil:
         return self.client.get("/api/items/")
  
 
+    def _create_fullreport(self, eleve_id, professeur_id, pdflayout_id,catalogue_ids):  # report_catalogues,
+        """Create a new full report."""
+        self.call_counts["create_fullreport"] += 1
+        data = {
+            "eleve": eleve_id,
+            "professeur": professeur_id,
+            "pdflayout": pdflayout_id,
+            "catalogue_ids":catalogue_ids,
+            #"report_catalogues": report_catalogues,
+        }
+        return self.client.post("/api/fullreports/", data, format='json')
+
+    def _get_fullreport(self, report_id):
+        """Retrieve a full report by ID."""
+        self.call_counts["get_fullreport"] += 1
+        return self.client.get(f"/api/fullreports/{report_id}/")
+
+    def _update_fullreport(self, report_id, eleve_id, professeur_id, pdflayout_id, report_catalogues_data):
+        """Update an existing full report."""
+        self.call_counts["update_fullreport"] += 1
+        data = {
+            "eleve": eleve_id,
+            "professeur": professeur_id,
+            "pdflayout": pdflayout_id,
+            "report_catalogues_data": report_catalogues_data,
+        }
+        return self.client.put(f"/api/fullreports/{report_id}/", data, format='json')
+
+    def _get_fullreport_list(self):
+        """Retrieve the list of all full reports."""
+        self.call_counts["get_fullreport_list"] += 1
+        return self.client.get("/api/fullreports/")
 
 ###########################################################################
 
