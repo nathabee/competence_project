@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Catalogue } from '@/types/catalogue';
+import { Catalogue } from '@/types/report';
 import '@/app/globals.css'; // Import global styles
 import { useAuth } from '@/context/AuthContext'; // Use AuthContext instead of TestContext
 
@@ -14,8 +14,7 @@ const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ catalogue }) => {
     const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
     const [selectedStage, setSelectedStage] = useState<string | null>(null);
     const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-    const { activeCatalogue } = useAuth(); // Import useAuth at the top
-
+    const { activeCatalogues } = useAuth(); // Import useAuth at the top
 
     if (!catalogue.length) return <p>Loading Catalogue...</p>;
 
@@ -97,7 +96,7 @@ const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ catalogue }) => {
                     {filteredCatalogue.map(cat => (
                         <tr
                             key={cat.id}
-                            className={activeCatalogue?.id === cat.id ? 'selected-row' : ''} // Apply class if it's active
+                            className={activeCatalogues.some(activeCat => activeCat.id === cat.id) ? 'selected-row' : ''} // Apply class if it's active
                             style={{ cursor: 'pointer' }} // Optional: Add cursor style for better UX 
                         >
                             <td>{cat.annee.annee}</td>
@@ -108,7 +107,6 @@ const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ catalogue }) => {
                         </tr>
                     ))}
                 </tbody>
-
             </table>
         </div>
     );

@@ -13,7 +13,7 @@ import Spinner from 'react-bootstrap/Spinner';
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
-  const { activeCatalogue, activeEleve, catalogue, setCatalogue, eleves, setEleves, user, isLoggedIn } = useAuth();
+  const { activeCatalogues, activeEleve, catalogue, setCatalogue, eleves, setEleves, user, isLoggedIn } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false); // Define error state
 
@@ -89,13 +89,18 @@ const Dashboard: React.FC = () => {
           )}
         </div>
 
-        <div>
-          {activeCatalogue ? (
-            <p>Active Catalogue: {activeCatalogue.description}</p>
-          ) : (
-            <p>No active catalogue selected</p>
-          )}
-        </div>
+        <h2>Active Catalogues:</h2>
+        {activeCatalogues.length > 0 ? (
+          <ul>
+            {activeCatalogues.map(catalogue => (
+              <li key={catalogue.id}>
+                {catalogue.description} - {catalogue.annee.annee} - {catalogue.niveau.niveau}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p>No active catalogues selected.</p>
+        )}
 
         <h2>Selection :</h2>
         {catalogue.length === 0 ? (
@@ -103,6 +108,7 @@ const Dashboard: React.FC = () => {
         ) : (
           <CatalogueSelection catalogue={catalogue} />
         )}
+
 
         {eleves.length === 0 ? (
           <p>No eleves found.</p>

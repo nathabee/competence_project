@@ -1,25 +1,28 @@
-'use client'; // Make sure this is at the top for client-side rendering
+'use client'; // Ensure client-side rendering
 
 // src/components/CatalogueSelection.tsx
 import React, { useState } from 'react';
-import { CatalogueSelectionProps, Catalogue } from '@/types/catalogue';
+import { CatalogueSelectionProps, Catalogue } from '@/types/report'; // Ensure proper import of interfaces
 import { useAuth } from '@/context/AuthContext'; // Use AuthContext instead of TestContext
 import '@/app/globals.css';
 
 const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) => {
-  const { activeCatalogue, setActiveCatalogue } = useAuth(); // Get from AuthContext
+  const { activeCatalogues, setActiveCatalogues } = useAuth(); // Use activeCatalogues for multi-selection
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
 
+  // Check if there are any catalogues available
   if (!catalogue.length) return <p>No Catalogue found...</p>;
 
+  // Create arrays of unique years, levels, stages, and subjects for filtering
   const uniqueYears = Array.from(new Set(catalogue.map(cat => cat.annee.annee)));
   const uniqueLevels = Array.from(new Set(catalogue.map(cat => cat.niveau.niveau)));
   const uniqueStages = Array.from(new Set(catalogue.map(cat => cat.etape.etape)));
   const uniqueSubjects = Array.from(new Set(catalogue.map(cat => cat.matiere.matiere)));
 
+  // Filter catalogues based on selected criteria
   const filteredCatalogue = catalogue.filter(cat => {
     return (
       (!selectedYear || cat.annee.annee === selectedYear) &&
@@ -29,8 +32,16 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
     );
   });
 
+  // Toggle catalogue selection for multi-selection
   const handleRowClick = (selectedCat: Catalogue) => {
-    setActiveCatalogue(selectedCat);
+    const isSelected = activeCatalogues.some(cat => cat.id === selectedCat.id);
+
+    // Add or remove the catalogue based on its selection state
+    const updatedCatalogues = isSelected
+      ? activeCatalogues.filter(cat => cat.id !== selectedCat.id) // Remove if already selected
+      : [...activeCatalogues, selectedCat]; // Add if not selected
+
+    setActiveCatalogues(updatedCatalogues); // Update the context
   };
 
   return (
@@ -94,7 +105,7 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
             <tr
               key={cat.id}
               onClick={() => handleRowClick(cat)}
-              className={activeCatalogue?.id === cat.id ? 'selected-row' : ''}
+              className={activeCatalogues.some(activeCat => activeCat.id === cat.id) ? 'selected-row' : ''}
               style={{ cursor: 'pointer' }}
             >
               <td>{cat.annee.annee}</td>
@@ -111,4 +122,3 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
 };
 
 export default CatalogueSelection;
- 

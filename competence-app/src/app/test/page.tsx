@@ -1,79 +1,51 @@
-'use client';
+'use client'; // Add this line at the top
 
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
-//import { Eleve } from '@/types/eleve'; // Eleve type
-//import { Report } from '@/types/report'; // Report type
-import { GroupageData , Item} from '@/types/groupage'; // Assuming you have a GroupageData type
-import { ScoreRulePoint } from '@/types/score'; // Assuming ScoreRulePoint type exists
+import { Report, ReportCatalogue, ResultatDetail, ScoreRulePoint } from '@/types/report'; // Adjust the path as needed
 
 const Test: React.FC = () => {
   const router = useRouter();
-  const { activeCatalogue, activeEleve, user } = useAuth();  //, isLoggedIn
+  const { activeCatalogues, activeEleve, user, scoreRulePoints, setScoreRulePoints, activeReport, setActiveReport } = useAuth();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
-  const [reportData, setReportData] = useState<GroupageData[]>([]); // Typed as GroupageData array
-  const [scoreRulePoints, setScoreRulePoints] = useState<ScoreRulePoint[]>([]); // Typed as ScoreRulePoint array
-  //const [totalScore, setTotalScore] = useState<number>(0);
-  
+  const [reportData, setReportData] = useState<ReportCatalogue[]>([]); // Typed as ReportCatalogue
+
   useEffect(() => {
     const fetchData = async () => {
       const token = document.cookie.split('authToken=')[1]?.split(';')[0];
 
       if (!token) {
-        router.push(`/login`);
+        router.push('/login');
         return;
       }
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
       try {
-        console.log(`TEST Token: Bearer ${token}`);
-        
         // Fetch score rule points
-        const scoreRuleResponse = await axios.get(`${apiUrl}/scorerulepoints/`, {
+        const scoreRuleResponse = await axios.get<ScoreRulePoint[]>(`${apiUrl}/scorerulepoints/`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setScoreRulePoints(scoreRuleResponse.data);
-        console.log(scoreRulePoints);
+        setScoreRulePoints(scoreRuleResponse.data); 
 
-        if (!activeCatalogue) {
+        if (!activeCatalogues) {
           throw new Error('No active catalogue selected');
         }
 
-        // Fetch group data and prepare report
-        const groupDataResponse = await axios.get(`${apiUrl}/groupagedata/`, {
-          headers: { Authorization: `Bearer ${token}` },
-          params: { catalogueId: activeCatalogue.id },
-        });
-
-        const reportData = groupDataResponse.data.map((groupagedata: GroupageData) => {
-          const resultDetails = groupagedata.items.map((item : Item) => {
-            const scoreRulePoint = scoreRuleResponse.data.find((srp: ScoreRulePoint) => srp.scorerule === item.scorerule) || { scorelabel: "N/A", score: 0 };
-            return {
-              item: item.id,
-              score: scoreRulePoint.score,
-              scorelabel: scoreRulePoint.scorelabel,
-              observation: "observation ecrit de la main gauche",
-            };
+        // Fetch full report using activeReport
+        if (activeReport) {
+          const fullReportResponse = await axios.get<Report>(`${apiUrl}/fullreports/${activeReport.id}/`, {
+            headers: { Authorization: `Bearer ${token}` },
           });
 
-          const totalScore = resultDetails.reduce((acc: number, detail) => acc + detail.score, 0);
-
-          return {
-            groupage: groupagedata.id,
-            score: totalScore,
-            seuil1_percent: 100,
-            seuil2_percent: 50,
-            seuil3_percent: 0,
-            resultat_details: resultDetails,
-          };
-        });
-
-        setReportData(reportData);
+          // Update activeReport and reportData from the fetched response
+          setActiveReport(fullReportResponse.data);
+          setReportData(fullReportResponse.data.report_catalogues || []);
+        }
       } catch (error) {
         console.error('Error fetching data:', error);
         setError(true);
@@ -83,24 +55,30 @@ const Test: React.FC = () => {
     };
 
     fetchData();
-  }, [router, activeCatalogue]);
+  }, [router, activeCatalogues, activeReport, setScoreRulePoints, setActiveReport]);
 
-  const handleObservationChange = (index: number, value: string) => {
+  const handleObservationChange = (resultatIndex: number, detailIndex: number, value: string) => {
     setReportData((prevData) => {
       const newData = [...prevData];
-      newData[index].resultat_details.forEach((detail) => {
-        detail.observation = value;
-      });
+      newData[resultatIndex].resultat_details[detailIndex].observation = value;
       return newData;
     });
   };
 
-  const handleScoreLabelChange = (index: number, value: string) => {
+  const handleScoreLabelChange = (resultatIndex: number, detailIndex: number, selectedLabel: string, scorerule: number) => {
+    const scoreRulePoint = scoreRulePoints?.find(
+      (srp) => srp.scorerule === scorerule && srp.scorelabel === selectedLabel
+    );
+
     setReportData((prevData) => {
       const newData = [...prevData];
-      newData[index].resultat_details.forEach((detail) => {
-        detail.scorelabel = value;
-      });
+      const detail = newData[resultatIndex].resultat_details[detailIndex];
+
+      if (scoreRulePoint) {
+        detail.scorelabel = selectedLabel;
+        detail.score = scoreRulePoint.score;
+      }
+
       return newData;
     });
   };
@@ -110,22 +88,21 @@ const Test: React.FC = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
     try {
-      const reportCreationResponse = await axios.post(`${apiUrl}/full_report_creation/`, {
-        eleve: activeEleve?.id, // Ensure activeEleve exists
-        professeur: user?.id, // Ensure user exists
-        pdflayout: 1, // Assuming pdflayout ID is 1 for example
-        report_catalogues: reportData.map((data) => ({
-          catalogue: activeCatalogue?.id, // Ensure activeCatalogue exists
-          resultats: [data],
-        })),
+      const reportUpdateResponse = await axios.patch<Report>(`${apiUrl}/fullreports/${activeReport?.id}/`, {
+        eleve: activeEleve?.id,
+        professeur: user?.id,
+        pdflayout: 1,
+        catalogue_ids: activeCatalogues.map(catalogue => catalogue.id), 
+        report_data: reportData, // Assuming you are updating with report data
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log('Report created:', reportCreationResponse.data);
-      // Redirect or show a success message
+      const updatedReport = reportUpdateResponse.data;
+      setReportData(updatedReport.report_catalogues);
+      setActiveReport(updatedReport);
     } catch (error) {
-      console.error('Error creating report:', error);
+      console.error('Error updating report:', error);
     }
   };
 
@@ -145,7 +122,7 @@ const Test: React.FC = () => {
   return (
     <div className="container mt-5">
       <h1>Test Page</h1>
-      
+
       {activeEleve ? (
         <div>
           <h2>Active Eleve: {activeEleve.nom} {activeEleve.prenom}</h2>
@@ -154,33 +131,52 @@ const Test: React.FC = () => {
           {reportData.length === 0 ? (
             <p>No group data found for this catalogue.</p>
           ) : (
-            reportData.map((data, index) => (
-              <div key={index}>
-                <h3>Groupage ID: {data.groupage}</h3>
-                <p>Total Score: {data.score}</p>
-                <div>
-                  {data.resultat_details.map((detail, detailIndex) => (
-                    <div key={detailIndex}>
-                      <p>Item: {detail.item}</p>
-                      <p>Score: {detail.score}</p>
-                      <input
-                        type="text"
-                        value={detail.scorelabel}
-                        onChange={(e) => handleScoreLabelChange(index, e.target.value)}
-                      />
-                      <input
-                        type="text"
-                        value={detail.observation}
-                        onChange={(e) => handleObservationChange(index, e.target.value)}
-                      />
-                    </div>
-                  ))}
-                </div>
+            reportData.map((catalogue: ReportCatalogue, catalogueIndex: number) => (
+              <div key={catalogueIndex}>
+                <h3>Catalogue: {catalogue.description}</h3>
+
+                {catalogue.resultats.map((resultat: Resultat, resultatIndex: number) => (
+                  <div key={resultatIndex}>
+                    <h4>Resultat for Groupage: {resultat.groupage.desc_groupage}</h4>
+                    <p>Total Score: {resultat.score}</p>
+
+                    {resultat.resultat_details.map((detail: ResultatDetail, detailIndex: number) => (
+                      <div key={detailIndex}>
+                        <p>Item: {detail.item.description}</p>
+                        <p>Max Score: {detail.item.max_score}</p>
+
+                        <input
+                          type="number"
+                          value={detail.score}
+                          onChange={(e) => handleScoreLabelChange(resultatIndex, detailIndex, e.target.value, detail.item.scorerule)}
+                        />
+
+                        <select
+                          value={detail.scorelabel}
+                          onChange={(e) => handleScoreLabelChange(resultatIndex, detailIndex, e.target.value, detail.item.scorerule)}
+                        >
+                          {scoreRulePoints?.filter((srp) => srp.scorerule === detail.item.scorerule)
+                            .map((srp: ScoreRulePoint) => (
+                              <option key={srp.id} value={srp.scorelabel}>
+                                {srp.scorelabel}
+                              </option>
+                            ))}
+                        </select>
+
+                        <input
+                          type="text"
+                          value={detail.observation}
+                          onChange={(e) => handleObservationChange(resultatIndex, detailIndex, e.target.value)}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ))}
               </div>
             ))
           )}
 
-          <button onClick={handleSubmit}>Create Report</button>
+          <button onClick={handleSubmit}>Save Report</button>
         </div>
       ) : (
         <p>No active eleve selected.</p>
