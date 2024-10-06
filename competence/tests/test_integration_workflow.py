@@ -275,60 +275,61 @@ class Workflow_Teacher(IntegrationTestSetup):
             debug_print("test_get_score_rule_point")
             debug_print(response.data) 
 
-
-        
     def update_report_with_max_scores(self, retrieved_report, score_rule_point):
-            updated_catalogue_data = []
+        updated_catalogue_data = []
 
-            # Helper function to get the maximum score for a given scorerule
-            def get_max_scorerule_point(scorerule_id):
-                # Filter score_rule_points by scorerule and get the one with the maximum score
-                relevant_points = [point for point in score_rule_point if point['scorerule'] == scorerule_id]
-                if not relevant_points:
-                    return None  # In case there is no scorerulepoint for the given scorerule
-                return max(relevant_points, key=lambda x: x['score'])
+        # Helper function to get the maximum score for a given scorerule
+        def get_max_scorerule_point(scorerule_id):
+            # Filter score_rule_points by scorerule and get the one with the maximum score
+            relevant_points = [point for point in score_rule_point if point['scorerule'] == scorerule_id]
+            return max(relevant_points, key=lambda x: x['score']) if relevant_points else None
 
-            # Iterate through each report catalogue (each corresponding to a `resultat`)
-            for report_catalogue in retrieved_report['report_catalogues']:
-                for resultat in report_catalogue['resultats']:
-                    # Extract groupage but leave it in the result to keep context
-                    groupage = resultat['groupage']
-                    max_point = groupage['max_point']
-                    resultat['score'] = max_point
-                    
-                    # Set all seuil values to 100
-                    resultat['seuil1_percent'] = 100
-                    resultat['seuil2_percent'] = 100
-                    resultat['seuil3_percent'] = 100
-                    
-                    # Iterate through each `resultat_details` to update their score based on scorerule
-                    for resultat_detail in resultat['resultat_details']:
-                        item = resultat_detail['item']  # Keep item in the result to maintain structure
-                        
-                        # Fetch the maximum scorerulepoint for the item's scorerule
-                        scorerule_id = item['scorerule']
-                        max_scorerule_point = get_max_scorerule_point(scorerule_id)
-                        
-                        if max_scorerule_point:
-                            # Set the `resultat_detail.score` to the maximum scorerulepoint's score
-                            resultat_detail['score'] = max_scorerule_point['score']
-                            resultat_detail['scorelabel'] = max_scorerule_point['scorelabel']
-                            
-                            # Set the observation to the item's description
-                            resultat_detail['observation'] = item['description']
-                        else:
-                            # Handle case where no scorerule point is found for the item
-                            resultat_detail['score'] = 0
-                            resultat_detail['scorelabel'] = "N/A"
-                            resultat_detail['observation'] = "No matching scorerule found"
-                
-                # Append the updated catalogue information
-                updated_catalogue_data.append({
-                    'catalogue': report_catalogue['catalogue'],
-                    'resultats': report_catalogue['resultats']
-                })
+        # Iterate through each report catalogue (each corresponding to a `resultat`)
+        for report_catalogue in retrieved_report['report_catalogues']:
+            resultats_data = []
 
-            return updated_catalogue_data
+            for resultat in report_catalogue['resultats']:
+                # Prepare `resultat` object with updated fields
+                updated_resultat = {
+                    'id': resultat['id'],  # ID of the Resultat to update
+                    'resultat_details': []  # To store updated resultat_details
+                }
+
+                # Iterate through each `resultat_detail` to update their score based on scorerule
+                for resultat_detail in resultat['resultat_details']:
+                    item = resultat_detail['item']
+                    scorerule_id = item['scorerule']  # Retrieve scorerule ID
+                    max_scorerule_point = get_max_scorerule_point(scorerule_id)  # Get max score for the scorerule
+
+                    # Prepare the updated detail
+                    updated_detail = {
+                        'id': resultat_detail['id'],  # ID of the ResultatDetail to update
+                        'item_id': item['id'],  # Primary key of Item
+                        'score': max_scorerule_point['score'] if max_scorerule_point else 0,  # Updated score
+                        'scorelabel': max_scorerule_point['scorelabel'] if max_scorerule_point else "N/A",  # Optional score label
+                        'observation': item['description'] if max_scorerule_point else "No matching scorerule found"  # Set observation based on scorerule match
+                    }
+
+                    # Append the updated detail to the resultat
+                    updated_resultat['resultat_details'].append(updated_detail)
+
+                # Append the updated resultat data
+                resultats_data.append(updated_resultat)
+
+            # Append the updated catalogue information
+            updated_catalogue_data.append({
+                'id': report_catalogue['id'],  # ID of the associated Catalogue
+                'resultats': resultats_data  # This should be an array of updated resultats
+            })
+
+        # Return the full report structure, including report level fields
+        return {
+            'id': retrieved_report['id'],  # Report ID
+            'eleve': retrieved_report['eleve'],  # Eleve ID
+            'professeur': retrieved_report['professeur'],  # Professeur ID
+            'pdflayout': retrieved_report['pdflayout'],  # PDFLayout ID
+            'report_catalogues_data': updated_catalogue_data  # Updated report_catalogues data
+        }
 
     def test_fullreport_workflow(self):
 
@@ -348,13 +349,13 @@ class Workflow_Teacher(IntegrationTestSetup):
 
 
         # Step 2: Create Eleve using predefined niveau_id
-        niveau_id = 2  # Predefined niveau_id
+        niveau_id = 7  # Predefined niveau_id
         response = self.api_util._create_eleve(
             nom="Jean", 
             prenom="Valjean", 
             niveau=niveau_id, 
             datenaissance="2015-01-02", 
-            professeurs=[teacher1['id'],teacher2['id']]
+            professeurs=[teacher1['id']]
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve1 failed: {response.status_code} - {response.content}")
         eleve1 = response.data
@@ -366,7 +367,7 @@ class Workflow_Teacher(IntegrationTestSetup):
             prenom="Duroc", 
             niveau=niveau_id, 
             datenaissance="2016-01-02", 
-            professeurs=[teacher2['id']]
+            professeurs=[teacher2['id'],teacher1['id']]
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve2 failed: {response.status_code} - {response.content}")
         eleve2 = response.data
@@ -381,7 +382,7 @@ class Workflow_Teacher(IntegrationTestSetup):
 
         # Step 3: Set PDF layout and catalogue IDs
         pdflayout_id = 1  # Predefined layout_id
-        catalogue_ids = [31,30]  # Array of catalogue IDs
+        catalogue_ids = [13,28]  # Array of catalogue IDs
         debug_print("Using pdflayout_id = 1 and catalogue_ids =", catalogue_ids)
 
         # Step 4: Teacher login to list reports
@@ -401,8 +402,6 @@ class Workflow_Teacher(IntegrationTestSetup):
         self.assertEqual(response.status_code, status.HTTP_200_OK, "Expected a 200 OK status when no reports exist.")
         self.assertEqual(response.data, [], "Expected an empty list when no reports exist.")
  
-        # Create a list of catalogue IDs
-        catalogue_ids = [3, 4]
         # Step 6: Create an empty report
         debug_print("Creating report with eleve_id:", eleve1['id'])
         response = self.api_util._create_fullreport(
@@ -411,13 +410,37 @@ class Workflow_Teacher(IntegrationTestSetup):
             pdflayout_id=pdflayout_id, 
             catalogue_ids=catalogue_ids
         )
-        debug_print("_create_fullreport  response.data", response.data)
+        debug_print("######_create_fullreport  response.data", response.data)
 
+
+        # Assertions after the fullreport creation ################################
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Report failed: {response.status_code} - {response.content}")
         report_data = response.data
         self.assertIn("eleve", report_data)
         self.assertEqual(report_data['eleve'], eleve1['id'])
         report_id = report_data['id']  # Get the newly created report ID
+
+        # Ensure the report was created correctly
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Report failed: {response.status_code} - {response.content}")
+
+        # Check that the correct number of catalogues and resultats were created
+        self.assertEqual(len(report_data['report_catalogues']), len(catalogue_ids), "Mismatch in number of catalogues created.")
+
+        # Now, get the report's resultats and verify the initial values
+        for report_catalogue in report_data['report_catalogues']:
+            for resultat in report_catalogue['resultats']:
+                # Ensure score and seuils are initialized properly
+                self.assertEqual(resultat['score'], -1, "Expected initial score to be -1")
+                self.assertEqual(resultat['seuil1_percent'], -1, "Expected initial seuil1_percent to be -1")
+                self.assertEqual(resultat['seuil2_percent'], -1, "Expected initial seuil2_percent to be -1")
+                self.assertEqual(resultat['seuil3_percent'], -1, "Expected initial seuil3_percent to be -1")
+
+                for resultat_detail in resultat['resultat_details']:
+                    # Ensure ResultatDetail score and fields are initialized properly
+                    self.assertEqual(resultat_detail['score'], -1, "Expected initial ResultatDetail score to be -1")
+                    self.assertEqual(resultat_detail['scorelabel'], '?', "Expected initial ResultatDetail scorelabel to be '?'")
+                    self.assertEqual(resultat_detail['observation'], '', "Expected initial ResultatDetail observation to be empty")
+
 
         # Step 7: Get Report from eleve and Validate creation
         response = self.api_util._get_eleve_report( eleve1['id'])
@@ -427,7 +450,8 @@ class Workflow_Teacher(IntegrationTestSetup):
 
         # Step 7: Get FullReport with report_id and Validate creation
         response = self.api_util._get_fullreport(report_id)
-        debug_print("############_get_fullreport  response.data", response.data)
+        debug_print("#######################################")
+        debug_print("_get_fullreport  json_data_get = ", response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Report failed: {response.status_code} - {response.content}")
         retrieved_report = response.data
         self.assertEqual(retrieved_report['id'], report_id, "Report ID mismatch.")
@@ -435,54 +459,102 @@ class Workflow_Teacher(IntegrationTestSetup):
         self.assertEqual(retrieved_report['professeur'], teacher1['id'], "Professeur ID mismatch in report.")
         self.assertEqual(len(retrieved_report['report_catalogues']), 2, "Expected two catalogues in the report.")
 
-        updated_report_catalogues_data = self.update_report_with_max_scores(retrieved_report,score_rule_point)
-        debug_print("updated_report_catalogues_data", updated_report_catalogues_data)
-        # Step 8: Update Report
-        #updated_catalogue_ids = [catalogue_ids[0]]  # Removing catalogue 30 for update
-        response = self.api_util._update_fullreport(
-            report_id=report_id, 
-            eleve_id=eleve1['id'], 
-            professeur_id=teacher1['id'], 
-            pdflayout_id=pdflayout_id,
-            report_catalogues_data=updated_report_catalogues_data
-        )
-        #debug_print("_update_fullreport after update remove catalogue    response.data", response.data)
+        updated_report = self.update_report_with_max_scores(retrieved_report,score_rule_point)
+        debug_print("json_data_updated_fullreport = ", updated_report)
+        # Step 8: Update Report (new score , new label : immer max point)
+        response = self.api_util._update_fullreport(updated_report) 
+        debug_print("#######################################") 
         debug_print("_update_fullreport after setting maximum score  response.data", response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Update Report failed: {response.status_code} - {response.content}")
 
-        # Step 9: Get Report and Validate update
+        # Step 9: Get Report and Validate update 
+        # Retrieve the updated report
         response = self.api_util._get_fullreport(report_id)
-        debug_print("_get_report after update remove catalogue   response.data", response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get updated Report failed: {response.status_code} - {response.content}")
         updated_report = response.data
-        self.assertEqual(len(updated_report['report_catalogues']), 1, "Expected only one catalogue after update.")
-        self.assertEqual(updated_report['report_catalogues'][0]['catalogue'], catalogue_ids[0], "Expected catalogue ID 31 after update.")
 
-        # Step 10: Check all Eleve Reports
-        DEBUG=True
+        # Assertions to ensure the report was updated correctly
+        for report_catalogue in updated_report['report_catalogues']:
+            for resultat in report_catalogue['resultats']:
+                # Ensure score and seuils are updated properly (>= 0)
+                self.assertGreaterEqual(resultat['score'], 0, "Expected Resultat score to be >= 0 after update.")
+                self.assertGreaterEqual(resultat['seuil1_percent'], 0, "Expected seuil1_percent to be calculated after update.")
+                self.assertGreaterEqual(resultat['seuil2_percent'], 0, "Expected seuil2_percent to be calculated after update.")
+                self.assertGreaterEqual(resultat['seuil3_percent'], 0, "Expected seuil3_percent to be calculated after update.")
+
+                for resultat_detail in resultat['resultat_details']:
+                    # Ensure ResultatDetail score is updated and valid
+                    self.assertGreaterEqual(resultat_detail['score'], 0, "Expected ResultatDetail score to be >= 0 after update.")
+                    self.assertNotEqual(resultat_detail['scorelabel'], '?', "Expected ResultatDetail scorelabel to be updated from '?'.")
+                    self.assertNotEqual(resultat_detail['observation'], '', "Expected ResultatDetail observation to be updated.")
+
+
+        # Step 10: Check all Eleve Reports 
         response = self.api_util._get_eleve_report(eleve1['id'])
-        debug_print("_get_eleve_report  response.data", response.data)
-        DEBUG=False
+        debug_print("_get_eleve_report  response.data", response.data) 
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report failed: {response.status_code} - {response.content}")
         report_list = response.data
         self.assertGreater(len(report_list), 0, "Expected at least one report for the Eleve after creation.")
 
+
+        # make a report to eleve2 by teacher1
+        debug_print("Creating report with eleve_id:", eleve2['id'])
+        response = self.api_util._create_fullreport(
+            eleve_id=eleve2['id'], 
+            professeur_id=teacher1['id'], 
+            pdflayout_id=pdflayout_id, 
+            catalogue_ids=catalogue_ids
+        ) 
+
+
+        # Assertions after the fullreport creation ################################
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Report failed: {response.status_code} - {response.content}")
+        report_data = response.data
+        self.assertIn("eleve", report_data)
+        self.assertEqual(report_data['eleve'], eleve2['id'])
+        report2 = report_data  # Get the newly created report ID
+
+
+
+        #############################################################################
         # Additional steps to test report retrieval with another teacher
-        teacher2 = self.api_util._create_user('teachertest2', 'teachertestnewpass2', 'New2', 'Teacher', ['teacher']).data 
-        response = self.api_util._login_user('teachertest2', 'teachertestnewpass2')
-        teachertest2_token = response.data['access']
-        debug_print("Created second teacher:", teacher2['id'])
+ 
 
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {teachertest2_token}')
 
-        # Attempt to get reports as the second teacher
+        # Attempt to get reports as the second teacher   (eleve1 is not a student of teacher2)
         response = self.api_util._get_eleve_report(eleve1['id'])
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, f"Get Eleve report by second teacher failed: {response.status_code} - {response.content}")
+ 
+
+
+        # Attempt to get reports as the second teacher   (eleve2 is   a student of teacher2)
+        response = self.api_util._get_eleve_report(eleve2['id'])
+        report_data = response.data 
+        debug_print(" second teacher view report for eleve_id:", eleve2['id'])
+        debug_print(report_data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report by second teacher failed: {response.status_code} - {response.content}")
-        report_list_teacher2 = response.data
-        self.assertEqual(len(report_list_teacher2), 0, "Second teacher should not see any reports for the Eleve.")
 
-        # You can also add more assertions here to ensure that teacher2 doesn't have access to any reports created by teacher1.
+        self.assertEqual(len(report_data), 1 )
+        self.assertEqual(report_data[0]['eleve'], eleve2['id'])
+        self.assertEqual(report_data[0]['id'],report2['id'])
+        
 
+        # make a report to eleve2 by teacher2
+        debug_print("Creating report with eleve_id:", eleve2['id'])
+        response = self.api_util._create_fullreport(
+            eleve_id=eleve2['id'], 
+            professeur_id=teacher2['id'], 
+            pdflayout_id=pdflayout_id, 
+            catalogue_ids=catalogue_ids
+        )  
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Report failed: {response.status_code} - {response.content}")
+        report_data = response.data
+        self.assertIn("eleve", report_data)
+        self.assertEqual(report_data['eleve'], eleve2['id'])
+        report2 = report_data  # Get the newly created report ID
+
+        ########### must check get_fullreport_list .....must be also 
 
     # last methode to see statistiques
     def test_zzz_print_test_statistique(self):

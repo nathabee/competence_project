@@ -471,16 +471,24 @@ class ApiUtil:
         self.call_counts["get_fullreport"] += 1
         return self.client.get(f"/api/fullreports/{report_id}/")
 
-    def _update_fullreport(self, report_id, eleve_id, professeur_id, pdflayout_id, report_catalogues_data):
+
+    def _update_fullreport(self, report):
         """Update an existing full report."""
         self.call_counts["update_fullreport"] += 1
-        data = {
-            "eleve": eleve_id,
-            "professeur": professeur_id,
-            "pdflayout": pdflayout_id,
-            "report_catalogues_data": report_catalogues_data,
-        }
-        return self.client.put(f"/api/fullreports/{report_id}/", data, format='json')
+        return self.client.patch(f"/api/fullreports/{report['id']}/", report, format='json')
+
+    
+
+    #def _update_fullreport(self, report_id, eleve_id, professeur_id, pdflayout_id, report_catalogues_data):
+    #    """Update an existing full report."""
+    #    self.call_counts["update_fullreport"] += 1
+    #    data = {
+    #        "eleve": eleve_id,
+    #        "professeur": professeur_id,
+    #        "pdflayout": pdflayout_id,
+    #        "report_catalogues_data": report_catalogues_data,
+    #    }
+    #    return self.client.put(f"/api/fullreports/{report_id}/", data, format='json')
 
     def _get_fullreport_list(self):
         """Retrieve the list of all full reports."""
@@ -491,5 +499,5 @@ class ApiUtil:
 
     def get_call_counts(self):
         # Filter counts to return only those greater than zero
-        return self.call_counts
-        # return {key: count for key, count in self.call_counts.items() if count > 0}
+        #return self.call_counts
+        return {key: count for key, count in self.call_counts.items() if count > 0}
