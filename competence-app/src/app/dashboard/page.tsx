@@ -58,7 +58,7 @@ const Dashboard: React.FC = () => {
     };
 
     fetchData();
-  }, [router, catalogue, eleves]); // Ensure effect runs correctly
+  }, [router]);  //, catalogue, eleves]); // Ensure effect runs correctly
 
   if (loading) {
     return (

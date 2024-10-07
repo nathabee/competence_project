@@ -56,6 +56,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
 
     try {
       const catalogueIds = activeCatalogues.map(cat => cat.id);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
       const reportCreationResponse = await axios.post(`${apiUrl}/fullreports/`, {
         eleve: activeEleve?.id,
@@ -71,7 +72,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
       // Set the created report as active in the context
       setActiveReport(createdReport);
 
-      router.push(`/test/page?id=${createdReport.id}`);
+      router.push(`/test/`);
     } catch (error) {
       console.error('Error creating report:', error);
     }
@@ -86,7 +87,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
       // Set the selected report as active in the context
       setActiveReport(selectedReport);
       
-      router.push(`/test/page?id=${selectedReport.id}`);
+      router.push(`/test/`);
     }
   };
 

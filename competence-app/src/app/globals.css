@@ -1,5 +1,6 @@
 :root {
   --custom-blue: #47cab4; /* Customize this with your preferred blue shade */
+  --custom-warning: #fae46a; /* Customize this with your preferred blue shade */
 }
 
 .selected-row td {

@@ -1,76 +1,100 @@
 from django.db import models
 from django.contrib.auth.models import User
-from .config_utils import ConfigCache
 from django.utils import timezone
- 
-  
+
 
 # Table: Niveau (Class Level & Evaluation Stage)
 class Niveau(models.Model):
-    niveau = models.CharField(max_length=10)  # Class level without predefined choices
-    description = models.CharField(max_length=30, blank=True, null=True)  # Description
+    niveau = models.CharField(max_length=10)
+    description = models.CharField(max_length=30, blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['niveau'], name='niveau_idx'),
+        ]
 
     def __str__(self):
         return f"{self.niveau} - {self.description}"
 
+
 # Table: Etape (Evaluation Stage)
 class Etape(models.Model):
-    etape = models.CharField(max_length=10)  # Etape without predefined choices
-    description = models.CharField(max_length=30, blank=True, null=True)  # Description
+    etape = models.CharField(max_length=10)
+    description = models.CharField(max_length=30, blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['etape'], name='etape_idx'),
+        ]
 
     def __str__(self):
         return f"{self.etape} - {self.description}"
- 
- 
+
 
 # Table: Annee
 class Annee(models.Model):
-    is_active = models.BooleanField(default=False)  # Whether the year is active
-    start_date = models.DateField(blank=True, null=True)  # Start date of the academic year
-    stop_date = models.DateField(blank=True, null=True)  # Stop date of the academic year
-    description = models.CharField(max_length=100, blank=True, null=True)  # Optional description
+    is_active = models.BooleanField(default=False)
+    start_date = models.DateField(blank=True, null=True)
+    stop_date = models.DateField(blank=True, null=True)
+    description = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['is_active'], name='annee_active_idx'),
+            models.Index(fields=['start_date'], name='annee_start_date_idx'),
+            models.Index(fields=['stop_date'], name='annee_stop_date_idx'),
+        ]
 
     def save(self, *args, **kwargs):
-        # Set start_date to today's date if it's not provided
         if not self.start_date:
             self.start_date = timezone.now().date()
-
         super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.start_date.year} - {self.description}"
 
 
-
 # Table: Matiere
 class Matiere(models.Model):
-    matiere = models.CharField(max_length=1)  # F Francais, M Mathematique
-    description = models.CharField(max_length=30, blank=True, null=True)  # Description
+    matiere = models.CharField(max_length=1)
+    description = models.CharField(max_length=30, blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['matiere'], name='matiere_idx'),
+        ]
 
     def __str__(self):
         return f"{self.matiere} - {self.description}"
 
- 
 
 # Table: ScoreRule
 class ScoreRule(models.Model):
-    description = models.CharField(max_length=50, blank=True, null=True)  # Explanation
+    description = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['description'], name='scorerule_description_idx'),
+        ]
 
     def __str__(self):
         return f"Rule:{self.id} - {self.description}"
 
- 
 
 # Table: ScoreRulePoint
 class ScoreRulePoint(models.Model):
-    scorerule = models.ForeignKey('ScoreRule', related_name='points', on_delete=models.CASCADE, default=1)  # Assuming you want to use ScoreRule with ID 1 as default
-    scorelabel = models.CharField(max_length=20)  # A/NA
-    score = models.IntegerField()  # Score that is associated with a resultat
-    description = models.CharField(max_length=50, blank=True, null=True)  # Explanation
+    scorerule = models.ForeignKey('ScoreRule', related_name='points', on_delete=models.CASCADE, default=1)
+    scorelabel = models.CharField(max_length=20)
+    score = models.IntegerField()
+    description = models.CharField(max_length=50, blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['scorerule'], name='scorerulepoint_scorerule_idx'),
+        ]
 
     def __str__(self):
         return f"Rule:{self.scorerule.id} - {self.scorelabel} - {self.score} - {self.description}"
-
 
 
 # Table: Eleve (Student)
@@ -78,14 +102,16 @@ class Eleve(models.Model):
     nom = models.CharField(max_length=100)
     prenom = models.CharField(max_length=100)
     niveau = models.ForeignKey('Niveau', on_delete=models.CASCADE, default=1)
-    datenaissance = models.DateField(null=True, blank=True)  # Allows birthdate to be optional    
+    datenaissance = models.DateField(null=True, blank=True)
     professeurs = models.ManyToManyField(User, related_name='eleves', blank=True)
 
-    def __str__(self): 
-        return f"{self.nom} {self.prenom} - {self.niveau}"
-    
-     
+    class Meta:
+        indexes = [
+            models.Index(fields=['niveau'], name='eleve_niveau_idx'),
+        ]
 
+    def __str__(self):
+        return f"{self.nom} {self.prenom} - {self.niveau}"
 
 
 # Table: Catalogue (Evaluation Catalog)
@@ -94,56 +120,77 @@ class Catalogue(models.Model):
     etape = models.ForeignKey('Etape', on_delete=models.CASCADE, default=1)
     annee = models.ForeignKey('Annee', on_delete=models.CASCADE, default=1)
     matiere = models.ForeignKey('Matiere', on_delete=models.CASCADE, default=1)
-
- 
     description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['niveau'], name='catalogue_niveau_idx'),
+            models.Index(fields=['etape'], name='catalogue_etape_idx'),
+            models.Index(fields=['annee'], name='catalogue_annee_idx'),
+            models.Index(fields=['matiere'], name='catalogue_matiere_idx'),
+        ]
 
     def __str__(self):
         return f"Catalogue for {self.description}"
 
-# Table: GroupageData 
+
+# Table: GroupageData
 class GroupageData(models.Model):
-    catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)  # Link to Catalogue
-    position = models.IntegerField()  # Position in the evaluation
-    desc_groupage = models.CharField(max_length=100)  # Grouping name (e.g., CATEGORISATION)
-    label_groupage = models.CharField(max_length=100)  # Label for groupage in graph to be displayed
-    link = models.CharField(max_length=500)  # Link to documentation about these test sets
-    max_point = models.IntegerField()  # Maximum points available for the group
-    seuil1 = models.IntegerField()  # Threshold 1 score
-    seuil2 = models.IntegerField()  # Threshold 2 score
-    max_item = models.IntegerField()  # Maximum items in the group
+    catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)
+    position = models.IntegerField()
+    desc_groupage = models.CharField(max_length=100)
+    label_groupage = models.CharField(max_length=100)
+    link = models.CharField(max_length=500)
+    max_point = models.IntegerField()
+    seuil1 = models.IntegerField()
+    seuil2 = models.IntegerField()
+    max_item = models.IntegerField()
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['catalogue'], name='groupagedata_catalogue_idx'),
+        ]
 
     def __str__(self):
         return f"Groupage {self.desc_groupage} - Position {self.position}"
 
 
- 
 # Table: Item (Details for each test in a GroupageData)
 class Item(models.Model):
-    groupagedata = models.ForeignKey('GroupageData', on_delete=models.CASCADE)  # Link to GroupageData
-    temps = models.CharField(max_length=100)  # Time (e.g., Temps 1)
-    description = models.CharField(max_length=255)  # Test description (e.g., identifying a color)
-    observation = models.TextField(blank=True, null=True)  # Observations 
-    scorerule = models.ForeignKey('ScoreRule', on_delete=models.CASCADE, default=1)  # Link to score rule
-    max_score = models.FloatField()  # Max score possible 
-    itempos = models.IntegerField()  # Identifier for the test within the item
-    link = models.CharField(max_length=500)  # Link to documentation about this test
+    groupagedata = models.ForeignKey('GroupageData', on_delete=models.CASCADE)
+    temps = models.CharField(max_length=100)
+    description = models.CharField(max_length=255)
+    observation = models.TextField(blank=True, null=True)
+    scorerule = models.ForeignKey('ScoreRule', on_delete=models.CASCADE, default=1)
+    max_score = models.FloatField()
+    itempos = models.IntegerField()
+    link = models.CharField(max_length=500)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['groupagedata'], name='item_groupagedata_idx'),
+            models.Index(fields=['scorerule'], name='item_scorerule_idx'),
+        ]
 
     def __str__(self):
         return f"Test {self.groupagedata} - {self.temps} - {self.description}"
- 
+
 
 # Table: PDFLayout (Defining the PDF structure)
 class PDFLayout(models.Model):
-    header_icon = models.CharField(max_length=500)  # Link to header icon
-    footer_message = models.TextField(blank=True, null=True)  # Footer message
+    header_icon = models.CharField(max_length=500)
+    footer_message = models.TextField(blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['header_icon'], name='pdflayout_header_icon_idx'),
+        ]
 
     def __str__(self):
         return f"PDF Layout: {self.id}"
-  
 
-# Table: Report 
 
+# Table: Report
 class Report(models.Model):
     eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE, related_name='reports')
     professeur = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
@@ -151,44 +198,63 @@ class Report(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     pdflayout = models.ForeignKey('PDFLayout', on_delete=models.CASCADE)
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['eleve'], name='report_eleve_idx'),
+            models.Index(fields=['professeur'], name='report_professeur_idx'),
+        ]
+
     def __str__(self):
         return f"Report for {self.eleve} - Created by {self.professeur}"
 
 
-
-# Table: ReportCatalogue 
-
+# Table: ReportCatalogue
 class ReportCatalogue(models.Model):
     report = models.ForeignKey('Report', on_delete=models.CASCADE, related_name='report_catalogues')
     catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['report'], name='reportcatalogue_report_idx'),
+            models.Index(fields=['catalogue'], name='reportcatalogue_catalogue_idx'),
+        ]
 
     def __str__(self):
         return f"Report Catalogue for {self.catalogue}"
 
 
-# Table: Resultat  
-
+# Table: Resultat
 class Resultat(models.Model):
     report_catalogue = models.ForeignKey('ReportCatalogue', on_delete=models.CASCADE, related_name='resultats')
     groupage = models.ForeignKey('GroupageData', on_delete=models.CASCADE)
     score = models.FloatField()
-    seuil1_percent = models.FloatField(default=0.0)  # Threshold 1 percentage
-    seuil2_percent = models.FloatField(default=0.0)  # Threshold 2 percentage
-    seuil3_percent = models.FloatField(default=0.0)  # Threshold 3 percentage
+    seuil1_percent = models.FloatField(default=0.0)
+    seuil2_percent = models.FloatField(default=0.0)
+    seuil3_percent = models.FloatField(default=0.0)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['report_catalogue'], name='resultat_report_catalogue_idx'),
+            models.Index(fields=['groupage'], name='resultat_groupage_idx'),
+        ]
 
     def __str__(self):
         return f"Resultat for {self.report_catalogue}"
-  
 
-# Table: ResultatDetail 
 
+# Table: ResultatDetail
 class ResultatDetail(models.Model):
     resultat = models.ForeignKey('Resultat', on_delete=models.CASCADE, related_name='resultat_details')
     item = models.ForeignKey('Item', on_delete=models.CASCADE)
     score = models.FloatField()
-    scorelabel = models.CharField(max_length=50, blank=True, null=True)  # Result (e.g., NA)
-    observation = models.TextField(blank=True, null=True)  # Observations
+    scorelabel = models.CharField(max_length=50, blank=True, null=True)
+    observation = models.TextField(blank=True, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['resultat'], name='resultatdetail_resultat_idx'),
+            models.Index(fields=['item'], name='resultatdetail_item_idx'),
+        ]
 
     def __str__(self):
         return f"Resultat Detail for {self.resultat}"
-

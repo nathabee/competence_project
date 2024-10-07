@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
-import { usePathname } from 'next/navigation'; // Import usePathname
+//import { usePathname } from 'next/navigation'; // Import usePathname
 
 export default function CustomNavbar() {
   const { userRoles, isLoggedIn, logout } = useAuth();
@@ -13,7 +13,7 @@ export default function CustomNavbar() {
   const [isAdminHovered, setIsAdminHovered] = useState(false);
   const [isAnalyticsHovered, setIsAnalyticsHovered] = useState(false);
   const router = useRouter();
-  const pathname = usePathname(); // Use usePathname hook
+  //const pathname = usePathname(); // Use usePathname hook
   const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation';
 
   useEffect(() => {
@@ -58,9 +58,10 @@ export default function CustomNavbar() {
                     </Nav.Link>
                     {isAdminHovered && (
                       <div className="mega-menu">
-                        <Nav.Link href={`${basePath}/admin/user`}>Users</Nav.Link>
+                        {/*<Nav.Link href={`${basePath}/admin/user`}>Users</Nav.Link>
                         <Nav.Link href={`${basePath}/admin/eleve`}>Eleves</Nav.Link>
-                        <Nav.Link href={process.env.NEXT_PUBLIC_ADMIN_URL}>Django Admin Console</Nav.Link>
+                        <Nav.Link href={process.env.NEXT_PUBLIC_ADMIN_URL}>Django Admin Console</Nav.Link>*/}
+                        <Nav.Link href={`${basePath}/admin`}>admin console</Nav.Link>
                       </div>
                     )}
                   </div>
@@ -69,7 +70,7 @@ export default function CustomNavbar() {
                   <>
                     <Nav.Link href={`${basePath}/dashboard`}>Dashboard</Nav.Link>
                     <Nav.Link href={`${basePath}/configuration`}>Configuration</Nav.Link>
-                    <Nav.Link href={`${basePath}/test`} className={pathname === `${basePath}/test` ? 'active' : ''}>Test</Nav.Link> {/* Link to Test */}
+                    <Nav.Link href={`${basePath}/test`} >Test</Nav.Link>  
                     <Nav.Link href={`${basePath}/resume`}>Resume</Nav.Link>
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
                   </>

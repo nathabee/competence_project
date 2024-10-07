@@ -309,6 +309,18 @@ class ResultatSerializer(serializers.ModelSerializer):
 
     def update_score_and_thresholds(self, resultat):
         """Calculate and update the score and thresholds based on ResultatDetails and GroupageData."""
+
+        # Check if any ResultatDetail has scorelabel = "?"
+        if resultat.resultat_details.filter(scorelabel="?").exists():
+            # Set default values when at least one test is not performed
+            resultat.score = -1
+            resultat.seuil1_percent = -1
+            resultat.seuil2_percent = -1
+            resultat.seuil3_percent = -1
+            resultat.save()  # Save the updated Resultat instance
+            return  # Exit the function early
+        
+
         # Calculate total score from all associated ResultatDetails
         total_score = sum(detail.score for detail in resultat.resultat_details.all())
         

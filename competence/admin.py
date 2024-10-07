@@ -1,22 +1,32 @@
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 from django.contrib import admin
 from django.contrib.auth.models import User
-#from .models import Profile
+  
+#from django.db import connection   #for debug developpement
+#import logging  #for debug developpement
 
-#class ProfileInline(admin.StackedInline):
-#    model = Profile
-#    can_delete = False
-
-#class UserAdmin(DefaultUserAdmin):
-#    inlines = (ProfileInline,)
-
-#admin.site.unregister(User)
-#admin.site.register(User, UserAdmin)
 
 
 from django.contrib import admin
 from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, Eleve, Catalogue, GroupageData, Item, \
                     PDFLayout,Report,ReportCatalogue,Resultat,ResultatDetail
+
+from django.contrib import admin
+from .models import Report, ReportCatalogue, Resultat, ResultatDetail
+
+class ResultatDetailInline(admin.TabularInline):
+    model = ResultatDetail
+    extra = 1  # Number of empty forms to display
+
+class ResultatInline(admin.TabularInline):
+    model = Resultat
+    extra = 1
+    inlines = [ResultatDetailInline]
+
+class ReportCatalogueInline(admin.TabularInline):
+    model = ReportCatalogue
+    extra = 1
+    inlines = [ResultatInline]
 
 
 @admin.register(Niveau)
@@ -74,40 +84,96 @@ class GroupageDataAdmin(admin.ModelAdmin):
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ('groupagedata', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link')
-    list_filter = ('groupagedata', 'scorerule')
-    search_fields = ('temps', 'description', 'observation', 'link')
+    list_display = ('id', 'description', 'temps', 'max_score', 'itempos')  # Customize fields to display
+    list_filter = ('groupagedata',)  # Allows filtering by groupagedata
+    search_fields = ('description', 'temps')  # Enable search by description and temps
 
+ 
 
-
-
-
-@admin.register(ResultatDetail)
-class ResultatDetailAdmin(admin.ModelAdmin):
-    list_display = ('resultat', 'item', 'score', 'scorelabel', 'observation')
-    list_filter = ('resultat', 'item')
-    search_fields = ('resultat__id', 'item__description', 'scorelabel')
-
-@admin.register(Resultat)
-class ResultatAdmin(admin.ModelAdmin):
-    list_display = ('report_catalogue', 'groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent')
-    list_filter = ('groupage', 'report_catalogue')
-    search_fields = ('report_catalogue__id', 'groupage__description')
-
-@admin.register(ReportCatalogue)
-class ReportCatalogueAdmin(admin.ModelAdmin):
-    list_display = ('report', 'catalogue')
-    search_fields = ('report__id', 'catalogue__id')
 
 
 @admin.register(Report)
 class ReportAdmin(admin.ModelAdmin):
-    list_display = ('eleve', 'professeur', 'created_at', 'updated_at', 'pdflayout')
+    list_display = ('eleve', 'professeur', 'created_at', 'updated_at')
     list_filter = ('professeur', 'created_at')
-    search_fields = ('eleve__nom', 'professeur__username', 'pdflayout__id')
+    search_fields = ('eleve__nom', 'eleve__prenom')
+
+    inlines = [ReportCatalogueInline]
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.select_related('eleve', 'professeur').prefetch_related(
+            'report_catalogues__catalogue',
+            'report_catalogues__resultats__resultat_details'
+        )
+    
+    
+@admin.register(ReportCatalogue)
+class ReportCatalogueAdmin(admin.ModelAdmin):
+    list_display = ('report', 'catalogue')
+    list_filter = ('report',)
+    search_fields = ('report__eleve__nom', 'catalogue__description')
+
+@admin.register(Resultat)
+class ResultatAdmin(admin.ModelAdmin):
+    list_display = ('report_catalogue', 'groupage', 'score')
+    list_filter = ('report_catalogue',)
+    search_fields = ('report_catalogue__report__eleve__nom',)
+
+@admin.register(ResultatDetail)
+class ResultatDetailAdmin(admin.ModelAdmin):
+    list_display = ('resultat', 'item', 'score')
+    list_filter = ('resultat', 'item')
+    search_fields = ('resultat__report_catalogue__report__eleve__nom', 'item__description')
 
 
 @admin.register(PDFLayout)
 class PDFLayoutAdmin(admin.ModelAdmin):
     list_display = ('id', 'header_icon', 'footer_message')
     search_fields = ('header_icon', 'footer_message')
+
+
+
+
+
+############
+
+
+
+#@admin.register(ResultatDetail)
+#class ResultatDetailAdmin(admin.ModelAdmin):
+#    list_display = ('id', 'resultat', 'item', 'score', 'scorelabel', 'observation')  # Display these fields
+#    list_filter = ('resultat', 'item')  # Filters on these foreign keys
+#    search_fields = ('item__description', 'scorelabel', 'resultat_id')  # Search on item description, score label, and resultat ID
+#    
+#    def get_queryset(self, request):
+#        # Optimize queryset using select_related
+#        qs = super().get_queryset(request)
+#        return qs.select_related('resultat', 'item')
+#
+#    def changelist_view(self, request, extra_context=None):
+##        # Log SQL queries for debugging
+#        response = super().changelist_view(request, extra_context)
+#        logger = logging.getLogger('django.db.backends')
+#        for query in connection.queries:
+#            logger.debug(query['sql'])  # Log each SQL query
+#        return response
+
+
+
+#@admin.register(Resultat)
+#class ResultatAdmin(admin.ModelAdmin):
+#    list_display = ('report_catalogue', 'groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent')
+#    list_filter = ('groupage', 'report_catalogue')
+#    search_fields = ('report_catalogue__id', 'groupage__description')#
+
+#@admin.register(ReportCatalogue)
+#class ReportCatalogueAdmin(admin.ModelAdmin):
+#    list_display = ('report', 'catalogue')
+#    search_fields = ('report__id', 'catalogue__id')
+
+
+#@admin.register(Report)
+#class ReportAdmin(admin.ModelAdmin):
+#    list_display = ('eleve', 'professeur', 'created_at', 'updated_at', 'pdflayout')
+#    list_filter = ('professeur', 'created_at')
+#    search_fields = ('eleve__nom', 'professeur__username', 'pdflayout__id')

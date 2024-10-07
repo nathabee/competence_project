@@ -1,60 +1,27 @@
-'use client';
-
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import CatalogueDisplay from '@/components/CatalogueDisplay';
+import PDFComponent from '@/components/PDFComponent'; // Import your new PDFComponent
+import { User } from '@/types/user'; // Import User type for the professor
 
 const Pdf = () => {
-  const { activeCatalogue, activeEleve, catalogue, eleves } = useAuth();
+  const { activeCatalogues, activeEleve,user } = useAuth();
+   const [config, setConfig] = useState({ footerPDFTitre: 'Footer Title', footerPDFMessage1: 'Message 1', footerPDFMessage2: 'Message 2' }); // Sample config
 
-  useEffect(() => {
-    console.log('Active Catalogue:', activeCatalogue);
-    console.log('Active Eleve:', activeEleve);
-    console.log('Catalogue:', catalogue);
-    console.log('Eleves:', eleves);
-  }, [activeCatalogue, activeEleve, catalogue, eleves]);
+ 
+
+  if (!activeEleve || !user || !activeCatalogues) {
+    return <p>Loading data...</p>; // Handle loading state
+  }
 
   return (
     <div>
-      <h1>Pdf Page</h1>
-
-      <h2>DEBUG:</h2>
-
-      <h2>Donnees selectionnees :</h2>
-      <div>
-        {activeEleve ? (
-          <p>Active Eleve: {activeEleve.nom} {activeEleve.prenom} {activeEleve.niveau}</p>
-        ) : (
-          <p>No active eleve selected</p>
-        )}
-      </div>
-
-      <div>
-        {activeCatalogue ? (
-          <p>Active Catalogue: {activeCatalogue.description}</p>
-        ) : (
-          <p>No active catalogue selected</p>
-        )}
-      </div>
-
-      <div>
-        {catalogue && catalogue.length > 0 ? (
-          <div>
-            <p>Catalogue IS fetched in cache</p>
-            <CatalogueDisplay catalogue={catalogue} />
-          </div>
-        ) : (
-          <p>No catalogue fetched in cache</p>
-        )}
-      </div>
-
-      <div>
-        {eleves && eleves.length > 0 ? (
-          <p>Eleves ARE fetched in cache</p>
-        ) : (
-          <p>No eleves fetched in cache</p>
-        )}
-      </div>
+      <h1>PDF Page</h1>
+      <PDFComponent 
+        reportCatalogues={activeCatalogues} // Pass the catalogues
+        eleve={activeEleve}                  // Pass the current student
+        professor={user}                // Pass the professor's data
+        config={config}                      // Pass configuration for PDF
+      />
     </div>
   );
 };
