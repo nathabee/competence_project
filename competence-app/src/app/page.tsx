@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { parseCookies } from 'nookies';
+import './globals.css'; // Import global styles
 
 export default function HomePage() {
   const router = useRouter();
@@ -26,6 +27,9 @@ export default function HomePage() {
       } else if (roles.includes('statistic')) {
         router.push(`/statistiques`);
       }
+    } else {
+      // Redirect to login if no token exists
+      router.push('/login');
     }
   }, [router, basePath]);
 

@@ -15,7 +15,7 @@ const Pdf = () => {
   }
 
   return (
-    <div>
+    <div className="container mt-3 ml-2">
       <h1>PDF Page</h1>
       <PDFComponent 
         reportCatalogues={activeReport.report_catalogues } // Pass the catalogues

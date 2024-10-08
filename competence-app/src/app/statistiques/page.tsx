@@ -14,7 +14,7 @@ const Statistiques = () => {
   }, [router]);
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-3 ml-2">
       <h1>Dashboard</h1>
       <ul className="nav nav-tabs"> 
         <li className="nav-item">

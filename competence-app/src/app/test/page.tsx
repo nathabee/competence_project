@@ -234,7 +234,7 @@ const Test: React.FC = () => {
     return <p>Error fetching data. Please try again.</p>;
   }
   return (
-    <div className="container mt-5">
+    <div className="container mt-3 ml-2">
       <h1>Test Page</h1>
 
       {activeEleve ? (

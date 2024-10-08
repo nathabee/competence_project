@@ -30,8 +30,8 @@ const Overview: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  return (
-    <div>
+  return ( 
+    <div className="container mt-3 ml-2">
       <h1>Overview Page</h1>
 
       {/* Active selected data */}
