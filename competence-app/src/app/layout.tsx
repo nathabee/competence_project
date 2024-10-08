@@ -15,9 +15,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <AuthProvider> 
           <BootstrapClient /> {/* Handle Bootstrap JS in client-side */}
-          <Navbar />
-          <main>{children}</main>
- 
+          <div className="layout-container">
+            <Navbar /> {/* Left-side Navbar */}
+            <div className="content-container">
+              <main>{children}</main>
+            </div>
+          </div>
         </AuthProvider>
       </body>
     </html>

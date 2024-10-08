@@ -1,35 +1,302 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
 :root {
   --custom-blue: #47cab4; /* Customize this with your preferred blue shade */
   --custom-warning: #fae46a; /* Customize this with your preferred blue shade */
 }
 
+
+
+.invalid-data {
+    background-color: #4a5748;
+    color: rgb(78, 4, 4);
+    font-size: 12px;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+  }
+
+/* Gradient background */
+body {
+    background: linear-gradient(to left,   #798d76, #108a79);
+    font-family: Arial, sans-serif; 
+    align-items: center; 
+}
+
+
+
+/* Banner */
+.scrolling-section { 
+max-height: 600px;
+overflow-y: auto;
+}
+
+/* Banner */
+.banner-section { 
+    padding: 5px;
+    background:linear-gradient(to left,  #798d76, #108a79);
+    align-items: center;
+    /* position: sticky; */ /* Makes the banner sticky */
+    top: 0; /* Sticks to the top of the page */
+    z-index: 1000; /* Ensures it's on top of other content */ 
+}
+
+
+
+.small-logo {
+    width: 50px;
+    height: 50px;  
+    margin-left: 20pc;
+}
+
+
+/* Shadow effect and orange border */
+.shadow-section {
+    box-shadow: 0 4px 16px #ffa50099;
+    border: 2px solid #4e3f24;
+    padding: 20px;
+    border-radius: 32px;
+    background:linear-gradient(to left,  #798d76, #108a79);
+    margin: 20px;
+}
+
+/* Optional: Section title styling */
+.section-title {
+    margin-bottom: 15px;
+    font-size: 1.5em;
+    color: #333;
+}
+ 
+ 
+
+.d-flex {
+    display: flex;
+
+  align-items: center; /* Align items vertically center */
+  justify-content: space-between; /* Align items horizontally */
+}
+.logo {
+  max-width: 200px; /* Adjust the size of the image if needed */
+}
+
+.title {
+  margin-left: 20px; /* Add some space between the image and the title */
+  flex: 1; /* Allow the title to take available space */
+  text-align: right; /* Align text to the right */
+}
+
+
+/* Override .btn-primary */
+.btn-primary {
+    background-color: #4a5748;; /* Change this to your desired background color */
+    border-color: #ffa50099; /* Change this to match the background color */
+}
+
+.btn-primary:hover {
+    background-color: #45a049; /* Change hover color */
+    border-color: #45a049;
+}
+
+ 
+/* Example CSS to enhance the chart visualization */
+/*
+canvas {
+    border: 1px solid #ddd; 
+}
+*/
+
+/* Ensure the container uses the full width and adapts */
+.container-fluid {
+    width: 100%;
+    padding: 0;
+  }
+  
+  /* Table responsive to allow horizontal scroll */
+  .table-responsive {
+    overflow-x: auto;
+    margin-bottom: 15px;
+  }
+  
+  .table th, .table td {
+    white-space: nowrap; /* Prevent text wrapping */
+  }
+  
+  @media (max-width: 768px) {
+    .shadow-section {
+      margin: 10px; /* Reduce the margin when the screen is small */
+    }
+    .small-logo {
+      margin-left: 5pc; /* Adjust logo for smaller screens */
+    }
+  }
+  
+  /* Ensure the table columns shrink proportionally */
+  .table td input {
+    width: 100%; /* Make sure inputs take the full width of the cell */
+  }
+  
+  @media (min-width: 769px) {
+    .container-fluid {
+      max-width: 100%;
+      padding: 0 15px;
+    }
+  }
+  
+  /* Remove margins entirely when screen is smaller than 600px */
+  @media (max-width: 600px) {
+    .shadow-section {
+      margin: 0;
+    }
+  }
+  
+  /* Set a min-width for the table container */
+  .table-responsive {
+    min-width: 600px; /* Adjust as per your needs */
+  }
+  
+
+  /* ************************************/
+  .container-hover {
+    display: flex;
+    width: 100%;
+    max-width: 1200px;
+    height: 100%;
+    overflow-y: auto;  /* Allows horizontal scrolling */
+    overflow-x: hidden; /* Prevents vertical scrolling */
+    background: #fff;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    position: relative;
+}
+.container-:hover .right {
+    flex: 0.90;
+}
+.container-hover:hover .left {
+    flex: 0.10;
+}
+
+.container-2 {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  height: 100%;
+  overflow-y: auto;  /* Allows horizontal scrolling */
+  overflow-x: hidden; /* Prevents vertical scrolling */ 
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+/* Text and Headings */
+#container-2  h2 {
+  font-size: 15px; /* Headings font size */
+  border-bottom: 2px solid #000; /* Underline */
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+  color: #333; /* Darker headings */
+}
+
+.left, .right, .middle {
+    flex: 1;
+    padding: 20px; 
+    
+}
+ 
+.F80  {
+  flex: 0.8; 
+  
+}
+
+
+.F20  {
+  flex: 0.2; 
+  
+}
+/*************************************************/
+.config-container {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #435ed8;
+  border-radius: 8px;
+  max-width: 600px; /* Limit the maximum width of the configuration form */
+}
+
+.config-container .form-group {
+  margin-bottom: 15px;
+}
+
+.config-container .form-control {
+  width: 100%; /* Ensure the input fields take the full width of the container */
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.config-container .btn {
+  margin-top: 10px;
+}
+
+
+
+/*************************************************/
+/*************************************************/
+/*************************************************/
+/*************************************************/
+/*************************************************/
+/*************************************************/
+/*************************************************/
 .selected-row td {
   background-color: var(--custom-blue) !important;
 }
 
-/* Sticky Navbar Size Changes */
-.navbar-small { 
+/* Navbar Styling */
+.navbar {
   transition: all 0.3s ease;
-  padding: 0.5rem 1rem;
 }
 
-.sticky-navbar {
-  background-color:  #10db9e7e;
+.navbar.sticky-navbar {
+  background-color: rgba(10, 219, 158, 0.9);
 }
 
-.navbar-large {
-  background-color: #10db9e;
-  transition: all 0.3s ease;
-  padding: 1.5rem 1rem;
+.navbar .navbar-brand {
+  font-size: 1.2rem;
 }
 
-.navbar-large .navbar-brand {
-  font-size: 1.5rem;
+/* Hamburger Menu */
+.navbar-toggler {
+  border: none;
 }
 
-.navbar-small .navbar-brand {
+.navbar-toggler-icon {
+  background-image: url('data:image/svg+xml;base64,...'); /* Use a custom icon if preferred */
+}
+
+.navbar-collapse {
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .navbar-collapse {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .navbar .navbar-brand {
+    font-size: 1rem;
+  }
+}
+
+/* Sticky Navbar Transition */
+.navbar.sticky-navbar .navbar-brand {
   font-size: 1rem;
 }
+
+
 
 /* Mega Menu Styling */
 .mega-menu {

@@ -128,12 +128,10 @@ class ResultatDetailAdmin(admin.ModelAdmin):
 
 @admin.register(PDFLayout)
 class PDFLayoutAdmin(admin.ModelAdmin):
-    list_display = ('id', 'header_icon', 'footer_message')
-    search_fields = ('header_icon', 'footer_message')
+    list_display = ('id',  'header_icon', 'schule_name','header_message', 'footer_message1', 'footer_message2')
+    search_fields = ( 'header_icon', 'schule_name','header_message', 'footer_message1', 'footer_message2')
 
-
-
-
+ 
 
 ############
 

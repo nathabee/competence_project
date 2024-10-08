@@ -1,24 +1,24 @@
 'use client';
 
 import React from 'react';
-import { PDFLayout } from '@/types/pdf'; // Ensure the interface import is correct
+import { PDFLayout } from '@/types/pdf';  
 
 interface PrintHeaderProps {
-  config: PDFLayout; // Use the proper PDFLayout interface for props
+  layout: PDFLayout;  
 }
 
-const PrintHeader: React.FC<PrintHeaderProps> = ({ config }) => {
+const PrintHeader: React.FC<PrintHeaderProps> = ({ layout }) => {
   return (
     <div className="print-header-container">
       <div id="print-header-logo">
-        <img 
-          src={config.header_icon} 
-          alt="Logo" 
-          style={{ maxWidth: '100px', maxHeight: '50px' }} 
-        />
+                <img
+                    src={layout.header_icon}
+                    alt="Header Icon"
+                    style={{ width: '50px', height: '50px', marginRight: '10px' }} // Adjust size as needed
+                />
       </div>
       <div id="print-header-school">
-        <h1>{config.footer_message}</h1>
+        <h1>{layout.schule_name}</h1>
       </div>
     </div>
   );

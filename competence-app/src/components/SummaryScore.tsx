@@ -23,6 +23,9 @@ const SummaryScore: React.FC<SummaryScoreProps> = ({ report_catalogues }) => {
             <th>Max score</th>
             <th>Competence acquise</th>
             <th>Avancement</th>
+            <th>seuil1_percent</th>
+            <th>seuil2_percent</th>
+            <th>seuil3_percent</th>
           </tr>
         </thead>
         <tbody>
@@ -36,6 +39,9 @@ const SummaryScore: React.FC<SummaryScoreProps> = ({ report_catalogues }) => {
                   <td>{resultat.groupage.max_point.toFixed(2)}</td>
                   <td>{Math.round((resultat.score / resultat.groupage.max_point) * 100)}%</td>
                   <td>{calculateAvancement(resultat).toFixed(2)}</td>
+                  <td>{resultat.seuil1_percent}</td>
+                  <td>{resultat.seuil2_percent}</td>
+                  <td>{resultat.seuil3_percent}</td>
                 </tr>
               ))
             ))

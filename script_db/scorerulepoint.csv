@@ -1,5 +1,5 @@
 id,scorerule,scorelabel,score,description
-1,1,?,-1,Rule 1 default: undefined
+1,1,?,-1,default score : nicht tested
 2,2,A,1,Rule 2 : A=1 point
 3,2,NA,0,Rule 2 : NA=0 point
 4,3,NA,0,Rule 3 : NA=0 point
@@ -9,6 +9,7 @@ id,scorerule,scorelabel,score,description
 8,4,Non,0,Rule 4 : Non=0 point
 9,5,Non,1,Rule 5 : Non=1 point
 10,5,Oui,0,Rule 5 : Oui=0 point
-11,6,Non,0,Rule 6 : Moins de 10 =0 point
-12,6,Non,1,Rule 6 : de 10 a 20=1 point
-13,6,Oui,2,Rule 6 : plus de 20=2 points
+11,6,Moins de 10,0,Rule 6 : Moins de 10 =0 point
+12,6,De 10 a 20,1,Rule 6 : de 10 a 20=1 point
+13,6,Plus que 10,2,Rule 6 : plus de 20=2 points
+14,7,Zero,0,Rule 7 : toujours 0 point

@@ -220,9 +220,10 @@ class GroupageDataDescriptionSerializer(serializers.ModelSerializer):
 class PDFLayoutSerializer(serializers.ModelSerializer):
     class Meta:
         model = PDFLayout
-        fields = ['id', 'header_icon', 'footer_message']  # Include necessary fields
+        fields = ['id', 'header_icon', 'schule_name','header_message', 'footer_message1', 'footer_message2']  # Include necessary fields
  
  
+
 
 class ResultatDetailSerializer(serializers.ModelSerializer):
     item_id = serializers.IntegerField(write_only=True, required=False)  # Only for update (foreign key)

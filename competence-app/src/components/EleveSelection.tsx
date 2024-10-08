@@ -69,9 +69,7 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
               <td>{eleve.prenom}</td>
               <td>{eleve.niveau}</td>
               <td>
-                {eleve.datenaissance
-                  ? new Date(eleve.datenaissance).toLocaleDateString() // Only convert if valid date
-                  : 'N/A'}
+                {eleve.datenaissance }
               </td>
               <td>
                 {eleve.professeurs_details?.map(prof => prof.username).join(', ') || 'N/A'}

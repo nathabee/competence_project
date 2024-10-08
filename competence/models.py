@@ -179,12 +179,12 @@ class Item(models.Model):
 # Table: PDFLayout (Defining the PDF structure)
 class PDFLayout(models.Model):
     header_icon = models.CharField(max_length=500)
-    footer_message = models.TextField(blank=True, null=True)
+    schule_name = models.TextField(blank=True, null=True)
+    header_message = models.TextField(blank=True, null=True)
+    footer_message1 = models.TextField(blank=True, null=True)
+    footer_message2 = models.TextField(blank=True, null=True)
+  
 
-    class Meta:
-        indexes = [
-            models.Index(fields=['header_icon'], name='pdflayout_header_icon_idx'),
-        ]
 
     def __str__(self):
         return f"PDF Layout: {self.id}"

@@ -59,17 +59,20 @@ if settings.DEBUG:
 
 
 # Redirect all unknown routes to static/html/index.html
+ 
 urlpatterns += [
-    re_path(r'^.*$', RedirectView.as_view(url='/static/html/index.html', permanent=False), name='index')
+    # Ensure the redirect applies only for certain paths, excluding admin and API URLs
+    re_path(r'^(?!admin|api|static).*$', RedirectView.as_view(url='/static/html/index.html', permanent=False), name='index')
 ]
+
 
 # Custom error handlers
 handler404 = custom_404
 
 
 
-if settings.DEBUG:
-    import debug_toolbar
-    urlpatterns += [
-        path('__debug__/', include(debug_toolbar.urls))
-    ]
+#if settings.DEBUG:
+#    import debug_toolbar
+#    urlpatterns += [
+#        path('__debug__/', include(debug_toolbar.urls))
+#    ]

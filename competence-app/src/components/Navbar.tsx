@@ -33,17 +33,13 @@ export default function CustomNavbar() {
   };
 
   return (
-    <Navbar
-      expand="lg"
-      fixed="top"
-      className={`navbar ${isSticky ? 'sticky-navbar navbar-small' : 'navbar-large'}`}
-    >
+    <Navbar expand="lg" fixed="top" className={`navbar ${isSticky ? 'sticky-navbar' : ''}`}>
       <Container>
         <Navbar.Brand as={Link} href="/">
           Home
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="navbar-nav" />
-        <Navbar.Collapse id="navbar-nav">
+        <Navbar.Collapse id="navbar-nav"> 
           <Nav className="me-auto">
             {isLoggedIn ? (
               <>
@@ -71,7 +67,7 @@ export default function CustomNavbar() {
                     <Nav.Link href={`${basePath}/dashboard`}>Dashboard</Nav.Link>
                     <Nav.Link href={`${basePath}/configuration`}>Configuration</Nav.Link>
                     <Nav.Link href={`${basePath}/test`} >Test</Nav.Link>  
-                    <Nav.Link href={`${basePath}/resume`}>Resume</Nav.Link>
+                    <Nav.Link href={`${basePath}/overview`}>overview</Nav.Link>
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
                   </>
                 )}

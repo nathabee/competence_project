@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useRef } from 'react';
+
 import {
   Chart,
   RadialLinearScale,
@@ -16,15 +17,14 @@ import {
 Chart.register(RadialLinearScale, RadarController, LineElement, PointElement, Filler, Tooltip, Legend);
 
 // Define props type for RadarChart
-interface RadarChartProps {
-  matiere: string;
+interface RadarChartProps { 
   chartData: {
     labels: string[];  // Labels for the radar chart axes
     data: number[];    // Data points for the radar chart
   };
 }
 
-const RadarChart: React.FC<RadarChartProps> = ({ matiere, chartData }) => {
+const RadarChart: React.FC<RadarChartProps> = ({  chartData }) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
 
@@ -65,9 +65,11 @@ const RadarChart: React.FC<RadarChartProps> = ({ matiere, chartData }) => {
             beginAtZero: true,
             ticks: {
               stepSize: 1,
-              callback: (value) => {
+              callback: (tickValue: string | number) => { // Use string | number
                 const labels = ['', '+', '++', '+++'];
-                return labels[value] || '';
+                // Ensure tickValue is a number before using it as an index
+                const index = typeof tickValue === 'number' ? tickValue : Number(tickValue);
+                return labels[index] || ''; // Accessing labels using index
               },
             },
           },

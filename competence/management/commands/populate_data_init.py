@@ -215,7 +215,13 @@ class Command(BaseCommand):
                     id=row['id'],
                     defaults={
                         'header_icon': row['header_icon'],
-                        'footer_message': row['footer_message'],
+                        'schule_name': row['schule_name'],
+                        'header_message': row['header_message'],
+                        'footer_message1': row['footer_message1'],
+                        'footer_message2': row['footer_message2'],
+
+
+
                     }
                 )
 

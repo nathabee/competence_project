@@ -1,85 +1,22 @@
-'use client';
+'use client'; 
 
-import React, { useState } from 'react';
+import React from 'react';
 import { Catalogue } from '@/types/report';
 import '@/app/globals.css'; // Import global styles
-import { useAuth } from '@/context/AuthContext'; // Use AuthContext instead of TestContext
 
 interface CatalogueDisplayProps {
-    catalogue: Catalogue[];
+    selectedCatalogue: Catalogue[]; // Catalogues we want to display
 }
 
-const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ catalogue }) => {
-    const [selectedYear, setSelectedYear] = useState<string | null>(null);
-    const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
-    const [selectedStage, setSelectedStage] = useState<string | null>(null);
-    const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-    const { activeCatalogues } = useAuth(); // Import useAuth at the top
-
-    if (!catalogue.length) return <p>Loading Catalogue...</p>;
-
-    // Extract unique filter values
-    const uniqueYears = Array.from(new Set(catalogue.map(cat => cat.annee.annee)));
-    const uniqueLevels = Array.from(new Set(catalogue.map(cat => cat.niveau.niveau)));
-    const uniqueStages = Array.from(new Set(catalogue.map(cat => cat.etape.etape)));
-    const uniqueSubjects = Array.from(new Set(catalogue.map(cat => cat.matiere.matiere)));
-
-    // Filter catalogue based on selected filters
-    const filteredCatalogue = catalogue.filter(cat => {
-        return (
-            (!selectedYear || cat.annee.annee === selectedYear) &&
-            (!selectedLevel || cat.niveau.niveau === selectedLevel) &&
-            (!selectedStage || cat.etape.etape === selectedStage) &&
-            (!selectedSubject || cat.matiere.matiere === selectedSubject)
-        );
-    });
+const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ selectedCatalogue }) => {
+    // Check if there are selected catalogues to display
+    if (!selectedCatalogue.length) {
+        return <p>No selected catalogues available.</p>;
+    }
 
     return (
         <div className="mb-4">
-            <h2>Catalogue Display</h2>
-
-            {/* Filters */}
-            <div className="filters">
-                <label>
-                    Year:
-                    <select value={selectedYear || ''} onChange={e => setSelectedYear(e.target.value || null)}>
-                        <option value="">All</option>
-                        {uniqueYears.map(year => (
-                            <option key={year} value={year}>{year}</option>
-                        ))}
-                    </select>
-                </label>
-
-                <label>
-                    Level:
-                    <select value={selectedLevel || ''} onChange={e => setSelectedLevel(e.target.value || null)}>
-                        <option value="">All</option>
-                        {uniqueLevels.map(level => (
-                            <option key={level} value={level}>{level}</option>
-                        ))}
-                    </select>
-                </label>
-
-                <label>
-                    Stage:
-                    <select value={selectedStage || ''} onChange={e => setSelectedStage(e.target.value || null)}>
-                        <option value="">All</option>
-                        {uniqueStages.map(stage => (
-                            <option key={stage} value={stage}>{stage}</option>
-                        ))}
-                    </select>
-                </label>
-
-                <label>
-                    Subject:
-                    <select value={selectedSubject || ''} onChange={e => setSelectedSubject(e.target.value || null)}>
-                        <option value="">All</option>
-                        {uniqueSubjects.map(subject => (
-                            <option key={subject} value={subject}>{subject}</option>
-                        ))}
-                    </select>
-                </label>
-            </div>
+            <h2>Selected Catalogue Display</h2>
 
             {/* Catalogue Table */}
             <table className="table">
@@ -93,12 +30,8 @@ const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ catalogue }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {filteredCatalogue.map(cat => (
-                        <tr
-                            key={cat.id}
-                            className={activeCatalogues.some(activeCat => activeCat.id === cat.id) ? 'selected-row' : ''} // Apply class if it's active
-                            style={{ cursor: 'pointer' }} // Optional: Add cursor style for better UX 
-                        >
+                    {selectedCatalogue.map(cat => (
+                        <tr key={cat.id} className="selected-row"> {/* All rows are from selectedCatalogue */}
                             <td>{cat.annee.annee}</td>
                             <td>{cat.niveau.niveau}</td>
                             <td>{cat.etape.etape}</td>

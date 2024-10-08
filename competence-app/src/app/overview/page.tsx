@@ -1,24 +1,25 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useAuth } from '@/context/AuthContext';
+import React, { useEffect, useState } from 'react'; 
+import { useAuth } from '@/context/AuthContext'; 
+import SummaryScore from '@/components/SummaryScore';
+import UserDisplay from '@/components/UserDisplay';
 import EleveDisplay from '@/components/EleveDisplay';
 import CatalogueDisplay from '@/components/CatalogueDisplay';
-import SummaryScore from '@/components/SummaryScore';
+import LayoutDisplay from '@/components/LayoutDisplay';
 
-const Overview: React.FC = () => {
-  const router = useRouter();
+const Overview: React.FC = () => { 
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
-  const { activeCatalogues, activeEleve, activeReport, eleves } = useAuth(); // Assuming `eleves` is in your AuthContext
+  const [error] = useState<boolean>(false);
+  const { activeCatalogues, activeEleve, activeReport, user, activeLayout} = useAuth();  
 
   useEffect(() => {
     console.log('Active Catalogues:', activeCatalogues);
     console.log('Active Eleve:', activeEleve); 
     console.log('Active Report:', activeReport); 
+    console.log('Active Report:', activeLayout); 
     setLoading(false);
-  }, [activeCatalogues, activeEleve, activeReport]);
+  }, [activeCatalogues, activeEleve, activeReport,activeLayout]);
 
   // Handle error state if needed
   if (error) {
@@ -29,34 +30,28 @@ const Overview: React.FC = () => {
     return <div>Loading...</div>;
   }
 
-  const handleEleveSelect = (id: number) => {
-    // Implement your logic to handle the selection of an eleve
-  };
-
   return (
     <div>
       <h1>Overview Page</h1>
 
-      {/* Eleve Display */}
-      <h2>Student Overview</h2>
-      <EleveDisplay eleves={eleves} onEleveSelect={handleEleveSelect} />
+      {/* Active selected data */}
+      <h2>Donnees selectionnees :</h2>
 
-      {/* Catalogue Display */}
-      <h2>Catalogues Overview</h2>
-      <CatalogueDisplay catalogue={activeCatalogues} />
+      <h3>Professeur : </h3>
+      <UserDisplay user={user} /> 
 
-      {/* Display summary scores for each report catalogue */}
-      <h2>Summary Scores</h2>
-      <div className="tab-content mt-3">
-        <div className="tab-pane fade show active">
-          {activeReport?.report_catalogues.map((catalogue, index) => (
-            <SummaryScore 
-              key={index} 
-              aggregatedDataByMatiere={catalogue} 
-            />
-          ))}
-        </div>
-      </div>
+      <h3>Eleve : </h3>
+      <EleveDisplay eleve={activeEleve} /> 
+
+      <h3>Catalogue : </h3>
+      <CatalogueDisplay selectedCatalogue={activeCatalogues}  />
+
+      <h1>Welcome to the Layout Display</h1>
+      <LayoutDisplay layout={activeLayout} />  
+
+
+      <h2>Résumé des scores :</h2> 
+      <SummaryScore report_catalogues={activeReport?.report_catalogues ?? []} />
     </div>
   );
 };
