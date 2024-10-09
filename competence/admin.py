@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 #import logging  #for debug developpement
 
 
+from django.utils.html import format_html
 
 from django.contrib import admin
 from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, Eleve, Catalogue, GroupageData, Item, \
@@ -13,6 +14,8 @@ from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, El
 
 from django.contrib import admin
 from .models import Report, ReportCatalogue, Resultat, ResultatDetail
+import base64
+
 
 class ResultatDetailInline(admin.TabularInline):
     model = ResultatDetail
@@ -125,13 +128,23 @@ class ResultatDetailAdmin(admin.ModelAdmin):
     list_filter = ('resultat', 'item')
     search_fields = ('resultat__report_catalogue__report__eleve__nom', 'item__description')
 
+ 
+ 
 
 @admin.register(PDFLayout)
 class PDFLayoutAdmin(admin.ModelAdmin):
-    list_display = ('id',  'header_icon', 'schule_name','header_message', 'footer_message1', 'footer_message2')
-    search_fields = ( 'header_icon', 'schule_name','header_message', 'footer_message1', 'footer_message2')
+    list_display = ('id', 'display_header_icon', 'schule_name', 'header_message', 'footer_message1', 'footer_message2')
+    search_fields = ('header_icon', 'schule_name', 'header_message', 'footer_message1', 'footer_message2')
 
- 
+    def display_header_icon(self, obj):
+        if obj.header_icon:
+            with open(obj.header_icon.path, 'rb') as img_file:
+                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
+                return format_html('<img src="data:image/png;base64,{}" style="width: 50px; height: 50px;"/>', encoded_string)
+        return "-"
+    
+    display_header_icon.short_description = "Header Icon"
+
 
 ############
 

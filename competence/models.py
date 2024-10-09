@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.core.files import File
+from PIL import Image
+from django.conf import settings
+import os
 
 
 # Table: Niveau (Class Level & Evaluation Stage)
@@ -175,19 +179,36 @@ class Item(models.Model):
     def __str__(self):
         return f"Test {self.groupagedata} - {self.temps} - {self.description}"
 
-
-# Table: PDFLayout (Defining the PDF structure)
 class PDFLayout(models.Model):
-    header_icon = models.CharField(max_length=500)
+    header_icon = models.ImageField(upload_to='header_icons/')
     schule_name = models.TextField(blank=True, null=True)
     header_message = models.TextField(blank=True, null=True)
     footer_message1 = models.TextField(blank=True, null=True)
     footer_message2 = models.TextField(blank=True, null=True)
-  
-
 
     def __str__(self):
         return f"PDF Layout: {self.id}"
+
+    def save(self, *args, **kwargs):
+        if self.header_icon:
+            # Open the uploaded image
+            img = Image.open(self.header_icon)
+            img.thumbnail((100, 100), Image.LANCZOS)
+            
+            # Create a temporary file to save the resized image
+            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'header_icons', f"resized_{os.path.basename(self.header_icon.name)}")
+            img.save(temp_file_path)
+
+            # Update the image field with the resized image
+            with open(temp_file_path, 'rb') as f:
+                self.header_icon.save(f"resized_{os.path.basename(self.header_icon.name)}", File(f), save=False)
+            
+            # Optionally, remove the temporary file after saving the resized image
+            os.remove(temp_file_path)
+        
+        super(PDFLayout, self).save(*args, **kwargs)
+
+
 
 
 # Table: Report

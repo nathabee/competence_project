@@ -1,5 +1,4 @@
-'use clinet';
-
+'use client';
 
 import React from 'react';
 import jsPDF from 'jspdf';
@@ -13,46 +12,83 @@ import { User } from '@/types/user';
 import { PDFLayout } from '@/types/pdf';
 
 interface PDFComponentProps {
-  reportCatalogues: ReportCatalogue[];  // ReportCatalogues data
-  eleve: Eleve;                         // Student data
-  professor: User;                      // Professor data
-  pdflayout: PDFLayout;                    // PDF layout configuration
+  reportCatalogues: ReportCatalogue[];
+  eleve: Eleve;
+  professor: User;
+  pdflayout: PDFLayout;
 }
 
 const PDFComponent: React.FC<PDFComponentProps> = ({ reportCatalogues, eleve, professor, pdflayout }) => {
 
-  const handlePrintPDF = () => {
-    const printButton = document.querySelector('.btn') as HTMLElement; // Cast to HTMLElement to access style
-    if (printButton) printButton.style.display = 'none'; // Hide print button during capture
-
-    const doc = new jsPDF({
-      orientation: 'portrait',
-      unit: 'mm',
-      format: 'a4',
-    });
-
+ 
+  const handlePrintPDF = async () => {
+    const printButton = document.querySelector('.btn') as HTMLElement;
+    if (printButton) printButton.style.display = 'none';
+  
     const printableSection = document.getElementById('printable-section-1');
     if (!printableSection) return;
-
-    html2canvas(printableSection, { scale: 2 }).then((canvas: HTMLCanvasElement) => { // Define canvas type as HTMLCanvasElement
-      const imgData = canvas.toDataURL('image/png');
-      doc.addImage(imgData, 'PNG', 0, 0, 210, 297); // Full A4 page size
-
-      if (printButton) printButton.style.display = 'inline-block'; // Show the button again
-      doc.save('report.pdf');
+  
+    // Use the Base64 image directly
+    // const imgData = pdflayout.header_icon_base64; // Assuming this contains the Base64 string
+  
+    // Use a higher scale for better quality
+    html2canvas(printableSection, { scale: 2 }).then((canvas: HTMLCanvasElement) => {
+      const sectionImgData = canvas.toDataURL('image/png');
+      console.log("Canvas data URL created:", sectionImgData); // Log the data URL
+  
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+      });
+  
+      // Check if the jsPDF instance was created
+      if (doc) {
+        console.log("jsPDF instance created successfully.");
+      }
+  
+      const imgWidth = 210; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+  
+      // Attempt to add the section canvas image to the PDF
+      try {
+        doc.addImage(sectionImgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        console.log("Section image added to PDF successfully.");
+      } catch (error) {
+        console.error("Failed to add section image to PDF:", error); // Log if adding the image fails
+      }
+  
+      /*
+      // Attempt to add the header icon to the PDF as well
+      try {
+        const headerIconWidth = 50; // Adjust as needed
+        const headerIconHeight = 50; // Adjust as needed
+        doc.addImage(imgData, 'PNG', 10, 10, headerIconWidth, headerIconHeight); // Adjust the position
+        console.log("Header icon added to PDF successfully.");
+      } catch (error) {
+        console.error("Failed to add header icon to PDF:", error); // Log if adding the header icon fails
+      }
+  
+      // Optional: add more configurations for better quality (like font settings)
+      doc.setFont("Helvetica", "normal");
+      doc.setFontSize(12);
+      */
+  
+      if (printButton) printButton.style.display = 'inline-block';
+      doc.save('report_high_quality.pdf');
+    }).catch((error) => {
+      console.error("html2canvas failed:", error); // Log if html2canvas fails
     });
   };
+  
+
+
 
   return (
     <div>
-      <div></div>
-      <div></div>
-      <div></div>
-      <button className="btn btn-primary" onClick={handlePrintPDF}>Imprimer PDF</button>
+      <button className="btn btn-primary" onClick={handlePrintPDF}>Imprimer PDF</button> 
       <div id="printable-section-1" className="print-container">
         <PrintHeader layout={pdflayout} />
-        
-        {/* Student and Professor Information */}
         <div className="print-banner">
           <div className="print-banner-col">
             <h4>Professeur:</h4>
@@ -66,26 +102,19 @@ const PDFComponent: React.FC<PDFComponentProps> = ({ reportCatalogues, eleve, pr
             <p>Niveau: {eleve.niveau}</p>
           </div>
         </div>
-
-        {/* Radar Charts */}
         <div className="print-charts">
           <h2>{pdflayout.header_message}</h2>
           {reportCatalogues.map((catalogue, index) => {
             const labels = catalogue.resultats.map(res => res.groupage.label_groupage);
-            const data = catalogue.resultats.map(res => (res.seuil1_percent +  res.seuil2_percent+ res.seuil3_percent) / 100 );
-
+            const data = catalogue.resultats.map(res => (res.seuil1_percent + res.seuil2_percent + res.seuil3_percent) / 100);
             return (
               <div key={index} className="print-chart">
                 <h3>{catalogue.description}</h3>
-                <RadarChart 
-                  chartData={{ labels, data }} 
-                />
+                <RadarChart chartData={{ labels, data }} />
               </div>
             );
           })}
         </div>
-
-        {/* Footer */}
         <div className="print-footer">
           <p>{pdflayout.footer_message1}</p>
           <p>{pdflayout.footer_message2}</p>

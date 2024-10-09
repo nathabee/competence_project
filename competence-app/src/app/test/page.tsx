@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
+import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -12,7 +13,7 @@ import { ReportCataloguePatch, ResultatPatch } from '@/types/reportpatch';
 
 const Test: React.FC = () => {
   const router = useRouter();
-  const { activeCatalogues, activeEleve, user, scoreRulePoints, setScoreRulePoints, activeReport, setActiveReport } = useAuth();
+  const { activeCatalogues, activeEleve, user, scoreRulePoints, setScoreRulePoints, activeReport, setActiveReport } = useAuth();  
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [reportData, setReportData] = useState<ReportCatalogue[]>([]);
@@ -29,12 +30,12 @@ const Test: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = document.cookie.split('authToken=')[1]?.split(';')[0];
+      const token = getTokenFromCookies(); // Automatically gets the token from cookies
 
-      if (!token) {
-        router.push('/login');
-        return;
-      }
+    if (!token || isTokenExpired(token)) {
+      router.push(`/login`);
+      return;
+    }
 
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 

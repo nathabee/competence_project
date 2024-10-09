@@ -2,14 +2,17 @@
 'use client'; // Mark this as a Client Component
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
+import { isTokenExpired,getTokenFromCookies } from '@/utils/jwt';  
 
 const Statistiques = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const token = document.cookie.split('authToken=')[1];
-    if (!token) {
-      router.push('/login');
+    const token = getTokenFromCookies(); // Automatically gets the token from cookies
+
+    if (!token || isTokenExpired(token)) {
+      router.push(`/login`);
+      return;
     }
   }, [router]);
 

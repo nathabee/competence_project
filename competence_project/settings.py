@@ -1,7 +1,10 @@
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
-#import os
+ 
+import os
+
+
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_SSL_REDIRECT = False
@@ -12,6 +15,11 @@ APPEND_SLASH = True
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Media files (for image uploads)
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 
 # Define a function to get environment variables
 def get_env_variable(var_name, default=None):

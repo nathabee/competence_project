@@ -29,5 +29,6 @@ id,description,etape,niveau,matiere,annee
 28,M2 Point Repere Francais 24-25,2,7,2,1
 29,M2 Point Etape Francais 24-25,3,7,2,1
 30,M2 Bilan Fin annee Francais 24-25,4,7,2,1
-31,GS Point Repere 24-25,2,2,1,1
-32,GS Point Etape 24-25,3,2,1,1
+31,GS Point Repere - VERSION DETAILLEE,2,2,1,1
+32,GS Point Etape - VERSION DETAILLEE,3,2,1,1
+33,GS Point Repere - VERSION RAPIDE,2,2,1,1

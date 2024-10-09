@@ -11,36 +11,73 @@
 /* Root variables for colors */
 :root {
   --custom-blue: #47cab4;
+  --custom-blue-complement:  #e2d89f;
   --custom-warning: #fae46a;
-  --custom-dark: #343a40;
-  --custom-light: #f8f9fa;
-  --custom-light-pink: rgba(255, 235, 239, 0.8); /* Light pink with transparency */
-  --custom-dark-pink: rgba(255, 204, 213, 0.8); /* Darker pink with transparency */
+  --custom-dark: #22473f;
+  --custom-dark-shadow:  rgba(0, 0, 0, 0.1);
+  --custom-light: #d1f3f1;
+  /*--custom-light-pink: rgba(255, 235, 239, 0.8); /* Light pink with transparency */
+  /*--custom-dark-pink: rgba(255, 204, 213, 0.8); /* Darker pink with transparency */
   --custom-transparent: rgba(255, 255, 255, 0); /* Fully transparent */
   --custom-text: #343a40;
   --custom-text-on-dark: white;
-  --custom-link-hover: #007bff;
+  --custom-link-hover: #ff9100;
   --custom-dropdown-bg: white;
-  --custom-dropdown-border: #ccc;
+  --custom-dropdown-border: #9cee83;
+  --custom-gradient: linear-gradient(to right, var(--custom-blue-complement), var(--custom-blue));
 }
+
+
+/* Gradient background */
+body {
+  background:  var(--custom-gradient);
+  font-family: Arial, sans-serif; 
+  align-items: center; 
+}
+
+
+.card {
+  background-color: var(--custom-blue);
+  box-shadow: 0 4px 8px var(--custom-dark-shadow); /* Optional for card elevation */
+  border-radius: 10px; /* Optional for rounded corners */
+}
+
+
+/* Ensure the container uses the full width and adapts */
+.container-fluid {
+  width: 100%;
+  padding: 0;
+}
+
+/* Table responsive to allow horizontal scroll */
+.table-responsive {
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
+
+.table th, .table td {
+  white-space: nowrap; /* Prevent text wrapping */
+}
+
+
+.selected-row td {
+  background-color: var(--custom-blue) !important; /* Highlight selected rows */
+}
+
+
+
+
+
+
+
+
+/**************************************************/
 
 /* Navbar container */
 .navbar {
   background-color: var(--custom-transparent); /* Transparent by default */
-  transition: background-color 0.3s ease; /* Smooth transition when scrolling */
-  padding: 10px; /* Add some padding to the navbar */
-  border-bottom: none; /* Remove any borders */
 }
-
-/* Sticky navbar with a semi-transparent color when scrolling */
-.sticky-navbar {
-  background-color: var(--custom-light-pink); /* Light pink with some transparency when scrolling */
-}
-
-/* Sticky navbar when scrolled past 100px */
-.navbar.sticky-navbar {
-  background-color: var(--custom-dark-pink); /* Dark pink with transparency when scrolling */
-}
+ 
 
 /* Hamburger icon remains fixed at top-left */
 .hamburger-icon {
@@ -93,11 +130,4 @@
 }
 
 
- 
-
-
- 
-
-.selected-row td {
-  background-color: var(--custom-blue) !important; /* Highlight selected rows */
-}
+ /************************************************/

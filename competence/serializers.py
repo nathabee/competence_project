@@ -7,7 +7,8 @@ from .models import (
 
 from rest_framework import serializers  
 from django.utils import timezone
-
+import base64
+#from django.core.files.base import ContentFile
  
 
  
@@ -218,10 +219,23 @@ class GroupageDataDescriptionSerializer(serializers.ModelSerializer):
 
 
 class PDFLayoutSerializer(serializers.ModelSerializer):
+    header_icon_base64 = serializers.SerializerMethodField()
+
     class Meta:
         model = PDFLayout
-        fields = ['id', 'header_icon', 'schule_name','header_message', 'footer_message1', 'footer_message2']  # Include necessary fields
+        fields = ['id', 'header_icon', 'header_icon_base64', 'schule_name', 'header_message', 'footer_message1', 'footer_message2']
+        extra_kwargs = {
+            'header_icon': {'read_only': True},  # Make header_icon read-only
+        }
+
+    def get_header_icon_base64(self, obj):
+        if obj.header_icon:
+            with open(obj.header_icon.path, 'rb') as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                return f'data:image/png;base64,{encoded_string}'
+        return None
  
+
  
 
 

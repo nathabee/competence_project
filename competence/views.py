@@ -305,7 +305,7 @@ class PDFLayoutViewSet(viewsets.ModelViewSet):
     queryset = PDFLayout.objects.all()
     serializer_class = PDFLayoutSerializer
  
-
+ 
 
 class ReportViewSet(viewsets.ModelViewSet):
     queryset = Report.objects.all()
@@ -320,57 +320,6 @@ class ReportCatalogueViewSet(viewsets.ModelViewSet):
     serializer_class = ReportCatalogueSerializer
 
 
-"""
-class FullReportViewSet(viewsets.ModelViewSet):
-    serializer_class = FullReportSerializer
-
-    def get_queryset(self):
-        user = self.request.user
-        
-        if user.groups.filter(name='admin').exists():
-            return Report.objects.all()  # Admins have full access
-
-        if user.groups.filter(name='analytics').exists() and user.is_authenticated:
-            return Report.objects.none()  # Analytics users not allowed to view reports
-
-        if user.groups.filter(name='teacher').exists() and user.is_authenticated:
-            eleve_ids = user.eleves.values_list('id', flat=True)
-            return Report.objects.filter(eleve__in=eleve_ids).distinct()
-        
-        return Report.objects.none()
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)  # Validate incoming data
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def update(self, request, *args, **kwargs):
-        # Call the default update method to get the instance
-        instance = self.get_object()
-        # Validate incoming data
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-
-        # Clear existing report catalogues
-        instance.report_catalogues.clear()
-
-        # Save the updated report details
-        self.perform_update(serializer)
-
-        # Set new report catalogues if provided
-        report_catalogues = request.data.get('report_catalogues', [])
-        instance.report_catalogues.set(report_catalogues)
-
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def retrieve(self, request, *args, **kwargs):
-        return super().retrieve(request, *args, **kwargs)
-
-    def list(self, request, *args, **kwargs):
-        return super().list(request, *args, **kwargs)
-
-"""
 class FullReportViewSet(viewsets.ModelViewSet):
     serializer_class = FullReportSerializer
 
@@ -417,6 +366,4 @@ class FullReportViewSet(viewsets.ModelViewSet):
         # Optional: Additional logging or response modification here if needed
         return super().list(request, *args, **kwargs)
  
-
-############################################################## 
-
+ 

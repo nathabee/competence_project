@@ -1,11 +1,32 @@
+import os
 import csv
+from django.conf import settings
 from django.core.management.base import BaseCommand
 from competence.models import Annee, Catalogue, Etape, GroupageData, Niveau, Matiere, Item, ScoreRule,ScoreRulePoint,PDFLayout
 from django.utils.timezone import make_aware
 from datetime import datetime
+#from django.core.files import File
+from PIL import Image
 
 
 class Command(BaseCommand):
+
+
+    def resize_image(self, image_path):
+        if not os.path.exists(image_path):
+            raise FileNotFoundError(f"The image {image_path} does not exist.")
+            
+        img = Image.open(image_path)
+        
+        # Resize while maintaining aspect ratio
+        img.thumbnail((100, 100), Image.LANCZOS)  # Use Image.LANCZOS instead of Image.ANTIALIAS
+
+        # Save the image back to the same path or a new path
+        img.save(image_path)  # This will overwrite the original image. Use a new path if you want to keep the original.
+
+        return image_path
+
+
     help = 'Import data from CSV files into Django models'
 
 
@@ -205,25 +226,33 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Successfully imported Item data'))
 
+        # Make sure to set the MEDIA_ROOT correctly
+        media_root = settings.MEDIA_ROOT
+ 
+  
 
-        # Load Layout data
         with open('script_db/pdflayout.csv', mode='r') as file: 
             reader = csv.DictReader(file) 
-            for row in reader: 
+            for row in reader:
+                header_icon_path = os.path.join(settings.MEDIA_ROOT, row['header_icon'])
+                
+                try:
+                    # Resize the image and save
+                    resized_image_path = self.resize_image(header_icon_path)
 
-                PDFLayout.objects.update_or_create(
-                    id=row['id'],
-                    defaults={
-                        'header_icon': row['header_icon'],
-                        'schule_name': row['schule_name'],
-                        'header_message': row['header_message'],
-                        'footer_message1': row['footer_message1'],
-                        'footer_message2': row['footer_message2'],
+                    PDFLayout.objects.update_or_create(
+                        id=row['id'],
+                        defaults={
+                            'header_icon': resized_image_path,  # Save the path of the resized image
+                            'schule_name': row['schule_name'],
+                            'header_message': row['header_message'],
+                            'footer_message1': row['footer_message1'],
+                            'footer_message2': row['footer_message2'],
+                        }
+                    )
 
-
-
-                    }
-                )
+                except Exception as e:
+                    self.stderr.write(self.style.ERROR(f"Error processing row {row['id']}: {str(e)}"))
 
 
         self.stdout.write(self.style.SUCCESS('Successfully imported PDFLayout data'))

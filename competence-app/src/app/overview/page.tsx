@@ -7,19 +7,32 @@ import UserDisplay from '@/components/UserDisplay';
 import EleveDisplay from '@/components/EleveDisplay';
 import CatalogueDisplay from '@/components/CatalogueDisplay';
 import LayoutDisplay from '@/components/LayoutDisplay';
+import { isTokenExpired ,getTokenFromCookies} from '@/utils/jwt';  
+import { useRouter } from 'next/navigation';
 
 const Overview: React.FC = () => { 
   const [loading, setLoading] = useState<boolean>(true);
   const [error] = useState<boolean>(false);
   const { activeCatalogues, activeEleve, activeReport, user, activeLayout} = useAuth();  
 
+ 
+
+  const router = useRouter();
+
   useEffect(() => {
-    console.log('Active Catalogues:', activeCatalogues);
-    console.log('Active Eleve:', activeEleve); 
-    console.log('Active Report:', activeReport); 
-    console.log('Active Report:', activeLayout); 
+    const token = getTokenFromCookies(); // Automatically gets the token from cookies
+
+    if (!token || isTokenExpired(token)) {
+      router.push(`/login`);
+      return;
+    } 
+
+    //console.log('Active Catalogues:', activeCatalogues);
+    //console.log('Active Eleve:', activeEleve); 
+    //console.log('Active Report:', activeReport); 
+    //console.log('Active Report:', activeLayout); 
     setLoading(false);
-  }, [activeCatalogues, activeEleve, activeReport,activeLayout]);
+  }, [activeCatalogues, activeEleve, activeReport,activeLayout,router]);
 
   // Handle error state if needed
   if (error) {

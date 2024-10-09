@@ -1,3 +1,5 @@
+'use client';
+
 const About = () => {
     return (
       <div className="container mt-3 ml-2">

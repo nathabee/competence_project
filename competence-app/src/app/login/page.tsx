@@ -6,7 +6,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { AxiosError } from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { setCookie } from 'nookies'; 
+import { setCookie } from 'nookies';
 import { useAuth } from '../../context/AuthContext';
 
 export default function LoginPage() {
@@ -41,7 +41,7 @@ export default function LoginPage() {
       const userInfo = userResponse.data; // Contains all user information
 
       // Step 4: Login and set user in context
-      login(token, userInfo); 
+      login(token, userInfo);
 
       // Step 5: Redirect to the dashboard
       router.push(`/dashboard`);
@@ -54,9 +54,13 @@ export default function LoginPage() {
       }
     }
   };
-  
-  return (
+
+
+  /*
     <div className="d-flex justify-content-center align-items-center min-vh-100 bg-light">
+    */
+  return (
+    <div className="d-flex justify-content-center align-items-center min-vh-100 ">
       <div className="card" style={{ maxWidth: '400px', width: '100%' }}>
         <div className="card-body">
           <h5 className="card-title text-center mb-4">Login</h5>
@@ -69,9 +73,10 @@ export default function LoginPage() {
                 id="username"
                 className="form-control"
                 placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
                 required
+                autoComplete="username"  
+                value={username}
+                onChange={(e) => setUsername(e.target.value)} 
               />
             </div>
             <div className="mb-3">
@@ -82,8 +87,8 @@ export default function LoginPage() {
                 className="form-control"
                 placeholder="Password"
                 value={password}
-                required 
-                autoComplete="current-password" 
+                required
+                autoComplete="current-password"
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>

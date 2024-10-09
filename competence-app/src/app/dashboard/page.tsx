@@ -15,6 +15,8 @@ import LayoutSelection from '@/components/LayoutSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
+import { isTokenExpired,getTokenFromCookies } from '@/utils/jwt';  
+
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
@@ -37,9 +39,9 @@ const Dashboard: React.FC = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = document.cookie.split('authToken=')[1]?.split(';')[0];
-
-      if (!token) {
+      const token = getTokenFromCookies(); // Automatically gets the token from cookies
+  
+      if (!token || isTokenExpired(token)) {
         router.push(`/login`);
         return;
       }
@@ -94,7 +96,7 @@ const Dashboard: React.FC = () => {
   }
 
   return (
-    <div className="container mt-5">
+    <div className="container mt-3 ml-2">
       <h1>Dashboard</h1>
       <div className="tab-content mt-3">
 
