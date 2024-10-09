@@ -88,22 +88,10 @@ const PDFComponent: React.FC<PDFComponentProps> = ({ reportCatalogues, eleve, pr
     <div>
       <button className="btn btn-primary" onClick={handlePrintPDF}>Imprimer PDF</button> 
       <div id="printable-section-1" className="print-container">
-        <PrintHeader layout={pdflayout} />
-        <div className="print-banner">
-          <div className="print-banner-col">
-            <h4>Professeur:</h4>
-            <p>Nom: {professor.last_name}</p>
-            <p>Prénom: {professor.first_name}</p>
-          </div>
-          <div className="print-banner-col">
-            <h4>Élève:</h4>
-            <p>Nom: {eleve.nom}</p>
-            <p>Prénom: {eleve.prenom}</p>
-            <p>Niveau: {eleve.niveau}</p>
-          </div>
-        </div>
-        <div className="print-charts">
-          <h2>{pdflayout.header_message}</h2>
+        <PrintHeader layout={pdflayout} professor={professor} eleve={eleve}/>
+        <div className="print-banner">  <div> </div>   </div>
+        <div className="print-chart-title">{pdflayout.header_message}</div>
+        <div className="print-charts-container">
           {reportCatalogues.map((catalogue, index) => {
             const labels = catalogue.resultats.map(res => res.groupage.label_groupage);
             const data = catalogue.resultats.map(res => (res.seuil1_percent + res.seuil2_percent + res.seuil3_percent) / 100);
@@ -116,8 +104,8 @@ const PDFComponent: React.FC<PDFComponentProps> = ({ reportCatalogues, eleve, pr
           })}
         </div>
         <div className="print-footer">
-          <p>{pdflayout.footer_message1}</p>
-          <p>{pdflayout.footer_message2}</p>
+          <div id="print-footer-1">{pdflayout.footer_message1}</div>
+          <div id="print-footer-2">{pdflayout.footer_message2}</div>
         </div>
       </div>
     </div>

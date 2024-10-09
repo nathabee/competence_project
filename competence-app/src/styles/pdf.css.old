@@ -1,0 +1,268 @@
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+
+/* General PDF Styling */
+.print-container {
+  width: 210mm; /* A4 width */
+  height: 297mm; /* A4 height */
+  margin: 0 auto; /* Center the content horizontally */
+  padding: 10mm; /* Add padding for margins */
+  font-family: Arial, sans-serif; /* Standard font */
+  border: 1px solid #ddd; /* Light border for distinction */
+  background-color: #ffffff; /* Ensure canvas background is white */
+  display: flex;
+  flex-direction: column;
+}
+ 
+/*#header_icon_id {
+  z-index: 9999;
+  width: 100px;
+  height: auto;
+  position: relative; 
+  display: block; 
+}*/
+
+
+
+
+/* Charts Section */
+.print-charts {
+  background-color: #2c0ed3; /* Ensure canvas background is white */
+  /*flex-grow: 1; /* Allow this section to grow */
+  display: flex;
+  flex-wrap: wrap; /* Allow charts to wrap */
+  justify-content: center; /* Center charts */
+  gap: 10mm; /* Space between charts */
+}
+
+/* Individual Chart */
+.print-chart {
+  /*flex: 1 1 45%; /* Allow each chart to take 45% of the row */
+  background-color: #0eb5d3; /* Ensure canvas background is white */
+  max-width: 100%; /* Ensure it doesn't exceed its container */
+  display: flex; /* Enable flex on the chart container */
+  flex-direction: column; /* Stack title and chart vertically */
+  align-items: center; /* Center contents */
+}
+
+/* Chart Title Styling */
+.print-chart h3 {
+  text-align: center; /* Center chart titles */
+  margin-bottom: 5mm; /* Space between title and chart */
+}
+
+ 
+
+
+/* Set A4 size for the printable section */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+  .tab-content {
+    background-color: #c9a9d3; /* Ensure canvas background is white */
+    width: 100%;
+    height: 100%;
+    margin: 0;
+  }
+  .print-chart {
+    background-color: #a50ed3; /* Ensure canvas background is white */
+    flex: 1 1 100%; /* Make each chart full width when printing */
+  }
+ 
+ 
+  #print-header-logo img {
+    visibility: visible !important;
+    display: block !important;
+  }
+}
+
+
+
+
+/* General PDF Styling */
+.print-container  {
+  width: 210mm;  /* A4 width */
+  height: 297mm; /* A4 height */ 
+  /*box-sizing: border-box;*/
+  margin: 0 auto; /* Center the content horizontally */
+  font-family: Arial, sans-serif; /* Standard font */
+  border: 1px solid #ddd; /* Light border for distinction */ 
+  background-color: #fff; /* Ensure canvas background is white */
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* Header Section +++++++++++++++++++++++++++++++++++++*/
+ 
+.print-header-container {
+  margin-top: 0mm;
+  display: flex;  
+  height: 2cap; /* Take 10% of page height */
+  align-items: center;  
+  border-bottom: 2px solid #000; 
+  background-color: #ffe96c; /* Ensure canvas background is white */
+}
+
+#print-header-logo { 
+  flex: 1; 
+  max-width: 500mm;
+  max-height: 350mm;
+  display: flex;
+  align-items: center; 
+  justify-content: center;
+  margin:10mm;
+}
+
+
+#print-header-logo {
+  flex: 0 1 20%; 
+} 
+#print-header-schule {
+  flex: 0 1 80%;  
+}
+ 
+#print-header-schule {
+  flex: 4; 
+  display: flex;
+  align-items: center; 
+  justify-content: center; 
+} 
+#print-header-schule h1 {
+  font-size: 20px;
+  margin: 0;
+  color: #11332a;
+}
+
+/**********************************/
+/* Banner Container */
+.print-banner {
+  background-color: #ffae6c; /* Ensure canvas background is white */
+  height: 10%; /* Take 10% of page height */
+  margin-top: 0mm;
+  display: flex; 
+  align-items: top; /* Vertically center items */
+  border-bottom: 2px solid #000; /* Underline */
+}
+
+/* Flex Item for Professeur Info */
+#print-banner-col-1 {
+  flex: 1; /* Flex item grows to fill available space */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */ 
+  align-items: center; /* Align items to the start (left) */ 
+  justify-content: top; /* Center content vertically */
+}
+
+/* Flex Item for Élève Info */
+#print-banner-col-2 {
+  flex: 1; /* Flex item grows to fill available space */
+  display: flex;
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Align items to the end (right) */
+  justify-content: top; /* Center content vertically */
+}
+
+/* Header Style */
+.print-banner-header {
+  font-size: 10px;
+  margin-top: 10mm;
+  color: hwb(64 43% 13%); /* Adjust color as needed */
+}
+
+/* Info Style */
+.print-banner-info {
+  font-size: 10px; 
+  margin: 5mm;
+  color: hwb(63 7% 85%); /* Adjust color as needed */
+}
+
+ 
+ /****************************************/
+
+
+
+/* Canvas Container */
+#canvas-container {
+  width: 210mm;  /* A4 width */
+  height: 50%; /* 50% of A4 height */
+  /*background-color: #fff;   */ 
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  background-color: #7ed30e; /* Ensure canvas background is white */
+}
+
+/* Canvas Styling */
+canvas {
+  width: 100% !important; /* Canvas takes full container width */
+  height: 100% !important; /* Canvas takes full container height */ 
+}
+
+
+/**********************************/
+/* footer Container */
+.print-footer {
+  background-color: #e76c07; /* Ensure canvas background is white */
+  height: 20%; /* Take 50% of page height */
+  margin: 10mm;   
+  align-items: top; /* Vertically center items */ 
+  border-bottom: 2px solid #000; 
+}
+
+
+.print-footer-titre { 
+  font-weight: 3 ;
+  align-items: top; /* Vertically center items */ 
+  font-synthesis: weight;
+}
+
+
+
+.print-footer-message {  
+  font-size: small; 
+  font-style: italic;
+  align-items: top; /* Vertically center items */ 
+}
+/**********************************/
+
+
+
+/* Charts Section */
+.print-charts {
+  height: 50%; /* Take 50% of page height */
+  /*background: linear-gradient(#83d1b1, #db1863);   */
+  border-bottom: 2px solid #000; /* Underline */
+}
+
+
+/* Section Titles */
+.print-charts-title { 
+  font-size: 18px;  
+  margin-left: 50mm;
+  margin-top: 5mm;
+  justify-content: center; /* Horizontally center content */
+  color: #911c1c; /* Darker headings */
+}
+
+
+.print-chart-container { 
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: space-around;
+}
+ 
+
+.print-chart  { 
+  display: flex; 
+  height: 130mm;/* Ensure image scales to fit the container */ 
+}
+ 
+ 
+
+  
