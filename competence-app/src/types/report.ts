@@ -1,20 +1,21 @@
  // src/types/report.ts
 
   
-
-  
 export interface GroupageData {
-    id: number;
-    position: number;     // Position within the group
-    desc_groupage: string; // Description of the groupage
-    label_groupage: string; // Label for the groupage
-    link: string;         // Link to additional information, if applicable
-    max_point: number;    // Maximum points achievable
-    seuil1: number;       // Threshold values
-    seuil2: number;
-    max_item: number;     // Maximum number of items
-    catalogue: number;    // ID of the related catalogue
-  }
+  id: number;
+  position: number;
+  desc_groupage: string; // Description of the groupage
+  label_groupage: string; // Label for the groupage
+  link: string; // Link to additional information, if applicable
+  max_point: number; // Maximum points achievable
+  seuil1: number; // Threshold values
+  seuil2: number;
+  max_item: number; // Maximum number of items
+  catalogue: number; // ID of the related catalogue
+  groupage_icon: string; // Icon file name
+  groupage_icon_base64?: string; // Base64 icon, optional, used only when needed
+}
+
 
   
 export interface Item {

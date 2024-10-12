@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react'; 
+import React, { useEffect } from 'react'; 
 import { useAuth } from '@/context/AuthContext'; 
 import SummaryScore from '@/components/SummaryScore';
 import UserDisplay from '@/components/UserDisplay';
@@ -10,9 +10,7 @@ import LayoutDisplay from '@/components/LayoutDisplay';
 import { isTokenExpired ,getTokenFromCookies} from '@/utils/jwt';  
 import { useRouter } from 'next/navigation';
 
-const Overview: React.FC = () => { 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error] = useState<boolean>(false);
+const Overview: React.FC = () => {  
   const { activeCatalogues, activeEleve, activeReport, user, activeLayout} = useAuth();  
 
  
@@ -27,21 +25,16 @@ const Overview: React.FC = () => {
       return;
     } 
 
-    //console.log('Active Catalogues:', activeCatalogues);
-    //console.log('Active Eleve:', activeEleve); 
-    //console.log('Active Report:', activeReport); 
-    //console.log('Active Report:', activeLayout); 
-    setLoading(false);
-  }, [activeCatalogues, activeEleve, activeReport,activeLayout,router]);
+ 
+  }, [router]);
 
-  // Handle error state if needed
-  if (error) {
-    return <div>Error loading data. Please try again later.</div>;
+ 
+
+  if (!activeEleve || !user || !activeReport || !activeLayout || !activeCatalogues) {
+    return <p>Loading data...</p>; // Handle loading state
   }
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+ 
 
   return ( 
     <div className="container mt-3 ml-2">

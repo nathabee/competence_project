@@ -144,13 +144,13 @@ id,groupagedata,temps,description,observation,scorerule,max_score,itempos,link
 144,67,Temps 2,L'élève nomme les 5 objets ou images,,3,2,14,
 145,67,Temps 2,L'élève verbalise ceux où il entend le son U,,3,2,15,
 146,67,Temps 2,Observations complémentaires de l'enseignant sur les conditions de passation.,,4,1,16,
-147,68,Temps 1,item1 cm2 mathematiques,,2,1,1,
-148,68,Temps 2,item2 cm2 mathematiques,,6,1,1,
-149,69,Temps 1,item1 cm2 francais,,4,1,1,
-150,69,Temps 2,item2 cm2 francais,,6,1,1,
+147,68,Temps 1,item1 cm2 mathematiques,,8,1,1,
+148,68,Temps 2,item2 cm2 mathematiques,,8,1,1,
+149,69,Temps 1,item1 cm2 francais,,8,1,1,
+150,69,Temps 2,item2 cm2 francais,,8,1,1,
 151,70,évaluations repères GS : LES COULEURS,LES COULEURS,,8,22,1,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
 152,71,évaluations repères GS : RECONNAISSANCE PRENOM,RECONNAISSANCE PRENOM,,8,8,2,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
-152,72,évaluations repères GS : REPÉRAGE SPATIAL ET TOPOLOGIE,REPÉRAGE SPATIAL ET TOPOLOGIE,,8,16,3,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
+153,72,évaluations repères GS : REPÉRAGE SPATIAL ET TOPOLOGIE,REPÉRAGE SPATIAL ET TOPOLOGIE,,8,16,3,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
 154,73,évaluations repères GS : CATEGORISATION,CATEGORISATION,,8,6,4,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
 155,74,évaluations repères GS : MEMORISATION HISTOIRE,MEMORISATION HISTOIRE,,8,3,5,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
 156,75,évaluations repères GS : LA SUITE NUMÉRIQUE,LA SUITE NUMÉRIQUE,,8,8,6,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf

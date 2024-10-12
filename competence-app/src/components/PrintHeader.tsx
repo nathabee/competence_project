@@ -38,14 +38,15 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve }) =
 
   return (
     <div className="print-header-container">
-      <div id="print-header-logo">
-        <canvas ref={canvasRef} id="headerCanvas"></canvas>
+      <div id="print-header-logo-container">
+        <div id="print-header-logo">
+          <canvas ref={canvasRef} id="headerCanvas"></canvas>
+        </div>
+        <div id="print-header-school">
+          <h1>{layout.schule_name}</h1>
+        </div>
       </div>
-      <div id="print-header-school">
-        <h1>{layout.schule_name}</h1>
-      </div>
-
-      <div id="print-header-gap"></div>
+      <div id="print-header-gap">   </div>
       <div className="print-header-info">
         <div id="print-header-professor">
           <div>Professeur: {professor.last_name} {professor.first_name} </div>

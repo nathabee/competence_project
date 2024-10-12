@@ -11,20 +11,20 @@ from PIL import Image
 
 class Command(BaseCommand):
 
+    # resized is made in the model in save method
+    #def resize_image(self, image_path):
+    #    if not os.path.exists(image_path):
+    #        raise FileNotFoundError(f"The image {image_path} does not exist.")
+    #        
+    #    img = Image.open(image_path)
+    #    
+    #    # Resize while maintaining aspect ratio
+    #    img.thumbnail((100, 100), Image.LANCZOS)  # Use Image.LANCZOS instead of Image.ANTIALIAS##
 
-    def resize_image(self, image_path):
-        if not os.path.exists(image_path):
-            raise FileNotFoundError(f"The image {image_path} does not exist.")
-            
-        img = Image.open(image_path)
-        
-        # Resize while maintaining aspect ratio
-        img.thumbnail((100, 100), Image.LANCZOS)  # Use Image.LANCZOS instead of Image.ANTIALIAS
+    #    # Save the image back to the same path or a new path
+    #    img.save(image_path)  # This will overwrite the original image. Use a new path if you want to keep the original.#
 
-        # Save the image back to the same path or a new path
-        img.save(image_path)  # This will overwrite the original image. Use a new path if you want to keep the original.
-
-        return image_path
+    #    return image_path
 
 
     help = 'Import data from CSV files into Django models'
@@ -128,29 +128,68 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Successfully imported Catalogue data'))
  
-
         # Load groupagedata data
         with open('script_db/groupagedata.csv', mode='r') as file:
             reader = csv.DictReader(file) 
 
             for row in reader:
-                # Ensure that 'catalogue' exists in the database
-                catalogue = Catalogue.objects.get(id=row['catalogue']) 
+                # Check if groupage_icon has a value
+                if row['groupage_icon']:  # Only proceed if there is a value
 
-                GroupageData.objects.update_or_create(
-                    id=row['id'],  # Use 'id' to update or create
-                    defaults={ 
-                        'position': row['position'],
-                        'desc_groupage': row['desc_groupage'],
-                        'label_groupage': row['label_groupage'],
-                        'link': row['link'],
-                        'max_point': row['max_point'],
-                        'seuil1': row['seuil1'],
-                        'seuil2': row['seuil2'],
-                        'catalogue': catalogue,
-                        'max_item': row['max_item'] 
-                    }
-                )
+
+                    # Log the header_icon_path to check its correctness
+                    print(f"Processing header_icon: { row['groupage_icon']}")
+
+                    groupage_icon_path = os.path.join(settings.MEDIA_ROOT, row['groupage_icon'])
+                    print(f"Processing icon path: {groupage_icon_path}")
+
+                    try:
+                        # Resize the image and save
+                        #resized_image_path = self.resize_image(groupage_icon_path)
+                        #print("resized")
+
+                        # Ensure that 'catalogue' exists in the database
+                        catalogue = Catalogue.objects.get(id=row['catalogue']) 
+                        #print("existe is ok for catalogue id=", row['catalogue'])
+
+                        GroupageData.objects.update_or_create(
+                            id=row['id'],  # Use 'id' to update or create
+                            defaults={ 
+                                'position': row['position'],
+                                'desc_groupage': row['desc_groupage'],
+                                'label_groupage': row['label_groupage'],
+                                'link': row['link'],
+                                'max_point': row['max_point'],
+                                'seuil1': row['seuil1'],
+                                'seuil2': row['seuil2'],
+                                'catalogue': catalogue,
+                                'max_item': row['max_item'],
+                                #'groupage_icon': resized_image_path,  # Only assign if resized_image_path is valid
+                                'groupage_icon': groupage_icon_path,
+                            }
+                        )
+
+                    except Exception as e:
+                        self.stderr.write(self.style.ERROR(f"Error processing row {row['id']}: {str(e)}"))
+                else:
+                    # Handle case where groupage_icon is empty
+                    #print(f"No icon to process for row {row['id']}.")
+                    # Update or create without setting groupage_icon
+                    GroupageData.objects.update_or_create(
+                        id=row['id'],
+                        defaults={
+                            'position': row['position'],
+                            'desc_groupage': row['desc_groupage'],
+                            'label_groupage': row['label_groupage'],
+                            'link': row['link'],
+                            'max_point': row['max_point'],
+                            'seuil1': row['seuil1'],
+                            'seuil2': row['seuil2'],
+                            'catalogue': Catalogue.objects.get(id=row['catalogue']),
+                            'max_item': row['max_item'],
+                        }
+                    )
+
         self.stdout.write(self.style.SUCCESS('Successfully imported groupagedata data'))
 
   
@@ -234,16 +273,25 @@ class Command(BaseCommand):
         with open('script_db/pdflayout.csv', mode='r') as file: 
             reader = csv.DictReader(file) 
             for row in reader:
+
+
+                # Log the header_icon_path to check its correctness
+                print(f"Processing header_icon: { row['header_icon']}")
+
                 header_icon_path = os.path.join(settings.MEDIA_ROOT, row['header_icon'])
+ 
                 
+                # Log the header_icon_path to check its correctness
+                print(f"Processing image at path: {header_icon_path}")
                 try:
                     # Resize the image and save
-                    resized_image_path = self.resize_image(header_icon_path)
+                    #resized_image_path = self.resize_image(header_icon_path)
 
                     PDFLayout.objects.update_or_create(
                         id=row['id'],
                         defaults={
-                            'header_icon': resized_image_path,  # Save the path of the resized image
+                            #'header_icon': resized_image_path,  # Save the path of the resized image
+                            'header_icon': header_icon_path,
                             'schule_name': row['schule_name'],
                             'header_message': row['header_message'],
                             'footer_message1': row['footer_message1'],

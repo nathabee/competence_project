@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect } from 'react'; 
 
 
-const Pdf = () => {
+const PdfImage = () => {
   const { activeReport, activeEleve, user, activeLayout } = useAuth();
 
  
@@ -36,11 +36,11 @@ const Pdf = () => {
         eleve={activeEleve}
         professor={user}
         pdflayout={activeLayout}
-        isImageChart={false}  // Default to false for the first instance
+        isImageChart={true}  // Set to true for the second instance 
       />
     </div>
   );
   
 };
 
-export default Pdf;
+export default PdfImage;

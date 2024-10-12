@@ -57,6 +57,7 @@ class EleveSerializer(serializers.ModelSerializer):
         queryset=Niveau.objects.all(),  # Make sure you have access to all Niveau instances
     )
 
+
     class Meta:
         model = Eleve
         fields = ['id', 'nom', 'prenom', 'niveau', 'datenaissance', 'professeurs', 'professeurs_details'] 
@@ -200,24 +201,44 @@ class ItemSerializer(serializers.ModelSerializer):
         model = Item
         fields = ['id', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link']
 
+
+
 # Serializer for GroupageData, including the nested items
-class GroupageDataSerializer(serializers.ModelSerializer): 
-    items = ItemSerializer(many=True, read_only=True, source='item_set')  
+#class GroupageDataBase64Serializer(serializers.ModelSerializer): 
+#    groupage_icon_base64 = serializers.SerializerMethodField()
+
+#    class Meta:
+#        model = GroupageData
+#        fields = ['id',   'groupage_icon', 'groupage_icon_base64']
+#        extra_kwargs = {
+#            'groupage_icon': {'read_only': True},  # Make groupage_icon read-only
+#        }
+
+#    def get_groupage_icon_base64(self, obj):
+#        if obj.groupage_icon:
+#            with open(obj.groupage_icon.path, 'rb') as image_file:
+#                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+#                return f'data:image/png;base64,{encoded_string}'
+#        return None
+
+
+
+# Serializer for GroupageData, including the nested items
+class GroupageDataSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True, read_only=True, source='item_set') 
 
     class Meta:
         model = GroupageData
-        fields = ['id', 'catalogue', 'catalogue_id', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item', 'items']
+        fields = ['id', 'catalogue', 'groupage_icon',  'catalogue_id', 
+                  'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 
+                  'seuil1', 'seuil2', 'max_item', 'items']
+        extra_kwargs = {
+            'groupage_icon': {'read_only': True},  # Make groupage_icon read-only
+        }
 
  
 
-
-class GroupageDataDescriptionSerializer(serializers.ModelSerializer): 
-    class Meta:
-        model = GroupageData
-        fields = ['id', 'catalogue_id', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item']
-
-
-
+    
 class PDFLayoutSerializer(serializers.ModelSerializer):
     header_icon_base64 = serializers.SerializerMethodField()
 
@@ -273,6 +294,7 @@ class ResultatDetailSerializer(serializers.ModelSerializer):
 
 class ResultatSerializer(serializers.ModelSerializer):
     resultat_details = ResultatDetailSerializer(many=True)
+    groupage = GroupageDataSerializer()  
 
     class Meta:
         model = Resultat

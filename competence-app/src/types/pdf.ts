@@ -12,4 +12,9 @@ export interface PDFLayout {
 }
 
 
- 
+export interface ChartData {
+  labels: string[];
+  data: number[];
+  labelImages: (string | ArrayBuffer | null)[];
+  description: string;
+}

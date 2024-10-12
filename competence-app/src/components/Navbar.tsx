@@ -60,6 +60,7 @@ export default function Navbar() {
                     <Nav.Link href={`${basePath}/test`}>Test</Nav.Link>
                     <Nav.Link href={`${basePath}/overview`}>Overview</Nav.Link>
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
+                    <Nav.Link href={`${basePath}/pdfimage`}>PDF avec pictogrammes</Nav.Link>
                   </>
                 )}
                 {userRoles.includes('analytics') && (

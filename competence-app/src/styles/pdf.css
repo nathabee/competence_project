@@ -8,7 +8,7 @@
 }
 
 body {
-  margin: 1.5cm 2cm;
+  margin: 2cm 2cm;
   /* 1.5cm top/bottom, 2cm left/right margins */
   padding: 0;
 }
@@ -25,8 +25,6 @@ body {
   padding: 10mm;
   /* Add padding for margins */
   font-family: Arial, sans-serif;
-  /* Standard font */
-  border: 1px solid #e6260d;
   /* Light border for distinction */
   background-color: #ffffff;
   /* Ensure canvas background is white */
@@ -41,110 +39,87 @@ body {
 /**************************************************************/
 /* Header Container */
 .print-header-container {
+  /*background-color: rgb(235, 178, 93);*/
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between;
-  /* Ensure space is distributed evenly */
+  justify-content: space-between; 
   border-bottom: 2px solid #000;
-  /*background-color: #2c0ed3; /* Ensure background color */
-  height: 4cm;
-  /* 4cm high */
+  margin: 0 0; 
+  height: 15%; 
   width: 100%;
-  font-size: 10px;
-  padding: 0 1cm;
-  /* Optional: Add some padding to the left and right */
+  font-size: 15px; 
 }
 
 /* Header Logo Section */
-#print-header-logo {
-  flex: 0 0 10%;
-  /* Occupies 20% of the container width */
+.print-header-logo-container {
+  flex: 0 0 40%;
   display: flex;
-  justify-content: center;
-  /* Center the logo horizontally */
-  align-items: center;
-  /* Center the logo vertically */
+  flex-direction: column;
+  align-items: left;}
+
+
+#print-header-logo {
+  display: flex;
+  justify-content: center; 
+  align-items: left;
+  width: 100%; 
 }
 
-#print-header-logo canvas {
-  background-color: white;
-  /* Ensure the canvas background is white */
-  width: auto;
-  height: 80%;
-  /* Adjust canvas height, keep aspect ratio */
+#print-header-logo canvas { 
+  width: auto; 
 }
 
 
 
 
 /* Header School Name Section */
-#print-header-school {
-  flex: 0 0 35%;
-  /* Occupies 30% of the container width */
+#print-header-school { 
   display: flex;
-  justify-content: center;
-  /* Center the text horizontally */
-  align-items: center;
-  /* Center the text vertically */
-  text-align: left;
-  /* Align the text to the left */
+  flex: 0 0 15%;  
+  display: flex;
+  justify-content: center; 
+  align-items: left; 
+  text-align: left; 
 }
 
-#print-header-school h1 {
-  margin: 10;
-  /* Remove default margin from the heading */
-  /*color: white; /* School name text color */
-  font-size: 20px;
-  font-weight: bolder;
+#print-header-school h1 { 
+  font-size: 15px;
 }
 
 
 /* Header School Name Section */
 #print-header-gap {
-  flex: 0 0 15%;
-  /* Occupies 30% of the container width */
+  flex: 0 0 15%; 
   display: flex;
-  justify-content: center;
-  /* Center the text horizontally */
-  align-items: center;
-  /* Center the text vertically */
-  text-align: left;
-  /* Align the text to the left */
+  justify-content: center; 
+  align-items: center; 
+  text-align: left; 
 }
 
 .print-header-info {
   display: flex;
-  flex: 0 0 40%;
-  /* Occupies 30% of the container width */
+  flex: 0 0 40%; 
   flex-direction: column;
   align-items: left;
-  justify-content: space-between;
-  /* Ensure space is distributed evenly */
-  font-size: 10px;
-  padding: 0 1cm;
-  /* Optional: Add some padding to the left and right */
+  justify-content: space-between; 
+  font-size: 14px;
+  padding: 0 1cm; 
 }
 
 
 
 #print-header-professeur {
-  justify-content: right;
-  /* Center the text horizontally */
-  align-items: center;
-  /* Center the text vertically */
-  text-align: left;
-  /* Align the text to the left */
+  justify-content: right; 
+  align-items: center; 
+  text-align: left; 
 }
 
 
 #print-header-eleve {
-  justify-content: right;
-  /* Center the text horizontally */
-  align-items: center;
-  /* Center the text vertically */
-  text-align: left;
-  /* Align the text to the left */
+  justify-content: right; 
+  align-items: center; 
+  text-align: left; 
 }
 
 /*********************************************************************/
@@ -154,23 +129,14 @@ body {
 /* Banner */
 .print-banner {
   display: flex;
-  flex-direction: row;
-  /* Stack the items vertically */
-  justify-content: center;
-  /* Center the content vertically */
-  align-items: center;
-  /* Center the content horizontally */
-  /*background-color: #7b6ccf; */
-  height: 2.5cm;
-  /* 2.5cm high */
+  flex-direction: row; 
+  justify-content: center; 
+  align-items: center; 
+  height: 2%; 
   width: 100%;
-  text-align: center;
-  padding: 0 1cm;
-  /* Padding to ensure content doesn't touch the edges */
-  box-sizing: border-box;
-  /* Ensures padding is included in height calculation */
-  overflow: hidden;
-  /* Ensure content doesn't overflow */
+  text-align: center; 
+  box-sizing: border-box; 
+  overflow: hidden; 
 }
 
 
@@ -184,11 +150,11 @@ body {
 .print-chart-title {
   text-align: center;
   /* Center the title */
-  font-size: 1.2em;
+  font-size: 15px;
   /* Adjust the font size for visibility */
   color: #000000;
   /* Adjust text color */
-  margin: 0.5cm 0;
+  height: 3%;
   /* Add some space above and below the chart title */
   width: 100%;
   /* Ensure the title takes the full width of its container */
@@ -213,10 +179,10 @@ body {
   flex-direction: column;
   justify-content: space-around; /* Distribute space between charts */
   align-items: center;
-  height: 15cm; /* Fixed height for the container */
-  margin-top: 0.5cm;
+  height: 50%; /* Fixed height for the container */
   gap: 1cm; /* Add a gap between charts */
   overflow: hidden; /* Prevent any overflow */
+  border-bottom: 2px solid #000;
 }
 
 /* Default style for all charts */
@@ -242,45 +208,20 @@ body {
   max-height: 100% !important; /* Remove height constraints for one chart */
 }
 
-/* Ensure canvas scales properly */
+/* Ensure canvas scales properly 
 .print-chart canvas {
   width: auto;
-  height: 100%; /* Let the canvas fill the height without distortion */
-  max-width: 100%; /* Prevent the canvas from overflowing the container */
+  height: 100%;  
+  max-width: 100%;  
+}
+  */
+.print-chart canvas {
+  width: 100%; /* Use full width */
+  height: auto; /* Maintain aspect ratio */
+  max-height: 100%; /* Prevent overflow */
 }
 
-
-/* Chart Container */
-/*
-.print-charts-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  height: 15cm;
-  margin-top: 0.5cm;
-}
-
-.print-chart {
-
-   width: 48%;   
-  height: auto;
-  border: 1px solid #9e9c98;
-}*/
-  /*
-.print-charts-container {
-  display: flex;
-  flex-direction:  column;
-  justify-content: space-around; 
-  height: 15cm; 
-  margin-top: 0.5cm; 
-}
-
-.print-chart { 
-  display: flex;
-  flex: 0 0 50%;  
-  border: 1px solid #9e9c98;
-}
-*/
+ 
 
   /*********************************************************************/
 
@@ -289,14 +230,13 @@ body {
   /* Footer */
   .print-footer {
     display: flex;
-    flex-wrap: wrap;
-    background-color: #f9fafa;
+    flex-wrap: wrap; 
     /* Ensure canvas background is white */
-    height: 4cm;
+    height: 30%;
     /* 4cm high */
     width: 100%;
     text-align: left;
-    font-size: 10px;
+    font-size: 15px;
     margin-top: 0.5cm;
     /* Small gap after charts */
   }
@@ -311,12 +251,10 @@ body {
 
 
   #print-footer-1 p {
-    margin-top: 0.5cm;
-    font-size: 10px;
+    margin-top: 1cm;
   }
 
 
   #print-footer-2 p {
-    margin-top: 0.5cm;
-    font-size: 10px;
+    margin-top: 1cm;
   }

@@ -141,6 +141,7 @@ class Catalogue(models.Model):
 # Table: GroupageData
 class GroupageData(models.Model):
     catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)
+    groupage_icon = models.ImageField(upload_to='competence/groupage_icons/', null=True, blank=True)
     position = models.IntegerField()
     desc_groupage = models.CharField(max_length=100)
     label_groupage = models.CharField(max_length=100)
@@ -155,8 +156,39 @@ class GroupageData(models.Model):
             models.Index(fields=['catalogue'], name='groupagedata_catalogue_idx'),
         ]
 
+
     def __str__(self):
         return f"Groupage {self.desc_groupage} - Position {self.position}"
+
+    def save(self, *args, **kwargs):
+        if self.pk:  # Check if this is an update (the object already exists in the DB)
+            try:
+                previous = GroupageData.objects.get(pk=self.pk)
+                if previous.groupage_icon == self.groupage_icon:  # Image hasn't changed
+                    super(GroupageData, self).save(*args, **kwargs)
+                    return
+            except GroupageData.DoesNotExist:
+                pass
+
+        # Only resize if the image has changed or is new
+        if self.groupage_icon and not self.groupage_icon.name.startswith('resized_'):
+            # Open the uploaded image
+            img = Image.open(self.groupage_icon)
+            img.thumbnail((100, 100), Image.LANCZOS)
+
+            # Construct the full path for the resized image
+            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'competence/groupage_icons', f"resized_{os.path.basename(self.groupage_icon.name)}")
+            img.save(temp_file_path)
+
+            # Update the image field with the resized image, ensuring the correct 'competence/' path
+            with open(temp_file_path, 'rb') as f:
+                # Specify the correct relative path 
+                self.groupage_icon.save(f"resized_{os.path.basename(self.groupage_icon.name)}", File(f), save=False)
+
+            # Optionally, remove the temporary file after saving the resized image
+            os.remove(temp_file_path)
+
+        super(GroupageData, self).save(*args, **kwargs)
 
 
 # Table: Item (Details for each test in a GroupageData)
@@ -179,8 +211,13 @@ class Item(models.Model):
     def __str__(self):
         return f"Test {self.groupagedata} - {self.temps} - {self.description}"
 
+
+
+
+
+
 class PDFLayout(models.Model):
-    header_icon = models.ImageField(upload_to='header_icons/')
+    header_icon = models.ImageField(upload_to='competence/header_icons/')
     schule_name = models.TextField(blank=True, null=True)
     header_message = models.TextField(blank=True, null=True)
     footer_message1 = models.TextField(blank=True, null=True)
@@ -188,26 +225,37 @@ class PDFLayout(models.Model):
 
     def __str__(self):
         return f"PDF Layout: {self.id}"
-
+    
     def save(self, *args, **kwargs):
-        if self.header_icon:
+        if self.pk:
+            try:
+                previous = PDFLayout.objects.get(pk=self.pk)
+                if previous.header_icon == self.header_icon:  # Image hasn't changed
+                    super(PDFLayout, self).save(*args, **kwargs)
+                    return
+            except PDFLayout.DoesNotExist:
+                pass
+
+        # Only resize if the image has changed or is new
+        if self.header_icon and not self.header_icon.name.startswith('resized_'):
             # Open the uploaded image
             img = Image.open(self.header_icon)
             img.thumbnail((100, 100), Image.LANCZOS)
-            
-            # Create a temporary file to save the resized image
-            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'header_icons', f"resized_{os.path.basename(self.header_icon.name)}")
+
+            # Construct the full path for the resized image, including the 'competence/' prefix
+            resized_image_name = f"resized_{os.path.basename(self.header_icon.name)}"
+            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'competence/header_icons', resized_image_name)
             img.save(temp_file_path)
 
-            # Update the image field with the resized image
+            # Update the image field with the resized image, ensuring the correct 'competence/' path
             with open(temp_file_path, 'rb') as f:
-                self.header_icon.save(f"resized_{os.path.basename(self.header_icon.name)}", File(f), save=False)
-            
+                # Save with exact name and path without adding any extra string
+                self.header_icon.save(f"{resized_image_name}", File(f), save=False)
+
             # Optionally, remove the temporary file after saving the resized image
             os.remove(temp_file_path)
-        
-        super(PDFLayout, self).save(*args, **kwargs)
 
+        super(PDFLayout, self).save(*args, **kwargs)
 
 
 

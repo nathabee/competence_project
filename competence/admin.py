@@ -81,9 +81,18 @@ class CatalogueAdmin(admin.ModelAdmin):
 
 @admin.register(GroupageData)
 class GroupageDataAdmin(admin.ModelAdmin):
-    list_display = ('catalogue', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item')
+    list_display = ('catalogue', 'display_groupage_icon', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item')
     list_filter = ('catalogue',)
-    search_fields = ('desc_groupage', 'label_groupage', 'link')
+    search_fields = ('desc_groupage', 'label_groupage', 'link','groupage_icon')
+    def display_groupage_icon(self, obj):
+        if obj.groupage_icon:
+            with open(obj.groupage_icon.path, 'rb') as img_file:
+                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
+                return format_html('<img src="data:image/png;base64,{}" style="width: 30px; height: 30px;"/>', encoded_string)
+        return "-"
+    
+    display_groupage_icon.short_description = "Groupage Icon"
+
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):

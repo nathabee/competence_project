@@ -68,7 +68,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
       });
 
       const createdReport = reportCreationResponse.data;
-
+      console.log("reporteleve-createdReport",createdReport);
       // Set the created report as active in the context
       setActiveReport(createdReport);
 
