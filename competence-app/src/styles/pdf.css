@@ -43,12 +43,12 @@ body {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: space-between; 
+  justify-content: space-between;
   border-bottom: 2px solid #000;
-  margin: 0 0; 
-  height: 15%; 
+  margin: 0 0;
+  height: 15%;
   width: 100%;
-  font-size: 15px; 
+  font-size: 15px;
 }
 
 /* Header Logo Section */
@@ -56,93 +56,95 @@ body {
   flex: 0 0 40%;
   display: flex;
   flex-direction: column;
-  align-items: left;}
+  align-items: left;
+}
 
 
 #print-header-logo {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: left;
-  width: 100%; 
+  width: 100%;
 }
 
-#print-header-logo canvas { 
-  width: auto; 
+#print-header-logo canvas {
+  width: auto;
 }
 
 
 
 
 /* Header School Name Section */
-#print-header-school { 
+#print-header-school {
   display: flex;
-  flex: 0 0 15%;  
+  flex: 0 0 15%;
   display: flex;
-  justify-content: center; 
-  align-items: left; 
-  text-align: left; 
+  justify-content: center;
+  align-items: left;
+  text-align: left;
 }
 
-#print-header-school h1 { 
+#print-header-school h1 {
   font-size: 15px;
 }
 
 
 /* Header School Name Section */
 #print-header-gap {
-  flex: 0 0 15%; 
+  flex: 0 0 15%;
   display: flex;
-  justify-content: center; 
-  align-items: center; 
-  text-align: left; 
+  justify-content: center;
+  align-items: center;
+  text-align: left;
 }
 
 .print-header-info {
   display: flex;
-  flex: 0 0 40%; 
+  flex: 0 0 40%;
   flex-direction: column;
   align-items: left;
-  justify-content: space-between; 
+  justify-content: space-between;
   font-size: 14px;
-  padding: 0 1cm; 
+  padding: 0 1cm;
 }
 
 
 
 #print-header-professeur {
-  justify-content: right; 
-  align-items: center; 
-  text-align: left; 
+  justify-content: right;
+  align-items: center;
+  text-align: left;
 }
 
 
 #print-header-eleve {
-  justify-content: right; 
-  align-items: center; 
-  text-align: left; 
+  justify-content: right;
+  align-items: center;
+  text-align: left;
 }
 
 /*********************************************************************/
+/* Banner */
 
 /*********************************************************************/
 
-/* Banner */
 .print-banner {
   display: flex;
-  flex-direction: row; 
-  justify-content: center; 
-  align-items: center; 
-  height: 2%; 
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 0%;
   width: 100%;
-  text-align: center; 
-  box-sizing: border-box; 
-  overflow: hidden; 
+  text-align: center;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 
 
 
 /*********************************************************************/
+/* title */
 
 /*********************************************************************/
 
@@ -154,7 +156,7 @@ body {
   /* Adjust the font size for visibility */
   color: #000000;
   /* Adjust text color */
-  height: 3%;
+  height: 2%;
   /* Add some space above and below the chart title */
   width: 100%;
   /* Ensure the title takes the full width of its container */
@@ -177,11 +179,15 @@ body {
 .print-charts-container {
   display: flex;
   flex-direction: column;
-  justify-content: space-around; /* Distribute space between charts */
+  justify-content: space-around;
+  /* Distribute space between charts */
   align-items: center;
-  height: 50%; /* Fixed height for the container */
-  gap: 1cm; /* Add a gap between charts */
-  overflow: hidden; /* Prevent any overflow */
+  height: 50%;
+  /* Fixed height for the container */
+  gap: 1cm;
+  /* Add a gap between charts */
+  overflow: hidden;
+  /* Prevent any overflow */
   border-bottom: 2px solid #000;
 }
 
@@ -190,22 +196,27 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%; /* Chart takes full width */
+  width: 100%;
+  /* Chart takes full width */
   /*border: 1px solid #9e9c98;*/
   box-sizing: border-box;
 }
 
 /* Specific styles for multiple charts */
 .print-charts-container .print-chart {
-  flex-grow: 1; /* Allow charts to grow and take available space */
-  max-height: calc(50% - 1cm); /* When there are two charts, each takes half the space minus the gap */
+  flex-grow: 1;
+  /* Allow charts to grow and take available space */
+  max-height: calc(50% - 1cm);
+  /* When there are two charts, each takes half the space minus the gap */
 }
 
 /* Handle the case for only one chart with higher specificity */
 .print-charts-container .print-chart:only-child {
   flex-grow: 1;
-  height: 100% !important; /* Take the full height when it's the only chart */
-  max-height: 100% !important; /* Remove height constraints for one chart */
+  height: 100% !important;
+  /* Take the full height when it's the only chart */
+  max-height: 100% !important;
+  /* Remove height constraints for one chart */
 }
 
 /* Ensure canvas scales properly 
@@ -216,45 +227,83 @@ body {
 }
   */
 .print-chart canvas {
-  width: 100%; /* Use full width */
-  height: auto; /* Maintain aspect ratio */
-  max-height: 100%; /* Prevent overflow */
+  width: 100%;
+  /* Use full width */
+  height: auto;
+  /* Maintain aspect ratio */
+  max-height: 100%;
+  /* Prevent overflow */
 }
 
- 
-
-  /*********************************************************************/
-
-  /*********************************************************************/
-
-  /* Footer */
-  .print-footer {
-    display: flex;
-    flex-wrap: wrap; 
-    /* Ensure canvas background is white */
-    height: 30%;
-    /* 4cm high */
-    width: 100%;
-    text-align: left;
-    font-size: 15px;
-    margin-top: 0.5cm;
-    /* Small gap after charts */
-  }
-
-  /* Avoid page breaks inside the key sections */
-  .print-header,
-  .print-banner,
-  .print-charts,
-  .print-footer {
-    page-break-inside: avoid;
-  }
 
 
-  #print-footer-1 p {
-    margin-top: 1cm;
-  }
+/*********************************************************************/
 
+/*********************************************************************/
 
-  #print-footer-2 p {
-    margin-top: 1cm;
-  }
+/* Footer */
+.print-footer {
+  display: flex;
+  flex-wrap: wrap;
+  /* Ensure canvas background is white */
+  height: 30%; 
+  /* Stack children vertically */
+  width: 100%;
+  /* Full width */
+  text-align: left;
+  /* Align text to the left */
+  font-size: 15px;
+  /* Base font size */
+  margin-top: 0.5cm;
+  /* Space above footer */
+}
+
+/* Avoid page breaks inside the key sections */
+.print-header,
+.print-banner,
+.print-charts,
+.print-footer {
+  page-break-inside: avoid;
+  /* Prevent page breaks in key sections */
+}
+
+#print-footer-1 {
+  margin-bottom: 0.5cm;
+  /* Space below footer1 */
+}
+
+.print-footer-scoreoverview {
+  font-size: 10px;
+  /* Font size for score overview */
+  margin: 0;
+  /* Remove margin */
+}
+
+.print-footer-scoreoverview table {
+  width: 100%;
+  /* Make the table take full width */
+  border-collapse: collapse;
+  /* Collapse borders for a cleaner look */
+}
+
+.print-footer-scoreoverview th,
+.print-footer-scoreoverview td {
+  padding: 4px;
+  /* Reduce padding for smaller cell size */
+  text-align: left;
+  /* Align text to the left */
+  vertical-align: middle;
+  /* Align text vertically in the middle */
+  border: 1px solid #ddd;
+  /* Light border for separation */
+}
+
+.print-footer-scoreoverview th {
+  font-weight: bold;
+  /* Bold the header text */
+}
+
+#print-footer-2 {
+  margin-top: 0.5cm;
+  /* Space above footer2 */
+}

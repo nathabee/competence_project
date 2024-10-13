@@ -2,7 +2,7 @@
 
 
 from rest_framework import permissions, viewsets
-from .permissions import isAllowed, isAllowedApiView
+from .permissions import isAllowed, isAllowedApiView,IsEleveProfessor
 from rest_framework.permissions import IsAuthenticated
 
 from .models import (
@@ -156,20 +156,36 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
  
 
-
-
-
+ 
 class EleveViewSet(viewsets.ModelViewSet):
     serializer_class = EleveSerializer
     permission_classes = [IsAuthenticated, isAllowed]
 
     def get_queryset(self):
         user = self.request.user
+        
+        # Admin can view all eleves
         if user.groups.filter(name='admin').exists():
             return Eleve.objects.all()
+
+        # Teacher can view all eleves but only work with those they are assigned to
         elif user.groups.filter(name='teacher').exists():
-            return Eleve.objects.filter(professeurs=user)
+            return Eleve.objects.all()
+
+        # Return empty for any other user
         return Eleve.objects.none()
+
+    def perform_create(self, serializer):
+        """
+        Automatically assign the current teacher as a professor when creating a new eleve.
+        """
+        user = self.request.user
+        
+        # If the user is a teacher, automatically assign them to the 'professeurs' field
+        if user.groups.filter(name='teacher').exists():
+            serializer.save(professeurs=[user])
+        else:
+            serializer.save()  # Admins can assign multiple professeurs as per their selection
 
 
 
@@ -321,6 +337,7 @@ class ReportCatalogueViewSet(viewsets.ModelViewSet):
 
 
 class FullReportViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, IsEleveProfessor]
     serializer_class = FullReportSerializer
 
     def get_queryset(self):

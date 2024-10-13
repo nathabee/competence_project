@@ -2,18 +2,23 @@
 
 from rest_framework.permissions import BasePermission
   
+from .models import ( Eleve)
 
-
-#class IsAdminOrReadOnly( BasePermission):
-#    def has_permission(self, request, view):
-#        # Allow read-only access for all users, but restrict write access to admins
-#        if request.method in BasePermission.SAFE_METHODS:
-#            return True
-#        return request.user and request.user.is_staff
+ 
 
 ############################################################
 # permission for viewSet 
 ############################################################
+
+class IsEleveProfessor(BasePermission):
+    def has_permission(self, request, view):
+        # Assuming 'eleve' is passed as part of the request data (e.g., via URL or POST body)
+        eleve_id = view.kwargs.get('eleve_id') or request.data.get('eleve')
+        eleve = Eleve.objects.get(id=eleve_id)
+
+        # Check if the user is one of the professors of this eleve
+        return request.user in eleve.professeurs.all()
+    
 
 class isAllowed(BasePermission):
 

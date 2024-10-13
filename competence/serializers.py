@@ -42,43 +42,57 @@ class UserSerializer(serializers.ModelSerializer):
         rep['roles'] = [group.name for group in instance.groups.all()]
         return rep
     
+ 
 
 class EleveSerializer(serializers.ModelSerializer):
+    # Automatically assign professeurs for non-admin users
     professeurs = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(groups__name='teacher'),  
-        many=True,  
-        write_only=True  
+        queryset=User.objects.filter(groups__name='teacher'),
+        many=True,
+        write_only=True,
+        required=False  # This field will not be required for teacher creation
     )
 
     professeurs_details = UserSerializer(many=True, read_only=True, source='professeurs')
 
-    # Update niveau to be a ForeignKey
-    niveau = serializers.PrimaryKeyRelatedField(
-        queryset=Niveau.objects.all(),  # Make sure you have access to all Niveau instances
-    )
-
+    # ForeignKey for Niveau
+    niveau = serializers.PrimaryKeyRelatedField(queryset=Niveau.objects.all())
 
     class Meta:
         model = Eleve
-        fields = ['id', 'nom', 'prenom', 'niveau', 'datenaissance', 'professeurs', 'professeurs_details'] 
+        fields = ['id', 'nom', 'prenom', 'niveau', 'datenaissance', 'professeurs', 'professeurs_details']
 
     def create(self, validated_data):
-        professeurs = validated_data.pop('professeurs', [])  
+        # If professeurs are provided (Admin case), pop them out of the validated_data
+        professeurs = validated_data.pop('professeurs', None)
+        
+        # Create the Eleve object
         eleve = Eleve.objects.create(**validated_data)
-        eleve.professeurs.set(professeurs)  
+
+        # If professeurs are passed (Admin), set them
+        if professeurs:
+            eleve.professeurs.set(professeurs)
+        else:
+            # For teachers, automatically assign the current user (teacher)
+            request = self.context.get('request', None)
+            if request and request.user.groups.filter(name='teacher').exists():
+                eleve.professeurs.set([request.user])
+
         return eleve
 
     def update(self, instance, validated_data):
-        professeurs = validated_data.pop('professeurs', None)  
+        # Get professeurs if available for admins, or keep it unchanged for teachers
+        professeurs = validated_data.pop('professeurs', None)
+
         instance.nom = validated_data.get('nom', instance.nom)
         instance.prenom = validated_data.get('prenom', instance.prenom)
         instance.niveau = validated_data.get('niveau', instance.niveau)
         instance.datenaissance = validated_data.get('datenaissance', instance.datenaissance)
 
-        if professeurs is not None:
-            instance.professeurs.set(professeurs)  
+        if professeurs:
+            instance.professeurs.set(professeurs)
 
-        instance.save()  
+        instance.save()
         return instance
 
 
@@ -203,24 +217,7 @@ class ItemSerializer(serializers.ModelSerializer):
 
 
 
-# Serializer for GroupageData, including the nested items
-#class GroupageDataBase64Serializer(serializers.ModelSerializer): 
-#    groupage_icon_base64 = serializers.SerializerMethodField()
-
-#    class Meta:
-#        model = GroupageData
-#        fields = ['id',   'groupage_icon', 'groupage_icon_base64']
-#        extra_kwargs = {
-#            'groupage_icon': {'read_only': True},  # Make groupage_icon read-only
-#        }
-
-#    def get_groupage_icon_base64(self, obj):
-#        if obj.groupage_icon:
-#            with open(obj.groupage_icon.path, 'rb') as image_file:
-#                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-#                return f'data:image/png;base64,{encoded_string}'
-#        return None
-
+ 
 
 
 # Serializer for GroupageData, including the nested items
