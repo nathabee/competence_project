@@ -73,7 +73,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
             return base64Data ? base64Data : 'assets/logo.png'; // Default image if Base64 not found
         });
 
-        const data = reportcatalogue.resultats.map((res) => 
+        const data = reportcatalogue.resultats.map((res) =>
             (res.seuil1_percent + res.seuil2_percent + res.seuil3_percent) / 100
         );
 
@@ -107,10 +107,13 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
                     ))}
                 </div>
                 <div className="print-footer">
-                    <div id="print-footer-1">{pdflayout.footer_message1}</div> 
-                    <ScoreOverview reportCatalogues={processedData} /> {/* Pass processed data to ScoreOverview */} 
-                    <div id="print-footer-2">{pdflayout.footer_message2}</div>
+                    {reportCatalogues.map((catalogue, index) => (
+                        <ScoreOverview key={index} reportCatalogue={catalogue} />
+                    ))}
                 </div>
+                <div id="print-footer-1">{pdflayout.footer_message1}</div>
+
+                <div id="print-footer-2">{pdflayout.footer_message2}</div>
             </div>
         </div>
     );

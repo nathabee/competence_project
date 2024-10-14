@@ -55,12 +55,15 @@ class EleveSerializer(serializers.ModelSerializer):
 
     professeurs_details = UserSerializer(many=True, read_only=True, source='professeurs')
 
-    # ForeignKey for Niveau
+    # For create/update, we use the niveau ID
     niveau = serializers.PrimaryKeyRelatedField(queryset=Niveau.objects.all())
+
+    # For retrieve (GET), we show only the niveau.niveau as a string
+    niveau_niveau = serializers.CharField(source='niveau.niveau', read_only=True)
 
     class Meta:
         model = Eleve
-        fields = ['id', 'nom', 'prenom', 'niveau', 'datenaissance', 'professeurs', 'professeurs_details']
+        fields = ['id', 'nom', 'prenom', 'niveau','niveau_niveau', 'datenaissance', 'professeurs', 'professeurs_details']
 
     def create(self, validated_data):
         # If professeurs are provided (Admin case), pop them out of the validated_data
@@ -80,13 +83,15 @@ class EleveSerializer(serializers.ModelSerializer):
 
         return eleve
 
+
     def update(self, instance, validated_data):
-        # Get professeurs if available for admins, or keep it unchanged for teachers
+        # Get professeurs if available for admins
         professeurs = validated_data.pop('professeurs', None)
 
+        # Update instance fields
         instance.nom = validated_data.get('nom', instance.nom)
         instance.prenom = validated_data.get('prenom', instance.prenom)
-        instance.niveau = validated_data.get('niveau', instance.niveau)
+        instance.niveau = validated_data.get('niveau', instance.niveau)  # Use ID for niveau
         instance.datenaissance = validated_data.get('datenaissance', instance.datenaissance)
 
         if professeurs:
@@ -94,8 +99,6 @@ class EleveSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
-
-
 
 
 class EleveAnonymizedSerializer(serializers.ModelSerializer):

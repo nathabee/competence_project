@@ -14,10 +14,7 @@ const UserDisplay: React.FC<UserDisplayProps> = ({ user }) => {
   }
 
   return (
-    <div>
-      <h3>{user.first_name} {user.last_name}</h3>
-      <p>Username: {user.username}</p>
-      <p>Roles: {user.roles.join(', ')}</p>
+    <div> {user.first_name} {user.last_name} Username: {user.username} Roles: {user.roles.join(', ')}
     </div>
   );
 };

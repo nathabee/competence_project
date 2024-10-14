@@ -97,3 +97,23 @@ export async function fetchBase64Image(itemKey: string, imageUrl: string): Promi
     console.error(`Error fetching image for key ${itemKey}:`, error);
   }
 }
+
+export const formatDate = (dateString: string | null | undefined): string => {
+  // Return an empty string if the dateString is null, undefined, or invalid
+  if (!dateString || isNaN(new Date(dateString).getTime())) {
+    return "";
+  }
+
+  // Parse the date string into a Date object
+  const date = new Date(dateString);
+  
+  // Extract components of the date
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');  // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+
+  // Return formatted string: YYYY-MM-DD HH:MM
+  return `${year}-${month}-${day} ${hours}:${minutes}`;
+};

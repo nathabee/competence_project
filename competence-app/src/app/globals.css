@@ -75,43 +75,94 @@ body {
 
 /* Navbar container */
 .navbar {
-  background-color: var(--custom-transparent); /* Transparent by default */
+  background-color: var(--custom-dark);
+  color: var(--custom-text-on-dark);
+  height: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Space between hamburger and active data */
+  padding: 0 1rem;
 }
  
+
+/* Container for the active data in the navbar */
+.navbar-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+}
+
+/* Active data section in the navbar */
+.navbar-active-data {
+  display: flex; /* Set flexbox for active data */
+  align-items: center;
+  justify-content: flex-start; /* Align items to the start */
+  flex-grow: 1; /* Grow to fill remaining space */
+  gap: 1rem; /* Add spacing between elements */
+  margin-left: 1rem; /* Add spacing to the left of the hamburger */ 
+}
+
+ 
+/* Catalogue container styled as flex column */
+.catalogue-container {
+  display: flex;
+  flex-direction: column;  
+  gap: 0.5rem;  
+}
+
+ 
+
+/* Sticky navbar styling */
+.sticky-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000; 
+}
 
 /* Hamburger icon remains fixed at top-left */
 .hamburger-icon {
   font-size: 30px;
   background-color: transparent;
   border: none;
-  color: var(--custom-text); /* Dark icon color */
+  color: var(--custom-text-on-dark);
   cursor: pointer;
   position: absolute;
   top: 10px;
   left: 10px;
 }
 
-/* Sidebar styles */
+ 
+
+
+/* Sidebar styling */
 .sidebar {
   position: fixed;
-  top: 0;
   left: 0;
+  top: 0;
+  bottom: 0;
   width: 250px;
-  height: 100%;
   background-color: var(--custom-dark);
   color: var(--custom-text-on-dark);
+  transition: transform 0.3s ease-in-out;
   transform: translateX(-100%);
-  transition: transform 0.3s ease;
-  z-index: 999;
 }
 
 .sidebar.open {
-  transform: translateX(0);
+  transform: translateX(0); /* Slide the sidebar open */
+}
+
+/* Responsive adjustments (optional) */
+@media (max-width: 768px) {
+  .navbar-active-data {
+    flex-direction: column; /* Stack active data vertically on smaller screens */
+  }
 }
 
 .content-container {
   flex-grow: 1;
   transition: margin-left 0.3s ease;
+  margin-top:  60px;
   margin-left: 0;
 }
 
@@ -127,6 +178,17 @@ body {
 
 .navbar .nav-link:hover {
   color: var(--custom-link-hover);
+}
+
+
+/* CSS for warning message styling */
+.warning-message {
+  background-color: var(--custom-warning, #fae46a); /* Use fallback color in case variable isn't defined */
+  color: var(--custom-text, #343a40);
+  padding: 5px 10px;  /* Optional padding for better appearance */
+  border-radius: 5px; /* Optional rounded corners */
+  margin: 5px 0;      /* Optional margin for spacing */
+  display: inline-block; /* Ensures the message takes only as much space as needed */
 }
 
 

@@ -1,52 +1,72 @@
 'use client';
 
-import React from 'react';
-
-// Define the structure expected for the processed data
-interface ProcessedReportCatalogue {
-    description: string;
-    labels: string[];
-    labelImages: string[];
-    data: number[];
-}
+import React, { useEffect, useState } from 'react';
+import Image from 'next/image'; // Import the Image component from Next.js
+import { ReportCatalogue, Resultat } from '@/types/report'; // Ensure you import these types correctly
 
 interface ScoreOverviewProps {
-    reportCatalogues: ProcessedReportCatalogue[]; // Updated prop type
+    reportCatalogue: ReportCatalogue; // Updated prop type
 }
 
-const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogues }) => {
+const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
+    const [base64Images, setBase64Images] = useState<{ [key: string]: string }>({});
+
+    useEffect(() => {
+        // Load base64 images from localStorage on the client side
+        const images: { [key: string]: string } = {};
+
+        reportCatalogue.resultats.forEach((resultat) => {
+            const imageKey = `competence_groupage_icon_${resultat.groupage.id}`;
+            const base64Image = localStorage.getItem(imageKey);
+            if (base64Image) {
+                images[imageKey] = base64Image;
+            }
+        });
+
+        setBase64Images(images); // Set the loaded images into the state
+    }, [reportCatalogue]);
+
+
     return (
         <div className="print-footer-scoreoverview">
-            <h4>Score Overview</h4>
+            <h3>{reportCatalogue.description}</h3>
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Label</th>
-                        <th>Data</th>
+                        <th>Type de tests</th>
+                        <th>Score</th>
+                        <th>Maximum</th>
+                        <th>%</th> 
                     </tr>
                 </thead>
                 <tbody>
-                    {reportCatalogues.flatMap((catalogue, index) => 
-                        catalogue.labels.map((label, idx) => {
-                            const imageKey = catalogue.labelImages[idx]; // Corresponding image for the label
-                            const data = catalogue.data[idx]; // Corresponding data for the label
+                    {reportCatalogue.resultats.length > 0 ? (
+                        reportCatalogue.resultats.map((resultat: Resultat, resIndex: number) => {
+                            const imageKey = `competence_groupage_icon_${resultat.groupage.id}`;
+                            const base64Image = base64Images[imageKey] || null; // Use base64 image from state
 
                             return (
-                                <tr key={`${index}-${idx}`}>
-                                    <td>
-                                        <span>
-                                            <img 
-                                                src={imageKey} 
-                                                alt={label} 
-                                                style={{ width: '20px', height: '20px', marginRight: '5px' }} 
+                                <tr key={`${reportCatalogue.id}-${resIndex}`}>
+                                    <td>{base64Image ? (
+                                            <Image
+                                                src={base64Image} // Use Base64 image if available
+                                                alt="Groupage Icon"
+                                                width={20}
+                                                height={20}
+                                                style={{ marginRight: '10px' }}
                                             />
-                                            {label}
-                                        </span>
-                                    </td>
-                                    <td>{data.toFixed(2)}%</td> {/* Display the percentage data */}
+                                        ) : null} {/* If no base64Image, render nothing */} {resultat.groupage.label_groupage}</td>
+                                        <td>{resultat.score.toFixed(0)}</td>
+                                        <td>{resultat.groupage.max_point.toFixed(0)}</td>
+                                        <td>{Math.round((resultat.score / resultat.groupage.max_point) * 100)}%</td>
+
                                 </tr>
                             );
                         })
+                    ) : (
+                        <tr>
+                            <td colSpan={10}>No data available</td>
+                        </tr>
                     )}
                 </tbody>
             </table>

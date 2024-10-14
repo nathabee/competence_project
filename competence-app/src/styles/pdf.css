@@ -272,36 +272,29 @@ body {
   /* Space below footer1 */
 }
 
-.print-footer-scoreoverview {
-  font-size: 10px;
-  /* Font size for score overview */
-  margin: 0;
-  /* Remove margin */
-}
-
 .print-footer-scoreoverview table {
   width: 100%;
-  /* Make the table take full width */
-  border-collapse: collapse;
-  /* Collapse borders for a cleaner look */
+  border-collapse: collapse; /* Collapse borders for a cleaner look */
 }
 
 .print-footer-scoreoverview th,
 .print-footer-scoreoverview td {
-  padding: 4px;
-  /* Reduce padding for smaller cell size */
+  padding: 2px; /* Reduce padding to minimize cell height */
   text-align: left;
-  /* Align text to the left */
-  vertical-align: middle;
-  /* Align text vertically in the middle */
-  border: 1px solid #ddd;
-  /* Light border for separation */
+  vertical-align: middle; /* Align text vertically in the middle */
+  border: 1px solid #ddd; /* Light border for separation */
+  line-height: 1.2; /* Reduce line-height for more compact rows */
 }
 
 .print-footer-scoreoverview th {
-  font-weight: bold;
-  /* Bold the header text */
+  font-weight: bold; /* Bold the header text */
 }
+
+.print-footer-scoreoverview td {
+  font-size: 10px; /* Adjust font size for more compact table */
+}
+
+ 
 
 #print-footer-2 {
   margin-top: 0.5cm;

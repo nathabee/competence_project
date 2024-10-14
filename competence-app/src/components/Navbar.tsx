@@ -5,10 +5,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
-import '../app/globals.css'; // Import global styles
+import { formatDate } from '../utils/helper'
+import '../app/globals.css'; // Import global styles  
+import Image from 'next/image'; // Import Image from next/image
 
 export default function Navbar() {
-  const { userRoles, isLoggedIn, logout } = useAuth();
+  const { userRoles, isLoggedIn, logout,
+    activeCatalogues, activeEleve, activeLayout, activeReport } = useAuth();
   const [isSticky, setIsSticky] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to manage sidebar visibility
   const router = useRouter();
@@ -45,6 +48,67 @@ export default function Navbar() {
           &#9776; {/* Hamburger icon */}
         </button>
 
+        {/* Flex container for active data */}
+        <div className="navbar-active-data">
+          {/* Eleve section */}
+          <div>
+            Eleve:
+            {activeEleve ? (
+              `${activeEleve.nom} ${activeEleve.prenom}`
+            ) : (
+              <span className="warning-message">Choisir un eleve</span>
+            )}
+          </div>
+
+          {/* Layout section */}
+          <div>
+            {activeLayout ? (
+              <div>
+                {activeLayout.header_icon_base64 && (
+                  <Image
+                    src={`${activeLayout.header_icon_base64}`}   // MIME included in imageBase64
+                    alt="Header Icon"
+                    height={20} // Specify height
+                    style={{ marginRight: '10px' }} // Inline styles for margin
+                  />
+                )} {activeLayout.schule_name} 
+              </div>
+            ) : (
+              <p className="warning-message">Choisir une configuration</p>
+            )}
+          </div>
+
+          {/* Catalogue section */}
+          <div className="catalogue-container">
+            {activeCatalogues && activeCatalogues.length > 0 ? (
+              activeCatalogues.map(cat => (
+                <div key={cat.id} className="catalogue-item">
+                  {cat.description}
+                </div>
+              ))
+            ) : (
+              <p className="warning-message">Choisir un catalogue</p>
+            )}
+          </div>
+
+          {/* Report section */}
+          <div>
+            {activeReport ? (
+              <>
+                Report ID: {activeReport.id} | Created At: {formatDate(activeReport.created_at)}
+              </>
+            ) : (
+              activeEleve && activeLayout && activeCatalogues && activeCatalogues.length > 0 ? (
+                <p className="warning-message">Choisir de modifier ou de creer un report</p>
+              ) : (
+                ""
+              )
+            )}
+          </div>
+        </div>
+
+
+
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
           <h2>Menu</h2>
           <Nav className="flex-column">
@@ -56,9 +120,10 @@ export default function Navbar() {
                 {userRoles.includes('teacher') && (
                   <>
                     <Nav.Link href={`${basePath}/eleve`}>Gestion des eleves</Nav.Link>
+                    <Nav.Link href={`${basePath}/configuration`}>Configuration du PDF</Nav.Link>
+                    <Nav.Link href={`${basePath}/catalogue`}>Gestion du catalogue de tests</Nav.Link>
+                    <Nav.Link href={`${basePath}/test`}>Gestion des rapports</Nav.Link>
                     <Nav.Link href={`${basePath}/dashboard`}>Dashboard</Nav.Link>
-                    <Nav.Link href={`${basePath}/configuration`}>Configuration</Nav.Link>
-                    <Nav.Link href={`${basePath}/test`}>Test</Nav.Link>
                     <Nav.Link href={`${basePath}/overview`}>Overview</Nav.Link>
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
                     <Nav.Link href={`${basePath}/pdfimage`}>PDF avec pictogrammes</Nav.Link>

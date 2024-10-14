@@ -117,7 +117,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setActiveEleve(null);
       setActiveReport(null);
       setActiveLayout(null);
-      
+
       // Clear local storage entries related to active selections
       localStorage.removeItem('activeCatalogues');
       localStorage.removeItem('activeEleve');
@@ -127,11 +127,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       // Remove all Base64 images with competence_ prefix
       Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith('competence') && 
-            (key.endsWith('.png') || 
-             key.endsWith('.jpg') || 
-             key.endsWith('.jpeg') || 
-             key.endsWith('.gif'))) {
+        if (key.startsWith('competence') &&
+          (key.endsWith('.png') ||
+            key.endsWith('.jpg') ||
+            key.endsWith('.jpeg') ||
+            key.endsWith('.gif'))) {
           localStorage.removeItem(key);
         }
       });
@@ -170,11 +170,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+
   const setActiveReport = async (report: Report | null) => {
     if (report) {
       console.log("Fetching Base64 images for report...");
       console.log(report);
-  
+
       try {
         // Fetch Base64 images for each result
         await Promise.all(
@@ -184,7 +185,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 // Check if the groupage_icon is present
                 if (resultat.groupage.groupage_icon) {
                   const imageKey = `competence_groupage_icon_${resultat.groupage.id}`; // Constructed imageKey
-  
+
                   // Use the new fetchBase64Image function to fetch and store the image
                   await fetchBase64Image(imageKey, resultat.groupage.groupage_icon);
                 }
@@ -193,7 +194,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             )
           )
         );
-  
+
         // Update the report without base64 images in resultats
         const updatedReport = {
           ...report,
@@ -202,7 +203,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             resultats: catalogue.resultats, // Keep original resultats
           })),
         };
-  
+
         // Store in state and localStorage
         setActiveReportState(updatedReport); // Internal state setter
         if (typeof window !== 'undefined') {
@@ -220,7 +221,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   };
-  
+
 
   return (
     <AuthContext.Provider value={{
@@ -237,10 +238,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       },
       activeEleve,
+
       setActiveEleve: (eleve: Eleve | null) => {
         setActiveEleve(eleve);
+
+        // Reset activeReport when activeEleve is changed
+        setActiveReport(null); // This will also clear the localStorage for 'activeReport'
+
         if (typeof window !== 'undefined') {
           localStorage.setItem('activeEleve', JSON.stringify(eleve));
+          localStorage.removeItem('activeReport'); // Clear the report in localStorage
         }
       },
       catalogue,

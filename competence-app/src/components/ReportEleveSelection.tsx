@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { Report } from '@/types/report';
 import { useAuth } from '@/context/AuthContext';
 import { Eleve } from '@/types/eleve';
+import { formatDate } from '../utils/helper'
 
 interface ReportEleveSelectionProps {
   eleve: Eleve;
@@ -15,7 +16,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [expanded, setExpanded] = useState<boolean>(false);
-  const [selectedReport, setSelectedReport] = useState<Report | null>(null);
+  //const [selectedReport, setSelectedReport] = useState<Report | null>(null);
   const { activeEleve, setActiveEleve, user, activeCatalogues, setActiveReport } = useAuth(); // Include setActiveReport
   const router = useRouter();
 
@@ -79,17 +80,13 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
   };
 
   const handleReportSelect = (report: Report) => {
-    setSelectedReport(report);
+      //setSelectedReport(report);
+      setExpanded(!expanded);
+      setActiveReport(report);
+      router.push(`/test/`);
   };
 
-  const modifyReport = () => {
-    if (selectedReport) {
-      // Set the selected report as active in the context
-      setActiveReport(selectedReport);
-      
-      router.push(`/test/`);
-    }
-  };
+ 
 
   if (loading) {
     return <p>Loading reports...</p>;
@@ -108,7 +105,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
                 <div className="card-body">
                   <h4>Report ID: {report.id}</h4>
                   <p>Professeur ID: {report.professeur}</p>
-                  <p>Created At: {new Date(report.created_at).toLocaleString()}</p>
+                  <p>Created At: {formatDate(report.created_at)}</p>
                   <p>PDF Layout ID: {report.pdflayout}</p>
 
                   <h5>Catalogues:</h5>
@@ -134,18 +131,13 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
                     ))}
                   </ul>
 
-                  <button onClick={() => handleReportSelect(report)}>Select</button>
+                  <button onClick={() => handleReportSelect(report)}>Modifier Rapport</button>
                 </div>
               </div>
             ))
           ) : (
             <p>No reports found for this élève.</p>
-          )}
-          {selectedReport && (
-            <div>
-              <button onClick={modifyReport}>Change</button>
-            </div>
-          )}
+          )} 
         </div>
       )}
     </div>
