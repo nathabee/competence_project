@@ -22,10 +22,12 @@
   --custom-text: #343a40;
   --custom-text-on-dark: white;
   --custom-link-hover: #ff9100;
+  --custom-alert: #c4361d;
   --custom-dropdown-bg: white;
   --custom-dropdown-border: #9cee83;
   --custom-gradient: linear-gradient(to right, var(--custom-blue-complement), var(--custom-blue));
 }
+
 
 
 /* Gradient background */
@@ -33,6 +35,11 @@ body {
   background:  var(--custom-gradient);
   font-family: Arial, sans-serif; 
   align-items: center; 
+}
+
+
+.container {
+  overflow: auto; /* Ensures dashboard content doesn't interfere */
 }
 
 
@@ -117,7 +124,8 @@ body {
 .sticky-navbar {
   position: sticky;
   top: 0;
-  z-index: 1000; 
+  z-index: 9999; 
+  pointer-events: auto; /* Ensure clicks are allowed */
 }
 
 /* Hamburger icon remains fixed at top-left */
@@ -193,3 +201,15 @@ body {
 
 
  /************************************************/
+ /************************************************/
+
+
+.expandable-title {
+  cursor: pointer;
+  color: var(--custom-link-hover);
+}
+
+.expandable-title.expanded {
+  /* Optionally, add styles for when it's expanded */
+  font-weight: bold; /* For example, make it bold when expanded */
+}

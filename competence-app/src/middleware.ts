@@ -2,17 +2,19 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(req: NextRequest) {
-  const token = req.cookies.get('authToken');
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation';
+    const token = req.cookies.get('authToken');
+    const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation';
 
-  if (!token && req.nextUrl.pathname.startsWith(`${basePath}/dashboard`)) {
-    return NextResponse.redirect(new URL(`${basePath}/login`, req.url));
-  }
+    // Redirect unauthenticated users trying to access the dashboard
+    // if (!token && req.nextUrl.pathname.startsWith(`${basePath}/dashboard`)) {
+    if (!token  ) {
+        return NextResponse.redirect(new URL(`${basePath}/login`, req.url));
+    }
 
-  return NextResponse.next();
+    return NextResponse.next();
 }
 
 // Define the paths where the middleware should be applied
 export const config = {
-  matcher: ['/evaluation/dashboard/:path*'], // Use static path instead of a variable
+    matcher: ['/evaluation/:path*'], // This applies middleware to all routes under the base path
 };

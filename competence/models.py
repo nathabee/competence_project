@@ -125,6 +125,9 @@ class Catalogue(models.Model):
     annee = models.ForeignKey('Annee', on_delete=models.CASCADE, default=1)
     matiere = models.ForeignKey('Matiere', on_delete=models.CASCADE, default=1)
     description = models.TextField(blank=True, null=True)
+    professeurs = models.ManyToManyField(User, related_name='catalogues', blank=True)
+    
+    print(f"Catalogue modele", description)
 
     class Meta:
         indexes = [

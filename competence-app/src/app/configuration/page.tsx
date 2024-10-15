@@ -71,8 +71,7 @@ const Configuration: React.FC = () => {
     <div className="container mt-3 ml-2">
       <h1>Configuration</h1>
       <div className="tab-content mt-3"> 
-
-      <h2>Active Layout :</h2>
+ 
       {activeLayout ? (
       <LayoutDisplay layout={activeLayout} />  
       ) : (

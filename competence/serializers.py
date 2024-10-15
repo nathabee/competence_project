@@ -550,8 +550,59 @@ class FullReportSerializer(serializers.ModelSerializer):
 
         return super().validate(attrs)
 
-### must see if i use this....
+###################################################
+class ShortGroupageDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GroupageData
+        fields = ['id', 'desc_groupage', 'label_groupage', 'position', 'max_point', 'seuil1', 'seuil2']
+        read_only_fields = fields  # Make all fields read-only
 
+
+
+class ShortResultatSerializer(serializers.ModelSerializer):
+    groupage = ShortGroupageDataSerializer(read_only=True)  # Groupage data is read-only and nested
+
+    class Meta:
+        model = Resultat
+        fields = ['id', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent', 'groupage']
+        read_only_fields = fields  # Make all fields read-only
+
+class ShortReportCatalogueSerializer(serializers.ModelSerializer):
+    catalogue = serializers.StringRelatedField(read_only=True)  # Assumes __str__() is implemented in Catalogue
+    resultats = ShortResultatSerializer(many=True, read_only=True)  # Include related resultats, all read-only
+    # Use CatalogueDescriptionSerializer for GET requests (nested read)
+    #catalogue = CatalogueDescriptionSerializer(read_only=True)
+
+    class Meta:
+        model = ReportCatalogue
+        fields = ['id', 'catalogue', 'resultats']
+        read_only_fields = fields  # Make all fields read-only
+  
+
+class ShortReportSerializer(serializers.ModelSerializer):
+    eleve = serializers.StringRelatedField(read_only=True)  # Returns string representation of eleve
+    professeur = serializers.SerializerMethodField(read_only=True)  # Custom method for professeur
+    report_catalogues = ShortReportCatalogueSerializer(many=True, read_only=True)  # Nested serializer for report catalogues
+    created_at = serializers.DateTimeField(read_only=True)
+    updated_at = serializers.DateTimeField(read_only=True)
+
+    class Meta:
+        model = Report
+        fields = ['id', 'eleve', 'professeur', 'report_catalogues', 'created_at', 'updated_at']
+
+    def get_professeur(self, obj):
+        # Access professeur directly and return relevant data
+        if obj.professeur:  # Assuming professeur is a User instance
+            return {
+                'first_name': obj.professeur.first_name,  # Directly access first_name
+                'last_name': obj.professeur.last_name      # Directly access last_name
+            }
+        return None  # Return None if no professeur exists
+
+
+"""
+
+### must see if i use this....
 class ReportSerializer(serializers.ModelSerializer):
     eleve = serializers.PrimaryKeyRelatedField(queryset=Eleve.objects.all())
     professeur = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
@@ -577,3 +628,4 @@ class ReportSerializer(serializers.ModelSerializer):
             ReportCatalogue.objects.create(**catalogue_data)
 
         return report
+"""

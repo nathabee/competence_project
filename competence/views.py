@@ -13,7 +13,7 @@ from .models import (
 from .serializers import (
     NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer, EleveAnonymizedSerializer, CatalogueSerializer,
     ReportCatalogueSerializer,ResultatDetailSerializer, ResultatSerializer,UserSerializer,ScoreRuleSerializer,   ScoreRulePointSerializer,
-    PDFLayoutSerializer, FullReportSerializer,ReportSerializer,
+    PDFLayoutSerializer, FullReportSerializer,ShortReportSerializer,
     GroupageDataSerializer,ItemSerializer
 )
  
@@ -47,7 +47,7 @@ def api_overview(request):
 #        "scorerules": request.build_absolute_uri('/api/scorerules/'),
         "scorerulepoints": request.build_absolute_uri('/api/scorerulepoints/'),
         "eleves": request.build_absolute_uri('/api/eleves/'),
-        "eleves_anonymized": request.build_absolute_uri('/api/eleves/anonymized/'),
+#        "eleves_anonymized": request.build_absolute_uri('/api/eleves/anonymized/'),
         "catalogues": request.build_absolute_uri('/api/catalogues/'),
         "groupages": request.build_absolute_uri('/api/groupages/'),
         "items": request.build_absolute_uri('/api/items/'),
@@ -56,6 +56,10 @@ def api_overview(request):
         "eleve_reports": request.build_absolute_uri('/api/eleve/{eleve_id}/reports/'),    
         "pdf_layouts": request.build_absolute_uri('/api/pdf-layouts/'),
 #        "full_report_create": request.build_absolute_uri('/api/reports/full-create/'),  # New addition
+        "fullreports": request.build_absolute_uri('/api/fullreports/'),  
+        "shortreports": request.build_absolute_uri('/api/shortreports/'),  
+        "eleve_reports": request.build_absolute_uri('/api/eleve/{eleve_id}/reports/').replace("{eleve_id}", "<eleve_id>"),
+       
 
     })
 
@@ -103,7 +107,7 @@ class EleveReportsView(APIView):
 
         # Retrieve reports for the Eleve
         reports = eleve.reports.all()
-        serializer = ReportSerializer(reports, many=True) 
+        serializer = FullReportSerializer(reports, many=True) 
         return Response(serializer.data, status=status.HTTP_200_OK)
     
  
@@ -258,10 +262,28 @@ class ScoreRulePointViewSet(viewsets.ModelViewSet):
     serializer_class = ScoreRulePointSerializer
     permission_classes = [IsAuthenticated, isAllowed]
 
+
 class CatalogueViewSet(viewsets.ModelViewSet):
-    queryset = Catalogue.objects.all()
     serializer_class = CatalogueSerializer
     permission_classes = [IsAuthenticated, isAllowed]
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # Admin users can see all catalogues
+        if user.groups.filter(name='admin').exists():
+            return Catalogue.objects.all()
+
+        # Analytics users can see all catalogues (but perhaps without some fields, if needed)
+        elif user.groups.filter(name='analytics').exists():
+            return Catalogue.objects.all()
+
+        # Teachers can only see the catalogues they are associated with
+        elif user.groups.filter(name='teacher').exists():
+            return Catalogue.objects.filter(professeurs=user)
+
+        # Other users get no access to catalogues
+        return Catalogue.objects.none()
 
  
 
@@ -323,10 +345,10 @@ class PDFLayoutViewSet(viewsets.ModelViewSet):
  
  
 
-class ReportViewSet(viewsets.ModelViewSet):
-    queryset = Report.objects.all()
-    serializer_class = ReportSerializer
-    permission_classes = [IsAuthenticated, isAllowed]
+#class ReportViewSet(viewsets.ModelViewSet):
+#    queryset = Report.objects.all()
+#    serializer_class = ReportSerializer
+#    permission_classes = [IsAuthenticated, isAllowed]
 
 
 
@@ -384,3 +406,34 @@ class FullReportViewSet(viewsets.ModelViewSet):
         return super().list(request, *args, **kwargs)
  
  
+  
+
+class ShortReportViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    A viewset that provides read-only access (list and retrieve)
+    for report data, ordered by 'updated_at' in descending order.
+    """
+    permission_classes = [IsAuthenticated]  # Only authentication required, no specific permissions
+    serializer_class = ShortReportSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+
+        # Admin access: Retrieve all reports ordered by 'updated_at' descending
+        if user.groups.filter(name='admin').exists():
+            return Report.objects.all().order_by('-updated_at')
+
+        # Analytics access: Retrieve all reports ordered by 'updated_at' descending
+        if user.groups.filter(name='analytics').exists() and user.is_authenticated:
+            return Report.objects.all().order_by('-updated_at')  # Allow analytics to retrieve reports
+
+        # Teacher-specific access
+        if user.groups.filter(name='teacher').exists() and user.is_authenticated:
+            # Get all Eleves associated with the teacher
+            eleve_ids = user.eleves.values_list('id', flat=True)
+            return Report.objects.filter(eleve__in=eleve_ids).distinct().order_by('-updated_at')
+
+        # Default: No access for other user types
+        return Report.objects.none()
+
+    # The viewset will automatically handle list() and retrieve() methods for read-only access

@@ -1,83 +1,52 @@
 'use client';
 
-
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import UserDisplay from '@/components/UserDisplay';
-import EleveDisplay from '@/components/EleveDisplay';
-import CatalogueDisplay from '@/components/CatalogueDisplay';
-import LayoutDisplay from '@/components/LayoutDisplay'; 
-import ReportEleveSelection from '@/components/ReportEleveSelection'; 
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useAuth } from '@/context/AuthContext';
+import { ShortReport } from '@/types/shortreport';
 import Spinner from 'react-bootstrap/Spinner';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
-
+import ShortReportDisplay from '@/components/ShortReportDisplay'; // Updated import for display component
 
 const Dashboard: React.FC = () => {
   const router = useRouter();
-  const {
-    activeCatalogues,
-    activeEleve,
-    catalogue,
-    setCatalogue,
-    eleves,
-    setEleves,
-    user,
-    isLoggedIn,
-    setLayouts,
-    layouts,
-    activeLayout,
-  } = useAuth();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
+  const [shortReports, setShortReports] = useState<ShortReport[]>([]);
 
+  // Fetch reports from API
+  const fetchData = useCallback(async () => {
+    const token = getTokenFromCookies();
+    if (!token || isTokenExpired(token)) {
+      router.push(`/login`);
+      return;
+    }
+
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+    setLoading(true);
+    setError(false);
+
+    try {
+      const response = await axios.get(`${apiUrl}/shortreports/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      console.log('Fetched short reports:', response.data);
+      setShortReports(response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  }, [router]);
+
+  // Fetch data on mount
   useEffect(() => {
-    const fetchData = async () => {
-      const token = getTokenFromCookies(); // Automatically gets the token from cookies
-
-      if (!token || isTokenExpired(token)) {
-        router.push(`/login`);
-        return;
-      }
-
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-
-      try {
-        // Fetch Catalogues, Eleves, and Layouts if they are not already set
-        if (catalogue.length === 0) {
-          const catalogueResponse = await axios.get(`${apiUrl}/catalogues/`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setCatalogue(catalogueResponse.data);
-        }
-
-        if (eleves.length === 0) {
-          const elevesResponse = await axios.get(`${apiUrl}/eleves/`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setEleves(elevesResponse.data);
-        }
-
-        if (layouts.length === 0) {
-          const layoutsResponse = await axios.get(`${apiUrl}/pdf_layouts/`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          setLayouts(layoutsResponse.data);
-        }
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchData();
-  }, [router]);  // Adding dependencies as needed
+  }, [fetchData]);
 
   if (loading) {
     return (
@@ -89,52 +58,20 @@ const Dashboard: React.FC = () => {
   }
 
   if (error) {
-    return <p>Error fetching data. Please try again.</p>;
+    return <p>Error fetching data. Please try again later.</p>;
   }
 
   return (
     <div className="container mt-3 ml-2">
       <h1>Dashboard</h1>
-      <div className="tab-content mt-3">
 
-        {/* Active selected data */}
-        <h2>Donnees selectionnees :</h2>
+      {/* Refresh Button */}
+      <button onClick={fetchData} className="btn btn-primary mb-3">
+        Refresh Data
+      </button>
 
-        <h3>Professeur : </h3>
-        {isLoggedIn && user && <UserDisplay user={user} />}
-
-        <h3>Eleve : </h3>
-        {activeEleve ? (
-          <EleveDisplay eleve={activeEleve} />
-        ) : (
-          <p>No active eleve selected</p>
-        )}
-      </div>
-
-      <h2>Active Catalogues:</h2>
-      {activeCatalogues.length > 0 ? (
-        <CatalogueDisplay selectedCatalogue={activeCatalogues} />
-      ) : (
-        <p>No active catalogues selected.</p>
-      )}
-
-      <h2>Active Layout :</h2>
-      {activeLayout ? (
-        <LayoutDisplay layout={activeLayout} />
-      ) : (
-        <p>No active layout selected.</p>
-      )}
-
-
-      {activeEleve ? (
-        <>
-          <h2>Report obtenus par l&apos;eleve selectionne :</h2>
-          <ReportEleveSelection eleve={activeEleve} />
-        </>
-      ) : (
-        <p>Please select an eleve to see results.</p>
-      )}
-
+      {/* Passing the fetched reports to ShortReportDisplay */}
+      <ShortReportDisplay reports={shortReports} />
     </div>
   );
 };

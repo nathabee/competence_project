@@ -5,6 +5,8 @@ import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { Eleve } from '@/types/eleve';
 import EleveSelection from '@/components/EleveSelection';
+import ReportEleveSelection from '@/components/ReportEleveSelection';
+
 import EleveForm from '@/components/EleveForm';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
@@ -12,7 +14,7 @@ import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
 
 const ElevePage: React.FC = () => {
     const router = useRouter();
-    const { user } = useAuth();
+    const { user,activeEleve } = useAuth();
     const [eleves, setEleves] = useState<Eleve[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
@@ -70,7 +72,7 @@ const ElevePage: React.FC = () => {
     }
 
     if (error) {
-        return <p>Error loading élèves. Please try again.</p>;
+        return <p>Erreur chargement des élèves. Recommencez SVP.</p>;
     }
 
     return (
@@ -100,6 +102,17 @@ const ElevePage: React.FC = () => {
                         <EleveForm setEleves={setEleves} closeForm={() => setIsFormOpen(false)} />
                     </div>
                 )}
+
+ 
+                {activeEleve ? (
+                    <>
+                        <h2>Report obtenus par l&apos;élève selectionné ({activeEleve.nom} {activeEleve.prenom}) :</h2>
+                        <ReportEleveSelection eleve={activeEleve} />
+                    </>
+                ) : (
+                    <p>Selectionner un élève.</p>
+                )}
+
             </div>
         </div>
     );

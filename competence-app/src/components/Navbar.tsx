@@ -1,11 +1,10 @@
-// src/components/Navbar.tsx
 'use client'; // Ensure this runs on the client-side
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
-import { formatDate } from '../utils/helper'
+import { formatDate } from '../utils/helper';
 import '../app/globals.css'; // Import global styles  
 import Image from 'next/image'; // Import Image from next/image
 
@@ -37,6 +36,11 @@ export default function Navbar() {
     setIsSidebarOpen(!isSidebarOpen); // Toggle the sidebar state
   };
 
+  // Function to handle redirection
+  const handleRedirect = (path: string) => {
+    router.push(`${path}`);
+  };
+
   return (
     <BootstrapNavbar expand="true" fixed="top" className={`navbar ${isSticky ? 'sticky-navbar' : ''}`}>
       <Container>
@@ -50,13 +54,13 @@ export default function Navbar() {
 
         {/* Flex container for active data */}
         <div className="navbar-active-data">
-          {/* Eleve section */}
+          {/* Eleve section */} 
           <div>
             Eleve:
             {activeEleve ? (
               `${activeEleve.nom} ${activeEleve.prenom}`
             ) : (
-              <span className="warning-message">Choisir un eleve</span>
+              <span className="warning-message" onClick={() => handleRedirect('/eleve')}>Choisir un eleve</span>
             )}
           </div>
 
@@ -74,7 +78,7 @@ export default function Navbar() {
                 )} {activeLayout.schule_name} 
               </div>
             ) : (
-              <p className="warning-message">Choisir une configuration</p>
+              <p className="warning-message" onClick={() => handleRedirect('/configuration')}>Choisir une configuration</p>
             )}
           </div>
 
@@ -87,7 +91,7 @@ export default function Navbar() {
                 </div>
               ))
             ) : (
-              <p className="warning-message">Choisir un catalogue</p>
+              <p className="warning-message" onClick={() => handleRedirect('/catalogue')}>Choisir un catalogue</p>
             )}
           </div>
 
@@ -99,15 +103,13 @@ export default function Navbar() {
               </>
             ) : (
               activeEleve && activeLayout && activeCatalogues && activeCatalogues.length > 0 ? (
-                <p className="warning-message">Choisir de modifier ou de creer un report</p>
+                <p className="warning-message" onClick={() => handleRedirect('/test')}>Choisir de modifier ou de creer un report</p>
               ) : (
                 ""
               )
             )}
           </div>
         </div>
-
-
 
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
           <h2>Menu</h2>

@@ -77,7 +77,10 @@ class EleveAdmin(admin.ModelAdmin):
 class CatalogueAdmin(admin.ModelAdmin):
     list_display = ('niveau', 'etape', 'annee', 'matiere', 'description')
     list_filter = ('niveau', 'etape', 'annee', 'matiere')
+    ordering = ('niveau', 'etape')
+
     search_fields = ('description',)
+    filter_horizontal = ('professeurs',)  # For ManyToMany fields
 
 @admin.register(GroupageData)
 class GroupageDataAdmin(admin.ModelAdmin):

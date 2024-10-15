@@ -253,6 +253,41 @@ const Test: React.FC = () => {
   };
 
 
+  const createReport = async () => {
+    const token = document.cookie.split('authToken=')[1]?.split(';')[0];
+    //setActiveEleve(eleve);
+
+    //if (typeof window !== 'undefined') {
+    //localStorage.setItem('activeEleve', JSON.stringify(eleve));
+    //}
+
+    if (!activeCatalogues || activeCatalogues.length === 0) {
+      console.error('Active catalogues are not set or empty.');
+      return; // Prevent API call if activeCatalogues is not valid
+    }
+
+    try {
+      const catalogueIds = activeCatalogues.map(cat => cat.id);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
+      const reportCreationResponse = await axios.post(`${apiUrl}/fullreports/`, {
+        eleve: activeEleve?.id,
+        professeur: user?.id,
+        pdflayout: 1,
+        catalogue_ids: catalogueIds,
+      }, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      const createdReport = reportCreationResponse.data;
+      console.log("reporteleve-createdReport", createdReport);
+      setActiveReport(createdReport);
+
+      router.push(`/test/`);
+    } catch (error) {
+      console.error('Error creating report:', error);
+    }
+  };
 
   if (loading) {
     return (
@@ -268,7 +303,18 @@ const Test: React.FC = () => {
   }
   return (
     <div className="container mt-3 ml-2">
-      <h1>Create or Select a report</h1>
+      {activeEleve ? (
+        <>
+          <button onClick={handleSubmit}>Save Report</button>
+
+          <button onClick={createReport}>New Report</button>
+        </>
+      ) : (
+        <p>Please select an eleve to see results.</p>
+      )}
+
+
+      <h1>History report eleve :</h1>
       {activeEleve ? (
         <>
           <h2>Report obtenus par l&apos;eleve selectionne :</h2>
@@ -282,7 +328,7 @@ const Test: React.FC = () => {
       {activeEleve ? (
         <div>
 
-          <button onClick={handleSubmit}>Save Report</button>
+
 
           <h2>Group Data:</h2>
 

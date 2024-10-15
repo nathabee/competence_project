@@ -40,6 +40,7 @@ const Catalogue: React.FC = () => {
                     const catalogueResponse = await axios.get(`${apiUrl}/catalogues/`, {
                         headers: { Authorization: `Bearer ${token}` },
                     });
+                    console.log("get catalogues ",catalogueResponse.data)
                     setCatalogue(catalogueResponse.data);
                 }
 
@@ -70,7 +71,7 @@ const Catalogue: React.FC = () => {
 
     return (
         <div className="container mt-3 ml-2">
-            <h1>Dashboard</h1>
+            <h1>Catalogue</h1>
             <div className="tab-content mt-3">
 
 
@@ -81,7 +82,7 @@ const Catalogue: React.FC = () => {
                     <p>No active catalogues selected.</p>
                 )}
 
-                <h2>Selection :</h2>
+                <h2>Choisir les types de tests ä realiser :</h2>
                 {catalogue.length === 0 ? (
                     <p>No catalogues found.</p>
                 ) : (
