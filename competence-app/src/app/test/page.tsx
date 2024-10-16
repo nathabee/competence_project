@@ -25,6 +25,8 @@ const Test: React.FC = () => {
   const [error, setError] = useState<boolean>(false);
   const [reportData, setReportData] = useState<ReportCatalogue[]>([]);
   //const [originalData, setOriginalData] = useState<ReportCatalogue[]>([]);
+  const [isModified, setIsModified] = useState<boolean[]>(new Array(reportData.length).fill(false));
+
 
 
   const defaultScoreRulePoint = useMemo(() => ({
@@ -74,9 +76,18 @@ const Test: React.FC = () => {
     setReportData((prevData) => {
       const newData = [...prevData];
       newData[reportcatalogueIndex].resultats[resultatIndex].resultat_details[detailIndex].observation = value;
+
+      // Mark this specific resultat as modified
+      setIsModified((prev) => {
+        const newModified = [...prev];
+        newModified[resultatIndex] = true;
+        return newModified;
+      });
+
       return newData;
     });
   };
+
 
 
   const handleScoreLabelChange = (
@@ -102,6 +113,13 @@ const Test: React.FC = () => {
       // Extract the max score for the current detail
       const maxScore = detail.item.max_score;
 
+      // Mark this specific resultat as modified
+      setIsModified((prev) => {
+        const newModified = [...prev];
+        newModified[resultatIndex] = true;
+        return newModified;
+      });
+
       // Determine the score based on the scorerule
       if (detail.item.scorerule === 8) {
         // Set score to the integer value of selectedLabel
@@ -124,24 +142,24 @@ const Test: React.FC = () => {
 
 
   const handleSaveResultat = async (catalogueIndex: number, resultatIndex: number) => {
-    console.log(`Starting save for catalogueIndex: ${catalogueIndex}, resultatIndex: ${resultatIndex}`);
+    //console.log(`Starting save for catalogueIndex: ${catalogueIndex}, resultatIndex: ${resultatIndex}`);
 
     const token = document.cookie.split('authToken=')[1]?.split(';')[0];
-    console.log('Token:', token);
+    //console.log('Token:', token);
 
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    console.log('API URL:', apiUrl);
+    //console.log('API URL:', apiUrl);
 
     const patchData: ReportCataloguePatch = { id: reportData[catalogueIndex].id, resultats: [] };
-    console.log('Initial patchData:', JSON.stringify(patchData));
+    //console.log('Initial patchData:', JSON.stringify(patchData));
 
     const resultat = reportData[catalogueIndex].resultats[resultatIndex];
-    console.log('Resultat to save:', JSON.stringify(resultat));
+    //console.log('Resultat to save:', JSON.stringify(resultat));
 
     const resultatPatch: ResultatPatch = { id: resultat.id, resultat_details: [] };
 
     resultat.resultat_details.forEach((detail: ResultatDetail) => {
-      console.log(`Processing detail with ID: ${detail.id}`);
+      //console.log(`Processing detail with ID: ${detail.id}`);
       resultatPatch.resultat_details.push({
         id: detail.id,
         item_id: detail.item.id,
@@ -152,10 +170,10 @@ const Test: React.FC = () => {
     });
 
     patchData.resultats.push(resultatPatch);
-    console.log('Final patchData:', JSON.stringify(patchData));
+    //console.log('Final patchData:', JSON.stringify(patchData));
 
     try {
-      console.log('Sending PATCH request...');
+      //console.log('Sending PATCH request...');
       const response = await axios.patch(`${apiUrl}/fullreports/${activeReport?.id}/`, {
         id: activeReport?.id || 0,
         eleve: activeEleve?.id || 0,
@@ -166,11 +184,18 @@ const Test: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      console.log('Patch request successful for resultat', response.data);
+      //console.log('Patch request successful for resultat', response.data);
 
-      // Optionally update state here based on the response
+
+      setIsModified((prev) => {
+        const newModified = [...prev];
+        newModified[resultatIndex] = false;
+        return newModified;
+      });
+
+      setActiveReport(response.data); // Update the active report with the response 
     } catch (error) {
-      console.error('Error updating resultat:', error);
+      console.error('Erreur mis a jour du resultat:', error);
     }
   };
 
@@ -185,21 +210,15 @@ const Test: React.FC = () => {
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
     const patchData: ReportCataloguePatch[] = [];
 
-    console.log('Submit initiated');
-
+    //console.log('Submit initiated');
     // Iterate through reportData to build patchData
-    reportData.forEach((reportcatalogue, reportcatalogueIndex) => {
-      console.log(`Processing catalogue at index ${reportcatalogueIndex}:`, reportcatalogue);
+    reportData.forEach((reportcatalogue) => {
       const cataloguePatch: ReportCataloguePatch = { id: reportcatalogue.id, resultats: [] };
 
-      reportcatalogue.resultats.forEach((resultat, resultatIndex) => {
-        console.log(`  Processing resultat at index ${resultatIndex}:`, resultat);
+      reportcatalogue.resultats.forEach((resultat) => {
         const resultatPatch: ResultatPatch = { id: resultat.id, resultat_details: [] };
 
-        resultat.resultat_details.forEach((detail, detailIndex) => {
-          console.log(`    Processing detail at index ${detailIndex}:`, detail);
-
-          // Always include the details without checking for changes
+        resultat.resultat_details.forEach((detail) => {
           resultatPatch.resultat_details.push({
             id: detail.id,
             item_id: detail.item.id,
@@ -207,25 +226,21 @@ const Test: React.FC = () => {
             scorelabel: detail.scorelabel,
             observation: detail.observation,
           });
-
-          console.log(`    Added detail to patch:`, resultatPatch.resultat_details);
         });
 
-        // Push the resultat patch if it contains details
+        // Add the result patch if it has any details
         if (resultatPatch.resultat_details.length > 0) {
           cataloguePatch.resultats.push(resultatPatch);
-          console.log(`  Resultat patch added:`, resultatPatch);
         }
       });
 
-      // Push the catalogue patch if it contains resultats
+      // Add the catalogue patch if it has any results
       if (cataloguePatch.resultats.length > 0) {
         patchData.push(cataloguePatch);
-        console.log(`Catalogue patch added:`, cataloguePatch);
       }
     });
 
-    console.log('Final patch data to be sent:', patchData);
+    //console.log('Final patch data to be sent:', patchData);
 
     try {
       if (patchData.length > 0) {
@@ -239,10 +254,14 @@ const Test: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        console.log('Patch request successful', response.data);
+        //console.log('Patch request successful', response.data);
 
         // Optionally update state with the new report data
         setActiveReport(response.data); // Update the active report with the response
+
+
+        // Reset the isModified state to false for all results
+        setIsModified(new Array(reportData.length).fill(false));
         // setReportData(response.data.report_catalogues || []); // Uncomment to update local reportData
       } else {
         console.log('No actual changes detected'); // This might not occur anymore since we're sending all data
@@ -262,7 +281,7 @@ const Test: React.FC = () => {
     //}
 
     if (!activeCatalogues || activeCatalogues.length === 0) {
-      console.error('Active catalogues are not set or empty.');
+      console.error('Catalogue de test vide ou non sélectionné.');
       return; // Prevent API call if activeCatalogues is not valid
     }
 
@@ -280,48 +299,48 @@ const Test: React.FC = () => {
       });
 
       const createdReport = reportCreationResponse.data;
-      console.log("reporteleve-createdReport", createdReport);
+      //console.log("reporteleve-createdReport", createdReport);
       setActiveReport(createdReport);
 
       router.push(`/test/`);
     } catch (error) {
-      console.error('Error creating report:', error);
+      console.error('Erreur création du rapport:', error);
     }
   };
 
   if (loading) {
     return (
       <div className="loading-indicator">
-        <p>Loading data...</p>
+        <p>Chargement des données...</p>
         <Spinner animation="border" />
       </div>
     );
   }
 
   if (error) {
-    return <p>Error fetching data. Please try again.</p>;
+    return <p>Erreur récupération des données. Recommencez plus tard SVP.</p>;
   }
   return (
     <div className="container mt-3 ml-2">
       {activeEleve ? (
         <>
-          <button onClick={handleSubmit}>Save Report</button>
+          <button onClick={handleSubmit} className="button-warning">Sauvegarde du rapport</button>
 
-          <button onClick={createReport}>New Report</button>
+          <button onClick={createReport} className="button-warning">Création nouveau Report</button>
         </>
       ) : (
-        <p>Please select an eleve to see results.</p>
+        <p>Commencez par sélectionner un élève.</p>
       )}
 
 
       <h1>History report eleve :</h1>
       {activeEleve ? (
         <>
-          <h2>Report obtenus par l&apos;eleve selectionne :</h2>
+          <h2>Report obtenus par l&apos;élève sélectionné :</h2>
           <ReportEleveSelection eleve={activeEleve} />
         </>
       ) : (
-        <p>Please select an eleve to see results.</p>
+        <p>Commencez par sélectionner un élève pour voir le resultat</p>
       )}
 
 
@@ -330,24 +349,24 @@ const Test: React.FC = () => {
 
 
 
-          <h2>Group Data:</h2>
+          <h2>Catégorie de tests:</h2>
 
           {reportData.length === 0 ? (
-            <p>No group data found for this catalogue.</p>
+            <p>Pas de catégories de tests trouvée pour ce type de test.</p>
           ) : (
             reportData.map((reportcatalogue: ReportCatalogue, reportcatalogueIndex: number) => (
               <div key={reportcatalogueIndex}>
-                <h3>Catalogue: {reportcatalogue.description}</h3>
+                <h3>Type de tests: {reportcatalogue.description}</h3>
 
                 {reportcatalogue.resultats.map((resultat: Resultat, resultatIndex: number) => (
                   <div key={resultatIndex} style={{ backgroundColor: resultat.score < 0 ? 'var(--custom-warning)' : 'transparent' }}>
-                    <h4>Resultat for Groupage: {resultat.groupage.desc_groupage}</h4>
-                    <p>Total Score: {resultat.score}</p>
+                    <h4>Résultat par catégorie: {resultat.groupage.desc_groupage}</h4>
+                    <p>Score total: {resultat.score}</p>
 
                     {resultat.resultat_details.map((detail: ResultatDetail, detailIndex: number) => (
                       <div key={detailIndex}>
-                        <p>Item: {detail.item.description}</p>
-                        <p>Max Score: {detail.item.max_score}</p>
+                        <p>Test: {detail.item.description}</p>
+                        <p>Score maximal: {detail.item.max_score}</p>
 
                         <input
                           type="number"
@@ -388,7 +407,15 @@ const Test: React.FC = () => {
                     ))}
 
                     {/* Add a Save button for each resultat */}
-                    <button onClick={() => handleSaveResultat(reportcatalogueIndex, resultatIndex)}>Save Resultat</button>
+
+                    {/* Conditionally apply the warning style based on the isModified state for this specific resultat */}
+                    <button
+                      onClick={() => handleSaveResultat(reportcatalogueIndex, resultatIndex)}
+                      className={isModified[resultatIndex] ? "button-warning" : "button-transparent"}
+                    >
+                      Sauvegarde des résultats
+                    </button>
+
                   </div>
                 ))}
               </div>
@@ -396,7 +423,7 @@ const Test: React.FC = () => {
           )}
         </div>
       ) : (
-        <p>No active eleve selected.</p>
+        <p>Selectionner un élève SVP</p>
       )}
     </div>
   );

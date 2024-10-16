@@ -199,6 +199,25 @@ body {
   display: inline-block; /* Ensures the message takes only as much space as needed */
 }
 
+/* Add this CSS for button styling */
+.button-warning {
+  background-color: var(--custom-warning, #fae46a);
+  color: var(--custom-text, #343a40);
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px; /* Optional spacing between buttons */
+}
+
+.button-transparent {
+  background-color: transparent;
+  color: var(--custom-text);
+  padding: 5px 10px;
+  border: 1px solid var(--custom-text);
+  border-radius: 5px;
+  cursor: pointer;
+}
 
  /************************************************/
  /************************************************/

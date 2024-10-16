@@ -59,14 +59,14 @@ const Catalogue: React.FC = () => {
     if (loading) {
         return (
             <div className="loading-indicator">
-                <p>Loading data...</p>
+                <p>Chargement de données...</p>
                 <Spinner animation="border" />
             </div>
         );
     }
 
     if (error) {
-        return <p>Error fetching data. Please try again.</p>;
+        return <p>Erreur récupération des données. Recommencez SVP.</p>;
     }
 
     return (
@@ -82,9 +82,9 @@ const Catalogue: React.FC = () => {
                     <p>No active catalogues selected.</p>
                 )}
 
-                <h2>Choisir les types de tests ä realiser :</h2>
+                <h2>Choisir la liste des tests à faire:</h2>
                 {catalogue.length === 0 ? (
-                    <p>No catalogues found.</p>
+                    <p>Pas de catalogue trouvé.</p>
                 ) : (
                     <CatalogueSelection catalogue={catalogue} />
                 )}

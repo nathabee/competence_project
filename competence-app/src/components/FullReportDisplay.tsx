@@ -21,15 +21,15 @@ const FullReportDisplay: React.FC<FullReportDisplayProps> = ({ report }) => {
     <div className="report-card">
       <div className="card-header" onClick={toggleExpand} style={{ cursor: 'pointer'}}> {/*}, backgroundColor: expanded ? '#f0f0f0' : '#ffffff' }}>  */}
         <h4>Report ID: {report.id}</h4>
-        <p>Professeur ID: {report.professeur}</p>
-        <p>Created At: {formatDate(report.created_at)}</p>
-        <p>PDF Layout ID: {report.pdflayout}</p>
+        <p>Professeur: {report.professeur}</p>
+        <p>Créé le: {formatDate(report.created_at)}</p>
+        <p>Mise en page du PDF: {report.pdflayout}</p>
         {expanded ? '▲' : '▼'} {/* Arrow to indicate expand/collapse */}
       </div>
 
       {expanded && (
         <div className="card-body">
-          <h5>Catalogues:</h5>
+          <h5>Type de tests:</h5>
           <ul>
             {report.report_catalogues.map((catalogue) => (
               <li key={catalogue.id}>

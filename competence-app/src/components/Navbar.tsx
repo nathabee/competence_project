@@ -103,7 +103,7 @@ export default function Navbar() {
               </>
             ) : (
               activeEleve && activeLayout && activeCatalogues && activeCatalogues.length > 0 ? (
-                <p className="warning-message" onClick={() => handleRedirect('/test')}>Choisir de modifier ou de creer un report</p>
+                <p className="warning-message" onClick={() => handleRedirect('/test')}>Choisir de modifier ou de créer un report</p>
               ) : (
                 ""
               )
@@ -117,16 +117,16 @@ export default function Navbar() {
             {isLoggedIn ? (
               <>
                 {userRoles.includes('admin') && (
-                  <Nav.Link href={`${basePath}/admin`}>Admin Console</Nav.Link>
+                  <Nav.Link href={`${basePath}/admin`}>Console administrtation</Nav.Link>
                 )}
                 {userRoles.includes('teacher') && (
                   <>
-                    <Nav.Link href={`${basePath}/eleve`}>Gestion des eleves</Nav.Link>
+                    <Nav.Link href={`${basePath}/dashboard`}>Historique</Nav.Link>
+                    <Nav.Link href={`${basePath}/eleve`}>Gestion des élèves</Nav.Link>
                     <Nav.Link href={`${basePath}/configuration`}>Configuration du PDF</Nav.Link>
                     <Nav.Link href={`${basePath}/catalogue`}>Gestion du catalogue de tests</Nav.Link>
                     <Nav.Link href={`${basePath}/test`}>Gestion des rapports</Nav.Link>
-                    <Nav.Link href={`${basePath}/dashboard`}>Dashboard</Nav.Link>
-                    <Nav.Link href={`${basePath}/overview`}>Overview</Nav.Link>
+                    <Nav.Link href={`${basePath}/overview`}>Résumé des tests en cours</Nav.Link>
                     <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
                     <Nav.Link href={`${basePath}/pdfimage`}>PDF avec pictogrammes</Nav.Link>
                   </>

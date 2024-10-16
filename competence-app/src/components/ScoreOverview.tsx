@@ -65,7 +65,7 @@ const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
                         })
                     ) : (
                         <tr>
-                            <td colSpan={10}>No data available</td>
+                            <td colSpan={10}>Pas de données disponible</td>
                         </tr>
                     )}
                 </tbody>

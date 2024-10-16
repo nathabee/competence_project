@@ -10,11 +10,11 @@ interface UserDisplayProps {
 
 const UserDisplay: React.FC<UserDisplayProps> = ({ user }) => {
   if (!user) {
-    return <p>No user information available.</p>; // Handle case when user is not passed
+    return <p>Pas d&apos;information sur l&apos;utilisateur</p>; // Handle case when user is not passed
   }
 
   return (
-    <div> {user.first_name} {user.last_name} Username: {user.username} Roles: {user.roles.join(', ')}
+    <div> {user.first_name} {user.last_name} Identifiant: {user.username} Roles: {user.roles.join(', ')}
     </div>
   );
 };

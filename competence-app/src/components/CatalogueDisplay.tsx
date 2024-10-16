@@ -11,12 +11,12 @@ interface CatalogueDisplayProps {
 const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ selectedCatalogue }) => {
     // Check if there are selected catalogues to display
     if (!selectedCatalogue.length) {
-        return <p>No selected catalogues available.</p>;
+        return <p>Pas d&apos;information sur le catalogue disponible</p>;
     }
 
     return (
         <div className="mb-4">
-            <h2>Selected Catalogue Display</h2>
+            <h2>Affichage des types de test sélectionnés</h2>
 
             {/* Catalogue Table */}
             <table className="table">

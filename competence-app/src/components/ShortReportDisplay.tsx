@@ -32,7 +32,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
           return (
             <div key={report.id} className="report-card mb-3">
               <h5 style={{ color: isNegativeSeuil ? 'var(--custom-alert)' : 'inherit' }}>
-                Report ID: {report.id} | Eleve: {report.eleve}
+                Report ID: {report.id} | élève: {report.eleve}
               </h5>
               <p>
                 {report.professeur ? (
@@ -43,7 +43,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
                   <span>Professeur non attribué</span>
                 )}
                 <br />
-                Date Created: {new Date(report.created_at).toLocaleString()} | Updated At: {new Date(report.updated_at).toLocaleString()}
+                Date création: {new Date(report.created_at).toLocaleString()} | Mise a jour: {new Date(report.updated_at).toLocaleString()}
               </p>
 
               {/* Report Catalogues */}
@@ -58,7 +58,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
                       />
                     ))
                   ) : (
-                    <p>No catalogues found for this report.</p>
+                    <p>Pas de catalogue trouvé pour ce rapport</p>
                   )}
                 </div> 
               </div>
@@ -66,7 +66,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
           );
         })
       ) : (
-        <p>No reports available.</p>
+        <p>Pas de rapport disponible.</p>
       )}
     </div>
   );
@@ -92,7 +92,7 @@ const ReportCatalogueDisplay: React.FC<ShortReportCatalogueDisplayProps> = ({ re
             <ul>
               {reportCatalogue.resultats.map(result => (
                 <li key={result.id}>
-                  {result.groupage.label_groupage} | Score: {result.score} | Seuil1: {result.seuil1_percent}% | Seuil2: {result.seuil2_percent}% | Seuil3: {result.seuil3_percent}%
+                  {result.groupage.label_groupage} | Score: {result.score}/ Max: {result.groupage.max_point} | Seuil1: {result.seuil1_percent}% | Seuil2: {result.seuil2_percent}% | Seuil3: {result.seuil3_percent}%
                 </li>
               ))}
             </ul>

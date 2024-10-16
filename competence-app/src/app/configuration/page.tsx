@@ -44,7 +44,7 @@ const Configuration: React.FC = () => {
         }
 
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Erreur récupération des données:', error);
         setError(true);
       } finally {
         setLoading(false);
@@ -57,14 +57,14 @@ const Configuration: React.FC = () => {
   if (loading) {
     return (
       <div className="loading-indicator">
-        <p>Loading data...</p>
+        <p>Chargement des données...</p>
         <Spinner animation="border" />
       </div>
     );
   }
 
   if (error) {
-    return <p>Error fetching data. Please try again.</p>;
+    return <p>Ereur récupération des données. Recommencez SVP</p>;
   }
 
   return (
@@ -75,11 +75,11 @@ const Configuration: React.FC = () => {
       {activeLayout ? (
       <LayoutDisplay layout={activeLayout} />  
       ) : (
-        <p>No active layout selected.</p>
+        <p>Pas de mise en page sélectionnée.</p>
       )}
  
       {layouts.length === 0 ? (
-        <p>No layout found.</p>
+        <p>Pas de mise en page trouvée.</p>
       ) : (
         <LayoutSelection layouts={layouts} />
       )}

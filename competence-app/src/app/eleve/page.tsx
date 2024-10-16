@@ -40,7 +40,7 @@ const ElevePage: React.FC = () => {
                 // Save all élèves to the state without filtering
                 setEleves(response.data);
             } catch (error) {
-                console.error('Error fetching élèves:', error);
+                console.error('Erreur récupération des données élèves:', error);
                 setError(true);
             } finally {
                 setLoading(false);
@@ -65,7 +65,7 @@ const ElevePage: React.FC = () => {
     if (loading) {
         return (
             <div className="loading-indicator">
-                <p>Loading élèves...</p>
+                <p>Chargement des données élèves...</p>
                 <Spinner animation="border" />
             </div>
         );

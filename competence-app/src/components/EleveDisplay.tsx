@@ -10,12 +10,12 @@ interface EleveDisplayProps {
 
 const EleveDisplay: React.FC<EleveDisplayProps> = ({ eleve }) => {
   if (!eleve) {
-    return <p>No student information available.</p>; // Handle case when eleve is not passed
+    return <p>Pas d&apos;information sur l&apos;élève disponible.</p>; // Handle case when eleve is not passed
   }
 
   return (
     <div>
-      <p>Active Eleve: {eleve.nom} {eleve.prenom} {eleve.niveau_niveau}   Date de naissance: {eleve.datenaissance}  </p>
+      <p>Elève choisi : {eleve.nom} {eleve.prenom} {eleve.niveau_niveau}   Date de naissance: {eleve.datenaissance}  </p>
       <p>Professeurs:</p>
       {eleve.professeurs_details.length > 0 ? (
         <ul>

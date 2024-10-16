@@ -31,7 +31,7 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve }) =
       };
 
       image.onerror = (error) => {
-        console.error("Image failed to load:", error);
+        console.error("Erreur chargement image:", error);
       };
     }
   }, [layout.header_icon_base64]); // Updated dependency to use the new property
@@ -49,13 +49,13 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve }) =
       <div id="print-header-gap">   </div>
       <div className="print-header-info">
         <div id="print-header-professor">
-          <div>Professeur: {professor.last_name} {professor.first_name} </div>
+          <div>Tests effectués par : {professor.last_name} {professor.first_name} </div>
         </div>
 
 
         <div id="print-header-eleve">
-          <div>Élève     : {eleve.nom}  {eleve.prenom}</div>
-          <div>Niveau: {eleve.niveau_niveau}</div>
+          <div>{eleve.nom}  {eleve.prenom}</div>
+          <div>{eleve.niveau_niveau}</div>
         </div>
       </div>
     </div>

@@ -27,11 +27,11 @@ const LayoutSelection: React.FC<LayoutSelectionProps> = ({ layouts }) => {
       <table className="table">
         <thead>
           <tr>
-            <th>Header Icon</th>
-            <th>Schule Name</th>
-            <th>Header Message</th>
-            <th>Footer Message 1</th>
-            <th>Footer Message 2</th>
+            <th>Icone en-tête</th>
+            <th>Ecole</th>
+            <th>Message en-tête:</th>
+            <th>Pied de page 1</th>
+            <th>Pied de page 2</th>
           </tr>
         </thead>
         <tbody>
@@ -45,7 +45,7 @@ const LayoutSelection: React.FC<LayoutSelectionProps> = ({ layouts }) => {
               <td>
                 <Image
                   src={`${layout.header_icon_base64}`} // Use Base64 string directly
-                  alt="Header Icon"
+                  alt="Icon"
                   width={50} // Specify width
                   height={50} // Specify height
                   style={{ marginRight: '10px' }} // Inline styles for margin

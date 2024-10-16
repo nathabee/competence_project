@@ -37,17 +37,17 @@ async function getBase64Image(fileName: string): Promise<string> {
 // Function to return cached or freshly fetched base64 image
 export async function getOrFetchBase64Image(fileName: string): Promise<string> {
   try {
-    console.log(`Checking cache for ${fileName}...`);
+    //console.log(`Checking cache for ${fileName}...`);
     const cacheExpiryTime = 60 * 60 * 1000; // 1 hour in milliseconds
     const cachedImage = imageCache[fileName];
 
     // Check if the image is in cache and if it's still valid
     if (cachedImage && Date.now() - cachedImage.timestamp < cacheExpiryTime) {
-      console.log(`Cache hit for ${fileName}. Using cached image.`);
+      //console.log(`Cache hit for ${fileName}. Using cached image.`);
       return cachedImage.base64; // Return cached base64 image
     }
 
-    console.log(`Cache miss for ${fileName} or cache expired. Fetching new image...`);
+    //console.log(`Cache miss for ${fileName} or cache expired. Fetching new image...`);
     const base64Image = await getBase64Image(fileName);
 
     // Store the newly fetched image in the cache
@@ -56,11 +56,11 @@ export async function getOrFetchBase64Image(fileName: string): Promise<string> {
       timestamp: Date.now(),
     };
 
-    console.log(`Image ${fileName} fetched and cached successfully.`);
+    //console.log(`Image ${fileName} fetched and cached successfully.`);
     return base64Image;
   } catch (error) {
     console.error(`Failed to fetch Base64 image for ${fileName}:`, error);
-    console.log(`Falling back to default image.`);
+    //console.log(`Falling back to default image.`);
     return ""; // Indicate no valid image was found
   }
 }
@@ -77,7 +77,7 @@ export async function fetchBase64Image(itemKey: string, imageUrl: string): Promi
     const isExpired = storedTimestamp ? (Date.now() - parseInt(storedTimestamp) > cacheExpiryTime) : true;
 
     if (!storedImage || isExpired) {
-      console.log(`Image not found in localStorage or expired for key ${itemKey}. Fetching from ${imageUrl}...`);
+      //console.log(`Image not found in localStorage or expired for key ${itemKey}. Fetching from ${imageUrl}...`);
       
       // Fetch the image if it's not stored yet or expired
       const base64Image = await getOrFetchBase64Image(imageUrl);
@@ -86,13 +86,13 @@ export async function fetchBase64Image(itemKey: string, imageUrl: string): Promi
       if (base64Image && !base64Image.includes("default")) {
         localStorage.setItem(itemKey, base64Image);
         localStorage.setItem(`${itemKey}_timestamp`, Date.now().toString());
-        console.log(`Image successfully stored in localStorage with key ${itemKey}`);
+        //console.log(`Image successfully stored in localStorage with key ${itemKey}`);
       } else {
         console.log(`No valid image found for key ${itemKey}. Skipping storage.`);
       }
-    } else {
-      console.log(`Image already exists in localStorage for key ${itemKey}.`);
-    }
+    } //else {
+     // console.log(`Image already exists in localStorage for key ${itemKey}.`);
+    //}
   } catch (error) {
     console.error(`Error fetching image for key ${itemKey}:`, error);
   }

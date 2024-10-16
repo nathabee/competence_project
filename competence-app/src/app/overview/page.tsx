@@ -3,6 +3,12 @@
 import React, { useEffect } from 'react'; 
 import { useAuth } from '@/context/AuthContext'; 
 import SummaryScore from '@/components/SummaryScore';
+import SummaryDifficulty from '@/components/SummaryDifficulty';
+import SummaryDetailedDifficulty from '@/components/SummaryDetailedDifficulty';
+
+
+
+
 import UserDisplay from '@/components/UserDisplay';
 import EleveDisplay from '@/components/EleveDisplay';
 import CatalogueDisplay from '@/components/CatalogueDisplay';
@@ -38,27 +44,35 @@ const Overview: React.FC = () => {
 
   return ( 
     <div className="container mt-3 ml-2">
-      <h1>Overview Page</h1>
+      <h1>Résumé des tests en cours:</h1>
+ 
 
-      {/* Active selected data */}
-      <h2>Donnees selectionnees :</h2>
-
-      <h3>Professeur : </h3>
+      <h3>Professeur: </h3>
       <UserDisplay user={user} /> 
 
-      <h3>Eleve : </h3>
+      <h3>Eleve: </h3>
       <EleveDisplay eleve={activeEleve} /> 
 
-      <h3>Catalogue : </h3>
+      <h3>Catalogue: </h3>
       <CatalogueDisplay selectedCatalogue={activeCatalogues}  />
 
-      <h1>Welcome to the Layout Display</h1>
+      <h1>Mise en page sélectionnée:</h1>
       <LayoutDisplay layout={activeLayout} />  
 
 
-      <h2>Résumé des scores :</h2> 
-      <SummaryScore report_catalogues={activeReport?.report_catalogues ?? []} />
+      <h2>Résumé des scores:</h2> 
+      <SummaryScore report_catalogues={activeReport?.report_catalogues ?? []} /> 
+
+    <h2>Résumé des difficultés:</h2> 
+    <SummaryDifficulty report_catalogues={activeReport?.report_catalogues ?? []} />
+
+    <h2>Rapport détaillé des difficultés rencontrées:</h2> 
+    <SummaryDetailedDifficulty report_catalogues={activeReport?.report_catalogues ?? []} />
+
+    
     </div>
+
+
   );
 };
 

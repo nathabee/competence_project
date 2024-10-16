@@ -41,12 +41,12 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
   const toggleExpand = () => setExpanded(!expanded);
 
   if (loading) {
-    return <p>Loading reports...</p>;
+    return <p>Chargement des rapports...</p>;
   }
 
   return (
     <div>
-      <button onClick={toggleExpand}>{expanded ? 'Hide All Reports' : 'Show All Reports'}</button>
+      <button onClick={toggleExpand}>{expanded ? 'Montrer' : 'Cacher'}</button>
 
       {expanded && (
         <div>
@@ -55,7 +55,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
               <FullReportDisplay key={report.id} report={report} /> // Use the FullReportDisplay component
             ))
           ) : (
-            <p>No reports found for this élève.</p>
+            <p>Pas de rapport de tests trouvé pour cet élève.</p>
           )}
         </div>
       )}

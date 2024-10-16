@@ -29,5 +29,5 @@ export default function AdminPage() {
         }
     }, [router]);
 
-    return <div>Redirecting to Admin...</div>; // Optional loading state
+    return <div>Redirection vers console d&apos;administration...</div>; // Optional loading state
 }

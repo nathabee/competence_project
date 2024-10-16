@@ -48,9 +48,9 @@ export default function LoginPage() {
     } catch (error) {
       const axiosError = error as AxiosError;
       if (axiosError.response && axiosError.response.status === 401) {
-        setErrorMessage('Invalid username or password.');
+        setErrorMessage('Identifiant ou mot de passe invalide');
       } else {
-        setErrorMessage('An unexpected error occurred.');
+        setErrorMessage('Erreur lors de la connection');
       }
     }
   };
@@ -67,12 +67,12 @@ export default function LoginPage() {
           {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
           <form onSubmit={handleLogin}>
             <div className="mb-3">
-              <label htmlFor="username" className="form-label">Username</label>
+              <label htmlFor="username" className="form-label">Identifiant</label>
               <input
                 type="text"
                 id="username"
                 className="form-control"
-                placeholder="Username"
+                placeholder="Identifiant"
                 required
                 autoComplete="username"  
                 value={username}
@@ -80,12 +80,12 @@ export default function LoginPage() {
               />
             </div>
             <div className="mb-3">
-              <label htmlFor="password" className="form-label">Password</label>
+              <label htmlFor="password" className="form-label">Mot de passe</label>
               <input
                 type="password"
                 id="password"
                 className="form-control"
-                placeholder="Password"
+                placeholder="Mot de passe"
                 value={password}
                 required
                 autoComplete="current-password"

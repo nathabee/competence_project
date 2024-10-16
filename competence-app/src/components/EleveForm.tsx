@@ -47,7 +47,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
                 });
                 setAvailableProfesseurs(response.data); // Assuming the API returns a list of users with the role 'teacher'
             } catch (error) {
-                console.error('Error fetching professeurs:', error);
+                console.error('Erreur lors de la récupéeration des professeurs:'  , error);
             }
         };
 
@@ -89,7 +89,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
 
             closeForm(); // Close the form after successful submission
         } catch (error) {
-            console.error('Error creating élève:', error);
+            console.error('Erreur en création élève:', error);
         }
     };
 

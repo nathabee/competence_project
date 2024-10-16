@@ -18,21 +18,21 @@ const LayoutDisplay: React.FC<LayoutDisplayProps> = ({ layout }) => {
 
     return (
         <div>
-            <h2>Active Layout</h2>
+            <h2>Mise en page choisie:</h2>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Image
                     src={`${imageBase64}`}   //MIME are included in imageBase64
-                    alt="Header Icon"
+                    alt="Icon en-tête"
                     width={50} // Specify width
                     height={50} // Specify height
                     style={{ marginRight: '10px' }} // Inline styles for margin
                 />
-                <p>Schule Name: {layout.schule_name}</p>
+                <p>Nom de l&apos;école: {layout.schule_name}</p>
             </div>
             <div>
-                <p>Header: {layout.header_message}</p>
-                <p>Footer 1: {layout.footer_message1}</p>
-                <p>Footer 2: {layout.footer_message2}</p>
+                <p>Message en-tête: {layout.header_message}</p>
+                <p>Pied de page 1: {layout.footer_message1}</p>
+                <p>Pied de page 2: {layout.footer_message2}</p>
             </div>
         </div>
     );

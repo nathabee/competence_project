@@ -51,23 +51,23 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="loading-indicator">
-        <p>Loading data...</p>
+        <p>Chargement des données...</p>
         <Spinner animation="border" />
       </div>
     );
   }
 
   if (error) {
-    return <p>Error fetching data. Please try again later.</p>;
+    return <p>Erreur chargement des données. Essayez plus tard SVP.</p>;
   }
 
   return (
     <div className="container mt-3 ml-2">
-      <h1>Dashboard</h1>
+      <h1>Historique</h1>
 
       {/* Refresh Button */}
       <button onClick={fetchData} className="btn btn-primary mb-3">
-        Refresh Data
+         Rafraîchir les données
       </button>
 
       {/* Passing the fetched reports to ShortReportDisplay */}

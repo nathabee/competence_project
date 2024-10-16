@@ -9,7 +9,7 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
   const { activeEleve, setActiveEleve } = useAuth(); // Get activeEleve and setter from AuthContext
   const [selectedNiveau, setSelectedNiveau] = useState<string | null>(null);
 
-  if (eleves.length === 0) return <p>No Eleves found.</p>;
+  if (eleves.length === 0) return <p>Pas d&apos;élève trouvé.</p>;
 
   // Get unique levels (niveaux)
   const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => eleve.niveau)));

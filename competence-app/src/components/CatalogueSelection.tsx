@@ -1,6 +1,5 @@
-'use client'; // Ensure client-side rendering
+'use client';
 
-// src/components/CatalogueSelection.tsx
 import React, { useState } from 'react';
 import { CatalogueSelectionProps, Catalogue } from '@/types/report'; // Ensure proper import of interfaces
 import { useAuth } from '@/context/AuthContext'; // Use AuthContext instead of TestContext
@@ -46,7 +45,16 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
 
   return (
     <div className="mb-4">
-      <h2>Catalogue Selection</h2>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h2>Sélection des types de test:</h2>
+        
+        {/* Conditional rendering of the warning message */}
+        {activeCatalogues.length > 1 && (
+          <span className="warning-message">
+            Attention, vous avez sélectionné plus d&apos;un catalogue
+          </span>
+        )}
+      </div>
 
       <div className="filters">
         <label>
@@ -93,10 +101,10 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
       <table className="table">
         <thead>
           <tr>
-            <th>Year</th>
-            <th>Level</th>
-            <th>Stage</th>
-            <th>Subject</th>
+            <th>Année</th>
+            <th>Classe</th>
+            <th>Etape</th>
+            <th>Matière</th>
             <th>Description</th>
           </tr>
         </thead>

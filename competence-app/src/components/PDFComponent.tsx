@@ -87,7 +87,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
 
     return (
         <div>
-            <button className="btn btn-primary" onClick={handlePrintPDF}>
+            <button   onClick={handlePrintPDF} className="button-warning">
                 Imprimer PDF
             </button>
             <div id="printable-section-1" className="print-container">

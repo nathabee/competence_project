@@ -19,8 +19,7 @@ const SummaryScore: React.FC<SummaryScoreProps> = ({ report_catalogues }) => {
   const cachedReport = activeReport ? activeReport.report_catalogues : report_catalogues;
 
   return (
-    <div>
-      <h2 className="section-title">Résumé des Catalogues</h2>
+    <div> 
       <table className="table table-bordered">
         <thead>
           <tr>
