@@ -68,8 +68,11 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
 
         // Handle image retrieval and default value
         const labelImages = reportcatalogue.resultats.map((res) => {
-            const imageKey = `competence_groupage_icon_${res.groupage.id}`;
+            const imageKey = `competence_icon_${res.groupage.groupage_icon_id}`;
+            
+            //console.log("imageKey:",imageKey)
             const base64Data = localStorage.getItem(imageKey);
+            //console.log("base64Data null?:",base64Data)
             return base64Data ? base64Data : 'assets/logo.png'; // Default image if Base64 not found
         });
 

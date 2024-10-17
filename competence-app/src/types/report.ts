@@ -1,6 +1,14 @@
  // src/types/report.ts
 
   
+ export interface MyImage {
+  id: number; // or string depending on your backend setup
+  url: string; // Assuming this is how you retrieve the image URL
+  // Add any additional fields you need
+}
+
+ 
+
 export interface GroupageData {
   id: number;
   position: number;
@@ -12,10 +20,8 @@ export interface GroupageData {
   seuil2: number;
   max_item: number; // Maximum number of items
   catalogue: number; // ID of the related catalogue
-  groupage_icon: string; // Icon file name
-  groupage_icon_base64?: string; // Base64 icon, optional, used only when needed
+  groupage_icon_id: number; // This is returned by the API
 }
-
 
   
 export interface Item {

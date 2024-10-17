@@ -141,58 +141,6 @@ class Catalogue(models.Model):
         return f"Catalogue for {self.description}"
 
 
-# Table: GroupageData
-class GroupageData(models.Model):
-    catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)
-    groupage_icon = models.ImageField(upload_to='competence/groupage_icons/', null=True, blank=True)
-    position = models.IntegerField()
-    desc_groupage = models.CharField(max_length=100)
-    label_groupage = models.CharField(max_length=100)
-    link = models.CharField(max_length=500)
-    max_point = models.IntegerField()
-    seuil1 = models.IntegerField()
-    seuil2 = models.IntegerField()
-    max_item = models.IntegerField()
-
-    class Meta:
-        indexes = [
-            models.Index(fields=['catalogue'], name='groupagedata_catalogue_idx'),
-        ]
-
-
-    def __str__(self):
-        return f"Groupage {self.desc_groupage} - Position {self.position}"
-
-    def save(self, *args, **kwargs):
-        if self.pk:  # Check if this is an update (the object already exists in the DB)
-            try:
-                previous = GroupageData.objects.get(pk=self.pk)
-                if previous.groupage_icon == self.groupage_icon:  # Image hasn't changed
-                    super(GroupageData, self).save(*args, **kwargs)
-                    return
-            except GroupageData.DoesNotExist:
-                pass
-
-        # Only resize if the image has changed or is new
-        if self.groupage_icon and not self.groupage_icon.name.startswith('resized_'):
-            # Open the uploaded image
-            img = Image.open(self.groupage_icon)
-            img.thumbnail((100, 100), Image.LANCZOS)
-
-            # Construct the full path for the resized image
-            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'competence/groupage_icons', f"resized_{os.path.basename(self.groupage_icon.name)}")
-            img.save(temp_file_path)
-
-            # Update the image field with the resized image, ensuring the correct 'competence/' path
-            with open(temp_file_path, 'rb') as f:
-                # Specify the correct relative path 
-                self.groupage_icon.save(f"resized_{os.path.basename(self.groupage_icon.name)}", File(f), save=False)
-
-            # Optionally, remove the temporary file after saving the resized image
-            os.remove(temp_file_path)
-
-        super(GroupageData, self).save(*args, **kwargs)
-
 
 # Table: Item (Details for each test in a GroupageData)
 class Item(models.Model):
@@ -214,9 +162,68 @@ class Item(models.Model):
     def __str__(self):
         return f"Test {self.groupagedata} - {self.temps} - {self.description}"
 
+ 
+
+class MyImage(models.Model):
+    icon = models.ImageField(upload_to='competence/icons/')  # Icon image field
+
+    def __str__(self):
+        return f"Icone: {self.id}"
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            try:
+                previous = MyImage.objects.get(pk=self.pk)
+                if previous.icon == self.icon:  # Image hasn't changed
+                    super(MyImage, self).save(*args, **kwargs)
+                    return
+            except MyImage.DoesNotExist:
+                pass
+
+        # Only resize if the image has changed or is new
+        if self.icon:
+            # Open the uploaded image
+            img = Image.open(self.icon)
+            img.thumbnail((100, 100), Image.LANCZOS)  # Resize the image
+
+            # Save the resized image, but with the same filename
+            original_filename = os.path.basename(self.icon.name)
+            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'competence/png/', original_filename)
+            
+            # Save the resized image to the same file
+            img.save(temp_file_path)
+
+            # Update the image field with the resized image, keeping the original filename
+            with open(temp_file_path, 'rb') as f:
+                self.icon.save(original_filename, File(f), save=False)
+
+        super(MyImage, self).save(*args, **kwargs)
 
 
+class GroupageData(models.Model):
+    catalogue = models.ForeignKey('Catalogue', on_delete=models.CASCADE)
+    groupage_icon = models.ForeignKey(MyImage, on_delete=models.SET_NULL, null=True, blank=True)  # FK to MyImage
+    position = models.IntegerField()
+    desc_groupage = models.CharField(max_length=100)
+    label_groupage = models.CharField(max_length=100)
+    link = models.CharField(max_length=500)
+    max_point = models.IntegerField()
+    seuil1 = models.IntegerField()
+    seuil2 = models.IntegerField()
+    max_item = models.IntegerField()
 
+    class Meta:
+        indexes = [
+            models.Index(fields=['catalogue'], name='groupagedata_catalogue_idx'),
+        ]
+
+    def __str__(self):
+        return f"Groupage {self.desc_groupage} - Position {self.position}"
+
+    def save(self, *args, **kwargs):
+        # If the `MyImage` foreign key changes, you don't need to manually resize or change the image.
+        # This logic should now be handled in `MyImage.save()`.
+        super(GroupageData, self).save(*args, **kwargs)
 
 
 class PDFLayout(models.Model):

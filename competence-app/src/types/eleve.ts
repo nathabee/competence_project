@@ -2,6 +2,11 @@
 
 import { User } from './user';
 
+export interface Niveau {
+  id: number;
+  niveau: string; // Short description of the level
+  description: string; // Full description of the level
+}
 
 export interface Eleve {
   id: number; // or whatever the type is

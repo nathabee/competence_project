@@ -3,10 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { Eleve } from '@/types/eleve';
+import { Eleve , Niveau } from '@/types/eleve'; 
 import EleveSelection from '@/components/EleveSelection';
 import ReportEleveSelection from '@/components/ReportEleveSelection';
-
 import EleveForm from '@/components/EleveForm';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
@@ -14,7 +13,7 @@ import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
 
 const ElevePage: React.FC = () => {
     const router = useRouter();
-    const { user,activeEleve } = useAuth();
+    const { user, activeEleve, setNiveaux } = useAuth(); // Add setNiveaux from AuthContext
     const [eleves, setEleves] = useState<Eleve[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
@@ -22,7 +21,7 @@ const ElevePage: React.FC = () => {
     const [error, setError] = useState<boolean>(false);
 
     useEffect(() => {
-        const fetchEleves = async () => {
+        const fetchData = async () => {
             const token = getTokenFromCookies();
 
             if (!token || isTokenExpired(token)) {
@@ -33,35 +32,41 @@ const ElevePage: React.FC = () => {
             const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
             try {
-                const response = await axios.get(`${apiUrl}/eleves/`, {
+                // Fetch Eleves
+                const eleveResponse = await axios.get(`${apiUrl}/eleves/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                setEleves(eleveResponse.data);
 
-                // Save all élèves to the state without filtering
-                setEleves(response.data);
+                // Fetch Niveaux and store them in context/localStorage
+                const niveauResponse = await axios.get(`${apiUrl}/niveaux/`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                const niveaux: Niveau[] = niveauResponse.data;
+                setNiveaux(niveaux); // Save in AuthContext and localStorage
+
             } catch (error) {
-                console.error('Erreur récupération des données élèves:', error);
+                console.error('Erreur lors de la récupération des données:', error);
                 setError(true);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchEleves();
-    }, [router]); // Removed user from dependencies since we fetch all élèves now
+        fetchData();
+    }, [router]);
 
-    // Filter élèves based on the search term
+    // Filter élèves based on search term
     const filteredEleves = eleves.filter(eleve =>
         `${eleve.nom} ${eleve.prenom}`.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-    // Create a new array with selectable state
+    // Map élèves to selectable state
     const elevesWithSelectableState = filteredEleves.map(eleve => ({
         ...eleve,
         selectable: eleve.professeurs_details?.some((prof) => prof.id === user?.id)
     }));
 
-    // Handle loading and error states
     if (loading) {
         return (
             <div className="loading-indicator">
@@ -89,7 +94,7 @@ const ElevePage: React.FC = () => {
                     />
                 </div>
 
-                <EleveSelection eleves={elevesWithSelectableState} /> {/* Pass the updated list */}
+                <EleveSelection eleves={elevesWithSelectableState} />
 
                 <div className="mt-4">
                     <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
@@ -103,16 +108,14 @@ const ElevePage: React.FC = () => {
                     </div>
                 )}
 
- 
                 {activeEleve ? (
                     <>
-                        <h2>Report obtenus par l&apos;élève selectionné ({activeEleve.nom} {activeEleve.prenom}) :</h2>
+                        <h2>Report obtenus par l&apos;élève sélectionné ({activeEleve.nom} {activeEleve.prenom}) :</h2>
                         <ReportEleveSelection eleve={activeEleve} />
                     </>
                 ) : (
                     <p>Selectionner un élève.</p>
                 )}
-
             </div>
         </div>
     );

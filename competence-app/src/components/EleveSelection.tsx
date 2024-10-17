@@ -67,7 +67,7 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
             >
               <td>{eleve.nom}</td>
               <td>{eleve.prenom}</td>
-              <td>{eleve.niveau}</td>
+              <td>{eleve.niveau_niveau}</td>
               <td>
                 {eleve.datenaissance }
               </td>

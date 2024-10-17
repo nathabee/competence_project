@@ -42,7 +42,7 @@ const SummaryDifficulty: React.FC<SummaryDifficultyProps> = ({ report_catalogues
                 .filter((resultat: Resultat) => resultat.seuil2_percent < 100 || resultat.seuil1_percent < 100)
                 .map((resultat: Resultat, resIndex: number) => {
                   // Construct the image key from the groupage_icon
-                  const imageKey = `competence_groupage_icon_${resultat.groupage.id}`; // Updated key construction for consistency
+                  const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`; // Updated key construction for consistency
 
                   // Retrieve the Base64 image data from local storage
                   const base64Image = localStorage.getItem(imageKey) || null;

@@ -7,4 +7,4 @@ setuptools
 django-cors-headers
 djangorestframework-simplejwt
 gunicorn
-
+Pillow

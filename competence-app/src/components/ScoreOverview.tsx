@@ -16,11 +16,16 @@ const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
         const images: { [key: string]: string } = {};
 
         reportCatalogue.resultats.forEach((resultat) => {
-            const imageKey = `competence_groupage_icon_${resultat.groupage.id}`;
+            const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`;
+            console.log("imageKey:",imageKey)
             const base64Image = localStorage.getItem(imageKey);
+            console.log("base64Image null?:",base64Image)
             if (base64Image) {
                 images[imageKey] = base64Image;
             }
+ 
+
+
         });
 
         setBase64Images(images); // Set the loaded images into the state
@@ -42,8 +47,10 @@ const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
                 <tbody>
                     {reportCatalogue.resultats.length > 0 ? (
                         reportCatalogue.resultats.map((resultat: Resultat, resIndex: number) => {
-                            const imageKey = `competence_groupage_icon_${resultat.groupage.id}`;
+                            const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`;
                             const base64Image = base64Images[imageKey] || null; // Use base64 image from state
+                            console.log("scoreoverview imageKey",imageKey)
+                            console.log("scoreoverview base64Image",base64Image)
 
                             return (
                                 <tr key={`${reportCatalogue.id}-${resIndex}`}>

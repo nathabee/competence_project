@@ -10,7 +10,7 @@ from django.utils.html import format_html
 
 from django.contrib import admin
 from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, Eleve, Catalogue, GroupageData, Item, \
-                    PDFLayout,Report,ReportCatalogue,Resultat,ResultatDetail
+                    PDFLayout,Report,ReportCatalogue,Resultat,ResultatDetail, MyImage
 
 from django.contrib import admin
 from .models import Report, ReportCatalogue, Resultat, ResultatDetail
@@ -82,20 +82,40 @@ class CatalogueAdmin(admin.ModelAdmin):
     search_fields = ('description',)
     filter_horizontal = ('professeurs',)  # For ManyToMany fields
 
+
+
+@admin.register( MyImage)
+class MyImageAdmin(admin.ModelAdmin):
+    list_display = ('id', 'display_icon')
+    #search_fields = ('icon','id')
+
+    def display_icon(self, obj):
+        if obj.icon:
+            with open(obj.icon.path, 'rb') as img_file:
+                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
+                return format_html('<img src="data:image/png;base64,{}" style="width: 50px; height: 50px;"/>', encoded_string)
+        return "-"
+    
+    display_icon.short_description = "Icon"
+
 @admin.register(GroupageData)
 class GroupageDataAdmin(admin.ModelAdmin):
     list_display = ('catalogue', 'display_groupage_icon', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item')
     list_filter = ('catalogue',)
-    search_fields = ('desc_groupage', 'label_groupage', 'link','groupage_icon')
-    def display_groupage_icon(self, obj):
-        if obj.groupage_icon:
-            with open(obj.groupage_icon.path, 'rb') as img_file:
-                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
-                return format_html('<img src="data:image/png;base64,{}" style="width: 30px; height: 30px;"/>', encoded_string)
-        return "-"
-    
-    display_groupage_icon.short_description = "Groupage Icon"
+    search_fields = ('desc_groupage', 'label_groupage', 'link')
 
+    # Method to display the icon from MyImage
+    def display_groupage_icon(self, obj):
+        if obj.groupage_icon and obj.groupage_icon.icon:  # Access the icon through the foreign key
+            try:
+                with open(obj.groupage_icon.icon.path, 'rb') as img_file:
+                    encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
+                    return format_html('<img src="data:image/png;base64,{}" style="width: 30px; height: 30px;"/>', encoded_string)
+            except FileNotFoundError:
+                return "Image not found"
+        return "-"
+
+    display_groupage_icon.short_description = "Groupage Icon"
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
@@ -156,6 +176,8 @@ class PDFLayoutAdmin(admin.ModelAdmin):
         return "-"
     
     display_header_icon.short_description = "Header Icon"
+
+
 
 
 ############

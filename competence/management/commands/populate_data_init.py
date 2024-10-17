@@ -2,7 +2,7 @@ import os
 import csv
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from competence.models import Annee, Catalogue, Etape, GroupageData, Niveau, Matiere, Item, ScoreRule,ScoreRulePoint,PDFLayout
+from competence.models import Annee, Catalogue, Etape, GroupageData, Niveau, Matiere, Item, ScoreRule,ScoreRulePoint,PDFLayout,MyImage
 from django.utils.timezone import make_aware
 from datetime import datetime
 #from django.core.files import File
@@ -128,6 +128,38 @@ class Command(BaseCommand):
 
         self.stdout.write(self.style.SUCCESS('Successfully imported Catalogue data'))
  
+
+
+
+        with open('script_db/myimage.csv', mode='r') as file: 
+            reader = csv.DictReader(file) 
+            for row in reader:
+
+
+                # Log the header_icon_path to check its correctness
+                print(f"Processing icon: { row['icon']}")
+
+                icon_path = os.path.join(settings.MEDIA_ROOT, row['icon'])
+ 
+                
+                # Log the header_icon_path to check its correctness
+                print(f"Processing image at path: {icon_path}")
+                try: 
+
+                    MyImage.objects.update_or_create(
+                        id=row['id'],
+                        defaults={
+                            'icon': icon_path,
+                        }
+                    )
+
+                except Exception as e:
+                    self.stderr.write(self.style.ERROR(f"Error processing row {row['id']}: {str(e)}"))
+
+
+        self.stdout.write(self.style.SUCCESS('Successfully imported MyImage data'))
+
+        
         # Load groupagedata data
         with open('script_db/groupagedata.csv', mode='r') as file:
             reader = csv.DictReader(file) 
@@ -135,19 +167,11 @@ class Command(BaseCommand):
             for row in reader:
                 # Check if groupage_icon has a value
                 if row['groupage_icon']:  # Only proceed if there is a value
+                    groupage_icon = MyImage.objects.get(id=row['groupage_icon'])
 
+  
 
-                    # Log the header_icon_path to check its correctness
-                    print(f"Processing header_icon: { row['groupage_icon']}")
-
-                    groupage_icon_path = os.path.join(settings.MEDIA_ROOT, row['groupage_icon'])
-                    print(f"Processing icon path: {groupage_icon_path}")
-
-                    try:
-                        # Resize the image and save
-                        #resized_image_path = self.resize_image(groupage_icon_path)
-                        #print("resized")
-
+                    try: 
                         # Ensure that 'catalogue' exists in the database
                         catalogue = Catalogue.objects.get(id=row['catalogue']) 
                         #print("existe is ok for catalogue id=", row['catalogue'])
@@ -165,7 +189,7 @@ class Command(BaseCommand):
                                 'catalogue': catalogue,
                                 'max_item': row['max_item'],
                                 #'groupage_icon': resized_image_path,  # Only assign if resized_image_path is valid
-                                'groupage_icon': groupage_icon_path,
+                                'groupage_icon': groupage_icon,
                             }
                         )
 
@@ -304,3 +328,5 @@ class Command(BaseCommand):
 
 
         self.stdout.write(self.style.SUCCESS('Successfully imported PDFLayout data'))
+
+

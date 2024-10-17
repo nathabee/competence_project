@@ -347,13 +347,21 @@ const Test: React.FC = () => {
       {activeEleve ? (
         <div>
 
-
+          {activeReport && (
+            <div>
+              <h4>Report ID: {activeReport.id}</h4>
+              <p>Professeur ID: {activeReport.professeur}</p>
+              <p>Créé le: {new Date(activeReport.created_at).toLocaleDateString('fr-FR')}</p>
+              <p>Mise en page du PDF: {activeReport.pdflayout}</p>
+            </div>
+          )}
 
           <h2>Catégorie de tests:</h2>
 
           {reportData.length === 0 ? (
             <p>Pas de catégories de tests trouvée pour ce type de test.</p>
           ) : (
+
             reportData.map((reportcatalogue: ReportCatalogue, reportcatalogueIndex: number) => (
               <div key={reportcatalogueIndex}>
                 <h3>Type de tests: {reportcatalogue.description}</h3>
@@ -419,6 +427,8 @@ const Test: React.FC = () => {
                   </div>
                 ))}
               </div>
+
+
             ))
           )}
         </div>

@@ -6,7 +6,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
 import { Catalogue, Report, ScoreRulePoint } from '@/types/report';
 import { PDFLayout } from '@/types/pdf';
-import { Eleve } from '@/types/eleve';
+import { Eleve, Niveau } from '@/types/eleve';
 import { User } from '@/types/user';
 // import { getOrFetchBase64Image } from '@/utils/helper';
 import { fetchBase64Image } from '@/utils/helper'; // Import the new function
@@ -44,6 +44,9 @@ interface AuthContextType {
   // Store score rule points
   scoreRulePoints: ScoreRulePoint[] | null;
   setScoreRulePoints: (points: ScoreRulePoint[]) => void;
+
+  niveaux: Niveau[] | null;
+  setNiveaux: (niveaux: Niveau[]) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,22 +57,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeCatalogues, setActiveCatalogues] = useState<Catalogue[]>([]);
   const [activeEleve, setActiveEleve] = useState<Eleve | null>(null);
+  const [token, setToken] = useState<string | null>(null); // State for token
+ 
   const [catalogue, setCatalogue] = useState<Catalogue[]>([]);
   const [eleves, setEleves] = useState<Eleve[]>([]);
   const [scoreRulePoints, setScoreRulePoints] = useState<ScoreRulePoint[] | null>(null);
   const [activeReport, setActiveReportState] = useState<Report | null>(null); // Rename state setter
   const [activeLayout, setActiveLayout] = useState<PDFLayout | null>(null);
   const [layouts, setLayouts] = useState<PDFLayout[]>([]);
+  const [niveaux, setNiveaux] = useState<Niveau[] | null>(null); // Add niveaux state
+
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const { authToken } = parseCookies();
       if (authToken) {
         setIsLoggedIn(true);
+        setToken(authToken); // Set token in state
         const roles = JSON.parse(localStorage.getItem('userRoles') || '[]');
         setUserRoles(roles);
         const savedUser = JSON.parse(localStorage.getItem('userInfo') || 'null');
         setUser(savedUser);
+        const savedNiveaux = JSON.parse(localStorage.getItem('niveaux') || '[]');
+        setNiveaux(savedNiveaux); // Load niveaux from localStorage
 
         // Load state from localStorage
         const savedCatalogues = JSON.parse(localStorage.getItem('activeCatalogues') || '[]');
@@ -114,6 +124,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setUserRoles([]);
       setIsLoggedIn(false);
       setActiveCatalogues([]);
+      setToken(null); // Clear token in state
       setActiveEleve(null);
       setActiveReport(null);
       setActiveLayout(null);
@@ -124,6 +135,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('activeReport');
       localStorage.removeItem('activeLayout');
       localStorage.removeItem('layouts');
+      localStorage.removeItem('niveaux');
 
       // Remove all Base64 images with competence_ prefix
       Object.keys(localStorage).forEach((key) => {
@@ -173,8 +185,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const setActiveReport = async (report: Report | null) => {
     if (report) {
-      console.log("Fetching Base64 images for report...");
-      console.log(report);
+      //console.log("Fetching Base64 images for report...");
+      //console.log(report);
 
       try {
         // Fetch Base64 images for each result
@@ -182,12 +194,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           report.report_catalogues.flatMap(async (catalogue) =>
             Promise.all(
               catalogue.resultats.map(async (resultat) => {
+                //console.log("groupage_icon_id",resultat.groupage.groupage_icon_id);
                 // Check if the groupage_icon is present
-                if (resultat.groupage.groupage_icon) {
-                  const imageKey = `competence_groupage_icon_${resultat.groupage.id}`; // Constructed imageKey
-
-                  // Use the new fetchBase64Image function to fetch and store the image
-                  await fetchBase64Image(imageKey, resultat.groupage.groupage_icon);
+                if (resultat.groupage.groupage_icon_id) {
+                  const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`;
+                  if (token) { // Ensure token is available
+                    //console.log("token available to fetch groupage_icon_id",resultat.groupage.groupage_icon_id);
+                    await fetchBase64Image(imageKey, resultat.groupage.groupage_icon_id, token); // Pass the token
+                  }
                 }
                 return resultat; // Return original resultat
               })
@@ -219,6 +233,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (typeof window !== 'undefined') {
         localStorage.removeItem('activeReport');
       }
+    }
+  };
+
+  const setNiveauxState = (newNiveaux: Niveau[]) => {
+    setNiveaux(newNiveaux);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('niveaux', JSON.stringify(newNiveaux)); // Save to localStorage
     }
   };
 
@@ -267,6 +288,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           localStorage.setItem('layouts', JSON.stringify(layouts));
         }
       },
+      niveaux,
+      setNiveaux: setNiveauxState,  
     }}>
       {children}
     </AuthContext.Provider>

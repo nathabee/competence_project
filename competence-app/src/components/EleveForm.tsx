@@ -14,7 +14,7 @@ interface EleveFormProps {
 }
 
 const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
-    const { user } = useAuth(); // Get the current logged-in user (teacher/admin)
+    const { user, niveaux } = useAuth(); // Get the current logged-in user (teacher/admin)
     const router = useRouter(); // Router for navigation
     const [nom, setNom] = useState<string>('');
     const [prenom, setPrenom] = useState<string>('');
@@ -117,13 +117,19 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
             </div>
             <div className="form-group">
                 <label>Niveau</label>
-                <input
-                    type="text"
+                <select
                     className="form-control"
                     value={niveau}
-                    onChange={(e) => setNiveau(e.target.value)}
+                    onChange={(e) => setNiveau(e.target.value)} // Store niveau ID as the selected value
                     required
-                />
+                >
+                    <option value="" disabled>Choisir un niveau</option>
+                    {niveaux && niveaux.map((niveau) => (
+                        <option key={niveau.id} value={niveau.id}>
+                            {niveau.description}
+                        </option>
+                    ))}
+                </select>
             </div>
             <div className="form-group">
                 <label>Date de naissance</label>

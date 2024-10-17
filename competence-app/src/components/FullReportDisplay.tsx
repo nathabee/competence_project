@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { Report } from '@/types/report';
-import { formatDate } from '../utils/helper'; 
+import { formatDate } from '../utils/helper';  
 
 interface FullReportDisplayProps {
   report: Report; // Accept the full report as a prop
@@ -20,8 +20,8 @@ const FullReportDisplay: React.FC<FullReportDisplayProps> = ({ report }) => {
   return (
     <div className="report-card">
       <div className="card-header" onClick={toggleExpand} style={{ cursor: 'pointer'}}> {/*}, backgroundColor: expanded ? '#f0f0f0' : '#ffffff' }}>  */}
-        <h4>Report ID: {report.id}</h4>
-        <p>Professeur: {report.professeur}</p>
+        <h4>Report ID: {report.id}</h4> 
+        <p>Professeur ID: {report.professeur}</p>
         <p>Créé le: {formatDate(report.created_at)}</p>
         <p>Mise en page du PDF: {report.pdflayout}</p>
         {expanded ? '▲' : '▼'} {/* Arrow to indicate expand/collapse */}

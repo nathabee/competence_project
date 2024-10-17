@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User, Group
 from .models import (
-    Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,PDFLayout,
+    Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,PDFLayout,MyImage,
     Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint, Report, ReportCatalogue
 )
 
@@ -219,24 +219,70 @@ class ItemSerializer(serializers.ModelSerializer):
         fields = ['id', 'temps', 'description', 'observation', 'scorerule', 'max_score', 'itempos', 'link']
 
 
-
  
 
-
-# Serializer for GroupageData, including the nested items
 class GroupageDataSerializer(serializers.ModelSerializer):
-    items = ItemSerializer(many=True, read_only=True, source='item_set') 
+    # Use PrimaryKeyRelatedField for reading but set the source to get only the ID for output
+    groupage_icon = serializers.PrimaryKeyRelatedField(
+        queryset=MyImage.objects.all(),
+        required=False,
+        allow_null=True,
+        write_only=True  # Set to write-only for creation/update
+    )
+    groupage_icon_id = serializers.IntegerField(source='groupage_icon.id', read_only=True)  # This will return the ID on read
+    items = ItemSerializer(many=True, read_only=True, source='item_set')
 
     class Meta:
         model = GroupageData
-        fields = ['id', 'catalogue', 'groupage_icon',  'catalogue_id', 
-                  'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 
-                  'seuil1', 'seuil2', 'max_item', 'items']
-        extra_kwargs = {
-            'groupage_icon': {'read_only': True},  # Make groupage_icon read-only
-        }
+        fields = [
+            'id',
+            'catalogue',
+            'groupage_icon',  # For creating/updating
+            'groupage_icon_id',  # For retrieving the ID
+            'catalogue_id',
+            'position',
+            'desc_groupage',
+            'label_groupage',
+            'link',
+            'max_point',
+            'seuil1',
+            'seuil2',
+            'max_item',
+            'items'
+        ]
 
- 
+    def create(self, validated_data):
+        # Ensure groupage_icon is an existing MyImage instance or None
+        groupage_icon = validated_data.get('groupage_icon', None)
+
+        # If a groupage_icon is provided, it must be an existing MyImage instance
+        if groupage_icon and not MyImage.objects.filter(id=groupage_icon.id).exists():
+            raise serializers.ValidationError("The provided MyImage instance does not exist.")
+
+        # Create GroupageData without implicitly creating MyImage
+        return GroupageData.objects.create(**validated_data)
+
+    def update(self, instance, validated_data):
+        # Update the instance with provided data, ensuring groupage_icon is not implicitly created
+        groupage_icon = validated_data.get('groupage_icon', instance.groupage_icon)
+
+        # Ensure groupage_icon, if provided, is a valid MyImage instance
+        if groupage_icon and not MyImage.objects.filter(id=groupage_icon.id).exists():
+            raise serializers.ValidationError("The provided MyImage instance does not exist.")
+
+        # Update the fields, keeping the existing groupage_icon if none is provided
+        instance.groupage_icon = groupage_icon
+        instance.position = validated_data.get('position', instance.position)
+        instance.desc_groupage = validated_data.get('desc_groupage', instance.desc_groupage)
+        instance.label_groupage = validated_data.get('label_groupage', instance.label_groupage)
+        instance.link = validated_data.get('link', instance.link)
+        instance.max_point = validated_data.get('max_point', instance.max_point)
+        instance.seuil1 = validated_data.get('seuil1', instance.seuil1)
+        instance.seuil2 = validated_data.get('seuil2', instance.seuil2)
+        instance.max_item = validated_data.get('max_item', instance.max_item)
+
+        instance.save()
+        return instance
 
     
 class PDFLayoutSerializer(serializers.ModelSerializer):
@@ -252,6 +298,27 @@ class PDFLayoutSerializer(serializers.ModelSerializer):
     def get_header_icon_base64(self, obj):
         if obj.header_icon:
             with open(obj.header_icon.path, 'rb') as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+                return f'data:image/png;base64,{encoded_string}'
+        return None
+ 
+
+  
+
+    
+class MyImageSerializer(serializers.ModelSerializer):
+    icon_base64 = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MyImage
+        fields = ['id', 'icon', 'icon_base64'  ]
+        extra_kwargs = {
+            'icon': {'read_only': True},  # Make  read-only
+        }
+
+    def get_icon_base64(self, obj):
+        if obj.icon:
+            with open(obj.icon.path, 'rb') as image_file:
                 encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
                 return f'data:image/png;base64,{encoded_string}'
         return None

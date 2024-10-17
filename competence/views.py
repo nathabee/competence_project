@@ -6,7 +6,7 @@ from .permissions import isAllowed, isAllowedApiView,IsEleveProfessor
 from rest_framework.permissions import IsAuthenticated
 
 from .models import (
-    Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,
+    Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,MyImage,
     Item , Resultat, ResultatDetail,ScoreRule ,ScoreRulePoint,PDFLayout,Report,ReportCatalogue
 )
  
@@ -14,23 +14,25 @@ from .serializers import (
     NiveauSerializer, EtapeSerializer, AnneeSerializer, MatiereSerializer, EleveSerializer, EleveAnonymizedSerializer, CatalogueSerializer,
     ReportCatalogueSerializer,ResultatDetailSerializer, ResultatSerializer,UserSerializer,ScoreRuleSerializer,   ScoreRulePointSerializer,
     PDFLayoutSerializer, FullReportSerializer,ShortReportSerializer,
-    GroupageDataSerializer,ItemSerializer
+    GroupageDataSerializer,ItemSerializer,MyImageSerializer
 )
  
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from django.db.models import F
- 
-from rest_framework import serializers 
+  
 from django.contrib.auth.models import User, Group
 from django.shortcuts import render
  
 from rest_framework import status
 from django.utils import timezone
 #from drf_yasg.utils import swagger_auto_schema
-#from drf_yasg import openapi
-  
+#from drf_yasg import openapi    
+import base64 
+
+
+
 
 @api_view(['GET'])
 def api_overview(request):
@@ -58,7 +60,9 @@ def api_overview(request):
 #        "full_report_create": request.build_absolute_uri('/api/reports/full-create/'),  # New addition
         "fullreports": request.build_absolute_uri('/api/fullreports/'),  
         "shortreports": request.build_absolute_uri('/api/shortreports/'),  
+        "myimages": request.build_absolute_uri('/api/myimages/'),  
         "eleve_reports": request.build_absolute_uri('/api/eleve/{eleve_id}/reports/').replace("{eleve_id}", "<eleve_id>"),
+        "myimagebase64": request.build_absolute_uri('/api/myimage/{myimage_id}/base64/').replace("{myimage_id}", "<myimage_id>"),
        
 
     })
@@ -67,7 +71,7 @@ def api_overview(request):
  
 
 
-handler404 = 'yourapp.views.custom_404'
+handler404 = 'competence.views.custom_404'
 
 
 def custom_404(request, exception):
@@ -343,6 +347,24 @@ class PDFLayoutViewSet(viewsets.ModelViewSet):
     queryset = PDFLayout.objects.all()
     serializer_class = PDFLayoutSerializer
  
+ 
+class MyImageViewSet(viewsets.ModelViewSet):
+    permission_classes = [IsAuthenticated, isAllowed]
+    queryset = MyImage.objects.all()
+    serializer_class = MyImageSerializer
+ 
+ 
+
+class MyImageBase64View(APIView):
+    def get(self, request, myimage_id):
+        try:
+            my_image = MyImage.objects.get(id=myimage_id)
+            with open(my_image.icon.path, 'rb') as image_file:
+                encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
+            return Response({'image_base64': f'data:image/png;base64,{encoded_string}'}, status=status.HTTP_200_OK)
+        except MyImage.DoesNotExist:
+            return Response({'error': 'Image not found'}, status=status.HTTP_404_NOT_FOUND)
+        
  
 
 #class ReportViewSet(viewsets.ModelViewSet):

@@ -220,6 +220,21 @@ body {
 }
 
  /************************************************/
+ .shadow-container {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow effect */
+  border-radius: 8px; /* Rounded corners */
+  padding: 16px; /* Padding inside the container */
+  margin-bottom: 20px; /* Space between containers */
+  background-color: var(--custom-blue); /* White background for contrast */
+  color: var(--custom-text);
+  transition: box-shadow 0.3s ease; /* Smooth shadow transition on hover */
+}
+
+.shadow-container:hover {
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Stronger shadow on hover */
+}
+
+
  /************************************************/
 
 

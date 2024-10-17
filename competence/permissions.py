@@ -63,6 +63,7 @@ class isAllowed(BasePermission):
             'ReportViewSet': ['list', 'retrieve'],                 # Can view reports
             'EleveReportsView': ['list', 'retrieve'],              # Can view reports for a student
             'ReportCatalogueViewSet': ['list', 'retrieve'],        # Can view report catalogues
+            'MyImageViewSet': ['list', 'retrieve'],        # Can view report catalogues
         }
  
 
@@ -94,13 +95,15 @@ class isAllowed(BasePermission):
             'ReportViewSet': ['list', 'retrieve', 'create', 'update', 'destroy'],        # Can manage reports
             'EleveReportsView': ['list', 'retrieve'],                                   # Can view reports for a student
             'ReportCatalogueViewSet': ['list', 'retrieve', 'create', 'update', 'destroy'], # Can manage report catalogues
+            'MyImageViewSet': ['list', 'retrieve', 'create', 'update', 'destroy'], # Can manage images
+            #'ImageViewSet': ['list', 'retrieve', 'create', 'update', 'destroy'], # Can manage report catalogues
             'FullReportViewSet': ['create'],  # Allow full report creation for teachers
 
         }
  
 
         # Define excluded models for CRUD operations for teachers
-        excluded_models = ['Annee', 'Etape', 'Catalogue', 'Niveau', 'Matiere', 'GroupageData', 'Item', 'User', 'Eleve']
+        excluded_models = ['Annee', 'Etape', 'Catalogue', 'Niveau', 'Matiere' ]
  
         
         # Check if the view is in allowed views and if the action is allowed
@@ -146,6 +149,7 @@ class isAllowedApiView(BasePermission):
         allowed_views = {
             'EleveReportsView': ['GET'],  # Analytics can only view reports
             'UserRolesView': ['GET'],  # Analytics can view user roles
+            'MyImageBase64View': ['GET'],  # Teachers can view user roles
             # Add other views for analytics
         }
 
@@ -155,6 +159,7 @@ class isAllowedApiView(BasePermission):
         allowed_views = {
             'EleveReportsView': ['GET'],  # Teachers can only view reports
             'UserRolesView': ['GET'],  # Teachers can view user roles
+            'MyImageBase64View': ['GET'],  # Teachers can view user roles
             # Add other views for teachers
         }
 
