@@ -1,25 +1,16 @@
-from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
-from django.contrib import admin
-from django.contrib.auth.models import User
-  
-#from django.db import connection   #for debug developpement
-#import logging  #for debug developpement
-
-
+from django.contrib import admin 
 from django.utils.html import format_html
-
-from django.contrib import admin
 from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, Eleve, Catalogue, GroupageData, Item, \
-                    PDFLayout,Report,ReportCatalogue,Resultat,ResultatDetail, MyImage
+                    PDFLayout, Report, ReportCatalogue, Resultat, ResultatDetail, MyImage 
 
-from django.contrib import admin
-from .models import Report, ReportCatalogue, Resultat, ResultatDetail
 import base64
 
+ 
 
+# Inline classes
 class ResultatDetailInline(admin.TabularInline):
     model = ResultatDetail
-    extra = 1  # Number of empty forms to display
+    extra = 1
 
 class ResultatInline(admin.TabularInline):
     model = Resultat
@@ -30,6 +21,8 @@ class ReportCatalogueInline(admin.TabularInline):
     model = ReportCatalogue
     extra = 1
     inlines = [ResultatInline]
+
+
 
 
 @admin.register(Niveau)
@@ -82,40 +75,20 @@ class CatalogueAdmin(admin.ModelAdmin):
     search_fields = ('description',)
     filter_horizontal = ('professeurs',)  # For ManyToMany fields
 
-
-
-@admin.register( MyImage)
-class MyImageAdmin(admin.ModelAdmin):
-    list_display = ('id', 'display_icon')
-    #search_fields = ('icon','id')
-
-    def display_icon(self, obj):
-        if obj.icon:
-            with open(obj.icon.path, 'rb') as img_file:
-                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
-                return format_html('<img src="data:image/png;base64,{}" style="width: 50px; height: 50px;"/>', encoded_string)
-        return "-"
-    
-    display_icon.short_description = "Icon"
-
 @admin.register(GroupageData)
 class GroupageDataAdmin(admin.ModelAdmin):
     list_display = ('catalogue', 'display_groupage_icon', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item')
     list_filter = ('catalogue',)
-    search_fields = ('desc_groupage', 'label_groupage', 'link')
-
-    # Method to display the icon from MyImage
+    search_fields = ('desc_groupage', 'label_groupage', 'link','groupage_icon')
     def display_groupage_icon(self, obj):
-        if obj.groupage_icon and obj.groupage_icon.icon:  # Access the icon through the foreign key
-            try:
-                with open(obj.groupage_icon.icon.path, 'rb') as img_file:
-                    encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
-                    return format_html('<img src="data:image/png;base64,{}" style="width: 30px; height: 30px;"/>', encoded_string)
-            except FileNotFoundError:
-                return "Image not found"
+        if obj.groupage_icon:
+            with open(obj.groupage_icon.path, 'rb') as img_file:
+                encoded_string = base64.b64encode(img_file.read()).decode('utf-8')
+                return format_html('<img src="data:image/png;base64,{}" style="width: 30px; height: 30px;"/>', encoded_string)
         return "-"
-
+    
     display_groupage_icon.short_description = "Groupage Icon"
+
 
 @admin.register(Item)
 class ItemAdmin(admin.ModelAdmin):
@@ -177,48 +150,3 @@ class PDFLayoutAdmin(admin.ModelAdmin):
     
     display_header_icon.short_description = "Header Icon"
 
-
-
-
-############
-
-
-
-#@admin.register(ResultatDetail)
-#class ResultatDetailAdmin(admin.ModelAdmin):
-#    list_display = ('id', 'resultat', 'item', 'score', 'scorelabel', 'observation')  # Display these fields
-#    list_filter = ('resultat', 'item')  # Filters on these foreign keys
-#    search_fields = ('item__description', 'scorelabel', 'resultat_id')  # Search on item description, score label, and resultat ID
-#    
-#    def get_queryset(self, request):
-#        # Optimize queryset using select_related
-#        qs = super().get_queryset(request)
-#        return qs.select_related('resultat', 'item')
-#
-#    def changelist_view(self, request, extra_context=None):
-##        # Log SQL queries for debugging
-#        response = super().changelist_view(request, extra_context)
-#        logger = logging.getLogger('django.db.backends')
-#        for query in connection.queries:
-#            logger.debug(query['sql'])  # Log each SQL query
-#        return response
-
-
-
-#@admin.register(Resultat)
-#class ResultatAdmin(admin.ModelAdmin):
-#    list_display = ('report_catalogue', 'groupage', 'score', 'seuil1_percent', 'seuil2_percent', 'seuil3_percent')
-#    list_filter = ('groupage', 'report_catalogue')
-#    search_fields = ('report_catalogue__id', 'groupage__description')#
-
-#@admin.register(ReportCatalogue)
-#class ReportCatalogueAdmin(admin.ModelAdmin):
-#    list_display = ('report', 'catalogue')
-#    search_fields = ('report__id', 'catalogue__id')
-
-
-#@admin.register(Report)
-#class ReportAdmin(admin.ModelAdmin):
-#    list_display = ('eleve', 'professeur', 'created_at', 'updated_at', 'pdflayout')
-#    list_filter = ('professeur', 'created_at')
-#    search_fields = ('eleve__nom', 'professeur__username', 'pdflayout__id')

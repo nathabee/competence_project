@@ -84,9 +84,9 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",  
     "django.middleware.security.SecurityMiddleware",
-    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",  # Add this line
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -94,15 +94,20 @@ MIDDLEWARE = [
 ]
 
  
+ 
 
 
 ROOT_URLCONF = "competence_project.urls"
 
-# Templates configuration
+# Templates configuration look for templates in competence_project/templates
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Adjusted for Competence project
+        'DIRS': [
+            BASE_DIR / 'competence_project/templates',  # For competence-specific templates
+            BASE_DIR / 'competence/templates',  # For competence-specific templates
+            BASE_DIR / 'templates',             # Global project templates (if any)
+        ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -167,25 +172,4 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:8080',  # Add this if you're testing locally
     'http://nathabee.de:3000',  # Add this if you're testing locally
 ]
-
-#LOGGING = {
-#    'version': 1,
-#    'disable_existing_loggers': False,
-#    'handlers': {
-#        'console': {
-#            'level': 'DEBUG',
-#            'class': 'logging.StreamHandler',
-#        },
-#    },
-#    'loggers': {
-#        'django.db.backends': {
-#            'level': 'DEBUG',
-#            'handlers': ['console'],
-#        },
-#        'django.request': {
-#            'level': 'DEBUG',
-#            'handlers': ['console'],
-#            'propagate': True,
-#        },
-#    },
-#}
+ 

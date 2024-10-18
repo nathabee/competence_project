@@ -4,7 +4,10 @@ from rest_framework.permissions import BasePermission
   
 from .models import ( Eleve)
 
- 
+#def has_permission(self, request):
+#    print(f"User: {request.user}, is_active: {request.user.is_active}, is_superuser: {request.user.is_superuser}, is_staff: {request.user.is_staff}")
+#    return request.user.is_active and (request.user.is_superuser or request.user.is_staff)
+
 
 ############################################################
 # permission for viewSet 

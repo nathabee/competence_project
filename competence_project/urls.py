@@ -18,6 +18,7 @@ from competence.views import custom_404  # Adjust the import based on your app s
 handler404 = custom_404
 
 
+#handler404 = 'competence.views.custom_404'
 
 
 # Define the schema view for drf-yasg
@@ -68,10 +69,7 @@ urlpatterns += [
     re_path(r'^(?!admin|api|static).*$', RedirectView.as_view(url='/static/html/index.html', permanent=False), name='index')
 ]
 
-
-# Custom error handlers
-handler404 = custom_404
-
+ 
 
 
 #if settings.DEBUG:
