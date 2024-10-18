@@ -222,14 +222,8 @@ class ItemSerializer(serializers.ModelSerializer):
  
 
 class GroupageDataSerializer(serializers.ModelSerializer):
-    # Use PrimaryKeyRelatedField for reading but set the source to get only the ID for output
-    groupage_icon = serializers.PrimaryKeyRelatedField(
-        queryset=MyImage.objects.all(),
-        required=False,
-        allow_null=True,
-        write_only=True  # Set to write-only for creation/update
-    )
-    groupage_icon_id = serializers.IntegerField(source='groupage_icon.id', read_only=True)  # This will return the ID on read
+    groupage_icon_id = serializers.IntegerField(write_only=False, required=False)
+
     items = ItemSerializer(many=True, read_only=True, source='item_set')
 
     class Meta:
@@ -237,8 +231,7 @@ class GroupageDataSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'catalogue',
-            'groupage_icon',  # For creating/updating
-            'groupage_icon_id',  # For retrieving the ID
+            'groupage_icon_id',  # We only handle the ID of the icon
             'catalogue_id',
             'position',
             'desc_groupage',
@@ -252,26 +245,13 @@ class GroupageDataSerializer(serializers.ModelSerializer):
         ]
 
     def create(self, validated_data):
-        # Ensure groupage_icon is an existing MyImage instance or None
-        groupage_icon = validated_data.get('groupage_icon', None)
-
-        # If a groupage_icon is provided, it must be an existing MyImage instance
-        if groupage_icon and not MyImage.objects.filter(id=groupage_icon.id).exists():
-            raise serializers.ValidationError("The provided MyImage instance does not exist.")
-
-        # Create GroupageData without implicitly creating MyImage
-        return GroupageData.objects.create(**validated_data)
+        groupage_icon_id = validated_data.get('groupage_icon_id', None)
+        groupage_icon = MyImage.objects.get(id=groupage_icon_id) if groupage_icon_id else None
+        return GroupageData.objects.create(groupage_icon=groupage_icon, **validated_data)
 
     def update(self, instance, validated_data):
-        # Update the instance with provided data, ensuring groupage_icon is not implicitly created
-        groupage_icon = validated_data.get('groupage_icon', instance.groupage_icon)
-
-        # Ensure groupage_icon, if provided, is a valid MyImage instance
-        if groupage_icon and not MyImage.objects.filter(id=groupage_icon.id).exists():
-            raise serializers.ValidationError("The provided MyImage instance does not exist.")
-
-        # Update the fields, keeping the existing groupage_icon if none is provided
-        instance.groupage_icon = groupage_icon
+        groupage_icon_id = validated_data.get('groupage_icon_id', None)
+        instance.groupage_icon = MyImage.objects.get(id=groupage_icon_id) if groupage_icon_id else instance.groupage_icon
         instance.position = validated_data.get('position', instance.position)
         instance.desc_groupage = validated_data.get('desc_groupage', instance.desc_groupage)
         instance.label_groupage = validated_data.get('label_groupage', instance.label_groupage)
@@ -283,6 +263,7 @@ class GroupageDataSerializer(serializers.ModelSerializer):
 
         instance.save()
         return instance
+
 
     
 class PDFLayoutSerializer(serializers.ModelSerializer):
@@ -305,24 +286,26 @@ class PDFLayoutSerializer(serializers.ModelSerializer):
 
   
 
-    
+ 
+
 class MyImageSerializer(serializers.ModelSerializer):
     icon_base64 = serializers.SerializerMethodField()
 
     class Meta:
         model = MyImage
-        fields = ['id', 'icon', 'icon_base64'  ]
-        extra_kwargs = {
-            'icon': {'read_only': True},  # Make  read-only
-        }
+        fields = ['id', 'icon', 'icon_base64']
+        # Remove read_only from icon field to allow image updates
+        # extra_kwargs = {
+        #    'icon': {'read_only': True},
+        # }
 
     def get_icon_base64(self, obj):
-        if obj.icon:
+        if obj.icon and os.path.exists(obj.icon.path):  # Ensure file exists
             with open(obj.icon.path, 'rb') as image_file:
                 encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
                 return f'data:image/png;base64,{encoded_string}'
         return None
- 
+
 
  
 

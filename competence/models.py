@@ -169,33 +169,46 @@ class MyImage(models.Model):
 
     def __str__(self):
         return f"Icone: {self.id}"
-
+ 
     def save(self, *args, **kwargs):
+        # Check if the image exists before attempting to open or resize it
         if self.pk:
             try:
                 previous = MyImage.objects.get(pk=self.pk)
-                if previous.icon == self.icon:  # Image hasn't changed
-                    super(MyImage, self).save(*args, **kwargs)
-                    return
+                if previous.icon and previous.icon.path and os.path.exists(previous.icon.path):
+                    # Proceed only if the new image is different
+                    if previous.icon == self.icon:
+                        super(MyImage, self).save(*args, **kwargs)
+                        return
             except MyImage.DoesNotExist:
                 pass
 
         # Only resize if the image has changed or is new
-        if self.icon:
-            # Open the uploaded image
-            img = Image.open(self.icon)
-            img.thumbnail((100, 100), Image.LANCZOS)  # Resize the image
+        if self.icon and not self.icon.name.startswith('resized_'):
+            try:
+                img = Image.open(self.icon)  # Open the uploaded image
+                img.thumbnail((100, 100), Image.LANCZOS)  # Resize the image
 
-            # Save the resized image, but with the same filename
-            original_filename = os.path.basename(self.icon.name)
-            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'competence/png/', original_filename)
-            
-            # Save the resized image to the same file
-            img.save(temp_file_path)
+                # Save the resized image
+                resized_image_name = f"resized_{os.path.basename(self.icon.name)}"
+                temp_file_path = os.path.join(settings.MEDIA_ROOT, 'competence/png/', resized_image_name)
 
-            # Update the image field with the resized image, keeping the original filename
-            with open(temp_file_path, 'rb') as f:
-                self.icon.save(original_filename, File(f), save=False)
+                # Ensure directory exists
+                os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
+
+                # Save the resized image to the file system
+                img.save(temp_file_path)
+
+                # Update the image field with the resized image
+                with open(temp_file_path, 'rb') as f:
+                    self.icon.save(resized_image_name, File(f), save=False)
+
+                # Optionally, remove the temporary file after saving the resized image
+                os.remove(temp_file_path)
+
+            except Exception as e:
+                print(f"Error processing image: {e}")
+                pass
 
         super(MyImage, self).save(*args, **kwargs)
 

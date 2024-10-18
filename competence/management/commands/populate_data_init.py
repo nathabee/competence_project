@@ -139,7 +139,7 @@ class Command(BaseCommand):
                 # Log the header_icon_path to check its correctness
                 print(f"Processing icon: { row['icon']}")
 
-                icon_path = os.path.join(settings.MEDIA_ROOT, row['icon'])
+                icon_path = os.path.join(settings.BASE_DIR , 'script_db' , row['icon'])
  
                 
                 # Log the header_icon_path to check its correctness
@@ -302,7 +302,8 @@ class Command(BaseCommand):
                 # Log the header_icon_path to check its correctness
                 print(f"Processing header_icon: { row['header_icon']}")
 
-                header_icon_path = os.path.join(settings.MEDIA_ROOT, row['header_icon'])
+                header_icon_path = os.path.join(settings.BASE_DIR , 'script_db' , row['header_icon'])
+ 
  
                 
                 # Log the header_icon_path to check its correctness

@@ -25,6 +25,7 @@ ENV/
 *.db
 *.sqlite3
 staticfiles/
+media/
 
 # Frontend specific
 node_modules/
