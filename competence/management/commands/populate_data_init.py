@@ -7,7 +7,7 @@ from django.utils.timezone import make_aware
 from datetime import datetime
 #from django.core.files import File
 from PIL import Image
-
+import subprocess
 
 class Command(BaseCommand):
 
@@ -28,11 +28,33 @@ class Command(BaseCommand):
 
 
     help = 'Import data from CSV files into Django models'
-
+ 
 
     def handle(self, *args, **kwargs):
 
- # Load Catalogue data
+
+        # Define the source and destination directories
+        src_dir = 'script_db/competence'
+        dest_dir = '/var/www/competence_project/media/origin'
+
+        # Check if the destination directory exists and has write permission
+        if os.path.exists(dest_dir) and os.access(dest_dir, os.W_OK):
+            self.stdout.write(self.style.SUCCESS(f'Target directory {dest_dir} exists and is writable.'))
+            try:
+                # Perform the copy operation
+                subprocess.run(['sudo', 'cp', '-r', src_dir, dest_dir], check=True)
+                self.stdout.write(self.style.SUCCESS(f'Successfully copied files from {src_dir} to {dest_dir}'))
+            except subprocess.CalledProcessError as e:
+                self.stderr.write(self.style.ERROR(f'Error copying files: {e}'))
+        else:
+            # Directory doesn't exist or is not writable
+            if not os.path.exists(dest_dir):
+                self.stderr.write(self.style.ERROR(f'Target directory {dest_dir} does not exist.'))
+            if not os.access(dest_dir, os.W_OK):
+                self.stderr.write(self.style.ERROR(f'No write permission for the directory {dest_dir}.'))
+            return  # Exit the command if the directory is not writable
+
+        # Load Catalogue data
 
         # Import Annee
         with open('script_db/annee.csv', mode='r') as file:
@@ -138,8 +160,8 @@ class Command(BaseCommand):
 
                 # Log the header_icon_path to check its correctness
                 print(f"Processing icon: { row['icon']}")
+                icon_path = os.path.join('origin', row['icon'])
 
-                icon_path = os.path.join(settings.BASE_DIR , 'script_db' , row['icon'])
  
                 
                 # Log the header_icon_path to check its correctness
@@ -301,8 +323,8 @@ class Command(BaseCommand):
 
                 # Log the header_icon_path to check its correctness
                 print(f"Processing header_icon: { row['header_icon']}")
-
-                header_icon_path = os.path.join(settings.BASE_DIR , 'script_db' , row['header_icon'])
+ 
+                header_icon_path = os.path.join('origin', row['header_icon'])
  
  
                 
