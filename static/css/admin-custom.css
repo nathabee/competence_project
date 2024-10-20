@@ -17,7 +17,7 @@
     --custom-alert: #c4361d;
     --custom-dropdown-bg: white;
     --custom-dropdown-border: #9cee83;
-    --custom-gradient: linear-gradient(to right, var(--custom-blue-complement), var(--custom-blue));
+    --custom-gradient: linear-gradient(to right, var(--custom-blue-complement), var(--custom-alert));
   }
   
    
@@ -34,3 +34,13 @@ body {
     display: block;  /* Make sure containers are shown */
 }
       
+ 
+.image-preview-container {
+    display: flex;
+    align-items: center;
+}
+.image-preview-container img {
+    max-width: 100px; 
+    max-height: 100px;
+    margin-left: 10px; /* Adjust spacing as necessary */
+} 

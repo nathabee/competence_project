@@ -104,9 +104,9 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'competence_project/templates',  # For competence-specific templates
-            BASE_DIR / 'competence/templates',  # For competence-specific templates
-            BASE_DIR / 'templates',             # Global project templates (if any)
+           os.path.join(BASE_DIR, 'competence_project', 'templates'),   # For competence-specific templates
+           os.path.join(BASE_DIR, 'competence', 'templates'),  # For competence-specific templates
+           os.path.join(BASE_DIR, 'templates'),             # Global project templates (if any)
         ],
         'APP_DIRS': True,
         'OPTIONS': {

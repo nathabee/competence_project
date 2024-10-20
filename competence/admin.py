@@ -4,8 +4,9 @@ from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, El
                     PDFLayout, Report, ReportCatalogue, Resultat, ResultatDetail, MyImage 
 
 import base64
-
-from django import forms 
+  
+from .forms import ImagePreviewWidget ,GroupageDataForm   #, IconPreviewSelect 
+from django.utils.safestring import mark_safe
  
 
 # Inline classes
@@ -25,52 +26,45 @@ class ReportCatalogueInline(admin.TabularInline):
 
  
 
-class IconPreviewSelect(forms.Select):
-    def render_options(self, choices, selected_choices):
-        options = []
-        for value, label in choices:
-            try:
-                # Check if the value corresponds to an actual MyImage object
-                icon_instance = MyImage.objects.get(pk=value)
-                if icon_instance.icon:
-                    # Create an HTML representation of the image
-                    image_preview = format_html(
-                        '<img src="{}" style="width: 20px; height: 20px; margin-right: 5px; vertical-align: middle;"/>',
-                        icon_instance.icon.url  # Use the URL of the image
-                    )
-                    # Format the option with the image
-                    option_html = format_html(
-                        '<option value="{}"{}>{} {}</option>',
-                        value, ' selected="selected"' if str(value) in selected_choices else '', image_preview, label
-                    )
-                    options.append(option_html)
-                else:
-                    # In case there's no icon, fall back to the default label
-                    options.append(format_html('<option value="{}"{}>{}</option>', value, ' selected="selected"' if str(value) in selected_choices else '', label))
-            except MyImage.DoesNotExist:
-                # Handle cases where the icon does not exist
-                options.append(format_html('<option value="{}"{}>{}</option>', value, ' selected="selected"' if str(value) in selected_choices else '', label))
 
-        return format_html(''.join(options))
-
+ 
+ 
 
 @admin.register(GroupageData)
 class GroupageDataAdmin(admin.ModelAdmin):
+    form = GroupageDataForm  # Use the custom form
+
     list_display = ('catalogue', 'display_groupage_icon', 'position', 'desc_groupage', 'label_groupage', 'link', 'max_point', 'seuil1', 'seuil2', 'max_item')
     list_filter = ('catalogue',)
     search_fields = ('desc_groupage', 'label_groupage', 'link')
 
-    def formfield_for_foreignkey(self, db_field, request, **kwargs):
-        if db_field.name == "groupage_icon":
-            # Use the custom widget for the groupage_icon field in the admin
-            kwargs['widget'] = IconPreviewSelect
-        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['groupage_icon'].widget.attrs.update({
+            'onchange': 'updateImagePreview(this);'  # Call the JavaScript function on change
+        })
+        return form
+    
+ 
+
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        obj = self.get_object(request, object_id)
+        current_image_url = None
+        my_images = MyImage.objects.all()  # Fetch all images for the dropdown
+
+        if obj:
+            current_image_url = obj.groupage_icon.icon.url if obj.groupage_icon and obj.groupage_icon.icon else None
+
+        return super().change_view(request, object_id, form_url, extra_context={
+            'current_image_url': current_image_url,
+            'my_images': my_images,
+        })
 
     def display_groupage_icon(self, obj):
-        if obj.groupage_icon_id:  # Check if groupage_icon ID is not None
+        """Display a small icon preview in the list display."""
+        if obj.groupage_icon_id:
             try:
-                # Fetch the MyImage instance using the groupage_icon ID
-                my_image = MyImage.objects.get(pk=obj.groupage_icon_id)  # Use the ID attribute
+                my_image = MyImage.objects.get(pk=obj.groupage_icon_id)
                 if my_image.icon:
                     return format_html('<img src="{}" style="width: 30px; height: 30px;"/>', my_image.icon.url)
             except MyImage.DoesNotExist:
@@ -78,30 +72,12 @@ class GroupageDataAdmin(admin.ModelAdmin):
         return "-"
 
     display_groupage_icon.short_description = "Groupage Icon"
-
-from django.utils.safestring import mark_safe
-class ImagePreviewWidget(forms.ClearableFileInput):
-    """Custom Widget to display image preview in the form."""
-
-    def render(self, name, value, attrs=None, renderer=None):
-        # Default file input widget rendering
-        input_html = super().render(name, value, attrs, renderer)
-
-        # Check if an existing image is present and display the preview
-        if value and hasattr(value, "url"):
-            img_html = format_html('<img src="{}" style="max-height: 200px;"/>', value.url)
-            # Render image preview and file input field
-            return mark_safe(f'{img_html}<br>{input_html}')
-        
-        # If no image is present, render only the file input field
-        return input_html
-
+ 
 
 @admin.register(MyImage)
 class MyImageAdmin(admin.ModelAdmin):
-    list_display = ['id', 'display_icon']
+    list_display = ['id', 'display_icon']  # Ensure 'display_icon' is referenced here
     search_fields = ['id', 'icon']  # Allows search by ID and icon file name
-    #readonly_fields = ['icon_base64']  # Make base64 icon read-only
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
         """Customize the form field for the 'icon' to include the preview."""
@@ -112,20 +88,10 @@ class MyImageAdmin(admin.ModelAdmin):
     def display_icon(self, obj):
         """Displays a small icon preview in the list display."""
         if obj.icon:
-            return format_html('<img src="{}" style="width: 50px; height: 50px;"/>', obj.icon.url)
-        return "-"
+            return format_html('<img src="{}"  style="max-height: 200px; max-width: 100%; height: auto; width: auto; object-fit: contain;" />', obj.icon.url)
+        return "-"  # Return a placeholder if no icon is available
 
-    display_icon.short_description = "Icon"
-
-    #def icon_base64(self, obj):
-    #    """Display the Base64 representation of the image."""
-    #    if obj.icon:
-    #        with open(obj.icon.path, 'rb') as image_file:
-    #            encoded_string = base64.b64encode(image_file.read()).decode('utf-8')
-    #            return f'data:image/png;base64,{encoded_string}'
-    #    return None
-
-    #icon_base64.short_description = "Base64 Icon"
+    display_icon.short_description = "Icon"  # Optional: Sets the column header name
 
 
 @admin.register(Niveau)
