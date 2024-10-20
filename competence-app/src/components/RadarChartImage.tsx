@@ -28,7 +28,21 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
   //const [canvasSize, setCanvasSize] = useState({ width: 800, height: 400 }); // Default size
 
   // Create an array of empty labels
-  const labelEmpty = new Array(chartData.labels.length).fill("");
+  const labelEmpty = new Array(chartData.labels.length).fill("");  
+
+    // Helper function to format the text to 120 characters, right-aligned
+  const formatText = (text: string, width: number): string => {
+    if (text.length > width) {
+      // If the text is too long, cut it from the left
+      return text.slice(text.length - width);
+    } else {
+      // Otherwise, pad it with spaces on the left
+      const padding = ' '.repeat(width - text.length);
+      return padding + text;
+    }
+  };
+
+
 
   useEffect(() => {
     const ctx = chartRef.current?.getContext('2d');
@@ -69,12 +83,13 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
           }],
         },
         options: {
+          responsive: false,  //see https://www.geeksforgeeks.org/how-to-set-height-and-width-of-a-chart-in-chart-js/
           layout: {
             padding: {
-              top: 40,
-              bottom: 40,
-              left: 40,
-              right: 40,
+              top: 40,  //40
+              bottom: 40, //40
+              left: 120,  //120
+              right: 120,  //120
             }},
           plugins: {
             legend: {
@@ -91,7 +106,7 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
                 callback: (tickValue: string | number) => {
                   const labels = ['', '+', '++', '+++'];
                   const index = typeof tickValue === 'number' ? tickValue : Number(tickValue);
-                  return labels[index] || '';
+                  return labels[index] ||  ' '.repeat(50); ;  //place holder 
                 },
                 font: {
                   size: 7,
@@ -104,6 +119,8 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
               const chartInstance = chartInstanceRef.current;
               if (chartInstance) {
                 const { width, height } = chartInstance.chartArea;
+                console.log("chartInstance width",chartInstance.width)
+                console.log("chartInstance height",chartInstance.height)
                 //setCanvasSize({ width, height }); // Set canvas size based on chart  
                 const centerX = width / 2 + chartInstance.chartArea.left;
                 const centerY = height / 2 + chartInstance.chartArea.top;
@@ -127,10 +144,16 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
                     ctx.fillRect(xPos - 15, yPos - 30, 30, 30); // Placeholder square
                   }
 
-                  // Draw text
-                  ctx.font = '10px Arial';
+
+                  ctx.font = 'bold 8px Verdana';
                   ctx.fillStyle = '#000';
-                  ctx.fillText(chartData.labels[i], xPos - 20, yPos); // Adjust text position
+                  if (Math.cos(angle) > 0 )
+                    ctx.fillText(chartData.labels[i], xPos   , yPos - 30);
+                  else
+                    ctx.fillText(formatText(chartData.labels[i], 50), xPos - 120 , yPos - 30);
+
+                  
+ 
                 }
               }
             },
@@ -146,7 +169,9 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
     };
   }, [chartData]);
 
-  return <canvas ref={chartRef} width={800} height={600} />; 
+  return <canvas ref={chartRef} 
+                width={ 728}  
+                height={ 564}   />;  // width={484+120+120} height={484+40+40} />; 
 
 };
 

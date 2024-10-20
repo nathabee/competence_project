@@ -91,7 +91,7 @@ body {
 
 /* Header School Name Section */
 #print-header-gap {
-  flex: 0 0 15%;
+  flex: 0 0 10%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -100,7 +100,7 @@ body {
 
 .print-header-info {
   display: flex;
-  flex: 0 0 40%;
+  flex: 0 0 50%;
   flex-direction: column;
   align-items: left;
   justify-content: space-between;
@@ -111,7 +111,7 @@ body {
 
 
 #print-header-professeur {
-  justify-content: right;
+  justify-content: left;
   align-items: center;
   text-align: left;
 }
@@ -188,7 +188,7 @@ body {
   /* Add a gap between charts */
   overflow: hidden;
   /* Prevent any overflow */
-  border-bottom: 2px solid #000;
+  /*border-bottom: 2px solid #000; */
 }
 
 /* Default style for all charts */
@@ -199,7 +199,7 @@ body {
   width: 100%;
   /* Chart takes full width */
   /*border: 1px solid #9e9c98;*/
-  box-sizing: border-box;
+  box-sizing: border-box; 
 }
 
 /* Specific styles for multiple charts */
@@ -207,7 +207,7 @@ body {
   flex-grow: 1;
   /* Allow charts to grow and take available space */
   max-height: calc(50% - 1cm);
-  /* When there are two charts, each takes half the space minus the gap */
+  /* When there are two charts, each takes half the space minus the gap */ 
 }
 
 /* Handle the case for only one chart with higher specificity */
@@ -216,23 +216,17 @@ body {
   height: 100% !important;
   /* Take the full height when it's the only chart */
   max-height: 100% !important;
-  /* Remove height constraints for one chart */
+  /* Remove height constraints for one chart */ 
 }
 
-/* Ensure canvas scales properly 
-.print-chart canvas {
-  width: auto;
-  height: 100%;  
-  max-width: 100%;  
-}
-  */
-.print-chart canvas {
-  width: 100%;
-  /* Use full width */
-  height: auto;
-  /* Maintain aspect ratio */
-  max-height: 100%;
-  /* Prevent overflow */
+ 
+.print-chart canvas {   
+  width: 100%; /* Takes full width */
+  height: auto; /* Maintain aspect ratio */ 
+  max-height: 100%; /* Prevent overflow */ 
+  box-sizing: border-box; /* Ensure padding/borders are included in dimensions */
+
+
 }
 
 

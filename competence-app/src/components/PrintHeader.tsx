@@ -49,13 +49,12 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve }) =
       <div id="print-header-gap">   </div>
       <div className="print-header-info">
         <div id="print-header-professor">
-          <div>Tests effectués par : {professor.last_name} {professor.first_name} </div>
+          <div>Pédagogue : {professor.last_name} {professor.first_name} </div>
         </div>
 
 
         <div id="print-header-eleve">
-          <div>{eleve.nom}  {eleve.prenom}</div>
-          <div>{eleve.niveau_niveau}</div>
+          <div>Elève : {eleve.nom}  {eleve.prenom} , {eleve.niveau_niveau}</div>
         </div>
       </div>
     </div>
