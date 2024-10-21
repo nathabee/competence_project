@@ -31,6 +31,55 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
     isImageChart,
 }) => {
     const reportCatalogues=report.report_catalogues;
+
+    const handlePrintPDF = async () => {
+        const printButton = document.querySelector('.btn') as HTMLElement;
+        if (printButton) printButton.style.display = 'none';
+    
+        const doc = new jsPDF({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: 'a4',
+        });
+    
+        // Generate pages for each reportCatalogue
+        for (let i = 0; i < reportCatalogues.length; i++) {
+            const chartSection = document.getElementById(`printable-chart-${i}`);
+            if (chartSection) {
+                await html2canvas(chartSection, { scale: 2 }).then((canvas) => {
+                    const imgData = canvas.toDataURL('image/jpeg', 0.5); // Use JPEG format with lower quality (0.5 = 50%)
+                    const imgWidth = 210;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+    
+                    // Add new page except for the last graph
+                    if (i < reportCatalogues.length - 1) {
+                        doc.addPage();
+                    }
+                });
+            }
+        }
+    
+        // Last Page: PrintHeader + SummaryDetailedDifficulty
+        const lastSection = document.getElementById('printable-summary');
+        if (lastSection) {
+            doc.addPage(); // Ensure new page for the summary
+            await html2canvas(lastSection, { scale: 2 }).then((canvas) => {
+                const imgData = canvas.toDataURL('image/jpeg', 0.5); // Use JPEG format with lower quality
+                const imgWidth = 210;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+            });
+        }
+    
+        // Restore print button
+        if (printButton) printButton.style.display = 'inline-block';
+    
+        const todayFormat = new Date().toISOString().slice(0, 19).replace(/T/, '_').replace(/:/g, '-');
+        doc.save(`report_${eleve.nom}__${eleve.prenom}_${todayFormat}.pdf`);
+    };
+    
+    /*
     const handlePrintPDF = async () => {
         const printButton = document.querySelector('.btn') as HTMLElement;
         if (printButton) printButton.style.display = 'none';
@@ -77,6 +126,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
         const todayFormat = new Date().toISOString().slice(0, 19).replace(/T/, '_').replace(/:/g, '-');
         doc.save(`report_${eleve.nom}__${eleve.prenom}_${todayFormat}.pdf`);
     };
+    */
 
     // Pre-calculate the labels, labelImages, and data once
     const processedData = reportCatalogues.map((reportcatalogue) => {
