@@ -37,11 +37,11 @@ const FullReportDisplay: React.FC<FullReportDisplayProps> = ({ report }) => {
                 <ul>
                   {catalogue.resultats.map((resultat) => (
                     <li key={resultat.id}>
-                      Categorie de tests: {resultat.groupage.desc_groupage}  maxScore: {resultat.groupage.max_point}   ({resultat.seuil1_percent}%/{resultat.seuil2_percent}%/{resultat.seuil3_percent}%)
+                      Categorie de tests: {resultat.groupage.desc_groupage}  maxScore: {Math.round(resultat.groupage.max_point)}   ({Math.round(resultat.seuil1_percent)}%/{Math.round(resultat.seuil2_percent)}%/{Math.round(resultat.seuil3_percent)}%)
                       <ul>
                         {resultat.resultat_details.map((detail) => (
                           <li key={detail.id}>
-                            Item: {detail.item.description}, Score: {detail.score}/ maxScore: {detail.item.max_score} , Label: {detail.scorelabel}, Description: {detail.observation}
+                            Item: {detail.item.description}, Score: {Math.round(detail.score)}/ maxScore: {Math.round(detail.item.max_score)} , Label: {detail.scorelabel}, Description: {detail.observation}
                           </li>
                         ))}
                       </ul>

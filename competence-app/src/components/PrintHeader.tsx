@@ -4,14 +4,17 @@ import React, { useEffect, useRef } from 'react';
 import { PDFLayout } from '../types/pdf';
 import { User } from '../types/user';
 import { Eleve } from '../types/eleve';
+import { Report } from '../types/report';
+import { formatDate } from '../utils/helper';
 
 interface PrintHeaderProps {
   layout: PDFLayout;
   professor: User;
   eleve: Eleve;
+  report: Report;
 }
 
-const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve }) => {
+const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve, report }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -46,15 +49,17 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve }) =
           <h1>{layout.schule_name}</h1>
         </div>
       </div>
-      <div id="print-header-gap">   </div>
+      <div className="print-header-gap">   </div>
       <div className="print-header-info">
-        <div id="print-header-professor">
+        <div className="print-header-professor">
           <div>Pédagogue : {professor.last_name} {professor.first_name} </div>
-        </div>
+        </div> 
 
-
-        <div id="print-header-eleve">
+        <div className="print-header-eleve">
           <div>Elève : {eleve.nom}  {eleve.prenom} , {eleve.niveau_niveau}</div>
+        </div>
+        <div>
+          <p>Rapport créé le: {formatDate(report.created_at)}</p>
         </div>
       </div>
     </div>

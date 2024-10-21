@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image'; // Import the Image component from next/image
 import { ReportCatalogue, Resultat } from '@/types/report'; // Ensure proper import of interfaces
 import { useAuth } from '@/context/AuthContext'; // Correctly using the context hook
-import '@/app/globals.css';
+import '@/styles/pdf.css';
 
 // Define the props type with an array of ReportCatalogue
 interface SummaryDetailedDifficultyProps {
@@ -23,15 +23,14 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({ r
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>Catalogue</th>
-            <th>Groupage</th>
-            <th>Total score</th>
+            <th></th>
+            <th>Type de tests</th>
+            <th>Score</th>
             <th>Max score</th>
-            <th>Compétence acquise</th> 
-            <th>seuil1_percent</th>
-            <th>seuil2_percent</th>
-            <th>seuil3_percent</th>
-            <th>icône</th>
+            <th>Avancement</th> 
+            <th>seuil1</th>
+            <th>seuil2</th>
+            <th>seuil3</th> 
           </tr>
         </thead>
         <tbody>
@@ -53,23 +52,22 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({ r
                   return (
                     <React.Fragment key={`${reportCatalogueIndex}-${resIndex}`}>
                       <tr style={isBold ? { fontWeight: 'bold' } : {}}>
-                        <td>{reportCatalogue.description}</td>
-                        <td>{resultat.groupage.label_groupage}</td>
-                        <td>{resultat.score.toFixed(2)}</td>
-                        <td>{resultat.groupage.max_point.toFixed(2)}</td>
-                        <td>{Math.round((resultat.score / resultat.groupage.max_point) * 100)}%</td> 
-                        <td>{resultat.seuil1_percent}</td>
-                        <td>{resultat.seuil2_percent}</td>
-                        <td>{resultat.seuil3_percent}</td>
-                        <td>
+                        <td>{base64Image ? (
                           <Image
-                            src={base64Image ? `${base64Image}` : "../assets/logo.png"} // Use Base64 image if available, otherwise default image
-                            alt={base64Image ? "Groupage Icon" : "Default Icon"} // Update alt text accordingly
-                            width={50} // Set width
-                            height={50} // Set height
+                            src={`${base64Image}`} 
+                            alt="Groupage Icon"
+                            width={20} // Set width
+                            height={20} // Set height
                             style={{ marginRight: '10px' }} // Inline styles for margin
                           />
-                        </td>
+                          ) : ("")}{reportCatalogue.description}</td>
+                        <td>{resultat.groupage.label_groupage}</td>
+                        <td>{resultat.score.toFixed(0)}</td>
+                        <td>{resultat.groupage.max_point.toFixed(0)}</td>
+                        <td>{Math.round((resultat.score / resultat.groupage.max_point) * 100)}%</td> 
+                        <td>{Math.round(resultat.seuil1_percent)}%</td>
+                        <td>{Math.round(resultat.seuil2_percent)}%</td>
+                        <td>{Math.round(resultat.seuil3_percent)}%</td>  
                       </tr>
                       {/* Check for detailed errors if seuil2_percent < 100 */}
                       {resultat.seuil2_percent < 100 && resultat.resultat_details && (
@@ -83,10 +81,10 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({ r
                               <td colSpan={2} style={{ paddingLeft: '30px' }}> {/* Indentation for clarity */}
                                 {detail.item.description}
                               </td>
-                              <td>{detail.score}</td>
+                              <td>{Math.round(detail.score)}</td>
                               <td>{detail.item.max_score}</td>
                               <td>{detail.observation}</td>
-                              <td colSpan={4}></td> {/* Empty cells for alignment */}
+                              <td colSpan={3}></td> {/* Empty cells for alignment */}
                             </tr>
                           ) : null;
                         })

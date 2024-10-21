@@ -57,9 +57,8 @@ const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
                                     <td>{base64Image ? (
                                             <Image
                                                 src={base64Image} // Use Base64 image if available
-                                                alt="Groupage Icon"
-                                                width={20}
-                                                height={20}
+                                                alt="Groupage Icon" 
+                                                height={10}
                                                 style={{ marginRight: '10px' }}
                                             />
                                         ) : null} {/* If no base64Image, render nothing */} {resultat.groupage.label_groupage}</td>

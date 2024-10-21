@@ -32,7 +32,7 @@ const PdfImage = () => {
   return (
     <div className="container mt-3 ml-2"> 
       <PDFComponent
-        reportCatalogues={activeReport.report_catalogues}
+        report ={activeReport} //reportCatalogues={activeReport.report_catalogues}
         eleve={activeEleve}
         professor={user}
         pdflayout={activeLayout}

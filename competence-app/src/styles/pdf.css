@@ -3,16 +3,89 @@
   /* Define A4 page size and orientation */
   @page {
     size: A4 portrait;
-    /* Portrait orientation */
   }
 }
 
-body {
-  margin: 2cm 2cm;
-  /* 1.5cm top/bottom, 2cm left/right margins */
-  padding: 0;
+
+/*******************************************/
+/* Overview of the difficulties */
+
+.table {
+  width: 100%;
+  /* Ensure the table fits the full width of the page */
+  font-size: 8px;
+  /* Reduce font size for printing */
+  border-collapse: collapse;
+  /* Merge borders for cleaner look */
+  margin: 0;
+  /* Remove margins for compact layout */
 }
 
+.table thead th {
+  background-color: hsl(177, 56%, 56%);
+  /* Light background for headers */
+  font-weight: bold;
+  /* Ensure headers stand out */
+  border: 1px solid #ddd;
+  /* Light border */
+  padding: 4px;
+  /* Compact padding */
+  text-align: center;
+  /* Center header text */
+}
+
+.table tbody td {
+  border: 1px solid #070844;
+  /* Light border for table cells */
+  padding: 4px;
+  /* Compact padding for all table cells */
+  text-align: center;
+  /* Center align all content */
+  vertical-align: left;
+  /* Vertical center alignment */
+  word-wrap: break-word;
+  /* Allow wrapping in case of long text */
+}
+
+/* Compact the images in the last column */
+.table tbody td img {
+  width: 30px;
+  /* Reduce image width */
+  height: 15px;
+  /* Reduce image height */
+  margin-right: 5px;
+  /* Slight margin between image and text */
+}
+
+/* Reduce padding for the observation/details rows */
+.table tbody tr td[colspan="2"] {
+  padding-left: 15px;
+  /* Indent the details row slightly */
+}
+
+/* Ensure detailed rows are smaller and more compact */
+.table tbody tr {
+  line-height: 1.2;
+  /* Reduce line height for compact rows */
+}
+
+/* Prevent page breaks inside the table */
+.table {
+  page-break-inside: avoid;
+}
+
+/* Specific adjustments for print footer */
+.print-footer {
+  margin-top: 1cm;
+  /* Add margin at the bottom for space */
+}
+
+
+
+body {
+  margin: 2cm 2cm 2cm 2cm;
+  padding: 0;
+}
 
 /* General PDF Styling */
 .print-container {
@@ -21,11 +94,10 @@ body {
   height: 297mm;
   /* A4 height */
   margin: 0 auto;
-  /* Center the content horizontally */
+  /* Center content horizontally */
   padding: 10mm;
   /* Add padding for margins */
   font-family: Arial, sans-serif;
-  /* Light border for distinction */
   background-color: #ffffff;
   /* Ensure canvas background is white */
   display: flex;
@@ -37,21 +109,17 @@ body {
 /**************************************************************/
 /* Header */
 /**************************************************************/
-/* Header Container */
 .print-header-container {
-  /*background-color: rgb(235, 178, 93);*/
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   border-bottom: 2px solid #000;
-  margin: 0 0;
   height: 15%;
   width: 100%;
   font-size: 15px;
 }
 
-/* Header Logo Section */
 .print-header-logo-container {
   flex: 0 0 40%;
   display: flex;
@@ -59,45 +127,31 @@ body {
   align-items: left;
 }
 
-
-#print-header-logo {
+.print-header-logo {
   display: flex;
   justify-content: center;
   align-items: left;
   width: 100%;
 }
 
-#print-header-logo canvas {
+.print-header-logo canvas {
   width: auto;
 }
 
-
-
-
 /* Header School Name Section */
-#print-header-school {
+.print-header-school {
   display: flex;
   flex: 0 0 15%;
-  display: flex;
   justify-content: center;
   align-items: left;
   text-align: left;
 }
 
-#print-header-school h1 {
+.print-header-school h1 {
   font-size: 15px;
 }
 
-
-/* Header School Name Section */
-#print-header-gap {
-  flex: 0 0 10%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  text-align: left;
-}
-
+/* Header Info */
 .print-header-info {
   display: flex;
   flex: 0 0 50%;
@@ -108,26 +162,43 @@ body {
   padding: 0 1cm;
 }
 
+/* Print Banner */
+.print-banner {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  text-align: center;
+  overflow: hidden;
+}
 
+.print-header-gap {
+  flex: 0 0 10%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: left;
+}
 
-#print-header-professeur {
+.print-header-professeur {
+  height: 50px;
   justify-content: left;
   align-items: center;
   text-align: left;
 }
 
-
-#print-header-eleve {
+.print-header-eleve {
+  height: 50px;
   justify-content: right;
   align-items: center;
   text-align: left;
+  font-weight: bold;
 }
 
-/*********************************************************************/
-/* Banner */
 
 /*********************************************************************/
-
+/* Banner Styling */
 .print-banner {
   display: flex;
   flex-direction: row;
@@ -140,157 +211,105 @@ body {
   overflow: hidden;
 }
 
-
-
-
 /*********************************************************************/
-/* title */
-
-/*********************************************************************/
-
 /* Chart Title Styling */
 .print-chart-title {
   text-align: center;
-  /* Center the title */
   font-size: 15px;
-  /* Adjust the font size for visibility */
   color: #000000;
-  /* Adjust text color */
   height: 2%;
-  /* Add some space above and below the chart title */
   width: 100%;
-  /* Ensure the title takes the full width of its container */
   word-wrap: break-word;
-  /* Ensure long text wraps properly */
   overflow: hidden;
-  /* Prevent content from spilling out */
-  box-sizing: border-box;
-  /* Ensure padding is included in width calculation */
 }
 
-
-
-
 /*********************************************************************/
-
-/*********************************************************************/
-
 /* Chart Container */
 .print-charts-container {
   display: flex;
   flex-direction: column;
   justify-content: space-around;
-  /* Distribute space between charts */
   align-items: center;
-  height: 50%;
-  /* Fixed height for the container */
+  height: 40%;
   gap: 1cm;
-  /* Add a gap between charts */
   overflow: hidden;
-  /* Prevent any overflow */
-  /*border-bottom: 2px solid #000; */
 }
 
-/* Default style for all charts */
 .print-chart {
   display: flex;
   justify-content: center;
   align-items: center;
   width: 100%;
-  /* Chart takes full width */
-  /*border: 1px solid #9e9c98;*/
-  box-sizing: border-box; 
+  box-sizing: border-box;
 }
 
-/* Specific styles for multiple charts */
 .print-charts-container .print-chart {
   flex-grow: 1;
-  /* Allow charts to grow and take available space */
   max-height: calc(50% - 1cm);
-  /* When there are two charts, each takes half the space minus the gap */ 
 }
 
-/* Handle the case for only one chart with higher specificity */
 .print-charts-container .print-chart:only-child {
   flex-grow: 1;
   height: 100% !important;
-  /* Take the full height when it's the only chart */
   max-height: 100% !important;
-  /* Remove height constraints for one chart */ 
 }
 
- 
-.print-chart canvas {   
-  width: 100%; /* Takes full width */
-  height: auto; /* Maintain aspect ratio */ 
-  max-height: 100%; /* Prevent overflow */ 
-  box-sizing: border-box; /* Ensure padding/borders are included in dimensions */
-
-
+.print-chart canvas {
+  width: 100%;
+  height: auto;
+  max-height: 100%;
+  box-sizing: border-box;
 }
 
-
-
 /*********************************************************************/
-
-/*********************************************************************/
-
 /* Footer */
+/*********************************************************************/
 .print-footer {
   display: flex;
   flex-wrap: wrap;
-  /* Ensure canvas background is white */
-  height: 30%; 
-  /* Stack children vertically */
+  height: 30%;
   width: 100%;
-  /* Full width */
   text-align: left;
-  /* Align text to the left */
   font-size: 15px;
-  /* Base font size */
   margin-top: 0.5cm;
-  /* Space above footer */
 }
 
-/* Avoid page breaks inside the key sections */
+/* New class-based footer selectors */
+.print-footer-message1 {
+  margin-bottom: 0.5cm;
+}
+
+.print-footer-message2 {
+  margin-top: 0.5cm;
+}
+
+/* Avoid page breaks inside key sections */
 .print-header,
 .print-banner,
 .print-charts,
 .print-footer {
   page-break-inside: avoid;
-  /* Prevent page breaks in key sections */
 }
 
-#print-footer-1 {
-  margin-bottom: 0.5cm;
-  /* Space below footer1 */
-}
-
+/* Score Overview Table Styling */
 .print-footer-scoreoverview table {
   width: 100%;
-  border-collapse: collapse; /* Collapse borders for a cleaner look */
+  border-collapse: collapse;
 }
 
 .print-footer-scoreoverview th,
 .print-footer-scoreoverview td {
-  padding: 2px; /* Reduce padding to minimize cell height */
+  padding: 2px;
   text-align: left;
-  vertical-align: middle; /* Align text vertically in the middle */
-  border: 1px solid #ddd; /* Light border for separation */
-  line-height: 1.2; /* Reduce line-height for more compact rows */
+  vertical-align: middle;
+  border: 1px solid #ddd;
+  line-height: 1.2;
 }
 
 .print-footer-scoreoverview th {
-  font-weight: bold; /* Bold the header text */
+  font-weight: bold;
 }
 
 .print-footer-scoreoverview td {
-  font-size: 10px; /* Adjust font size for more compact table */
-}
-
- 
-
-#print-footer-2 {
-  margin-top: 0.5cm;
-  /* Space above footer2 */
+  font-size: 10px;
 }

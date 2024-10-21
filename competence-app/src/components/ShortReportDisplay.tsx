@@ -92,7 +92,7 @@ const ReportCatalogueDisplay: React.FC<ShortReportCatalogueDisplayProps> = ({ re
             <ul>
               {reportCatalogue.resultats.map(result => (
                 <li key={result.id}>
-                  {result.groupage.label_groupage} | Score: {result.score}/ Max: {result.groupage.max_point} | Seuil1: {result.seuil1_percent}% | Seuil2: {result.seuil2_percent}% | Seuil3: {result.seuil3_percent}%
+                  {result.groupage.label_groupage} | Score: {Math.round(result.score)}/ Max: {result.groupage.max_point} | Seuil1: {Math.round(result.seuil1_percent)}% | Seuil2: {Math.round(result.seuil2_percent)}% | Seuil3: {Math.round(result.seuil3_percent)}%
                 </li>
               ))}
             </ul>
