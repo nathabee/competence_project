@@ -1,0 +1,59 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+
+# Ignore .env files (if you store sensitive information there)
+*.env
+
+
+# Virtual environment
+venv/
+ENV/
+
+
+#debug or old code
+**/to_ignore/**
+
+# Django specific files
+*.log
+*.pot
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+staticfiles/
+media/
+media
+
+# Frontend specific
+node_modules/
+dist/
+build/
+
+# Django migrations
+**/migrations/**
+
+# IDE specific files
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+#my tools
+setme
+
+
+# Swaggerdoc  is used to make REST API spec for doc
+# 
+# curl -o swagger.json http://127.0.0.1:8000/swagger/?format=openapi
+#  git clone https://github.com/swagger-api/swagger-ui.git
+# 
+swagger-ui/
+ 
+
+resized_*

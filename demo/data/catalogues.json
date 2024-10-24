@@ -1,0 +1,122 @@
+[
+  {
+      "id": 33,
+      "niveau_id": 2,
+      "etape_id": 2,
+      "annee_id": 1,
+      "matiere_id": 1,
+      "description": "GS Point Repere - VERSION RAPIDE",
+      "niveau": {
+          "id": 2,
+          "niveau": "GS",
+          "description": "Grande Section"
+      },
+      "etape": {
+          "id": 2,
+          "etape": "DEBUT",
+          "description": "Etape repere"
+      },
+      "annee": {
+          "id": 1,
+          "is_active": true,
+          "start_date": "2024-01-01",
+          "stop_date": null,
+          "description": "Annee Scolaire valide"
+      },
+      "matiere": {
+          "id": 1,
+          "matiere": "?",
+          "description": " "
+      }
+  },
+  {
+      "id": 31,
+      "niveau_id": 2,
+      "etape_id": 2,
+      "annee_id": 1,
+      "matiere_id": 1,
+      "description": "GS Point Repere - VERSION DETAILLEE",
+      "niveau": {
+          "id": 2,
+          "niveau": "GS",
+          "description": "Grande Section"
+      },
+      "etape": {
+          "id": 2,
+          "etape": "DEBUT",
+          "description": "Etape repere"
+      },
+      "annee": {
+          "id": 1,
+          "is_active": true,
+          "start_date": "2024-01-01",
+          "stop_date": null,
+          "description": "Annee Scolaire valide"
+      },
+      "matiere": {
+          "id": 1,
+          "matiere": "?",
+          "description": " "
+      }
+  },
+  {
+      "id": 16,
+      "niveau_id": 3,
+      "etape_id": 2,
+      "annee_id": 1,
+      "matiere_id": 2,
+      "description": "CP Point Repere Francais 24-25",
+      "niveau": {
+          "id": 3,
+          "niveau": "CP",
+          "description": "CP"
+      },
+      "etape": {
+          "id": 2,
+          "etape": "DEBUT",
+          "description": "Etape repere"
+      },
+      "annee": {
+          "id": 1,
+          "is_active": true,
+          "start_date": "2024-01-01",
+          "stop_date": null,
+          "description": "Annee Scolaire valide"
+      },
+      "matiere": {
+          "id": 2,
+          "matiere": "F",
+          "description": "Francais "
+      }
+  },
+  {
+      "id": 1,
+      "niveau_id": 3,
+      "etape_id": 2,
+      "annee_id": 1,
+      "matiere_id": 3,
+      "description": "CP Point Repere Mathematiques 24-25",
+      "niveau": {
+          "id": 3,
+          "niveau": "CP",
+          "description": "CP"
+      },
+      "etape": {
+          "id": 2,
+          "etape": "DEBUT",
+          "description": "Etape repere"
+      },
+      "annee": {
+          "id": 1,
+          "is_active": true,
+          "start_date": "2024-01-01",
+          "stop_date": null,
+          "description": "Annee Scolaire valide"
+      },
+      "matiere": {
+          "id": 3,
+          "matiere": "M",
+          "description": "Mathematiques"
+      }
+  }
+]

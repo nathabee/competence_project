@@ -1,0 +1,2916 @@
+[ 
+{
+    "id": 4,
+    "eleve": 5,
+    "professeur": 107,
+    "pdflayout": 1,
+    "created_at": "2024-10-21T09:50:38.753503Z",
+    "updated_at": "2024-10-23T06:38:43.640838Z",
+    "report_catalogues": [
+        {
+            "id": 5,
+            "catalogue": {
+                "id": 31,
+                "description": "GS Point Repere - VERSION DETAILLEE"
+            },
+            "resultats": [
+                {
+                    "id": 31,
+                    "groupage": {
+                        "id": 60,
+                        "catalogue": 31,
+                        "groupage_icon_id": 3,
+                        "catalogue_id": 31,
+                        "position": 1,
+                        "desc_groupage": "évaluations repères GS : LES COULEURS",
+                        "label_groupage": "LES COULEURS",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 22,
+                        "seuil1": 5,
+                        "seuil2": 8,
+                        "max_item": 22,
+                        "items": [
+                            {
+                                "id": 61,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Bleu",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 62,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Rouge",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 2,
+                                "link": " "
+                            },
+                            {
+                                "id": 63,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Jaune",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 3,
+                                "link": ""
+                            },
+                            {
+                                "id": 64,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Vert",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 4,
+                                "link": ""
+                            },
+                            {
+                                "id": 65,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Orange",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 5,
+                                "link": ""
+                            },
+                            {
+                                "id": 66,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Rose",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 6,
+                                "link": ""
+                            },
+                            {
+                                "id": 67,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Violet",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 7,
+                                "link": ""
+                            },
+                            {
+                                "id": 68,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Blanc",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 8,
+                                "link": ""
+                            },
+                            {
+                                "id": 69,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Noir",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 9,
+                                "link": ""
+                            },
+                            {
+                                "id": 70,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Gris",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 10,
+                                "link": ""
+                            },
+                            {
+                                "id": 71,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Marron",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 11,
+                                "link": ""
+                            },
+                            {
+                                "id": 72,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Bleu",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 12,
+                                "link": ""
+                            },
+                            {
+                                "id": 73,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Rouge",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 13,
+                                "link": ""
+                            },
+                            {
+                                "id": 74,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Jaune",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 14,
+                                "link": ""
+                            },
+                            {
+                                "id": 75,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Vert",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 15,
+                                "link": ""
+                            },
+                            {
+                                "id": 76,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Orange",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 16,
+                                "link": ""
+                            },
+                            {
+                                "id": 77,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Rose",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 17,
+                                "link": ""
+                            },
+                            {
+                                "id": 78,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Violet",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 18,
+                                "link": ""
+                            },
+                            {
+                                "id": 79,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Blanc",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 19,
+                                "link": ""
+                            },
+                            {
+                                "id": 80,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Noir",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 20,
+                                "link": ""
+                            },
+                            {
+                                "id": 81,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Gris",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 21,
+                                "link": ""
+                            },
+                            {
+                                "id": 82,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Marron",
+                                "observation": "",
+                                "scorerule": 2,
+                                "max_score": 1,
+                                "itempos": 22,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 15,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 50,
+                    "resultat_details": [
+                        {
+                            "id": 109,
+                            "item": {
+                                "id": 61,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Bleu",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 110,
+                            "item": {
+                                "id": 62,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Rouge",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 2,
+                                "link": " ",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 111,
+                            "item": {
+                                "id": 63,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Jaune",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 3,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 112,
+                            "item": {
+                                "id": 64,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Vert",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 4,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 113,
+                            "item": {
+                                "id": 65,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Orange",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 5,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 114,
+                            "item": {
+                                "id": 66,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Rose",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 6,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 115,
+                            "item": {
+                                "id": 67,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Violet",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 7,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 116,
+                            "item": {
+                                "id": 68,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Blanc",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 8,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 117,
+                            "item": {
+                                "id": 69,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Noir",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 9,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 118,
+                            "item": {
+                                "id": 70,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Gris",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 10,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 119,
+                            "item": {
+                                "id": 71,
+                                "temps": "Temps 1",
+                                "description": "identifier et nommer une couleur: Marron",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 11,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 120,
+                            "item": {
+                                "id": 72,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Bleu",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 12,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 121,
+                            "item": {
+                                "id": 73,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Rouge",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 13,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 122,
+                            "item": {
+                                "id": 74,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Jaune",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 14,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 123,
+                            "item": {
+                                "id": 75,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Vert",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 15,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 124,
+                            "item": {
+                                "id": 76,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Orange",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 16,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 125,
+                            "item": {
+                                "id": 77,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Rose",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 17,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 126,
+                            "item": {
+                                "id": 78,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Violet",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 18,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 127,
+                            "item": {
+                                "id": 79,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Blanc",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 19,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 128,
+                            "item": {
+                                "id": 80,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Noir",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 20,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 129,
+                            "item": {
+                                "id": 81,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Gris",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 21,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 130,
+                            "item": {
+                                "id": 82,
+                                "temps": "Temps 2",
+                                "description": "reconnaitre une carte par le nom de sa couleur: Marron",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 22,
+                                "link": "",
+                                "groupagedata": 60,
+                                "scorerule": 2
+                            },
+                            "score": 1,
+                            "scorelabel": "A",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 32,
+                    "groupage": {
+                        "id": 61,
+                        "catalogue": 31,
+                        "groupage_icon_id": 7,
+                        "catalogue_id": 31,
+                        "position": 2,
+                        "desc_groupage": "évaluations repères GS : RECONNAISSANCE PRENOM",
+                        "label_groupage": "RECONNAISSANCE PRENOM",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 5,
+                        "seuil1": 2,
+                        "seuil2": 3,
+                        "max_item": 8,
+                        "items": [
+                            {
+                                "id": 83,
+                                "temps": "Temps 1",
+                                "description": "Reconnaissance de son prénom en majuscule d'imprimerie",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 84,
+                                "temps": "Temps 1",
+                                "description": "Reconnaissance prénom en cursive",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 2,
+                                "link": ""
+                            },
+                            {
+                                "id": 85,
+                                "temps": "Temps 1",
+                                "description": "Main d'écriture",
+                                "observation": "POINT A DEFINIR",
+                                "scorerule": 7,
+                                "max_score": 0,
+                                "itempos": 3,
+                                "link": ""
+                            },
+                            {
+                                "id": 86,
+                                "temps": "Temps 2",
+                                "description": "Choix de l'outils scripteurs",
+                                "observation": "POINT A DEFINIR",
+                                "scorerule": 7,
+                                "max_score": 0,
+                                "itempos": 4,
+                                "link": ""
+                            },
+                            {
+                                "id": 87,
+                                "temps": "Temps 2",
+                                "description": "Sens de l'écriture ",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 5,
+                                "link": ""
+                            },
+                            {
+                                "id": 88,
+                                "temps": "Temps 2",
+                                "description": "Sens d'écriture des lettres",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 6,
+                                "link": ""
+                            },
+                            {
+                                "id": 89,
+                                "temps": "Temps 2",
+                                "description": "Geste graphique",
+                                "observation": "",
+                                "scorerule": 7,
+                                "max_score": 1,
+                                "itempos": 7,
+                                "link": ""
+                            },
+                            {
+                                "id": 90,
+                                "temps": "Temps 2",
+                                "description": "Tenue de l'outils scripteurs (photo)",
+                                "observation": "POINT A DEFINIR",
+                                "scorerule": 7,
+                                "max_score": 0,
+                                "itempos": 8,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 1,
+                    "seuil1_percent": 50,
+                    "seuil2_percent": 0,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 131,
+                            "item": {
+                                "id": 83,
+                                "temps": "Temps 1",
+                                "description": "Reconnaissance de son prénom en majuscule d'imprimerie",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 4
+                            },
+                            "score": 0,
+                            "scorelabel": "Non",
+                            "observation": ""
+                        },
+                        {
+                            "id": 132,
+                            "item": {
+                                "id": 84,
+                                "temps": "Temps 1",
+                                "description": "Reconnaissance prénom en cursive",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 2,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 133,
+                            "item": {
+                                "id": 85,
+                                "temps": "Temps 1",
+                                "description": "Main d'écriture",
+                                "observation": "POINT A DEFINIR",
+                                "max_score": 0,
+                                "itempos": 3,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 7
+                            },
+                            "score": 0,
+                            "scorelabel": "Zero",
+                            "observation": ""
+                        },
+                        {
+                            "id": 134,
+                            "item": {
+                                "id": 86,
+                                "temps": "Temps 2",
+                                "description": "Choix de l'outils scripteurs",
+                                "observation": "POINT A DEFINIR",
+                                "max_score": 0,
+                                "itempos": 4,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 7
+                            },
+                            "score": 0,
+                            "scorelabel": "Zero",
+                            "observation": ""
+                        },
+                        {
+                            "id": 135,
+                            "item": {
+                                "id": 87,
+                                "temps": "Temps 2",
+                                "description": "Sens de l'écriture ",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 5,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 4
+                            },
+                            "score": 0,
+                            "scorelabel": "Non",
+                            "observation": ""
+                        },
+                        {
+                            "id": 136,
+                            "item": {
+                                "id": 88,
+                                "temps": "Temps 2",
+                                "description": "Sens d'écriture des lettres",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 6,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 4
+                            },
+                            "score": 0,
+                            "scorelabel": "Non",
+                            "observation": ""
+                        },
+                        {
+                            "id": 137,
+                            "item": {
+                                "id": 89,
+                                "temps": "Temps 2",
+                                "description": "Geste graphique",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 7,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 7
+                            },
+                            "score": 0,
+                            "scorelabel": "Zero",
+                            "observation": ""
+                        },
+                        {
+                            "id": 138,
+                            "item": {
+                                "id": 90,
+                                "temps": "Temps 2",
+                                "description": "Tenue de l'outils scripteurs (photo)",
+                                "observation": "POINT A DEFINIR",
+                                "max_score": 0,
+                                "itempos": 8,
+                                "link": "",
+                                "groupagedata": 61,
+                                "scorerule": 7
+                            },
+                            "score": 0,
+                            "scorelabel": "Zero",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 33,
+                    "groupage": {
+                        "id": 62,
+                        "catalogue": 31,
+                        "groupage_icon_id": 9,
+                        "catalogue_id": 31,
+                        "position": 3,
+                        "desc_groupage": "évaluations repères GS : REPÉRAGE SPATIAL ET TOPOLOGIE",
+                        "label_groupage": "REPÉRAGE SPATIAL ET TOPOLOGIE",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 32,
+                        "seuil1": 4,
+                        "seuil2": 6,
+                        "max_item": 16,
+                        "items": [
+                            {
+                                "id": 91,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: Au-dessus",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 92,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: En-dessous",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": ""
+                            },
+                            {
+                                "id": 93,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À droite",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": ""
+                            },
+                            {
+                                "id": 94,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À gauche",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 4,
+                                "link": ""
+                            },
+                            {
+                                "id": 95,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: Dedans",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": ""
+                            },
+                            {
+                                "id": 96,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: Dehors",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 6,
+                                "link": ""
+                            },
+                            {
+                                "id": 97,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À l'intérieur",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 7,
+                                "link": ""
+                            },
+                            {
+                                "id": 98,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À l'extérieur",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 8,
+                                "link": ""
+                            },
+                            {
+                                "id": 99,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: Au-dessus",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 9,
+                                "link": ""
+                            },
+                            {
+                                "id": 100,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: En-dessous",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 10,
+                                "link": ""
+                            },
+                            {
+                                "id": 101,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À droite",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 11,
+                                "link": ""
+                            },
+                            {
+                                "id": 102,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À gauche",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 12,
+                                "link": ""
+                            },
+                            {
+                                "id": 103,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: Dedans",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 13,
+                                "link": ""
+                            },
+                            {
+                                "id": 104,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: Dehors",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 14,
+                                "link": ""
+                            },
+                            {
+                                "id": 105,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À l'intérieur",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 15,
+                                "link": ""
+                            },
+                            {
+                                "id": 106,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À l'extérieur",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 16,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 5,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 50,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 139,
+                            "item": {
+                                "id": 91,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: Au-dessus",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 140,
+                            "item": {
+                                "id": 92,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: En-dessous",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 141,
+                            "item": {
+                                "id": 93,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À droite",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 142,
+                            "item": {
+                                "id": 94,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À gauche",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 4,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 143,
+                            "item": {
+                                "id": 95,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: Dedans",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 144,
+                            "item": {
+                                "id": 96,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: Dehors",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 6,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 145,
+                            "item": {
+                                "id": 97,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À l'intérieur",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 7,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 146,
+                            "item": {
+                                "id": 98,
+                                "temps": "Temps 1",
+                                "description": "désigner la position d'objets nommés par l'enseignant: À l'extérieur",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 8,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 147,
+                            "item": {
+                                "id": 99,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: Au-dessus",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 9,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 148,
+                            "item": {
+                                "id": 100,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: En-dessous",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 10,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 149,
+                            "item": {
+                                "id": 101,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À droite",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 11,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 150,
+                            "item": {
+                                "id": 102,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À gauche",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 12,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 151,
+                            "item": {
+                                "id": 103,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: Dedans",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 13,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 152,
+                            "item": {
+                                "id": 104,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: Dehors",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 14,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 153,
+                            "item": {
+                                "id": 105,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À l'intérieur",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 15,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 154,
+                            "item": {
+                                "id": 106,
+                                "temps": "Temps 2",
+                                "description": "Nommer la position d'objets nommés par l'enseignant: À l'extérieur",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 16,
+                                "link": "",
+                                "groupagedata": 62,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 34,
+                    "groupage": {
+                        "id": 63,
+                        "catalogue": 31,
+                        "groupage_icon_id": 2,
+                        "catalogue_id": 31,
+                        "position": 4,
+                        "desc_groupage": "évaluations repères GS : CATEGORISATION",
+                        "label_groupage": "CATEGORISATION",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 6,
+                        "seuil1": 2,
+                        "seuil2": 3,
+                        "max_item": 6,
+                        "items": [
+                            {
+                                "id": 107,
+                                "temps": "Temps 1",
+                                "description": "L'élève nomme l'ensemble des objets présentés",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 108,
+                                "temps": "Temps 1",
+                                "description": "L'élève mémorise les objets qu'il ne connaît pas présentés par l'adulte",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 2,
+                                "link": ""
+                            },
+                            {
+                                "id": 109,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable de catégoriser l'ensemble des objets",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 3,
+                                "link": ""
+                            },
+                            {
+                                "id": 110,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable de nommer la famille de l'objet",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 4,
+                                "link": ""
+                            },
+                            {
+                                "id": 111,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable de revenir sur une erreur seul",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 5,
+                                "link": ""
+                            },
+                            {
+                                "id": 112,
+                                "temps": "Temps 1",
+                                "description": "En cas d'erreur",
+                                "observation": "Non",
+                                "scorerule": 7,
+                                "max_score": 0,
+                                "itempos": 6,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 5,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 66.66666666666666,
+                    "resultat_details": [
+                        {
+                            "id": 155,
+                            "item": {
+                                "id": 107,
+                                "temps": "Temps 1",
+                                "description": "L'élève nomme l'ensemble des objets présentés",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 63,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 156,
+                            "item": {
+                                "id": 108,
+                                "temps": "Temps 1",
+                                "description": "L'élève mémorise les objets qu'il ne connaît pas présentés par l'adulte",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 2,
+                                "link": "",
+                                "groupagedata": 63,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 157,
+                            "item": {
+                                "id": 109,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable de catégoriser l'ensemble des objets",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 3,
+                                "link": "",
+                                "groupagedata": 63,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 158,
+                            "item": {
+                                "id": 110,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable de nommer la famille de l'objet",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 4,
+                                "link": "",
+                                "groupagedata": 63,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 159,
+                            "item": {
+                                "id": 111,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable de revenir sur une erreur seul",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 5,
+                                "link": "",
+                                "groupagedata": 63,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 160,
+                            "item": {
+                                "id": 112,
+                                "temps": "Temps 1",
+                                "description": "En cas d'erreur",
+                                "observation": "Non",
+                                "max_score": 0,
+                                "itempos": 6,
+                                "link": "",
+                                "groupagedata": 63,
+                                "scorerule": 7
+                            },
+                            "score": 0,
+                            "scorelabel": "Zero",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 35,
+                    "groupage": {
+                        "id": 64,
+                        "catalogue": 31,
+                        "groupage_icon_id": 4,
+                        "catalogue_id": 31,
+                        "position": 5,
+                        "desc_groupage": "évaluations repères GS : MEMORISATION HISTOIRE",
+                        "label_groupage": "MEMORISATION HISTOIRE",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 10,
+                        "seuil1": 2,
+                        "seuil2": 3,
+                        "max_item": 7,
+                        "items": [
+                            {
+                                "id": 113,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable d'écouter une histoire",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 114,
+                                "temps": "Temps 2",
+                                "description": "L'élève a mémorisé l'histoire et la verbalise",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": ""
+                            },
+                            {
+                                "id": 115,
+                                "temps": "Temps 2",
+                                "description": "L'élève utilise le vocabulaire utilisé dans l'histoire",
+                                "observation": "Observations (vocabulaire)",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 3,
+                                "link": ""
+                            },
+                            {
+                                "id": 116,
+                                "temps": "Temps 2",
+                                "description": "L'élève présente les personnages de l'histoire",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 4,
+                                "link": ""
+                            },
+                            {
+                                "id": 117,
+                                "temps": "Temps 2",
+                                "description": "L'élève remet les images dans l'ordre chronologique de l'histoire",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": ""
+                            },
+                            {
+                                "id": 118,
+                                "temps": "Temps 2",
+                                "description": "- sens de la lecture et de l'écriture (ne pas induire)",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 6,
+                                "link": ""
+                            },
+                            {
+                                "id": 119,
+                                "temps": "Temps 2",
+                                "description": "-mise en place des images",
+                                "observation": "POINT A DEFINIR",
+                                "scorerule": 7,
+                                "max_score": 0,
+                                "itempos": 7,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 3,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 161,
+                            "item": {
+                                "id": 113,
+                                "temps": "Temps 1",
+                                "description": "L'élève est capable d'écouter une histoire",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 64,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 162,
+                            "item": {
+                                "id": 114,
+                                "temps": "Temps 2",
+                                "description": "L'élève a mémorisé l'histoire et la verbalise",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": "",
+                                "groupagedata": 64,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 163,
+                            "item": {
+                                "id": 115,
+                                "temps": "Temps 2",
+                                "description": "L'élève utilise le vocabulaire utilisé dans l'histoire",
+                                "observation": "Observations (vocabulaire)",
+                                "max_score": 1,
+                                "itempos": 3,
+                                "link": "",
+                                "groupagedata": 64,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 164,
+                            "item": {
+                                "id": 116,
+                                "temps": "Temps 2",
+                                "description": "L'élève présente les personnages de l'histoire",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 4,
+                                "link": "",
+                                "groupagedata": 64,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 165,
+                            "item": {
+                                "id": 117,
+                                "temps": "Temps 2",
+                                "description": "L'élève remet les images dans l'ordre chronologique de l'histoire",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": "",
+                                "groupagedata": 64,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 166,
+                            "item": {
+                                "id": 118,
+                                "temps": "Temps 2",
+                                "description": "- sens de la lecture et de l'écriture (ne pas induire)",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 6,
+                                "link": "",
+                                "groupagedata": 64,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        },
+                        {
+                            "id": 167,
+                            "item": {
+                                "id": 119,
+                                "temps": "Temps 2",
+                                "description": "-mise en place des images",
+                                "observation": "POINT A DEFINIR",
+                                "max_score": 0,
+                                "itempos": 7,
+                                "link": "",
+                                "groupagedata": 64,
+                                "scorerule": 7
+                            },
+                            "score": 0,
+                            "scorelabel": "Zero",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 36,
+                    "groupage": {
+                        "id": 65,
+                        "catalogue": 31,
+                        "groupage_icon_id": 5,
+                        "catalogue_id": 31,
+                        "position": 6,
+                        "desc_groupage": "évaluations repères GS : LA SUITE NUMÉRIQUE",
+                        "label_groupage": "LA SUITE NUMÉRIQUE",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 15,
+                        "seuil1": 2,
+                        "seuil2": 3,
+                        "max_item": 8,
+                        "items": [
+                            {
+                                "id": 120,
+                                "temps": "Temps 1",
+                                "description": "L'élève connaît la suite numérique orale jusqu'à .....",
+                                "observation": "",
+                                "scorerule": 6,
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 121,
+                                "temps": "Temps 1",
+                                "description": "L'élève met en lien la suite numérique oral et écrite jusqu'à ...",
+                                "observation": "",
+                                "scorerule": 6,
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": ""
+                            },
+                            {
+                                "id": 122,
+                                "temps": "Temps 1",
+                                "description": "L'élève fait émerger la notion de chiffre etde nombre",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": ""
+                            },
+                            {
+                                "id": 123,
+                                "temps": "Temps 1",
+                                "description": "L'élève confond les notions de lettres et de chiffres",
+                                "observation": "",
+                                "scorerule": 5,
+                                "max_score": 1,
+                                "itempos": 4,
+                                "link": ""
+                            },
+                            {
+                                "id": 124,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 cartes nombres",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": ""
+                            },
+                            {
+                                "id": 125,
+                                "temps": "Temps 2",
+                                "description": "L'élève met en lien les quotités et les quantités",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 6,
+                                "link": ""
+                            },
+                            {
+                                "id": 126,
+                                "temps": "Temps 3",
+                                "description": "L'élève précise les quantités contenues dans chaque collection",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 7,
+                                "link": ""
+                            },
+                            {
+                                "id": 127,
+                                "temps": "Temps 3",
+                                "description": "L'élève met en lien les quantités et les quotités",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 8,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 3,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 168,
+                            "item": {
+                                "id": 120,
+                                "temps": "Temps 1",
+                                "description": "L'élève connaît la suite numérique orale jusqu'à .....",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 6
+                            },
+                            "score": 0,
+                            "scorelabel": "Moins de 10",
+                            "observation": ""
+                        },
+                        {
+                            "id": 169,
+                            "item": {
+                                "id": 121,
+                                "temps": "Temps 1",
+                                "description": "L'élève met en lien la suite numérique oral et écrite jusqu'à ...",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 6
+                            },
+                            "score": 1,
+                            "scorelabel": "De 10 a 20",
+                            "observation": ""
+                        },
+                        {
+                            "id": 170,
+                            "item": {
+                                "id": 122,
+                                "temps": "Temps 1",
+                                "description": "L'élève fait émerger la notion de chiffre etde nombre",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 171,
+                            "item": {
+                                "id": 123,
+                                "temps": "Temps 1",
+                                "description": "L'élève confond les notions de lettres et de chiffres",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 4,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 5
+                            },
+                            "score": 1,
+                            "scorelabel": "Non",
+                            "observation": ""
+                        },
+                        {
+                            "id": 172,
+                            "item": {
+                                "id": 124,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 cartes nombres",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 173,
+                            "item": {
+                                "id": 125,
+                                "temps": "Temps 2",
+                                "description": "L'élève met en lien les quotités et les quantités",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 6,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 174,
+                            "item": {
+                                "id": 126,
+                                "temps": "Temps 3",
+                                "description": "L'élève précise les quantités contenues dans chaque collection",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 7,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 175,
+                            "item": {
+                                "id": 127,
+                                "temps": "Temps 3",
+                                "description": "L'élève met en lien les quantités et les quotités",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 8,
+                                "link": "",
+                                "groupagedata": 65,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 37,
+                    "groupage": {
+                        "id": 66,
+                        "catalogue": 31,
+                        "groupage_icon_id": 8,
+                        "catalogue_id": 31,
+                        "position": 7,
+                        "desc_groupage": "évaluations repères GS : LA RÉSOLUTION DE PROBLEMES",
+                        "label_groupage": "LA RÉSOLUTION DE PROBLEMES",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 6,
+                        "seuil1": 1,
+                        "seuil2": 2,
+                        "max_item": 3,
+                        "items": [
+                            {
+                                "id": 128,
+                                "temps": "Temps 1",
+                                "description": "verbaliser le problème et demander la solution présentant 3 cartes réponses",
+                                "observation": "test en mai?",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 129,
+                                "temps": "Temps 1",
+                                "description": "présenter un problème à l'aide d'images et demande la solution avec 3 cartes réponses",
+                                "observation": "test en mai?",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": ""
+                            },
+                            {
+                                "id": 130,
+                                "temps": "Temps 1",
+                                "description": "présenter 1 image et poser questions ",
+                                "observation": "test en mai?",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": "70"
+                            }
+                        ]
+                    },
+                    "score": 0,
+                    "seuil1_percent": 0,
+                    "seuil2_percent": 0,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 176,
+                            "item": {
+                                "id": 128,
+                                "temps": "Temps 1",
+                                "description": "verbaliser le problème et demander la solution présentant 3 cartes réponses",
+                                "observation": "test en mai?",
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 66,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 177,
+                            "item": {
+                                "id": 129,
+                                "temps": "Temps 1",
+                                "description": "présenter un problème à l'aide d'images et demande la solution avec 3 cartes réponses",
+                                "observation": "test en mai?",
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": "",
+                                "groupagedata": 66,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 178,
+                            "item": {
+                                "id": 130,
+                                "temps": "Temps 1",
+                                "description": "présenter 1 image et poser questions ",
+                                "observation": "test en mai?",
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": "70",
+                                "groupagedata": 66,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 38,
+                    "groupage": {
+                        "id": 67,
+                        "catalogue": 31,
+                        "groupage_icon_id": 6,
+                        "catalogue_id": 31,
+                        "position": 8,
+                        "desc_groupage": "évaluations repères GS : PHONOLOGIE",
+                        "label_groupage": "PHONOLOGIE",
+                        "link": "https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf",
+                        "max_point": 31,
+                        "seuil1": 4,
+                        "seuil2": 7,
+                        "max_item": 16,
+                        "items": [
+                            {
+                                "id": 131,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son A",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": ""
+                            },
+                            {
+                                "id": 132,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son E",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": ""
+                            },
+                            {
+                                "id": 133,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son I",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": ""
+                            },
+                            {
+                                "id": 134,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son O",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 4,
+                                "link": ""
+                            },
+                            {
+                                "id": 135,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son U",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": ""
+                            },
+                            {
+                                "id": 136,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 6,
+                                "link": ""
+                            },
+                            {
+                                "id": 137,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son A",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 7,
+                                "link": ""
+                            },
+                            {
+                                "id": 138,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 8,
+                                "link": ""
+                            },
+                            {
+                                "id": 139,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son E",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 9,
+                                "link": ""
+                            },
+                            {
+                                "id": 140,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 10,
+                                "link": ""
+                            },
+                            {
+                                "id": 141,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son I",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 11,
+                                "link": ""
+                            },
+                            {
+                                "id": 142,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 12,
+                                "link": ""
+                            },
+                            {
+                                "id": 143,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son O",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 13,
+                                "link": ""
+                            },
+                            {
+                                "id": 144,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 14,
+                                "link": ""
+                            },
+                            {
+                                "id": 145,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son U",
+                                "observation": "",
+                                "scorerule": 3,
+                                "max_score": 2,
+                                "itempos": 15,
+                                "link": ""
+                            },
+                            {
+                                "id": 146,
+                                "temps": "Temps 2",
+                                "description": "Observations complémentaires de l'enseignant sur les conditions de passation.",
+                                "observation": "",
+                                "scorerule": 4,
+                                "max_score": 1,
+                                "itempos": 16,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 12,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 20.833333333333336,
+                    "resultat_details": [
+                        {
+                            "id": 179,
+                            "item": {
+                                "id": 131,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son A",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 180,
+                            "item": {
+                                "id": 132,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son E",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 2,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 181,
+                            "item": {
+                                "id": 133,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son I",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 3,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 182,
+                            "item": {
+                                "id": 134,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son O",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 4,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 183,
+                            "item": {
+                                "id": 135,
+                                "temps": "Temps 1",
+                                "description": "L'élève entend le son U",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 5,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 184,
+                            "item": {
+                                "id": 136,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 6,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 185,
+                            "item": {
+                                "id": 137,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son A",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 7,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 186,
+                            "item": {
+                                "id": 138,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 8,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 187,
+                            "item": {
+                                "id": 139,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son E",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 9,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 188,
+                            "item": {
+                                "id": 140,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 10,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 2,
+                            "scorelabel": "A",
+                            "observation": ""
+                        },
+                        {
+                            "id": 189,
+                            "item": {
+                                "id": 141,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son I",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 11,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 190,
+                            "item": {
+                                "id": 142,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 12,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 191,
+                            "item": {
+                                "id": 143,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son O",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 13,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 192,
+                            "item": {
+                                "id": 144,
+                                "temps": "Temps 2",
+                                "description": "L'élève nomme les 5 objets ou images",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 14,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 0,
+                            "scorelabel": "NA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 193,
+                            "item": {
+                                "id": 145,
+                                "temps": "Temps 2",
+                                "description": "L'élève verbalise ceux où il entend le son U",
+                                "observation": "",
+                                "max_score": 2,
+                                "itempos": 15,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 3
+                            },
+                            "score": 1,
+                            "scorelabel": "ECA",
+                            "observation": ""
+                        },
+                        {
+                            "id": 194,
+                            "item": {
+                                "id": 146,
+                                "temps": "Temps 2",
+                                "description": "Observations complémentaires de l'enseignant sur les conditions de passation.",
+                                "observation": "",
+                                "max_score": 1,
+                                "itempos": 16,
+                                "link": "",
+                                "groupagedata": 67,
+                                "scorerule": 4
+                            },
+                            "score": 1,
+                            "scorelabel": "Oui",
+                            "observation": ""
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "id": 6,
+            "catalogue": {
+                "id": 16,
+                "description": "CP Point Repere Francais 24-25"
+            },
+            "resultats": [
+                {
+                    "id": 39,
+                    "groupage": {
+                        "id": 1,
+                        "catalogue": 16,
+                        "groupage_icon_id": 7,
+                        "catalogue_id": 16,
+                        "position": 1,
+                        "desc_groupage": "évaluation repères CP : Comprendre des mots",
+                        "label_groupage": "Comprendre des mots",
+                        "link": "https://www.education.gouv.fr/media/115921/download",
+                        "max_point": 15,
+                        "seuil1": 6,
+                        "seuil2": 10,
+                        "max_item": 0,
+                        "items": [
+                            {
+                                "id": 2,
+                                "temps": "Temps X",
+                                "description": "Comprendre des mots",
+                                "observation": "a definir",
+                                "scorerule": 8,
+                                "max_score": 15,
+                                "itempos": 1,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 8,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 50,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 195,
+                            "item": {
+                                "id": 2,
+                                "temps": "Temps X",
+                                "description": "Comprendre des mots",
+                                "observation": "a definir",
+                                "max_score": 15,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 1,
+                                "scorerule": 8
+                            },
+                            "score": 8,
+                            "scorelabel": "8",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 40,
+                    "groupage": {
+                        "id": 2,
+                        "catalogue": 16,
+                        "groupage_icon_id": 2,
+                        "catalogue_id": 16,
+                        "position": 2,
+                        "desc_groupage": "évaluation repères CP : Comprendre des phrases",
+                        "label_groupage": "Comprendre des phrases",
+                        "link": "https://www.education.gouv.fr/media/115963/download",
+                        "max_point": 14,
+                        "seuil1": 6,
+                        "seuil2": 10,
+                        "max_item": 0,
+                        "items": [
+                            {
+                                "id": 3,
+                                "temps": "Temps X",
+                                "description": "Comprendre des phrases",
+                                "observation": "a definir",
+                                "scorerule": 8,
+                                "max_score": 14,
+                                "itempos": 1,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 5,
+                    "seuil1_percent": 83.33333333333334,
+                    "seuil2_percent": 0,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 196,
+                            "item": {
+                                "id": 3,
+                                "temps": "Temps X",
+                                "description": "Comprendre des phrases",
+                                "observation": "a definir",
+                                "max_score": 14,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 2,
+                                "scorerule": 8
+                            },
+                            "score": 5,
+                            "scorelabel": "5",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 41,
+                    "groupage": {
+                        "id": 3,
+                        "catalogue": 16,
+                        "groupage_icon_id": 3,
+                        "catalogue_id": 16,
+                        "position": 3,
+                        "desc_groupage": "évaluation repères CP : Comprendre un texte",
+                        "label_groupage": "Comprendre un texte",
+                        "link": "https://www.education.gouv.fr/media/115972/download",
+                        "max_point": 11,
+                        "seuil1": 3,
+                        "seuil2": 5,
+                        "max_item": 0,
+                        "items": [
+                            {
+                                "id": 4,
+                                "temps": "Temps X",
+                                "description": "Comprendre un texte",
+                                "observation": "a definir",
+                                "scorerule": 8,
+                                "max_score": 11,
+                                "itempos": 1,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 4,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 50,
+                    "seuil3_percent": 0,
+                    "resultat_details": [
+                        {
+                            "id": 197,
+                            "item": {
+                                "id": 4,
+                                "temps": "Temps X",
+                                "description": "Comprendre un texte",
+                                "observation": "a definir",
+                                "max_score": 11,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 3,
+                                "scorerule": 8
+                            },
+                            "score": 4,
+                            "scorelabel": "4",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 42,
+                    "groupage": {
+                        "id": 4,
+                        "catalogue": 16,
+                        "groupage_icon_id": 4,
+                        "catalogue_id": 16,
+                        "position": 4,
+                        "desc_groupage": "évaluation repères CP : Connaître le nom des lettres",
+                        "label_groupage": "Connaître le nom des lettres",
+                        "link": "https://www.education.gouv.fr/media/115978/download",
+                        "max_point": 10,
+                        "seuil1": 2,
+                        "seuil2": 5,
+                        "max_item": 0,
+                        "items": [
+                            {
+                                "id": 5,
+                                "temps": "Temps X",
+                                "description": "Connaître le nom des lettres",
+                                "observation": "a definir",
+                                "scorerule": 8,
+                                "max_score": 10,
+                                "itempos": 1,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 6,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 20,
+                    "resultat_details": [
+                        {
+                            "id": 198,
+                            "item": {
+                                "id": 5,
+                                "temps": "Temps X",
+                                "description": "Connaître le nom des lettres",
+                                "observation": "a definir",
+                                "max_score": 10,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 4,
+                                "scorerule": 8
+                            },
+                            "score": 6,
+                            "scorelabel": "6",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 43,
+                    "groupage": {
+                        "id": 5,
+                        "catalogue": 16,
+                        "groupage_icon_id": 6,
+                        "catalogue_id": 16,
+                        "position": 5,
+                        "desc_groupage": "évaluation repères CP : Manipuler des phonèmes",
+                        "label_groupage": "Manipuler des phonèmes",
+                        "link": "https://www.education.gouv.fr/media/116005/download",
+                        "max_point": 15,
+                        "seuil1": 2,
+                        "seuil2": 5,
+                        "max_item": 0,
+                        "items": [
+                            {
+                                "id": 6,
+                                "temps": "Temps X",
+                                "description": "Manipuler des phonèmes",
+                                "observation": "a definir",
+                                "scorerule": 8,
+                                "max_score": 15,
+                                "itempos": 1,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 13,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 80,
+                    "resultat_details": [
+                        {
+                            "id": 199,
+                            "item": {
+                                "id": 6,
+                                "temps": "Temps X",
+                                "description": "Manipuler des phonèmes",
+                                "observation": "a definir",
+                                "max_score": 15,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 5,
+                                "scorerule": 8
+                            },
+                            "score": 13,
+                            "scorelabel": "13",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 44,
+                    "groupage": {
+                        "id": 6,
+                        "catalogue": 16,
+                        "groupage_icon_id": 11,
+                        "catalogue_id": 16,
+                        "position": 6,
+                        "desc_groupage": "évaluation repères CP : Manipuler des syllabes",
+                        "label_groupage": "Manipuler des syllabes",
+                        "link": "https://www.education.gouv.fr/media/116008/download",
+                        "max_point": 15,
+                        "seuil1": 5,
+                        "seuil2": 8,
+                        "max_item": 0,
+                        "items": [
+                            {
+                                "id": 7,
+                                "temps": "Temps X",
+                                "description": "Manipuler des syllabes",
+                                "observation": "a definir",
+                                "scorerule": 8,
+                                "max_score": 15,
+                                "itempos": 1,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 12,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 57.14285714285714,
+                    "resultat_details": [
+                        {
+                            "id": 200,
+                            "item": {
+                                "id": 7,
+                                "temps": "Temps X",
+                                "description": "Manipuler des syllabes",
+                                "observation": "a definir",
+                                "max_score": 15,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 6,
+                                "scorerule": 8
+                            },
+                            "score": 12,
+                            "scorelabel": "12",
+                            "observation": ""
+                        }
+                    ]
+                },
+                {
+                    "id": 45,
+                    "groupage": {
+                        "id": 7,
+                        "catalogue": 16,
+                        "groupage_icon_id": 10,
+                        "catalogue_id": 16,
+                        "position": 7,
+                        "desc_groupage": "évaluation repères CP : Reconnaître des lettres",
+                        "label_groupage": "Reconnaître des lettres",
+                        "link": "https://www.education.gouv.fr/media/116017/download",
+                        "max_point": 9,
+                        "seuil1": 0,
+                        "seuil2": 1,
+                        "max_item": 0,
+                        "items": [
+                            {
+                                "id": 8,
+                                "temps": "Temps X",
+                                "description": "Reconnaître des lettres",
+                                "observation": "a definir",
+                                "scorerule": 8,
+                                "max_score": 9,
+                                "itempos": 1,
+                                "link": ""
+                            }
+                        ]
+                    },
+                    "score": 6,
+                    "seuil1_percent": 100,
+                    "seuil2_percent": 100,
+                    "seuil3_percent": 62.5,
+                    "resultat_details": [
+                        {
+                            "id": 201,
+                            "item": {
+                                "id": 8,
+                                "temps": "Temps X",
+                                "description": "Reconnaître des lettres",
+                                "observation": "a definir",
+                                "max_score": 9,
+                                "itempos": 1,
+                                "link": "",
+                                "groupagedata": 7,
+                                "scorerule": 8
+                            },
+                            "score": 6,
+                            "scorelabel": "6",
+                            "observation": ""
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+]
