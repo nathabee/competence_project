@@ -34,7 +34,7 @@ const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
 
     return (
         <div className="print-footer-scoreoverview">
-            <h3>{reportCatalogue.description}</h3>
+            <h3>{reportCatalogue.catalogue.description}</h3>
             <table className="table">
                 <thead>
                     <tr>

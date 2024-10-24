@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "niveau": "?",
+        "description": "Classe indefinie"
+    },
+    {
+        "id": 2,
+        "niveau": "GS",
+        "description": "Grande Section"
+    },
+    {
+        "id": 3,
+        "niveau": "CP",
+        "description": "CP"
+    },
+    {
+        "id": 4,
+        "niveau": "E1",
+        "description": "CEI"
+    },
+    {
+        "id": 5,
+        "niveau": "E2",
+        "description": "CE2"
+    },
+    {
+        "id": 6,
+        "niveau": "M1",
+        "description": "CM1"
+    },
+    {
+        "id": 7,
+        "niveau": "M2",
+        "description": "CM2"
+    }
+]

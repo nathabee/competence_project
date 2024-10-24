@@ -20,12 +20,15 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       // Step 1: Authenticate the user and retrieve the token
+      console.log('going to post token:',  `${process.env.NEXT_PUBLIC_API_URL}/token/`);
+
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/token/`,
         { username, password }
       );
 
       const { access: token } = response.data;
+      console.log('Fetched token:', response.data);
 
       // Step 2: Store the token in cookies
       setCookie(null, 'authToken', token, {
@@ -37,6 +40,7 @@ export default function LoginPage() {
       const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/me/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      console.log('Fetched users_me:', userResponse.data);
 
       const userInfo = userResponse.data; // Contains all user information
 

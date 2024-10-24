@@ -630,7 +630,8 @@ class ShortReportCatalogueSerializer(serializers.ModelSerializer):
   
 
 class ShortReportSerializer(serializers.ModelSerializer):
-    eleve = serializers.StringRelatedField(read_only=True)  # Returns string representation of eleve
+    # eleve = serializers.StringRelatedField(read_only=True)  # Returns string representation of eleve
+    eleve = serializers.SerializerMethodField(read_only=True)  # Returns string representation of eleve
     professeur = serializers.SerializerMethodField(read_only=True)  # Custom method for professeur
     report_catalogues = ShortReportCatalogueSerializer(many=True, read_only=True)  # Nested serializer for report catalogues
     created_at = serializers.DateTimeField(read_only=True)
@@ -648,6 +649,18 @@ class ShortReportSerializer(serializers.ModelSerializer):
                 'last_name': obj.professeur.last_name      # Directly access last_name
             }
         return None  # Return None if no professeur exists
+
+
+    def get_eleve(self, obj):
+        if obj.eleve:
+            return {
+                'id': obj.eleve.id,
+                'prenom': obj.eleve.prenom,
+                'nom': obj.eleve.nom,
+                'niveau': obj.eleve.niveau.niveau  # Directly accessing the niveau name
+            }
+        return None
+
 
 
 """

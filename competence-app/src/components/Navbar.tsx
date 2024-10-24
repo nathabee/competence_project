@@ -14,7 +14,7 @@ export default function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to manage sidebar visibility
   const router = useRouter();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation';
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""; 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -117,7 +117,7 @@ export default function Navbar() {
             {isLoggedIn ? (
               <>
                 {userRoles.includes('admin') && (
-                  <Nav.Link href={`${basePath}/admin`}>Console administrtation</Nav.Link>
+                  <Nav.Link href={`${basePath}/admin`}>Console administration</Nav.Link>
                 )}
                 {userRoles.includes('teacher') && (
                   <>

@@ -33,7 +33,7 @@ const FullReportDisplay: React.FC<FullReportDisplayProps> = ({ report }) => {
           <ul>
             {report.report_catalogues.map((catalogue) => (
               <li key={catalogue.id}>
-                {catalogue.description}
+                {catalogue.catalogue.description}
                 <ul>
                   {catalogue.resultats.map((resultat) => (
                     <li key={resultat.id}>

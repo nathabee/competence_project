@@ -32,7 +32,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
           return (
             <div key={report.id} className="report-card mb-3">
               <h5 style={{ color: isNegativeSeuil ? 'var(--custom-alert)' : 'inherit' }}>
-                Report ID: {report.id} | élève: {report.eleve}
+                Report ID: {report.id} | élève: {report.eleve.prenom} {report.eleve.nom} {report.eleve.niveau}
               </h5>
               <p>
                 {report.professeur ? (

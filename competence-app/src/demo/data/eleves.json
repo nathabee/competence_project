@@ -1,0 +1,134 @@
+[
+    {
+        "id": 1,
+        "nom": "Valjean",
+        "prenom": "Jean",
+        "niveau": 2,
+        "niveau_niveau": "GS",
+        "datenaissance": "2019-10-20",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }]
+    },
+    {
+        "id": 2,
+        "nom": "Didereau",
+        "prenom": "Jacques",
+        "niveau": 2,
+        "niveau_niveau": "GS",
+        "datenaissance": "2019-09-30",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "nom": "Solo",
+        "prenom": "Mano",
+        "niveau": 2,
+        "niveau_niveau": "GS",
+        "datenaissance": "2019-10-21",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "nom": "Copereau",
+        "prenom": "Philippe",
+        "niveau": 3,
+        "niveau_niveau": "CP",
+        "datenaissance": "2019-10-21",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 5,
+        "nom": "Grasseau",
+        "prenom": "Jeannot",
+        "niveau": 2,
+        "niveau_niveau": "GS",
+        "datenaissance": "2019-10-21",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 6,
+        "nom": "ajout",
+        "prenom": "moneleve",
+        "niveau": 2,
+        "niveau_niveau": "GS",
+        "datenaissance": "2019-10-23",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }
+        ]
+    },
+    {
+        "id": 7,
+        "nom": "Marcellin",
+        "prenom": "Jeanne",
+        "niveau": 2,
+        "niveau_niveau": "GS",
+        "datenaissance": "2019-10-23",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }
+        ]
+    }
+]

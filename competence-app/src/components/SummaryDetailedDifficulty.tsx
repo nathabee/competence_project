@@ -60,7 +60,7 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({ r
                             height={20} // Set height
                             style={{ marginRight: '10px' }} // Inline styles for margin
                           />
-                          ) : ("")}{reportCatalogue.description}</td>
+                          ) : ("")}{reportCatalogue.catalogue.description}</td>
                         <td>{resultat.groupage.label_groupage}</td>
                         <td>{resultat.score.toFixed(0)}</td>
                         <td>{resultat.groupage.max_point.toFixed(0)}</td>

@@ -115,7 +115,7 @@ class Eleve(models.Model):
         ]
 
     def __str__(self):
-        return f"{self.nom} {self.prenom} - {self.niveau}"
+        return f"Eleve:{self.id} - {self.nom} {self.prenom} - {self.niveau}"
 
 
 # Table: Catalogue (Evaluation Catalog)

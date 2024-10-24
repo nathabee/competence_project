@@ -1,10 +1,54 @@
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const env = process.env.NEXT_PUBLIC_ENV || 'production';
+
+console.log(`Loaded environment: ${env}`);
+console.log(`NODE_ENV: ${process.env.NODE_ENV}`);
+console.log(`NEXT_PUBLIC_ENV: ${process.env.NEXT_PUBLIC_ENV}`);
+console.log(`NEXT_PUBLIC_API_URL: ${process.env.NEXT_PUBLIC_API_URL}`);
+console.log(`NEXT_PUBLIC_BASE_PATH: ${process.env.NEXT_PUBLIC_BASE_PATH}`);
+console.log(`NEXT_PUBLIC_ADMIN_URL: ${process.env.NEXT_PUBLIC_ADMIN_URL}`);
+console.log(`NEXT_PUBLIC_MEDIA_URL: ${process.env.NEXT_PUBLIC_MEDIA_URL}`);
+
 /**
- * @type {import('next').NextConfig}
+ * Next.js config
  */
-const nextConfig = {  
-    basePath: '/evaluation',
-    assetPrefix: '/evaluation/', 
-  };
-  
-  export default nextConfig;
-  
+export const nextConfig = {
+  images: {
+    unoptimized: true,  // Set global image optimization settings
+  },
+  webpack: (config) => {
+    if (env === 'demo') {
+      config.resolve.alias = {
+        ...config.resolve.alias,
+        axios: path.resolve(__dirname, 'src/demo/utils/demoAxios.ts'),
+        jwt: path.resolve(__dirname, 'src/demo/utils/demoJwt.ts'),
+      };
+    }
+
+    config.resolve.fallback = {
+      fs: false,
+      child_process: false,
+      crypto: false,
+    };
+
+    return config;
+  },
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '', // Dynamically set base path
+  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  trailingSlash: env === 'demo', // Ensure routes are exported correctly for GitHub Pages in demo
+ 
+};
+
+
+// Conditionally add the output property only for the demo environment
+if (env === 'demo') {
+  nextConfig.output = 'export'; // Enable static export
+}
+
+
+export default nextConfig;

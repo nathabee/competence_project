@@ -40,6 +40,7 @@ const Configuration: React.FC = () => {
           const layoutsResponse = await axios.get(`${apiUrl}/pdf_layouts/`, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          console.log("get layoutsResponse ",layoutsResponse.data)
           setLayouts(layoutsResponse.data);
         }
 

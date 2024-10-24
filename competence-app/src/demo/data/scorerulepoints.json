@@ -1,0 +1,219 @@
+[
+    {
+        "id": 1,
+        "scorerule": 1,
+        "scorelabel": "?",
+        "score": -1,
+        "description": "default score : nicht tested"
+    },
+    {
+        "id": 2,
+        "scorerule": 2,
+        "scorelabel": "A",
+        "score": 1,
+        "description": "Rule 2 : A=1 point"
+    },
+    {
+        "id": 3,
+        "scorerule": 2,
+        "scorelabel": "NA",
+        "score": 0,
+        "description": "Rule 2 : NA=0 point"
+    },
+    {
+        "id": 4,
+        "scorerule": 3,
+        "scorelabel": "NA",
+        "score": 0,
+        "description": "Rule 3 : NA=0 point"
+    },
+    {
+        "id": 5,
+        "scorerule": 3,
+        "scorelabel": "ECA",
+        "score": 1,
+        "description": "Rule 3 : ECA=1 point"
+    },
+    {
+        "id": 6,
+        "scorerule": 3,
+        "scorelabel": "A",
+        "score": 2,
+        "description": "Rule 3 : A=2 points"
+    },
+    {
+        "id": 7,
+        "scorerule": 4,
+        "scorelabel": "Oui",
+        "score": 1,
+        "description": "Rule 4 : Oui=1 point"
+    },
+    {
+        "id": 8,
+        "scorerule": 4,
+        "scorelabel": "Non",
+        "score": 0,
+        "description": "Rule 4 : Non=0 point"
+    },
+    {
+        "id": 9,
+        "scorerule": 5,
+        "scorelabel": "Non",
+        "score": 1,
+        "description": "Rule 5 : Non=1 point"
+    },
+    {
+        "id": 10,
+        "scorerule": 5,
+        "scorelabel": "Oui",
+        "score": 0,
+        "description": "Rule 5 : Oui=0 point"
+    },
+    {
+        "id": 11,
+        "scorerule": 6,
+        "scorelabel": "Moins de 10",
+        "score": 0,
+        "description": "Rule 6 : Moins de 10 =0 point"
+    },
+    {
+        "id": 12,
+        "scorerule": 6,
+        "scorelabel": "De 10 a 20",
+        "score": 1,
+        "description": "Rule 6 : de 10 a 20=1 point"
+    },
+    {
+        "id": 13,
+        "scorerule": 6,
+        "scorelabel": "Plus que 10",
+        "score": 2,
+        "description": "Rule 6 : plus de 20=2 points"
+    },
+    {
+        "id": 14,
+        "scorerule": 7,
+        "scorelabel": "Zero",
+        "score": 0,
+        "description": "Rule 7 : toujours 0 point"
+    },
+    {
+        "id": 15,
+        "scorerule": 8,
+        "scorelabel": "0",
+        "score": 0,
+        "description": "0"
+    },
+    {
+        "id": 16,
+        "scorerule": 8,
+        "scorelabel": "1",
+        "score": 1,
+        "description": "1"
+    },
+    {
+        "id": 17,
+        "scorerule": 8,
+        "scorelabel": "2",
+        "score": 2,
+        "description": "2"
+    },
+    {
+        "id": 18,
+        "scorerule": 8,
+        "scorelabel": "3",
+        "score": 3,
+        "description": "3"
+    },
+    {
+        "id": 19,
+        "scorerule": 8,
+        "scorelabel": "4",
+        "score": 4,
+        "description": "4"
+    },
+    {
+        "id": 20,
+        "scorerule": 8,
+        "scorelabel": "5",
+        "score": 5,
+        "description": "5"
+    },
+    {
+        "id": 21,
+        "scorerule": 8,
+        "scorelabel": "6",
+        "score": 6,
+        "description": "6"
+    },
+    {
+        "id": 22,
+        "scorerule": 8,
+        "scorelabel": "7",
+        "score": 7,
+        "description": "7"
+    },
+    {
+        "id": 23,
+        "scorerule": 8,
+        "scorelabel": "8",
+        "score": 8,
+        "description": "8"
+    },
+    {
+        "id": 24,
+        "scorerule": 8,
+        "scorelabel": "9",
+        "score": 9,
+        "description": "9"
+    },
+    {
+        "id": 25,
+        "scorerule": 8,
+        "scorelabel": "10",
+        "score": 10,
+        "description": "10"
+    },
+    {
+        "id": 26,
+        "scorerule": 8,
+        "scorelabel": "11",
+        "score": 11,
+        "description": "11"
+    },
+    {
+        "id": 27,
+        "scorerule": 8,
+        "scorelabel": "12",
+        "score": 12,
+        "description": "12"
+    },
+    {
+        "id": 28,
+        "scorerule": 8,
+        "scorelabel": "13",
+        "score": 13,
+        "description": "13"
+    },
+    {
+        "id": 29,
+        "scorerule": 8,
+        "scorelabel": "14",
+        "score": 14,
+        "description": "14"
+    },
+    {
+        "id": 30,
+        "scorerule": 8,
+        "scorelabel": "15",
+        "score": 15,
+        "description": "15"
+    },
+    {
+        "id": 31,
+        "scorerule": 8,
+        "scorelabel": "16",
+        "score": 16,
+        "description": "16"
+    }
+]

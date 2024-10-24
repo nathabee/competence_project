@@ -2,7 +2,6 @@
 
 
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useRouter } from 'next/navigation'; 
 import CatalogueDisplay from '@/components/CatalogueDisplay'; 
 import CatalogueSelection from '@/components/CatalogueSelection'; 
@@ -10,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
 import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
+import axios from 'axios';
 
 
 const Catalogue: React.FC = () => {

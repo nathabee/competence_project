@@ -31,9 +31,16 @@ export interface ShortReportCatalogue {
     resultats: ShortResultat[];  // Array of resultats
 }
 
+export interface ShortEleve {
+    id: number;
+    prenom: string;  
+    nom: string; 
+    niveau: string; 
+}
+
 export interface ShortReport {
     id: number;
-    eleve: string;  // Assuming this is the student's ID
+    eleve: ShortEleve;   
     professeur: ShortProfesseur;  // Assuming this is the teacher's ID
     report_catalogues: ShortReportCatalogue[];  // Array of report catalogues
     created_at: string;  // Assuming ISO string format

@@ -7,7 +7,7 @@ import './globals.css'; // Import global styles
 
 export default function HomePage() {
   const router = useRouter();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '/evaluation';
+  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || "bad";
 
   useEffect(() => {
     const { token } = parseCookies();

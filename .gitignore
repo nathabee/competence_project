@@ -28,6 +28,10 @@ staticfiles/
 media/
 media
 
+
+# Ignore the demo directory inside competence-app-demo/public/
+competence-app-demo/public/demo/
+
 # Frontend specific
 node_modules/
 dist/

@@ -143,7 +143,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
         );
 
         return {
-            description: reportcatalogue.description,
+            description: reportcatalogue.catalogue.description,
             labels,
             labelImages,
             data,

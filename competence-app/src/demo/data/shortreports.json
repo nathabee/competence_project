@@ -1,0 +1,1247 @@
+[
+    {
+        "id": 7,
+        "eleve": {
+            "id": 7,
+            "nom": "Marcellin",
+            "prenom": "Jeanne",
+            "niveau": "Grande Section"
+            },
+        "professeur": {
+            "first_name": "Nathalie",
+            "last_name": "Holmes"
+        },
+        "report_catalogues": [
+            {
+                "id": 9,
+                "catalogue": "Catalogue for GS Point Repere - VERSION DETAILLEE",
+                "resultats": [
+                    {
+                        "id": 60,
+                        "score": 10,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 14.285714285714285,
+                        "groupage": {
+                            "id": 60,
+                            "desc_groupage": "évaluations repères GS : LES COULEURS",
+                            "label_groupage": "LES COULEURS",
+                            "position": 1,
+                            "max_point": 22,
+                            "seuil1": 5,
+                            "seuil2": 8
+                        }
+                    },
+                    {
+                        "id": 61,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 61,
+                            "desc_groupage": "évaluations repères GS : RECONNAISSANCE PRENOM",
+                            "label_groupage": "RECONNAISSANCE PRENOM",
+                            "position": 2,
+                            "max_point": 5,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 62,
+                        "score": 7,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 3.8461538461538463,
+                        "groupage": {
+                            "id": 62,
+                            "desc_groupage": "évaluations repères GS : REPÉRAGE SPATIAL ET TOPOLOGIE",
+                            "label_groupage": "REPÉRAGE SPATIAL",
+                            "position": 3,
+                            "max_point": 32,
+                            "seuil1": 4,
+                            "seuil2": 6
+                        }
+                    },
+                    {
+                        "id": 63,
+                        "score": 1,
+                        "seuil1_percent": 50,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 63,
+                            "desc_groupage": "évaluations repères GS : CATEGORISATION",
+                            "label_groupage": "CATEGORISATION",
+                            "position": 4,
+                            "max_point": 6,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 64,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 64,
+                            "desc_groupage": "évaluations repères GS : MEMORISATION HISTOIRE",
+                            "label_groupage": "MEMORISATION HISTOIRE",
+                            "position": 5,
+                            "max_point": 10,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 65,
+                        "score": 2,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 65,
+                            "desc_groupage": "évaluations repères GS : LA SUITE NUMÉRIQUE",
+                            "label_groupage": "LA SUITE NUMÉRIQUE",
+                            "position": 6,
+                            "max_point": 15,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 66,
+                        "score": 0,
+                        "seuil1_percent": 0,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 66,
+                            "desc_groupage": "évaluations repères GS : LA RÉSOLUTION DE PROBLEMES",
+                            "label_groupage": "LA RÉSOLUTION DE PROBLEMES",
+                            "position": 7,
+                            "max_point": 6,
+                            "seuil1": 1,
+                            "seuil2": 2
+                        }
+                    },
+                    {
+                        "id": 67,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 67,
+                            "desc_groupage": "évaluations repères GS : PHONOLOGIE",
+                            "label_groupage": "PHONOLOGIE",
+                            "position": 8,
+                            "max_point": 31,
+                            "seuil1": 4,
+                            "seuil2": 7
+                        }
+                    }
+                ]
+            }
+        ],
+        "created_at": "2024-10-21T10:24:57.074579Z",
+        "updated_at": "2024-10-21T10:30:29.909594Z"
+    },
+    {
+        "id": 6, 
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
+        "professeur": {
+            "first_name": "Nathalie",
+            "last_name": "Holmes"
+        },
+        "report_catalogues": [
+            {
+                "id": 7,
+                "catalogue": "Catalogue for CP Point Repere Mathematiques 24-25",
+                "resultats": [
+                    {
+                        "id": 46,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 25,
+                        "groupage": {
+                            "id": 8,
+                            "desc_groupage": "évaluation repères CP : Comparer des nombres",
+                            "label_groupage": "Comparer des nombres",
+                            "position": 1,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 47,
+                        "score": 7,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 75,
+                        "groupage": {
+                            "id": 9,
+                            "desc_groupage": "évaluation repères CP : Compter des objets",
+                            "label_groupage": "Compter des objets",
+                            "position": 2,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 48,
+                        "score": 2,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 12.5,
+                        "groupage": {
+                            "id": 10,
+                            "desc_groupage": "évaluation repères CP : Écrire des nombres",
+                            "label_groupage": "Écrire des nombres",
+                            "position": 3,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 49,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 87.5,
+                        "groupage": {
+                            "id": 11,
+                            "desc_groupage": "évaluation repères CP : Lire des nombres",
+                            "label_groupage": "Lire des nombres",
+                            "position": 4,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 50,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 87.5,
+                        "groupage": {
+                            "id": 12,
+                            "desc_groupage": "évaluation repères CP : Placer un nombre sur une ligne graduée",
+                            "label_groupage": "Placer un nombre sur une ligne graduée",
+                            "position": 5,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 51,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 87.5,
+                        "groupage": {
+                            "id": 13,
+                            "desc_groupage": "évaluation repères CP : Résoudre les problèmes",
+                            "label_groupage": "Résoudre les problèmes",
+                            "position": 6,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 52,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 87.5,
+                        "groupage": {
+                            "id": 14,
+                            "desc_groupage": "évaluation repères CP : Résoudre un problème en géométrie",
+                            "label_groupage": "Résoudre un problème en géométrie",
+                            "position": 7,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 8,
+                "catalogue": "Catalogue for CP Point Repere Francais 24-25",
+                "resultats": [
+                    {
+                        "id": 53,
+                        "score": 9,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 75,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 1,
+                            "desc_groupage": "évaluation repères CP : Comprendre des mots",
+                            "label_groupage": "Comprendre des mots",
+                            "position": 1,
+                            "max_point": 15,
+                            "seuil1": 6,
+                            "seuil2": 10
+                        }
+                    },
+                    {
+                        "id": 54,
+                        "score": 7,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 25,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 2,
+                            "desc_groupage": "évaluation repères CP : Comprendre des phrases",
+                            "label_groupage": "Comprendre des phrases",
+                            "position": 2,
+                            "max_point": 14,
+                            "seuil1": 6,
+                            "seuil2": 10
+                        }
+                    },
+                    {
+                        "id": 55,
+                        "score": 11,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 100,
+                        "groupage": {
+                            "id": 3,
+                            "desc_groupage": "évaluation repères CP : Comprendre un texte",
+                            "label_groupage": "Comprendre un texte",
+                            "position": 3,
+                            "max_point": 11,
+                            "seuil1": 3,
+                            "seuil2": 5
+                        }
+                    },
+                    {
+                        "id": 56,
+                        "score": 7,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 40,
+                        "groupage": {
+                            "id": 4,
+                            "desc_groupage": "évaluation repères CP : Connaître le nom des lettres",
+                            "label_groupage": "Connaître le nom des lettres",
+                            "position": 4,
+                            "max_point": 10,
+                            "seuil1": 2,
+                            "seuil2": 5
+                        }
+                    },
+                    {
+                        "id": 57,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 30,
+                        "groupage": {
+                            "id": 5,
+                            "desc_groupage": "évaluation repères CP : Manipuler des phonèmes",
+                            "label_groupage": "Manipuler des phonèmes",
+                            "position": 5,
+                            "max_point": 15,
+                            "seuil1": 2,
+                            "seuil2": 5
+                        }
+                    },
+                    {
+                        "id": 58,
+                        "score": 12,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 57.14285714285714,
+                        "groupage": {
+                            "id": 6,
+                            "desc_groupage": "évaluation repères CP : Manipuler des syllabes",
+                            "label_groupage": "Manipuler des syllabes",
+                            "position": 6,
+                            "max_point": 15,
+                            "seuil1": 5,
+                            "seuil2": 8
+                        }
+                    },
+                    {
+                        "id": 59,
+                        "score": 6,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 62.5,
+                        "groupage": {
+                            "id": 7,
+                            "desc_groupage": "évaluation repères CP : Reconnaître des lettres",
+                            "label_groupage": "Reconnaître des lettres",
+                            "position": 7,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "created_at": "2024-10-21T10:19:48.910015Z",
+        "updated_at": "2024-10-21T10:20:33.321194Z"
+    },
+    {
+        "id": 5,
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
+        "professeur": {
+            "first_name": "Ad",
+            "last_name": "Ministrateur"
+        },
+        "report_catalogues": [
+            {
+                "id": 6,
+                "catalogue": "Catalogue for GS Point Repere - VERSION DETAILLEE",
+                "resultats": [
+                    {
+                        "id": 38,
+                        "score": 15,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 50,
+                        "groupage": {
+                            "id": 60,
+                            "desc_groupage": "évaluations repères GS : LES COULEURS",
+                            "label_groupage": "LES COULEURS",
+                            "position": 1,
+                            "max_point": 22,
+                            "seuil1": 5,
+                            "seuil2": 8
+                        }
+                    },
+                    {
+                        "id": 39,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 61,
+                            "desc_groupage": "évaluations repères GS : RECONNAISSANCE PRENOM",
+                            "label_groupage": "RECONNAISSANCE PRENOM",
+                            "position": 2,
+                            "max_point": 5,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 40,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 62,
+                            "desc_groupage": "évaluations repères GS : REPÉRAGE SPATIAL ET TOPOLOGIE",
+                            "label_groupage": "REPÉRAGE SPATIAL",
+                            "position": 3,
+                            "max_point": 32,
+                            "seuil1": 4,
+                            "seuil2": 6
+                        }
+                    },
+                    {
+                        "id": 41,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 33.33333333333333,
+                        "groupage": {
+                            "id": 63,
+                            "desc_groupage": "évaluations repères GS : CATEGORISATION",
+                            "label_groupage": "CATEGORISATION",
+                            "position": 4,
+                            "max_point": 6,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 42,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 14.285714285714285,
+                        "groupage": {
+                            "id": 64,
+                            "desc_groupage": "évaluations repères GS : MEMORISATION HISTOIRE",
+                            "label_groupage": "MEMORISATION HISTOIRE",
+                            "position": 5,
+                            "max_point": 10,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 43,
+                        "score": 2,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 65,
+                            "desc_groupage": "évaluations repères GS : LA SUITE NUMÉRIQUE",
+                            "label_groupage": "LA SUITE NUMÉRIQUE",
+                            "position": 6,
+                            "max_point": 15,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 44,
+                        "score": 2,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 66,
+                            "desc_groupage": "évaluations repères GS : LA RÉSOLUTION DE PROBLEMES",
+                            "label_groupage": "LA RÉSOLUTION DE PROBLEMES",
+                            "position": 7,
+                            "max_point": 6,
+                            "seuil1": 1,
+                            "seuil2": 2
+                        }
+                    },
+                    {
+                        "id": 45,
+                        "score": 26,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 79.16666666666666,
+                        "groupage": {
+                            "id": 67,
+                            "desc_groupage": "évaluations repères GS : PHONOLOGIE",
+                            "label_groupage": "PHONOLOGIE",
+                            "position": 8,
+                            "max_point": 31,
+                            "seuil1": 4,
+                            "seuil2": 7
+                        }
+                    }
+                ]
+            }
+        ],
+        "created_at": "2024-10-21T08:55:36.812815Z",
+        "updated_at": "2024-10-21T08:58:44.394902Z"
+    },
+    {
+        "id": 4,
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
+        "professeur": {
+            "first_name": "Ad",
+            "last_name": "Ministrateur"
+        },
+        "report_catalogues": [
+            {
+                "id": 5,
+                "catalogue": "Catalogue for GS Point Repere - VERSION RAPIDE",
+                "resultats": [
+                    {
+                        "id": 30,
+                        "score": 5,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 70,
+                            "desc_groupage": "évaluations repères GS : LES COULEURS",
+                            "label_groupage": "LES COULEURS",
+                            "position": 1,
+                            "max_point": 22,
+                            "seuil1": 5,
+                            "seuil2": 8
+                        }
+                    },
+                    {
+                        "id": 31,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 71,
+                            "desc_groupage": "évaluations repères GS : RECONNAISSANCE PRENOM",
+                            "label_groupage": "RECONNAISSANCE PRENOM",
+                            "position": 2,
+                            "max_point": 5,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 32,
+                        "score": 30,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 92.3076923076923,
+                        "groupage": {
+                            "id": 72,
+                            "desc_groupage": "évaluations repères GS : REPÉRAGE SPATIAL ET TOPOLOGIE",
+                            "label_groupage": "REPÉRAGE SPATIAL ET TOPOLOGIE",
+                            "position": 3,
+                            "max_point": 32,
+                            "seuil1": 4,
+                            "seuil2": 6
+                        }
+                    },
+                    {
+                        "id": 33,
+                        "score": 2,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 73,
+                            "desc_groupage": "évaluations repères GS : CATEGORISATION",
+                            "label_groupage": "CATEGORISATION",
+                            "position": 4,
+                            "max_point": 6,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 34,
+                        "score": -1,
+                        "seuil1_percent": -1,
+                        "seuil2_percent": -1,
+                        "seuil3_percent": -1,
+                        "groupage": {
+                            "id": 74,
+                            "desc_groupage": "évaluations repères GS : MEMORISATION HISTOIRE",
+                            "label_groupage": "MEMORISATION HISTOIRE",
+                            "position": 5,
+                            "max_point": 10,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 35,
+                        "score": -1,
+                        "seuil1_percent": -1,
+                        "seuil2_percent": -1,
+                        "seuil3_percent": -1,
+                        "groupage": {
+                            "id": 75,
+                            "desc_groupage": "évaluations repères GS : LA SUITE NUMÉRIQUE",
+                            "label_groupage": "LA SUITE NUMÉRIQUE",
+                            "position": 6,
+                            "max_point": 15,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 36,
+                        "score": -1,
+                        "seuil1_percent": -1,
+                        "seuil2_percent": -1,
+                        "seuil3_percent": -1,
+                        "groupage": {
+                            "id": 76,
+                            "desc_groupage": "évaluations repères GS : LA RÉSOLUTION DE PROBLEMES",
+                            "label_groupage": "LA RÉSOLUTION DE PROBLEMES",
+                            "position": 7,
+                            "max_point": 6,
+                            "seuil1": 1,
+                            "seuil2": 2
+                        }
+                    },
+                    {
+                        "id": 37,
+                        "score": -1,
+                        "seuil1_percent": -1,
+                        "seuil2_percent": -1,
+                        "seuil3_percent": -1,
+                        "groupage": {
+                            "id": 77,
+                            "desc_groupage": "évaluations repères GS : PHONOLOGIE",
+                            "label_groupage": "PHONOLOGIE",
+                            "position": 8,
+                            "max_point": 31,
+                            "seuil1": 4,
+                            "seuil2": 7
+                        }
+                    }
+                ]
+            }
+        ],
+        "created_at": "2024-10-20T12:15:48.714379Z",
+        "updated_at": "2024-10-20T12:16:04.147002Z"
+    },
+    {
+        "id": 3,
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
+        "professeur": {
+            "first_name": "Ad",
+            "last_name": "Ministrateur"
+        },
+        "report_catalogues": [
+            {
+                "id": 4,
+                "catalogue": "Catalogue for CP Point Repere Mathematiques 24-25",
+                "resultats": [
+                    {
+                        "id": 23,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 37.5,
+                        "groupage": {
+                            "id": 8,
+                            "desc_groupage": "évaluation repères CP : Comparer des nombres",
+                            "label_groupage": "Comparer des nombres",
+                            "position": 1,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 24,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 87.5,
+                        "groupage": {
+                            "id": 9,
+                            "desc_groupage": "évaluation repères CP : Compter des objets",
+                            "label_groupage": "Compter des objets",
+                            "position": 2,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 25,
+                        "score": 5,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 50,
+                        "groupage": {
+                            "id": 10,
+                            "desc_groupage": "évaluation repères CP : Écrire des nombres",
+                            "label_groupage": "Écrire des nombres",
+                            "position": 3,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 26,
+                        "score": 7,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 75,
+                        "groupage": {
+                            "id": 11,
+                            "desc_groupage": "évaluation repères CP : Lire des nombres",
+                            "label_groupage": "Lire des nombres",
+                            "position": 4,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 27,
+                        "score": 5,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 50,
+                        "groupage": {
+                            "id": 12,
+                            "desc_groupage": "évaluation repères CP : Placer un nombre sur une ligne graduée",
+                            "label_groupage": "Placer un nombre sur une ligne graduée",
+                            "position": 5,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 28,
+                        "score": 5,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 50,
+                        "groupage": {
+                            "id": 13,
+                            "desc_groupage": "évaluation repères CP : Résoudre les problèmes",
+                            "label_groupage": "Résoudre les problèmes",
+                            "position": 6,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 29,
+                        "score": 6,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 62.5,
+                        "groupage": {
+                            "id": 14,
+                            "desc_groupage": "évaluation repères CP : Résoudre un problème en géométrie",
+                            "label_groupage": "Résoudre un problème en géométrie",
+                            "position": 7,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "created_at": "2024-10-20T10:44:57.569540Z",
+        "updated_at": "2024-10-20T10:45:26.679379Z"
+    },
+    {
+        "id": 2,
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
+        "professeur": {
+            "first_name": "Nathalie",
+            "last_name": "Holmes"
+        },
+        "report_catalogues": [
+            {
+                "id": 2,
+                "catalogue": "Catalogue for CP Point Repere Mathematiques 24-25",
+                "resultats": [
+                    {
+                        "id": 9,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 25,
+                        "groupage": {
+                            "id": 8,
+                            "desc_groupage": "évaluation repères CP : Comparer des nombres",
+                            "label_groupage": "Comparer des nombres",
+                            "position": 1,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 10,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 25,
+                        "groupage": {
+                            "id": 9,
+                            "desc_groupage": "évaluation repères CP : Compter des objets",
+                            "label_groupage": "Compter des objets",
+                            "position": 2,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 11,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 25,
+                        "groupage": {
+                            "id": 10,
+                            "desc_groupage": "évaluation repères CP : Écrire des nombres",
+                            "label_groupage": "Écrire des nombres",
+                            "position": 3,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 12,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 37.5,
+                        "groupage": {
+                            "id": 11,
+                            "desc_groupage": "évaluation repères CP : Lire des nombres",
+                            "label_groupage": "Lire des nombres",
+                            "position": 4,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 13,
+                        "score": 1,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 12,
+                            "desc_groupage": "évaluation repères CP : Placer un nombre sur une ligne graduée",
+                            "label_groupage": "Placer un nombre sur une ligne graduée",
+                            "position": 5,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 14,
+                        "score": 3,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 25,
+                        "groupage": {
+                            "id": 13,
+                            "desc_groupage": "évaluation repères CP : Résoudre les problèmes",
+                            "label_groupage": "Résoudre les problèmes",
+                            "position": 6,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    },
+                    {
+                        "id": 15,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 37.5,
+                        "groupage": {
+                            "id": 14,
+                            "desc_groupage": "évaluation repères CP : Résoudre un problème en géométrie",
+                            "label_groupage": "Résoudre un problème en géométrie",
+                            "position": 7,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    }
+                ]
+            },
+            {
+                "id": 3,
+                "catalogue": "Catalogue for CP Point Repere Francais 24-25",
+                "resultats": [
+                    {
+                        "id": 16,
+                        "score": 11,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 20,
+                        "groupage": {
+                            "id": 1,
+                            "desc_groupage": "évaluation repères CP : Comprendre des mots",
+                            "label_groupage": "Comprendre des mots",
+                            "position": 1,
+                            "max_point": 15,
+                            "seuil1": 6,
+                            "seuil2": 10
+                        }
+                    },
+                    {
+                        "id": 17,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 50,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 2,
+                            "desc_groupage": "évaluation repères CP : Comprendre des phrases",
+                            "label_groupage": "Comprendre des phrases",
+                            "position": 2,
+                            "max_point": 14,
+                            "seuil1": 6,
+                            "seuil2": 10
+                        }
+                    },
+                    {
+                        "id": 18,
+                        "score": 11,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 100,
+                        "groupage": {
+                            "id": 3,
+                            "desc_groupage": "évaluation repères CP : Comprendre un texte",
+                            "label_groupage": "Comprendre un texte",
+                            "position": 3,
+                            "max_point": 11,
+                            "seuil1": 3,
+                            "seuil2": 5
+                        }
+                    },
+                    {
+                        "id": 19,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 66.66666666666666,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 4,
+                            "desc_groupage": "évaluation repères CP : Connaître le nom des lettres",
+                            "label_groupage": "Connaître le nom des lettres",
+                            "position": 4,
+                            "max_point": 10,
+                            "seuil1": 2,
+                            "seuil2": 5
+                        }
+                    },
+                    {
+                        "id": 20,
+                        "score": 15,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 100,
+                        "groupage": {
+                            "id": 5,
+                            "desc_groupage": "évaluation repères CP : Manipuler des phonèmes",
+                            "label_groupage": "Manipuler des phonèmes",
+                            "position": 5,
+                            "max_point": 15,
+                            "seuil1": 2,
+                            "seuil2": 5
+                        }
+                    },
+                    {
+                        "id": 21,
+                        "score": 14,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 85.71428571428571,
+                        "groupage": {
+                            "id": 6,
+                            "desc_groupage": "évaluation repères CP : Manipuler des syllabes",
+                            "label_groupage": "Manipuler des syllabes",
+                            "position": 6,
+                            "max_point": 15,
+                            "seuil1": 5,
+                            "seuil2": 8
+                        }
+                    },
+                    {
+                        "id": 22,
+                        "score": 8,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 87.5,
+                        "groupage": {
+                            "id": 7,
+                            "desc_groupage": "évaluation repères CP : Reconnaître des lettres",
+                            "label_groupage": "Reconnaître des lettres",
+                            "position": 7,
+                            "max_point": 9,
+                            "seuil1": 0,
+                            "seuil2": 1
+                        }
+                    }
+                ]
+            }
+        ],
+        "created_at": "2024-10-19T09:33:16.311648Z",
+        "updated_at": "2024-10-19T09:34:17.528823Z"
+    },
+    {
+        "id": 1,
+        "eleve": {
+            "id": 7,
+            "nom": "Marcellin",
+            "prenom": "Jeanne",
+            "niveau": "Grande Section"
+            },
+        "professeur": {
+            "first_name": "Nathalie",
+            "last_name": "Holmes"
+        },
+        "report_catalogues": [
+            {
+                "id": 1,
+                "catalogue": "Catalogue for GS Point Repere - VERSION DETAILLEE",
+                "resultats": [
+                    {
+                        "id": 1,
+                        "score": 15,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 50,
+                        "groupage": {
+                            "id": 60,
+                            "desc_groupage": "évaluations repères GS : LES COULEURS",
+                            "label_groupage": "LES COULEURS",
+                            "position": 1,
+                            "max_point": 22,
+                            "seuil1": 5,
+                            "seuil2": 8
+                        }
+                    },
+                    {
+                        "id": 2,
+                        "score": 4,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 50,
+                        "groupage": {
+                            "id": 61,
+                            "desc_groupage": "évaluations repères GS : RECONNAISSANCE PRENOM",
+                            "label_groupage": "RECONNAISSANCE PRENOM",
+                            "position": 2,
+                            "max_point": 5,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 3,
+                        "score": 9,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 11.538461538461538,
+                        "groupage": {
+                            "id": 62,
+                            "desc_groupage": "évaluations repères GS : REPÉRAGE SPATIAL ET TOPOLOGIE",
+                            "label_groupage": "REPÉRAGE SPATIAL",
+                            "position": 3,
+                            "max_point": 32,
+                            "seuil1": 4,
+                            "seuil2": 6
+                        }
+                    },
+                    {
+                        "id": 4,
+                        "score": 5,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 66.66666666666666,
+                        "groupage": {
+                            "id": 63,
+                            "desc_groupage": "évaluations repères GS : CATEGORISATION",
+                            "label_groupage": "CATEGORISATION",
+                            "position": 4,
+                            "max_point": 6,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 5,
+                        "score": 1,
+                        "seuil1_percent": 50,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 64,
+                            "desc_groupage": "évaluations repères GS : MEMORISATION HISTOIRE",
+                            "label_groupage": "MEMORISATION HISTOIRE",
+                            "position": 5,
+                            "max_point": 10,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 6,
+                        "score": 1,
+                        "seuil1_percent": 50,
+                        "seuil2_percent": 0,
+                        "seuil3_percent": 0,
+                        "groupage": {
+                            "id": 65,
+                            "desc_groupage": "évaluations repères GS : LA SUITE NUMÉRIQUE",
+                            "label_groupage": "LA SUITE NUMÉRIQUE",
+                            "position": 6,
+                            "max_point": 15,
+                            "seuil1": 2,
+                            "seuil2": 3
+                        }
+                    },
+                    {
+                        "id": 7,
+                        "score": 5,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 75,
+                        "groupage": {
+                            "id": 66,
+                            "desc_groupage": "évaluations repères GS : LA RÉSOLUTION DE PROBLEMES",
+                            "label_groupage": "LA RÉSOLUTION DE PROBLEMES",
+                            "position": 7,
+                            "max_point": 6,
+                            "seuil1": 1,
+                            "seuil2": 2
+                        }
+                    },
+                    {
+                        "id": 8,
+                        "score": 29,
+                        "seuil1_percent": 100,
+                        "seuil2_percent": 100,
+                        "seuil3_percent": 91.66666666666666,
+                        "groupage": {
+                            "id": 67,
+                            "desc_groupage": "évaluations repères GS : PHONOLOGIE",
+                            "label_groupage": "PHONOLOGIE",
+                            "position": 8,
+                            "max_point": 31,
+                            "seuil1": 4,
+                            "seuil2": 7
+                        }
+                    }
+                ]
+            }
+        ],
+        "created_at": "2024-10-19T09:21:13.773955Z",
+        "updated_at": "2024-10-19T09:24:31.724030Z"
+    }
+]

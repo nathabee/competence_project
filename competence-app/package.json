@@ -3,9 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "dotenv -e .env.local next dev",
+    "local-build": "dotenv -e .env.local next build ",
+    "local-start": "dotenv -e .env.local next start",
+    "build": "dotenv -e .env.production next build",
+    "start": "dotenv -e .env.production next start",
+    "demo-build": "dotenv -e .env.demo next build",
+    "demo-start": "dotenv -e .env.demo npx serve out",
+    "demo-deploy": "gh-pages -d out",
     "lint": "next lint"
   },
   "dependencies": {
@@ -15,7 +20,7 @@
     "jsonwebtoken": "^9.0.2",
     "jspdf": "^2.5.2",
     "jwt-decode": "^4.0.0",
-    "next": "^14.2.15",
+    "next": "^15.0.1",
     "nookies": "^2.5.2",
     "react": "^18",
     "react-bootstrap": "^2.10.5",
@@ -27,9 +32,13 @@
     "@types/node": "^22.7.5",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18",
+    "chart.js": "^4.4.5",
+    "dotenv-cli": "^7.4.2",
     "eslint": "^8.57.1",
     "eslint-config-next": "^14.2.14",
+    "gh-pages": "^6.2.0",
     "postcss": "^8",
+    "sharp": "^0.33.5",
     "tailwindcss": "^3.4.13",
     "typescript": "^5"
   }

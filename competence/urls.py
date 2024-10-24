@@ -37,7 +37,7 @@ urlpatterns = [
     path('overview/', api_overview, name='api-overview'),
     path('user/roles/', UserRolesView.as_view(), name='user-roles'),
     path('eleve/<int:eleve_id>/reports/', EleveReportsView.as_view(), name='eleve-reports'), 
-    path('api/myimage/<int:myimage_id>/base64/', MyImageBase64View.as_view(), name='myimagebase64'),
+    path('myimage/<int:myimage_id>/base64/', MyImageBase64View.as_view(), name='myimagebase64'),
     path('', include(router.urls)),  # Include all router URLs
 ]
 

@@ -45,6 +45,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
                 const response = await axios.get(`${apiUrl}/users/?role=teacher`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                console.log('Fetched users_role_teacher:', response.data);
                 setAvailableProfesseurs(response.data); // Assuming the API returns a list of users with the role 'teacher'
             } catch (error) {
                 console.error('Erreur lors de la récupéeration des professeurs:'  , error);

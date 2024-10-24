@@ -53,6 +53,7 @@ const Test: React.FC = () => {
           const scoreRuleResponse = await axios.get<ScoreRulePoint[]>(`${apiUrl}/scorerulepoints/`, {
             headers: { Authorization: `Bearer ${token}` },
           });
+          console.log('Fetched scoreRuleResponse:', scoreRuleResponse.data);
           setScoreRulePoints(scoreRuleResponse.data);
         }
 
@@ -184,7 +185,7 @@ const Test: React.FC = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      //console.log('Patch request successful for resultat', response.data);
+      console.log('Patch request successful for fullreports id', response.data);
 
 
       setIsModified((prev) => {
@@ -254,7 +255,7 @@ const Test: React.FC = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
-        //console.log('Patch request successful', response.data);
+        console.log('Patch request successful fullreports id', response.data);
 
         // Optionally update state with the new report data
         setActiveReport(response.data); // Update the active report with the response
@@ -299,7 +300,7 @@ const Test: React.FC = () => {
       });
 
       const createdReport = reportCreationResponse.data;
-      //console.log("reporteleve-createdReport", createdReport);
+      console.log("post fullreports for creation", createdReport);
       setActiveReport(createdReport);
 
       router.push(`/test/`);
@@ -364,7 +365,7 @@ const Test: React.FC = () => {
 
             reportData.map((reportcatalogue: ReportCatalogue, reportcatalogueIndex: number) => (
               <div key={reportcatalogueIndex}>
-                <h3>Type de tests: {reportcatalogue.description}</h3>
+                <h3>Type de tests: {reportcatalogue.catalogue.description}</h3>
 
                 {reportcatalogue.resultats.map((resultat: Resultat, resultatIndex: number) => (
                   <div key={resultatIndex} style={{ backgroundColor: resultat.score < 0 ? 'var(--custom-warning)' : 'transparent' }}>

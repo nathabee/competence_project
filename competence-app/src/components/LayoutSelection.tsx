@@ -43,13 +43,13 @@ const LayoutSelection: React.FC<LayoutSelectionProps> = ({ layouts }) => {
               style={{ cursor: 'pointer' }}
             >
               <td>
-                <Image
+                < Image
                   src={`${layout.header_icon_base64}`} // Use Base64 string directly
                   alt="Icon"
                   width={50} // Specify width
                   height={50} // Specify height
                   style={{ marginRight: '10px' }} // Inline styles for margin
-                />
+                /> 
               </td>
               <td>{layout.schule_name}</td>
               <td>{layout.header_message}</td>

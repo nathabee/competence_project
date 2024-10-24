@@ -16,7 +16,7 @@ export async function fetchBase64Image(itemKey: string, idImage: number, token: 
       //console.log(`Fetching image for key ${itemKey} from ${idImage}...`);
       
       // Fetch the image data from your Django API
-      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/myimage/${idImage}/base64/`, {
+      const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/myimage/${idImage}/base64/`, {
         headers: { Authorization: `Bearer ${token}` } // Include the token in the headers
       });
       const base64Image = response.data.image_base64;

@@ -63,7 +63,8 @@ export interface Item {
   
   export interface ReportCatalogue {
     id: number;
-    description: string;     // Description of the report catalogue
+    //description: string;     // Description of the report catalogue
+    catalogue: CatalogueDescription;
     resultats: Resultat[];   // Array of Resultat objects
   }
   

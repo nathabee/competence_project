@@ -47,7 +47,7 @@ const SummaryScore: React.FC<SummaryScoreProps> = ({ report_catalogues }) => {
 
                 return (
                   <tr key={`${reportCatalogueIndex}-${resIndex}`}>
-                    <td>{reportCatalogue.description}</td>
+                    <td>{reportCatalogue.catalogue.description}</td>
                     <td>{resultat.groupage.label_groupage}</td>
                     <td>{resultat.score.toFixed(2)}</td>
                     <td>{resultat.groupage.max_point.toFixed(2)}</td>

@@ -36,12 +36,14 @@ const ElevePage: React.FC = () => {
                 const eleveResponse = await axios.get(`${apiUrl}/eleves/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                console.log('Fetched eleveResponse:', eleveResponse.data);
                 setEleves(eleveResponse.data);
 
                 // Fetch Niveaux and store them in context/localStorage
                 const niveauResponse = await axios.get(`${apiUrl}/niveaux/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
+                console.log('Fetched niveauResponse:', niveauResponse.data);
                 const niveaux: Niveau[] = niveauResponse.data;
                 setNiveaux(niveaux); // Save in AuthContext and localStorage
 

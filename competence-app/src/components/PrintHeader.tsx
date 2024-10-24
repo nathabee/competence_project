@@ -46,7 +46,7 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve, rep
           <canvas ref={canvasRef} id="headerCanvas"></canvas>
         </div>
         <div id="print-header-school">
-          <h1>{layout.schule_name}</h1>
+          <div>{layout.schule_name}</div>
         </div>
       </div>
       <div className="print-header-gap">   </div>

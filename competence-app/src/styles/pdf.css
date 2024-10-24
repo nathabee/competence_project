@@ -141,15 +141,14 @@ body {
 /* Header School Name Section */
 .print-header-school {
   display: flex;
-  flex: 0 0 15%;
-  justify-content: center;
+  flex: 0 0 25%;
+  justify-content: left;
   align-items: left;
   text-align: left;
-}
-
-.print-header-school h1 {
   font-size: 15px;
 }
+
+ 
 
 /* Header Info */
 .print-header-info {
