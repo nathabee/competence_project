@@ -54,6 +54,7 @@ const convertImageToBase64 = async (imagePath: string): Promise<string> => {
 };
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 export const axios = { 
   // Handle GET requests
@@ -73,32 +74,33 @@ export const axios = {
     if (url === `${apiUrl}/token/`) return { data: tokenData as T };
     if (url === `${apiUrl}/users/me/`) return { data: userme as T };
 
-    // Add the GET endpoint for reports related to a specific eleve
-    const reportsPattern = /^\/api\/eleve\/(\d+)\/reports\/$/; // Regex to match the eleve reports URL
+    // Add the GET endpoint for reports related to a specific eleve 
+    const reportsPattern = new RegExp(`^${apiUrl}/eleve/(\\d+)/reports/$`); // Adjusted regex
     const match = url.match(reportsPattern);
+
     if (match) {
-      //const eleveId = match[1];
-      // Filter reports for the specific eleve if necessary
-      //const filteredReports = reports.filter(report => report.eleveId === parseInt(eleveId));
-      const filteredReports = reports;
-      return { data: filteredReports as T }; // Return the filtered reports
+        const eleveId = match[1]; // Get the eleve ID from the URL
+        // Optionally filter reports based on eleveId if your data structure requires it
+        const filteredReports = reports.filter(report => report.eleve === parseInt(eleveId));
+        return { data: filteredReports as T };
     }
+
 
     // Check if the URL is a Base64 image request
     const base64Pattern = /\/base64\/$/;
     if (base64Pattern.test(url)) {
       const imagePathMap: Record<string, string> = {
-        [`${apiUrl}/myimage/1/base64/`]: '/demo/media/competence/png/beebot.png',
-        [`${apiUrl}/myimage/2/base64/`]: '/demo/media/competence/png/categorisation.png',
-        [`${apiUrl}/myimage/3/base64/`]: '/demo/media/competence/png/couleur.png',
-        [`${apiUrl}/myimage/4/base64/`]: '/demo/media/competence/png/histoire.png',
-        [`${apiUrl}/myimage/5/base64/`]: '/demo/media/competence/png/nombre.png',
-        [`${apiUrl}/myimage/6/base64/`]: '/demo/media/competence/png/phonologie.png',
-        [`${apiUrl}/myimage/7/base64/`]: '/demo/media/competence/png/prenom.png',
-        [`${apiUrl}/myimage/8/base64/`]: '/demo/media/competence/png/probleme.png',
-        [`${apiUrl}/myimage/9/base64/`]: '/demo/media/competence/png/spacial.png',
-        [`${apiUrl}/myimage/10/base64/`]: '/demo/media/competence/png/probleme.png',
-        [`${apiUrl}/myimage/11/base64/`]: '/demo/media/competence/png/spacial.png',
+        [`${apiUrl}/myimage/1/base64/`]: `${mediaUrl}competence/png/beebot.png`,
+        [`${apiUrl}/myimage/2/base64/`]: `${mediaUrl}competence/png/categorisation.png`,
+        [`${apiUrl}/myimage/3/base64/`]: `${mediaUrl}competence/png/couleur.png`,
+        [`${apiUrl}/myimage/4/base64/`]: `${mediaUrl}competence/png/histoire.png`,
+        [`${apiUrl}/myimage/5/base64/`]: `${mediaUrl}competence/png/nombre.png`,
+        [`${apiUrl}/myimage/6/base64/`]: `${mediaUrl}competence/png/phonologie.png`,
+        [`${apiUrl}/myimage/7/base64/`]: `${mediaUrl}competence/png/prenom.png`,
+        [`${apiUrl}/myimage/8/base64/`]: `${mediaUrl}competence/png/probleme.png`,
+        [`${apiUrl}/myimage/9/base64/`]: `${mediaUrl}competence/png/spacial.png`,
+        [`${apiUrl}/myimage/10/base64/`]: `${mediaUrl}competence/png/probleme.png`,
+        [`${apiUrl}/myimage/11/base64/`]: `${mediaUrl}competence/png/spacial.png`,
       }; 
 
       const imagePath = imagePathMap[url];
@@ -127,14 +129,14 @@ export const axios = {
     // Mock data storage for demonstration purposes
     if (config) {
       // Optionally, you could log the config to see if it's being passed
-      console.log('GET config:', config);
+      console.log('POST config:', config);
       }
   
      console.log('POST mock request received:', url);
  
 
     // Simulate token generation or validation
-    if (url === '/api/token/') {
+    if (url === `${apiUrl}/token/`) {
       // Normally, you'd handle token generation or validation here.
       console.log('Simulating token generation...');
       //const mockTokenResponse = {

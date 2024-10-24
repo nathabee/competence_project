@@ -37,9 +37,9 @@ export const nextConfig = {
     };
 
     return config;
-  },
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '', // Dynamically set base path
-  assetPrefix: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  }, 
+  basePath:  process.env.NEXT_PUBLIC_BASE_PATH  ,  
+  assetPrefix:  `${process.env.NEXT_PUBLIC_BASE_PATH}/` ,
   trailingSlash: env === 'demo', // Ensure routes are exported correctly for GitHub Pages in demo
  
 };

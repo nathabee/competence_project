@@ -9,7 +9,9 @@
     "build": "dotenv -e .env.production next build",
     "start": "dotenv -e .env.production next start",
     "demo-build": "dotenv -e .env.demo next build",
-    "demo-start": "dotenv -e .env.demo npx serve out",
+    "obsolete-demo-move": "mkdir competence_project; mv out/*  competence_project; mv competence_project out",
+    "obsolete-demo-start": "dotenv -e .env.demo npx serve out --single --prefix /competence_project",
+    "demo-start": "dotenv -e .env.demo npx serve out --single  ",
     "demo-deploy": "gh-pages -d out",
     "lint": "next lint"
   },
