@@ -111,5 +111,24 @@
                 ]
             }
         ]
+    },
+    {
+        "id": 7,
+        "nom": "Marcellin",
+        "prenom": "Jeanne",
+        "niveau": 2,
+        "niveau_niveau": "GS",
+        "datenaissance": "2019-10-23",
+        "professeurs_details": [
+            {
+                "id": 107,
+                "username": "nathaprof",
+                "first_name": "Nathalie",
+                "last_name": "Farinier",
+                "roles": [
+                    "teacher"
+                ]
+            }
+        ]
     }
 ]

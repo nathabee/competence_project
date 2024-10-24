@@ -1,7 +1,12 @@
 [
     {
         "id": 7,
-        "eleve": "Toublier Athout - GS - Grande Section",
+        "eleve": {
+            "id": 7,
+            "nom": "Marcellin",
+            "prenom": "Jeanne",
+            "niveau": "Grande Section"
+            },
         "professeur": {
             "first_name": "Nathalie",
             "last_name": "Holmes"
@@ -146,8 +151,13 @@
         "updated_at": "2024-10-21T10:30:29.909594Z"
     },
     {
-        "id": 6,
-        "eleve": "Presquela Josephin - GS - Grande Section",
+        "id": 6, 
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
         "professeur": {
             "first_name": "Nathalie",
             "last_name": "Holmes"
@@ -395,7 +405,12 @@
     },
     {
         "id": 5,
-        "eleve": "Solo Emmanuel - GS - Grande Section",
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
         "professeur": {
             "first_name": "Ad",
             "last_name": "Ministrateur"
@@ -541,7 +556,12 @@
     },
     {
         "id": 4,
-        "eleve": "Morin Thalia - CP - CP",
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
         "professeur": {
             "first_name": "Ad",
             "last_name": "Ministrateur"
@@ -687,7 +707,12 @@
     },
     {
         "id": 3,
-        "eleve": "Morin Thalia - CP - CP",
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
         "professeur": {
             "first_name": "Ad",
             "last_name": "Ministrateur"
@@ -817,7 +842,12 @@
     },
     {
         "id": 2,
-        "eleve": "Morin Thalia - CP - CP",
+        "eleve": {
+            "id": 3,
+            "nom": "Solo",
+            "prenom": "Mano",
+            "niveau": "Grande Section"
+            },
         "professeur": {
             "first_name": "Nathalie",
             "last_name": "Holmes"
@@ -1065,7 +1095,12 @@
     },
     {
         "id": 1,
-        "eleve": "Montesquieux Yaellan - GS - Grande Section",
+        "eleve": {
+            "id": 7,
+            "nom": "Marcellin",
+            "prenom": "Jeanne",
+            "niveau": "Grande Section"
+            },
         "professeur": {
             "first_name": "Nathalie",
             "last_name": "Holmes"
