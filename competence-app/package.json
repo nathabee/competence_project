@@ -2,17 +2,17 @@
   "name": "competence-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://nathabee.github.io/competence_project",
   "scripts": {
     "dev": "dotenv -e .env.local next dev",
     "local-build": "dotenv -e .env.local next build ",
     "local-start": "dotenv -e .env.local next start",
     "build": "dotenv -e .env.production next build",
-    "start": "dotenv -e .env.production next start",
-    "demo-build": "dotenv -e .env.demo next build",
-    "obsolete-demo-move": "mkdir competence_project; mv out/*  competence_project; mv competence_project out",
-    "obsolete-demo-start": "dotenv -e .env.demo npx serve out --single --prefix /competence_project",
-    "demo-start": "dotenv -e .env.demo npx serve out --single  ",
-    "demo-deploy": "gh-pages -d out",
+    "start": "dotenv -e .env.production next start",  
+    "demolocal-build": "dotenv -e .env.demolocal next build ",
+    "demolocal-start": "dotenv -e .env.demolocal next start", 
+    "obsolete-demo-test": "dotenv -e .env.demo next build &&  dotenv -e .env.demo npx serve out --single --prefix /competence_project",
+    "demo-deploy": "dotenv -e .env.demo npm run build   && touch ./out/.nojekyll && gh-pages -d out -t true", 
     "lint": "next lint"
   },
   "dependencies": {

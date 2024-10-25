@@ -18,11 +18,12 @@ console.log(`NEXT_PUBLIC_MEDIA_URL: ${process.env.NEXT_PUBLIC_MEDIA_URL}`);
  * Next.js config
  */
 export const nextConfig = {
+  reactStrictMode: true,
   images: {
-    unoptimized: true,  // Set global image optimization settings
-  },
+    unoptimized: true, // Disable default image optimization
+  }, 
   webpack: (config) => {
-    if (env === 'demo') {
+    if (env === 'demo') { 
       config.resolve.alias = {
         ...config.resolve.alias,
         axios: path.resolve(__dirname, 'src/demo/utils/demoAxios.ts'),
@@ -37,18 +38,20 @@ export const nextConfig = {
     };
 
     return config;
-  }, 
-  basePath:  process.env.NEXT_PUBLIC_BASE_PATH  ,  
-  assetPrefix:  `${process.env.NEXT_PUBLIC_BASE_PATH}/` ,
-  trailingSlash: env === 'demo', // Ensure routes are exported correctly for GitHub Pages in demo
+  },
+
+  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  assetPrefix: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/`,
+  trailingSlash: env === 'demo',
  
 };
 
+console.log(`basePath: ${nextConfig.basePath}`);
+console.log(`assetPrefix: ${nextConfig.assetPrefix}`);
 
 // Conditionally add the output property only for the demo environment
 if (env === 'demo') {
   nextConfig.output = 'export'; // Enable static export
 }
-
 
 export default nextConfig;
