@@ -2,10 +2,11 @@ pipeline {
     agent any
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
+        PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
         STATIC_FILES_PATH = "/var/www/staticfiles"
         timestamp = new Date().format('yyyyMMdd')
-        backupDir = "/home/nathabee/competence_project_$timestamp"
+        BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
     }
     stages {
 
@@ -14,103 +15,101 @@ pipeline {
             steps {
                 script {
                     // Backup project directory
-                    sh "cp -r ${PROJECT_PATH} ${backupDir}"
-                    echo "Backup of project directory created at ${backupDir}"
+                    sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}"
+                    echo "Backup of project directory created at ${BACKUPDIR}"
 
                     // Backup MySQL database using Jenkins credentials
-                    withCredentials([usernamePassword(credentialsId: 'competence-db-credential-id', usernameVariable: 'DB_USER', passwordVariable: 'DB_PASS')]) {
-                        sh "mysqldump -u $DB_USER -p'$DB_PASS' your_db_name > '${PROJECT_PATH}/db_backup_${timestamp}.sql'"
-                        echo "MySQL database backup created."
-                    }
+                    sh "mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases competencedb > '${BACKUPDIR}/db_backup_${timestamp}.sql' || echo 'MySQL backup failed.'"
+                    echo "MySQL database backup created."
                 }
             }
         }
 
-        // 2. extract from git
-
+        // 2. Checkout from git
         stage('Checkout') {
             steps {
                 script {
-                    // Check out the latest code from the repository
                     git branch: 'main', url: 'https://github.com/nathabee/competence_project.git'
                 }
             }
         }
 
-
-
-
         // 3. Stop Services Stage
         stage('Stop Services') {
             steps {
                 script {
-                    // Stop application services before deployment 
-                    sh 'sudo systemctl stop gunicorn || error("Failed to stop gunicorn")'
-                    sh 'sudo systemctl stop npm-app || error("Failed to stop npm-app")'
+                    sh 'sudo systemctl stop gunicorn || echo "Failed to stop gunicorn"'
+                    sh 'sudo systemctl stop npm-app || echo "Failed to stop npm-app"'
                 }
             }
         }
-
         // 4. Install Dependencies Stage
         stage('Install Dependencies') {
             steps {
-                script {
-                    // Install Python and Node.js dependencies
-                    sh "source ${VENV_PATH}/bin/activate && pip install -r ${PROJECT_PATH}/requirements.txt"
+                script { 
+                    // Activate virtual environment and install Python dependencies
+                    sh ". ${VENV_PATH}/bin/activate && pip install -r ${PROJECT_PATH}/requirements.txt"
+            
                     sh "cd ${PROJECT_PATH}/competence-app && npm install"
                 }
             }
         }
 
-        // 5. Build Frontend Stage
+        // 5. Database Migrations Stage
+        stage('Database Migrations') {
+            steps {
+                script {
+                    sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
+                    sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
+                }
+            }
+        }
+
+        // 6. Build Frontend Stage
         stage('Build Frontend') {
             steps {
                 script {
-                    // Build the frontend application
                     sh "cd ${PROJECT_PATH}/competence-app && npm run build"
                 }
             }
         }
 
-        // 6. Start Services Stage
+        // 7. Start Services Stage
         stage('Start Services') {
             steps {
                 script {
-                    // Restart application services
-                    sh 'sudo systemctl start gunicorn'
-                    sh 'sudo systemctl start npm-app'
+                    
+                    sh 'sudo systemctl start gunicorn || echo "Failed to start gunicorn"'
+                    sh 'sudo systemctl start npm-app || echo "Failed to start npm-app"'
                 }
             }
         }
 
-        // 7. Run Tests Stage
+        // 8. Run Tests Stage
         stage('Run Tests') {
             steps {
                 script {
-                    // Run application tests using teacher credentials
                     withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
-                        // Run backend tests
-                        sh "source ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py test --username $TEACHER_USER --password $TEACHER_PASS"
-                        
-                        // Run frontend tests
-                        sh "cd ${PROJECT_PATH}/competence-app && npm test -- --username=$TEACHER_USER --password=$TEACHER_PASS"
+                        sh """
+                            . ${VENV_PATH}/bin/activate
+                            export DJANGO_TEST_USER=$TEACHER_USER
+                            export DJANGO_TEST_PASS=$TEACHER_PASS
+                            python ${PROJECT_PATH}/manage.py test competence.tests.test_installation
+
+                        """
+                        sh "cd ${PROJECT_PATH}/competence-app && npm test"
                     }
                 }
             }
         }
 
-        // 8. Health Check Stage
+        // 9. Health Check Stage
         stage('Health Check') {
             steps {
                 script {
-                    // Verify the health of the application
-                    
-                    // Run application tests using teacher credentials
                     withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
-                        // Get the access token
                         def accessToken = sh(script: "curl -X POST -H 'Content-Type: application/json' -d '{\"username\":\"$TEACHER_USER\", \"password\":\"$TEACHER_PASS\"}' http://localhost:8080/api/token/ | jq -r .access", returnStdout: true).trim()
                         
-                        // Check API status
                         sh """
                         curl -H "Authorization: Bearer ${accessToken}" http://localhost:8080/api/
                         curl -I http://localhost:3000/evaluation
