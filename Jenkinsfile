@@ -25,14 +25,21 @@ pipeline {
             }
         }
 
-        // 2. Checkout from git
+        // 2. Checkout from git 
         stage('Checkout') {
             steps {
                 script {
-                    git branch: 'main', url: 'https://github.com/nathabee/competence_project.git'
+                    checkout([
+                        $class: 'GitSCM', 
+                        branches: [[name: 'main']],
+                        doGenerateSubmoduleConfigurations: false,
+                        extensions: [[$class: 'WipeWorkspace']], // This forces a clean checkout
+                        userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
+                    ])
                 }
             }
         }
+
 
         // 3. Stop Services Stage
         stage('Stop Services') {
