@@ -479,16 +479,6 @@ class ApiUtil:
 
     
 
-    #def _update_fullreport(self, report_id, eleve_id, professeur_id, pdflayout_id, report_catalogues_data):
-    #    """Update an existing full report."""
-    #    self.call_counts["update_fullreport"] += 1
-    #    data = {
-    #        "eleve": eleve_id,
-    #        "professeur": professeur_id,
-    #        "pdflayout": pdflayout_id,
-    #        "report_catalogues_data": report_catalogues_data,
-    #    }
-    #    return self.client.put(f"/api/fullreports/{report_id}/", data, format='json')
 
     def _get_fullreport_list(self):
         """Retrieve the list of all full reports."""

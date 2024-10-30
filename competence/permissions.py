@@ -12,16 +12,32 @@ from .models import ( Eleve)
 ############################################################
 # permission for viewSet 
 ############################################################
+ 
 
 class IsEleveProfessor(BasePermission):
-    def has_permission(self, request, view):
-        # Assuming 'eleve' is passed as part of the request data (e.g., via URL or POST body)
-        eleve_id = view.kwargs.get('eleve_id') or request.data.get('eleve')
-        eleve = Eleve.objects.get(id=eleve_id)
+    """
+    Allows access only to professors associated with a specific Eleve.
+    """
 
-        # Check if the user is one of the professors of this eleve
-        return request.user in eleve.professeurs.all()
-    
+    def has_permission(self, request, view):
+        # General permission check to ensure user is a teacher and authenticated
+        return request.user.is_authenticated and request.user.groups.filter(name='teacher').exists()
+
+    def has_object_permission(self, request, view, obj):
+        # Assumes `obj` is a Report instance, so we retrieve the related Eleve instance
+        eleve_id = getattr(obj, 'eleve_id', None)
+        
+        if eleve_id is None:
+            return False  # If there's no related eleve, deny access
+        
+        try:
+            eleve = Eleve.objects.get(id=eleve_id)
+            # Check if the requesting user is one of the professors of this eleve
+            return request.user in eleve.professeurs.all()
+        except Eleve.DoesNotExist:
+            return False  # Deny access if Eleve does not exist
+
+
 
 class isAllowed(BasePermission):
 

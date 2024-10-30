@@ -7,10 +7,10 @@ from django.core.management import call_command
 from .api_util import ApiUtil  # Import the ApiUtil class
 # from django.conf import settings  # Import the settings module
 from competence.models import ( 
-    Eleve,  
+    Eleve, Report 
 )
 
-DEBUG = True  # Global DEBUG variable
+DEBUG = False  # Global DEBUG variable
 
 
 # Conditional print based on DEBUG setting
@@ -333,19 +333,22 @@ class Workflow_Teacher(IntegrationTestSetup):
 
     def test_fullreport_workflow(self):
 
+
+        debug_print("#######################################")
+        debug_print("#######################################")
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {self.admin_token}') 
 
         # Step 1: Create  teacher
         teacher1 = self.api_util._create_user('teachertest1', 'teachertestnewpass', 'New1', 'Teacher', ['teacher']).data 
         response = self.api_util._login_user('teachertest1', 'teachertestnewpass')
         teachertest1_token = response.data['access']
-        debug_print("Created teacher:", teacher1['id'])
+        debug_print("Created teachertest1:", teacher1['id'])
 
 
         teacher2 = self.api_util._create_user('teachertest2', 'teachertestnewpass', 'New2', 'Teacher', ['teacher']).data 
         response = self.api_util._login_user('teachertest2', 'teachertestnewpass')
         teachertest2_token = response.data['access']
-        debug_print("Created teacher:", teacher2['id'])
+        debug_print("Created teachertest2:", teacher2['id'])
 
 
         # Step 2: Create Eleve using predefined niveau_id
@@ -359,7 +362,7 @@ class Workflow_Teacher(IntegrationTestSetup):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve1 failed: {response.status_code} - {response.content}")
         eleve1 = response.data
-        debug_print("Created Eleve ID:", eleve1['id'])
+        debug_print("Created for teacher1 only Eleve ID:", eleve1['id'])
 
 
         response = self.api_util._create_eleve(
@@ -371,7 +374,7 @@ class Workflow_Teacher(IntegrationTestSetup):
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED, f"Create Eleve2 failed: {response.status_code} - {response.content}")
         eleve2 = response.data
-        debug_print("Created Eleve ID:", eleve2['id'])
+        debug_print("Created for teacher1 and teacher2  Eleve ID:", eleve2['id'])
 
 
 
@@ -386,19 +389,21 @@ class Workflow_Teacher(IntegrationTestSetup):
         debug_print("Using pdflayout_id = 1 and catalogue_ids =", catalogue_ids)
 
         # Step 4: Teacher login to list reports
+        debug_print("login as teacher1 =", teacher1['id'])
+        self.client.credentials()
         self.client.credentials(HTTP_AUTHORIZATION=f'Bearer {teachertest1_token}')
         response = self.api_util._get_eleve_list()
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve list failed: {response.status_code} - {response.content}")
         eleve_list = response.data
+        debug_print("eleve_list of teacher1 =", eleve_list)
 
         # Step 5: Select the created Eleve and retrieve reports
         eleve_id = next((e['id'] for e in eleve_list if e['nom'] == "Jean" and e['prenom'] == "Valjean"), None)
         self.assertIsNotNone(eleve_id, "Eleve was not found in the list.")
-
-        DEBUG=True
-        response = self.api_util._get_eleve_report(eleve_id)
-        debug_print("_get_eleve_report  response.data", response.data)
-        DEBUG=False
+ 
+        response = self.api_util._get_eleve_report(eleve1['id'])
+        debug_print("_get_eleve_report  for eleve1 response.data", response.data)
+  
         self.assertEqual(response.status_code, status.HTTP_200_OK, "Expected a 200 OK status when no reports exist.")
         self.assertEqual(response.data, [], "Expected an empty list when no reports exist.")
  
@@ -442,14 +447,17 @@ class Workflow_Teacher(IntegrationTestSetup):
                     self.assertEqual(resultat_detail['observation'], '', "Expected initial ResultatDetail observation to be empty")
 
 
-        # Step 7: Get Report from eleve and Validate creation
+        # Step 7: Get Report from eleve and Validate creation 
+
         response = self.api_util._get_eleve_report( eleve1['id'])
-        debug_print("_get_eleve_report  response.data", response.data)
+        debug_print("_get_eleve_report for eleve1 response.data", response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Report failed: {response.status_code} - {response.content}")
+ 
 
-
-        # Step 7: Get FullReport with report_id and Validate creation
+        # Step 8: Get FullReport with report_id and Validate creation
+        debug_print("_get_fullreport calling for report id", report_id)
         response = self.api_util._get_fullreport(report_id)
+        debug_print("#######################################")
         debug_print("#######################################")
         debug_print("_get_fullreport  json_data_get = ", response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Report failed: {response.status_code} - {response.content}")
@@ -461,13 +469,13 @@ class Workflow_Teacher(IntegrationTestSetup):
 
         updated_report = self.update_report_with_max_scores(retrieved_report,score_rule_point)
         debug_print("json_data_updated_fullreport = ", updated_report)
-        # Step 8: Update Report (new score , new label : immer max point)
+        # Step 9: Update Report (new score , new label : immer max point)
         response = self.api_util._update_fullreport(updated_report) 
         debug_print("#######################################") 
         debug_print("_update_fullreport after setting maximum score  response.data", response.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Update Report failed: {response.status_code} - {response.content}")
 
-        # Step 9: Get Report and Validate update 
+        # Step 10: Get Report and Validate update 
         # Retrieve the updated report
         response = self.api_util._get_fullreport(report_id)
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get updated Report failed: {response.status_code} - {response.content}")
@@ -489,7 +497,7 @@ class Workflow_Teacher(IntegrationTestSetup):
                     self.assertNotEqual(resultat_detail['observation'], '', "Expected ResultatDetail observation to be updated.")
 
 
-        # Step 10: Check all Eleve Reports 
+        # Step 11: Check all Eleve Reports 
         response = self.api_util._get_eleve_report(eleve1['id'])
         debug_print("_get_eleve_report  response.data", response.data) 
         self.assertEqual(response.status_code, status.HTTP_200_OK, f"Get Eleve report failed: {response.status_code} - {response.content}")
@@ -556,10 +564,10 @@ class Workflow_Teacher(IntegrationTestSetup):
 
         ########### must check get_fullreport_list .....must be also 
 
-    # last methode to see statistiques
+    # last methode to see statistiques with zzz so that it is executed and printed at the end
     def test_zzz_print_test_statistique(self):
         # Output the call counts
-        print("Call count of all tested API ZZ")
+        print("Call count of all tested API")
         print(self.api_util.get_call_counts())  # Display the counts for debugging
 
 

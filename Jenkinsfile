@@ -24,18 +24,30 @@ pipeline {
                 }
             }
         }
-
-        // 2. Checkout from git 
+ 
+        // 2.1 Initial Checkout using Jenkins' built-in mechanism
         stage('Checkout') {
             steps {
+                checkout([
+                    $class: 'GitSCM',
+                    branches: [[name: 'main']],
+                    doGenerateSubmoduleConfigurations: false,
+                    extensions: [[$class: 'WipeWorkspace']],
+                    userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
+                ])
+            }
+        }
+
+        // 2.2 Update repository with sudo as the 'nathabee' user for further actions
+        stage('Update Repository') {
+            steps {
                 script {
-                    checkout([
-                        $class: 'GitSCM', 
-                        branches: [[name: 'main']],
-                        doGenerateSubmoduleConfigurations: false,
-                        extensions: [[$class: 'WipeWorkspace']], // This forces a clean checkout
-                        userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
-                    ])
+                    // Discard any local changes and pull the latest from GitHub
+                    sh """
+                        cd ${PROJECT_PATH}
+                        sudo -u nathabee git reset --hard
+                        sudo -u nathabee git pull origin main
+                    """
                 }
             }
         }
@@ -97,11 +109,14 @@ pipeline {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
+
+                        //export DJANGO_TEST_USER=$TEACHER_USER
+                        //export DJANGO_TEST_PASS=$TEACHER_PASS
+
                         sh """
                             . ${VENV_PATH}/bin/activate
-                            export DJANGO_TEST_USER=$TEACHER_USER
-                            export DJANGO_TEST_PASS=$TEACHER_PASS
-                            python ${PROJECT_PATH}/manage.py test competence.tests.test_installation
+                            cd ${PROJECT_PATH}
+                            python manage.py test competence.tests.test_integration_workflow
 
                         """
                         sh "cd ${PROJECT_PATH}/competence-app && npm test"

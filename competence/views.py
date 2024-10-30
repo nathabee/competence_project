@@ -1,5 +1,6 @@
 # competence/views.py
 
+from django.shortcuts import get_object_or_404  # Add this import at the top of your file
 
 from rest_framework import permissions, viewsets
 from .permissions import isAllowed, isAllowedApiView,IsEleveProfessor
@@ -16,6 +17,8 @@ from .serializers import (
     PDFLayoutSerializer, FullReportSerializer,ShortReportSerializer,
     GroupageDataSerializer,ItemSerializer,MyImageSerializer
 )
+
+from django.db.models import Prefetch
  
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -164,7 +167,6 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
  
 
- 
 class EleveViewSet(viewsets.ModelViewSet):
     serializer_class = EleveSerializer
     permission_classes = [IsAuthenticated, isAllowed]
@@ -176,9 +178,10 @@ class EleveViewSet(viewsets.ModelViewSet):
         if user.groups.filter(name='admin').exists():
             return Eleve.objects.all()
 
-        # Teacher can view all eleves but only work with those they are assigned to
+        # Teacher can view only their assigned eleves
         elif user.groups.filter(name='teacher').exists():
-            return Eleve.objects.all()
+            # Return only the Eleve objects associated with the current teacher
+            return Eleve.objects.filter(professeurs=user).distinct()
 
         # Return empty for any other user
         return Eleve.objects.none()
@@ -191,10 +194,9 @@ class EleveViewSet(viewsets.ModelViewSet):
         
         # If the user is a teacher, automatically assign them to the 'professeurs' field
         if user.groups.filter(name='teacher').exists():
-            serializer.save(professeurs=[user])
+            serializer.save(professeurs=[user])  # Save the teacher in the professeurs field
         else:
             serializer.save()  # Admins can assign multiple professeurs as per their selection
-
 
 
 class EleveAnonymizedViewSet(viewsets.ModelViewSet):
@@ -367,11 +369,7 @@ class MyImageBase64View(APIView):
         
  
 
-#class ReportViewSet(viewsets.ModelViewSet):
-#    queryset = Report.objects.all()
-#    serializer_class = ReportSerializer
-#    permission_classes = [IsAuthenticated, isAllowed]
-
+ 
 
 
 class ReportCatalogueViewSet(viewsets.ModelViewSet):
@@ -379,55 +377,65 @@ class ReportCatalogueViewSet(viewsets.ModelViewSet):
     queryset = ReportCatalogue.objects.all()
     serializer_class = ReportCatalogueSerializer
 
-
 class FullReportViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, IsEleveProfessor]
     serializer_class = FullReportSerializer
 
+    def retrieve(self, request, *args, **kwargs):
+        report_id = kwargs.get('pk')
+        #print(f"Attempting to retrieve report with id: {report_id}")
+        
+        report = get_object_or_404(Report, id=report_id)
+        #print(f"Retrieved report: {report}")
+
+        try:
+            eleve = Eleve.objects.get(id=report.eleve_id)
+            #print(f"Associated Eleve: {eleve}")
+        except Eleve.DoesNotExist:
+            return Response({'detail': 'Associated Eleve does not exist.'}, status=status.HTTP_404_NOT_FOUND)
+
+        if not self.has_access_to_report(report):
+            return Response({'detail': 'You do not have access to this report.'}, status=status.HTTP_403_FORBIDDEN)
+
+        serializer = self.get_serializer(report)
+        return Response(serializer.data)
+
+    def has_access_to_report(self, report):
+        # Check if the user is a professor for the associated Eleve of the report
+        has_access = report.eleve.professeurs.filter(id=self.request.user.id).exists()
+        #if has_access:
+        #    print(f"User {self.request.user.id} has access to report {report.id}.")
+        #else:
+        #    print(f"User {self.request.user.id} does NOT have access to report {report.id}.")
+        return has_access
+
     def get_queryset(self):
         user = self.request.user
-        
-        # Check if the user is an admin
+
         if user.groups.filter(name='admin').exists():
             return Report.objects.all()  # Admins have full access
 
-        # Check for analytics permissions
         if user.groups.filter(name='analytics').exists() and user.is_authenticated:
             return Report.objects.none()  # Analytics users not allowed to view reports
 
-        # Check for teacher permissions
         if user.groups.filter(name='teacher').exists() and user.is_authenticated:
-            # Get all Eleves associated with the teacher
-            eleve_ids = user.eleves.values_list('id', flat=True)
-            return Report.objects.filter(eleve__in=eleve_ids).distinct()
+            # Return reports for eleves associated with this teacher
+            return Report.objects.filter(eleve__professeurs=user).distinct().order_by('-updated_at')
         
-        # Default case: no access
         return Report.objects.none()
 
     def create(self, request, *args, **kwargs):
-        # Optional: Add permission checks if needed
-        # if not request.user.has_perm('competence.add_report'):
-        #     return Response({'detail': 'Not authorized to create reports.'}, status=status.HTTP_403_FORBIDDEN)
-
-        # Ensure request data contains only required fields for creation
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)  # Validate incoming data
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def update(self, request, *args, **kwargs):
-        # Optional: Add permission checks if needed
         return super().update(request, *args, **kwargs)
 
-    def retrieve(self, request, *args, **kwargs):
-        # Optional: Add permission checks if needed
-        return super().retrieve(request, *args, **kwargs)
-
     def list(self, request, *args, **kwargs):
-        # Optional: Additional logging or response modification here if needed
         return super().list(request, *args, **kwargs)
- 
- 
+
   
 
 class ShortReportViewSet(viewsets.ReadOnlyModelViewSet):
@@ -452,8 +460,8 @@ class ShortReportViewSet(viewsets.ReadOnlyModelViewSet):
         # Teacher-specific access
         if user.groups.filter(name='teacher').exists() and user.is_authenticated:
             # Get all Eleves associated with the teacher
-            eleve_ids = user.eleves.values_list('id', flat=True)
-            return Report.objects.filter(eleve__in=eleve_ids).distinct().order_by('-updated_at')
+            accessible_eleves = user.eleves.values_list('id', flat=True) 
+            return Report.objects.filter(eleve_id__in=accessible_eleves).distinct().order_by('-updated_at')
 
         # Default: No access for other user types
         return Report.objects.none()
