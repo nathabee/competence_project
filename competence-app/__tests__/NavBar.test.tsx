@@ -1,8 +1,13 @@
+"use client";
+
 // __tests__/NavBar.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
 import Navbar from '../src/components/Navbar'; // Adjust the import path as necessary
 import { useAuth } from '../src/context/AuthContext';
 import { useRouter } from 'next/navigation'; // Next.js 15.2 router
+ 
+
+
 
 // Mock the Auth context and Next.js router
 jest.mock('../src/context/AuthContext', () => ({
@@ -11,7 +16,10 @@ jest.mock('../src/context/AuthContext', () => ({
 
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn(),
+  usePathname: jest.fn(() => '/mocked/path'), // Mocked pathname
 }));
+
+
 
 describe('Navbar Component', () => {
   const mockRouterPush = jest.fn();
