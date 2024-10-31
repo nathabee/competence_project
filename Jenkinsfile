@@ -119,7 +119,7 @@ pipeline {
                             python manage.py test competence.tests.test_integration_workflow
 
                         """
-                        sh "cd ${PROJECT_PATH}/competence-app && npm test"
+                        sh "cd ${PROJECT_PATH}/competence-app && npm run test"
                     }
                 }
             }

@@ -12,10 +12,10 @@ export interface Eleve {
   id: number; // or whatever the type is
   nom: string;
   prenom: string;
-  niveau: string; // will be the niveau_id
+  niveau: number; //  into number because of JTEST  will be the niveau_id
   niveau_niveau: string; // niveau.niveau associated to the eleve (short description)
   datenaissance:  string; // Keeping this as a string to represent the date format (YYYY-MM-DD)
-  professeurs: number[]; // Array of User IDs
+  // professeurs: number[]; // in comment because of JTEST Array of User IDs
   professeurs_details: User[]; // Array of serialized User objects
 }
 

@@ -112,7 +112,8 @@ export default function Navbar() {
         </div>
 
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          <h2>Menu</h2>
+          {isSidebarOpen && <h2>Menu</h2>} {/* Only show Menu when sidebar is open */}
+
           <Nav className="flex-column">
             {isLoggedIn ? (
               <>

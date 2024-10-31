@@ -36,20 +36,20 @@ const ElevePage: React.FC = () => {
                 const eleveResponse = await axios.get(`${apiUrl}/eleves/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                console.log('Fetched eleveResponse:', eleveResponse.data);
+                //console.log('Fetched eleveResponse:', eleveResponse.data);
                 setEleves(eleveResponse.data);
 
                 // Fetch Niveaux and store them in context/localStorage
                 const niveauResponse = await axios.get(`${apiUrl}/niveaux/`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
-                console.log('Fetched niveauResponse:', niveauResponse.data);
+                //console.log('Fetched niveauResponse:', niveauResponse.data);
                 const niveaux: Niveau[] = niveauResponse.data;
                 setNiveaux(niveaux); // Save in AuthContext and localStorage
 
-            } catch (error) {
-                console.error('Erreur lors de la récupération des données:', error);
-                setError(true);
+            } catch (fetchError) { // Renamed the error variable
+                console.error('Erreur lors de la récupération des données:', fetchError);
+                setError(true); // Set error to true
             } finally {
                 setLoading(false);
             }
@@ -57,6 +57,7 @@ const ElevePage: React.FC = () => {
 
         fetchData();
     }, [router]);
+ 
 
     // Filter élèves based on search term
     const filteredEleves = eleves.filter(eleve =>
@@ -85,6 +86,25 @@ const ElevePage: React.FC = () => {
     return (
         <div className="container mt-3 ml-2 eleve-page">
             <h1>Gestion des Élèves</h1>
+
+            {loading && <Spinner animation="border" />}
+
+            {error && (
+                <div className="alert alert-danger" role="alert">
+                    Erreur lors du chargement des élèves. Recommencez SVP.
+                </div>
+            )}
+
+            {/* Rest of your component rendering logic */}
+            {!loading && !error && (
+                <>
+                    <div className="tab-content mt-3">
+                        {/* Other rendering logic for eleves data */}
+                    </div>
+                </>
+            )}
+
+
             <div className="tab-content mt-3">
                 <div className="search-bar mb-4">
                     <input
