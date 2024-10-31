@@ -18,6 +18,10 @@ interface AuthContextType {
   login: (token: string, userInfo: User) => void;
   logout: () => void;
 
+
+  isTourCompleted: boolean; 
+  completeTour: () => void; 
+
   // Handle active selection
   activeCatalogues: Catalogue[];
   setActiveCatalogues: (catalogues: Catalogue[]) => void;
@@ -58,6 +62,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activeCatalogues, setActiveCatalogues] = useState<Catalogue[]>([]);
   const [activeEleve, setActiveEleve] = useState<Eleve | null>(null);
   const [token, setToken] = useState<string | null>(null); // State for token
+  const [isTourCompleted, setIsTourCompleted] = useState(false);
  
   const [catalogue, setCatalogue] = useState<Catalogue[]>([]);
   const [eleves, setEleves] = useState<Eleve[]>([]);
@@ -66,6 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activeLayout, setActiveLayout] = useState<PDFLayout | null>(null);
   const [layouts, setLayouts] = useState<PDFLayout[]>([]);
   const [niveaux, setNiveaux] = useState<Niveau[] | null>(null); // Add niveaux state
+
 
 
   useEffect(() => {
@@ -80,6 +86,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(savedUser);
         const savedNiveaux = JSON.parse(localStorage.getItem('niveaux') || '[]');
         setNiveaux(savedNiveaux); // Load niveaux from localStorage
+
+        
+        // Check local storage to see if the tour was completed
+        const tourCompleted = localStorage.getItem('isTourCompleted') === 'true';
+        setIsTourCompleted(tourCompleted);
 
         // Load state from localStorage
         const savedCatalogues = JSON.parse(localStorage.getItem('activeCatalogues') || '[]');
@@ -149,6 +160,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }
   };
+
+  const completeTour = () => {
+    localStorage.setItem('isTourCompleted', 'true');
+    setIsTourCompleted(true);
+  };
+
 
   const updateCatalogue = (newCatalogue: Catalogue[]) => {
     setCatalogue(newCatalogue);
@@ -251,6 +268,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isLoggedIn,
       login,
       logout,
+      isTourCompleted, 
+      completeTour,
       activeCatalogues,
       setActiveCatalogues: (catalogues: Catalogue[]) => {
         setActiveCatalogues(catalogues);

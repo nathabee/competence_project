@@ -9,6 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
 import ShortReportDisplay from '@/components/ShortReportDisplay'; // Updated import for display component
 
+
 const Dashboard: React.FC = () => {
   const router = useRouter();
 
@@ -63,7 +64,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="container mt-3 ml-2">
-      <h1>Historique</h1>
+      <h1>Historique</h1> 
 
       {/* Refresh Button */}
       <button onClick={fetchData} className="btn btn-primary mb-3">

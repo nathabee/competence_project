@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
 import { isTokenExpired,getTokenFromCookies } from '@/utils/jwt';  
-
+ 
 
 const Configuration: React.FC = () => {
   const router = useRouter();
@@ -70,7 +70,7 @@ const Configuration: React.FC = () => {
 
   return (
     <div className="container mt-3 ml-2">
-      <h1>Configuration</h1>
+      <h1>Configuration</h1> 
       <div className="tab-content mt-3"> 
  
       {activeLayout ? (

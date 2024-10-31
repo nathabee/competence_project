@@ -9,7 +9,7 @@ import ReportEleveSelection from '@/components/ReportEleveSelection';
 import EleveForm from '@/components/EleveForm';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
-import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
+import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt'; 
 
 const ElevePage: React.FC = () => {
     const router = useRouter();
@@ -85,7 +85,7 @@ const ElevePage: React.FC = () => {
 
     return (
         <div className="container mt-3 ml-2 eleve-page">
-            <h1>Gestion des Élèves</h1>
+            <h1>Gestion des Élèves</h1> 
 
             {loading && <Spinner animation="border" />}
 

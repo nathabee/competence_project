@@ -10,7 +10,7 @@ from competence.models import (
     Eleve, Report 
 )
 
-DEBUG = True  # Global DEBUG variable
+DEBUG = False  # Global DEBUG variable
 
 
 # Conditional print based on DEBUG setting

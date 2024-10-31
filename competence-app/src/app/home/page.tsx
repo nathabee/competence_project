@@ -1,12 +1,13 @@
-'use client';
+// app/home/page.tsx
+import React from 'react'; 
 
+const HomePage: React.FC = () => { 
 
-const HomePage = () => {
-    return (
-      <div className="container mt-3 ml-2">
-        <h1>Bienvenue en cours de développement</h1>
-      </div>
-    );
-  };
-  
+  return (
+    <div>
+      <h1>Bienvenue</h1> 
+    </div>
+  );
+};
+
 export default HomePage;

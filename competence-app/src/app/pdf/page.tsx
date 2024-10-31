@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import PDFComponent from '@/components/PDFComponent'; // Import your new PDFComponent
 import { isTokenExpired ,getTokenFromCookies } from '@/utils/jwt';
 import { useRouter } from 'next/navigation';
-import React, { useEffect } from 'react'; 
+import React, { useEffect } from 'react';  
 
 
 const Pdf = () => {
@@ -30,7 +30,7 @@ const Pdf = () => {
   }
 
   return (
-    <div className="container mt-3 ml-2"> 
+    <div className="container mt-3 ml-2">  
       <PDFComponent
         report ={activeReport} //reportCatalogues={activeReport.report_catalogues}
         eleve={activeEleve}

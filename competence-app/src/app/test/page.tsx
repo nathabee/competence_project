@@ -10,7 +10,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import ReportEleveSelection from '@/components/ReportEleveSelection';
 
 import { ReportCatalogue, ResultatDetail, ScoreRulePoint, Resultat } from '@/types/report';
-import { ReportCataloguePatch, ResultatPatch } from '@/types/reportpatch';
+import { ReportCataloguePatch, ResultatPatch } from '@/types/reportpatch'; 
 
 const Test: React.FC = () => {
   const router = useRouter();
@@ -322,7 +322,7 @@ const Test: React.FC = () => {
     return <p>Erreur récupération des données. Recommencez plus tard SVP.</p>;
   }
   return (
-    <div className="container mt-3 ml-2">
+    <div className="container mt-3 ml-2"> 
       {activeEleve ? (
         <>
           <button onClick={handleSubmit} className="button-warning">Sauvegarde du rapport</button>

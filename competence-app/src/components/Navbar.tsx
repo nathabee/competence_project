@@ -7,6 +7,7 @@ import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
 import { formatDate } from '../utils/helper';
 import '../app/globals.css'; // Import global styles  
 import Image from 'next/image'; // Import Image from next/image
+import DynamicHelpDrawer from '@/components/DynamicHelpDrawer';
 
 export default function Navbar() {
   const { userRoles, isLoggedIn, logout,
@@ -108,6 +109,9 @@ export default function Navbar() {
                 ""
               )
             )}
+          </div>
+          <div>
+          <DynamicHelpDrawer    /> 
           </div>
         </div>
 

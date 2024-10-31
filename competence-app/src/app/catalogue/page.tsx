@@ -9,7 +9,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
 import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
-import axios from 'axios';
+import axios from 'axios'; 
 
 
 const Catalogue: React.FC = () => {
@@ -71,7 +71,7 @@ const Catalogue: React.FC = () => {
 
     return (
         <div className="container mt-3 ml-2">
-            <h1>Catalogue</h1>
+            <h1>Catalogue</h1> 
             <div className="tab-content mt-3">
 
 

@@ -14,7 +14,7 @@ import EleveDisplay from '@/components/EleveDisplay';
 import CatalogueDisplay from '@/components/CatalogueDisplay';
 import LayoutDisplay from '@/components/LayoutDisplay';
 import { isTokenExpired ,getTokenFromCookies} from '@/utils/jwt';  
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation'; 
 
 const Overview: React.FC = () => {  
   const { activeCatalogues, activeEleve, activeReport, user, activeLayout} = useAuth();  
@@ -44,7 +44,7 @@ const Overview: React.FC = () => {
 
   return ( 
     <div className="container mt-3 ml-2">
-      <h1>Résumé des tests en cours:</h1>
+      <h1>Résumé des tests en cours:</h1> 
  
 
       <h3>Professeur: </h3>
