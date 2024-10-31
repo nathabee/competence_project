@@ -24,7 +24,7 @@ jest.mock('@/utils/jwt', () => ({
 }));
 
 describe('ElevePage Component', () => {
-  console.log('API URL in __tests__/ElevePage.test.tsx:', process.env.NEXT_PUBLIC_API_URL);
+  //console.log('API URL in __tests__/ElevePage.test.tsx:', process.env.NEXT_PUBLIC_API_URL);
   const mockRouterPush = jest.fn();
 
   beforeEach(() => {
@@ -72,7 +72,7 @@ describe('ElevePage Component', () => {
     // Wait for the eleves data to load and check if it's displayed correctly
     await waitFor(() => {
       expect(screen.getByText(/Gestion des Élèves/i)).toBeInTheDocument();
-      console.log('look for eleves[0].nom', eleves[0].nom);
+      //console.log('look for eleves[0].nom', eleves[0].nom);
       expect(screen.getByText(new RegExp(eleves[0].nom, 'i'))).toBeInTheDocument();
     });
   });

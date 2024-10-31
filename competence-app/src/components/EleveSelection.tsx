@@ -16,7 +16,7 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
 
   // Filter eleves based on selected niveau
   const filteredEleves = eleves.filter(eleve => {
-    return !selectedNiveau || eleve.niveau === selectedNiveau;
+    return !selectedNiveau || eleve.niveau_niveau === selectedNiveau;
   });
 
   // Handle selecting an eleve
