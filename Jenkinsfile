@@ -14,8 +14,16 @@ pipeline {
         stage('BackUp') {
             steps {
                 script {
-                    // Backup project directory
-                    sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}"
+                    // Check if BACKUPDIR exists and set permissions or create backup
+                    if (sh(script: "test -d '${BACKUPDIR}'", returnStatus: true) == 0) {
+                        // Change permissions if BACKUPDIR exists
+                        sh "chmod -R 777 '${BACKUPDIR}'"
+                        // Sync project files to backup directory
+                        sh "rsync -a --delete '${PROJECT_PATH}/' '${BACKUPDIR}/'"
+                    } else {
+                        sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}" 
+                    }
+
                     echo "Backup of project directory created at ${BACKUPDIR}"
 
                     // Backup MySQL database using Jenkins credentials
@@ -24,6 +32,7 @@ pipeline {
                 }
             }
         }
+
  
         // 2.1 Initial Checkout using Jenkins' built-in mechanism
         stage('Checkout') {
