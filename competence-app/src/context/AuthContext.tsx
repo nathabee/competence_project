@@ -1,5 +1,4 @@
 // src/context/AuthContext.tsx
-
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
@@ -18,11 +17,7 @@ interface AuthContextType {
   login: (token: string, userInfo: User) => void;
   logout: () => void;
 
-
-  isTourCompleted: boolean; 
-  completeTour: () => void; 
-
-  // Handle active selection
+ 
   activeCatalogues: Catalogue[];
   setActiveCatalogues: (catalogues: Catalogue[]) => void;
 
@@ -62,8 +57,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activeCatalogues, setActiveCatalogues] = useState<Catalogue[]>([]);
   const [activeEleve, setActiveEleve] = useState<Eleve | null>(null);
   const [token, setToken] = useState<string | null>(null); // State for token
-  const [isTourCompleted, setIsTourCompleted] = useState(false);
- 
+  //const [isTourCompleted, setIsTourCompleted] = useState(false);
+
   const [catalogue, setCatalogue] = useState<Catalogue[]>([]);
   const [eleves, setEleves] = useState<Eleve[]>([]);
   const [scoreRulePoints, setScoreRulePoints] = useState<ScoreRulePoint[] | null>(null);
@@ -72,7 +67,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [layouts, setLayouts] = useState<PDFLayout[]>([]);
   const [niveaux, setNiveaux] = useState<Niveau[] | null>(null); // Add niveaux state
 
-
+  
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -88,9 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setNiveaux(savedNiveaux); // Load niveaux from localStorage
 
         
-        // Check local storage to see if the tour was completed
-        const tourCompleted = localStorage.getItem('isTourCompleted') === 'true';
-        setIsTourCompleted(tourCompleted);
+ 
 
         // Load state from localStorage
         const savedCatalogues = JSON.parse(localStorage.getItem('activeCatalogues') || '[]');
@@ -111,6 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     }
   }, []);
+
 
   const login = (token: string, userInfo: User) => {
     if (typeof window !== 'undefined') {
@@ -139,6 +133,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setActiveEleve(null);
       setActiveReport(null);
       setActiveLayout(null);
+      setCatalogue([]); 
+      setEleves([]); 
+      setLayouts([]);
+      setScoreRulePoints([]) ;
 
       // Clear local storage entries related to active selections
       localStorage.removeItem('activeCatalogues');
@@ -146,7 +144,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('activeReport');
       localStorage.removeItem('activeLayout');
       localStorage.removeItem('layouts');
+      localStorage.removeItem('catalogue');
+      localStorage.removeItem('eleves');
       localStorage.removeItem('niveaux');
+      localStorage.removeItem('user');
 
       // Remove all Base64 images with competence_ prefix
       Object.keys(localStorage).forEach((key) => {
@@ -161,11 +162,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  /*
   const completeTour = () => {
     localStorage.setItem('isTourCompleted', 'true');
     setIsTourCompleted(true);
   };
-
+*/
 
   const updateCatalogue = (newCatalogue: Catalogue[]) => {
     setCatalogue(newCatalogue);
@@ -198,7 +200,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('scoreRulePoints', JSON.stringify(points));
     }
   };
-
 
   const setActiveReport = async (report: Report | null) => {
     if (report) {
@@ -268,8 +269,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isLoggedIn,
       login,
       logout,
-      isTourCompleted, 
-      completeTour,
       activeCatalogues,
       setActiveCatalogues: (catalogues: Catalogue[]) => {
         setActiveCatalogues(catalogues);
@@ -308,7 +307,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       },
       niveaux,
-      setNiveaux: setNiveauxState,  
+      setNiveaux: setNiveauxState,
     }}>
       {children}
     </AuthContext.Provider>

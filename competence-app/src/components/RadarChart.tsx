@@ -28,7 +28,7 @@ const RadarChart: React.FC<RadarChartProps> = ({ chartData }) => {
   const chartInstanceRef = useRef<Chart | null>(null);
 
   useEffect(() => {
-    const ctx = chartRef.current?.getContext('2d');
+    const ctx = chartRef.current?.getContext('2d', { willReadFrequently: true });
     
     if (!ctx) return;
 
@@ -86,7 +86,9 @@ const RadarChart: React.FC<RadarChartProps> = ({ chartData }) => {
     };
   }, [chartData]);
 
-  return <canvas ref={chartRef} width={400} height={600} />; // Adjusted dimensions for multiple charts
+  return <canvas ref={chartRef} 
+                width={ 728}  
+                height={ 564}   />;  // width={484+120+120} height={484+40+40} />; 
 };
 
 

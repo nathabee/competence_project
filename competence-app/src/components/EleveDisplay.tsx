@@ -15,7 +15,7 @@ const EleveDisplay: React.FC<EleveDisplayProps> = ({ eleve }) => {
 
   return (
     <div>
-      <p>Elève choisi : {eleve.nom} {eleve.prenom} {eleve.niveau_niveau}   Date de naissance: {eleve.datenaissance}  </p>
+      <p>Elève choisi : {eleve.nom} {eleve.prenom} {eleve.niveau_description}   Date de naissance: {eleve.datenaissance}  </p>
       <p>Professeurs:</p>
       {eleve.professeurs_details.length > 0 ? (
         <ul>

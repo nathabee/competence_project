@@ -6,7 +6,6 @@ import RadarChartImage from './RadarChartImage';
 import '@/styles/pdf.css';
 import PrintHeader from './PrintHeader';
 import { Report } from '@/types/report';
-//import { ReportCatalogue } from '@/types/report';
 import { Eleve } from '@/types/eleve';
 import { User } from '@/types/user';
 import { PDFLayout } from '@/types/pdf';
@@ -15,7 +14,6 @@ import SummaryDetailedDifficulty from './SummaryDetailedDifficulty'; // Import s
 
 interface PDFComponentProps {
     report: Report;
-    //reportCatalogues: ReportCatalogue[];
     eleve: Eleve;
     professor: User;
     pdflayout: PDFLayout;
@@ -24,24 +22,23 @@ interface PDFComponentProps {
 
 const PDFComponent: React.FC<PDFComponentProps> = ({
     report,
-    //reportCatalogues,
     eleve,
     professor,
     pdflayout,
     isImageChart,
 }) => {
-    const reportCatalogues=report.report_catalogues;
+    const reportCatalogues = report.report_catalogues;
 
     const handlePrintPDF = async () => {
         const printButton = document.querySelector('.btn') as HTMLElement;
         if (printButton) printButton.style.display = 'none';
-    
+
         const doc = new jsPDF({
             orientation: 'portrait',
             unit: 'mm',
             format: 'a4',
         });
-    
+
         // Generate pages for each reportCatalogue
         for (let i = 0; i < reportCatalogues.length; i++) {
             const chartSection = document.getElementById(`printable-chart-${i}`);
@@ -51,7 +48,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
                     const imgWidth = 210;
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
                     doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-    
+
                     // Add new page except for the last graph
                     if (i < reportCatalogues.length - 1) {
                         doc.addPage();
@@ -59,65 +56,24 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
                 });
             }
         }
-    
-        // Last Page: PrintHeader + SummaryDetailedDifficulty
-        const lastSection = document.getElementById('printable-summary');
-        if (lastSection) {
-            doc.addPage(); // Ensure new page for the summary
-            await html2canvas(lastSection, { scale: 2 }).then((canvas) => {
-                const imgData = canvas.toDataURL('image/jpeg', 0.5); // Use JPEG format with lower quality
-                const imgWidth = 210;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
-            });
-        }
-    
-        // Restore print button
-        if (printButton) printButton.style.display = 'inline-block';
-    
-        const todayFormat = new Date().toISOString().slice(0, 19).replace(/T/, '_').replace(/:/g, '-');
-        doc.save(`report_${eleve.nom}__${eleve.prenom}_${todayFormat}.pdf`);
-    };
-    
-    /*
-    const handlePrintPDF = async () => {
-        const printButton = document.querySelector('.btn') as HTMLElement;
-        if (printButton) printButton.style.display = 'none';
 
-        const doc = new jsPDF({
-            orientation: 'portrait',
-            unit: 'mm',
-            format: 'a4',
-        });
 
-        // Generate pages for each reportCatalogue (same structure for all pages)
-        for (let i = 0; i < reportCatalogues.length; i++) {
-            const chartSection = document.getElementById(`printable-chart-${i}`);
-            if (chartSection) {
-                await html2canvas(chartSection, { scale: 2 }).then((canvas) => {
-                    const imgData = canvas.toDataURL('image/png');
-                    const imgWidth = 210;
+
+        const printableElements = Array.from(document.querySelectorAll('[id^="printable-summary-"]'));
+
+        for (let i = 0; i < printableElements.length; i++) {
+            const section = printableElements[i] as HTMLElement;
+            if (section) {
+
+                doc.addPage();
+                await html2canvas(section, { scale: 2 }).then((canvas) => {
+                    const imgData = canvas.toDataURL('image/jpeg', 0.5); // Lower quality for compression
+                    const imgWidth = 210; // PDF width in mm
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                    doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+                    doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
 
-                    // Add new page except for the last graph
-                    if (i < reportCatalogues.length - 1) {
-                        doc.addPage();
-                    }
                 });
             }
-        }
-
-        // Last Page: PrintHeader + SummaryDetailedDifficulty
-        const lastSection = document.getElementById('printable-summary');
-        if (lastSection) {
-            doc.addPage(); // Ensure new page for the summary
-            await html2canvas(lastSection, { scale: 2 }).then((canvas) => {
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 210;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
-            });
         }
 
         // Restore print button
@@ -126,7 +82,8 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
         const todayFormat = new Date().toISOString().slice(0, 19).replace(/T/, '_').replace(/:/g, '-');
         doc.save(`report_${eleve.nom}__${eleve.prenom}_${todayFormat}.pdf`);
     };
-    */
+
+
 
     // Pre-calculate the labels, labelImages, and data once
     const processedData = reportCatalogues.map((reportcatalogue) => {
@@ -160,7 +117,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
             {processedData.map((chartData, index) => (
                 <div key={index} id={`printable-chart-${index}`} className="print-container">
                     {/* Same structure for all pages */}
-                    <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report}/>
+                    <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report} />
                     <div className="print-banner"><div></div></div>
                     <h3>{chartData.description}</h3>
                     {isImageChart ? (
@@ -177,11 +134,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
             ))}
 
             {/* Last Page: PrintHeader + SummaryDetailedDifficulty */}
-            <div id="printable-summary" className="print-container">
-                <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report}/>
-                <h2>Rapport détaillé des difficultés rencontrées:</h2>
-                <SummaryDetailedDifficulty report_catalogues={reportCatalogues} />
-            </div>
+            <SummaryDetailedDifficulty eleve={eleve} professor={professor} pdflayout={pdflayout} report={report} max_item={40} self_page={false} />
         </div>
     );
 };

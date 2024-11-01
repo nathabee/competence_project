@@ -56,7 +56,7 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve, rep
         </div> 
 
         <div className="print-header-eleve">
-          <div>Elève : {eleve.nom}  {eleve.prenom} , {eleve.niveau_niveau}</div>
+          <div>Elève : {eleve.nom}  {eleve.prenom} , {eleve.niveau_description}</div>
         </div>
         <div>
           <p>Rapport créé le: {formatDate(report.created_at)}</p>

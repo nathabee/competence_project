@@ -5,7 +5,7 @@ pipeline {
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
         STATIC_FILES_PATH = "/var/www/staticfiles"
-        timestamp = new Date().format('yyyyMMdd')
+        timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
     }
     stages {
@@ -15,14 +15,7 @@ pipeline {
             steps {
                 script {
                     // Check if BACKUPDIR exists and set permissions or create backup
-                    if (sh(script: "test -d '${BACKUPDIR}'", returnStatus: true) == 0) {
-                        // Change permissions if BACKUPDIR exists
-                        sh "chmod -R 777 '${BACKUPDIR}'"
-                        // Sync project files to backup directory
-                        sh "rsync -a --delete '${PROJECT_PATH}/' '${BACKUPDIR}/'"
-                    } else {
-                        sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}" 
-                    }
+                    sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}" 
 
                     echo "Backup of project directory created at ${BACKUPDIR}"
 

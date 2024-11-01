@@ -67,8 +67,15 @@ const Overview: React.FC = () => {
     <SummaryDifficulty report_catalogues={activeReport?.report_catalogues ?? []} />
 
     <h2>Rapport détaillé des difficultés rencontrées:</h2> 
-    <SummaryDetailedDifficulty report_catalogues={activeReport?.report_catalogues ?? []} />
-
+    
+    {activeReport ? (
+                    <>
+    <SummaryDetailedDifficulty  eleve={activeEleve}    professor={user}   pdflayout={activeLayout} report={activeReport} max_item={40} self_page={true} /> 
+                    </>
+                ) : (
+                    <p>Pas de rapport sélectionné.</p>
+                )}
+ 
     
     </div>
 

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { Eleve , Niveau } from '@/types/eleve'; 
+import { Eleve  } from '@/types/eleve'; 
 import EleveSelection from '@/components/EleveSelection';
 import ReportEleveSelection from '@/components/ReportEleveSelection';
 import EleveForm from '@/components/EleveForm';
@@ -13,7 +13,7 @@ import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
 
 const ElevePage: React.FC = () => {
     const router = useRouter();
-    const { user, activeEleve, setNiveaux } = useAuth(); // Add setNiveaux from AuthContext
+    const { user, activeEleve} = useAuth();  
     const [eleves, setEleves] = useState<Eleve[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
@@ -37,15 +37,7 @@ const ElevePage: React.FC = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 //console.log('Fetched eleveResponse:', eleveResponse.data);
-                setEleves(eleveResponse.data);
-
-                // Fetch Niveaux and store them in context/localStorage
-                const niveauResponse = await axios.get(`${apiUrl}/niveaux/`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                //console.log('Fetched niveauResponse:', niveauResponse.data);
-                const niveaux: Niveau[] = niveauResponse.data;
-                setNiveaux(niveaux); // Save in AuthContext and localStorage
+                setEleves(eleveResponse.data); 
 
             } catch (fetchError) { // Renamed the error variable
                 console.error('Erreur lors de la récupération des données:', fetchError);

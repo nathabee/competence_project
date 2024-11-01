@@ -7,12 +7,15 @@ import axios, { AxiosError } from 'axios';
 import { setCookie } from 'nookies';
 import { useAuth } from '../../context/AuthContext';
 
+import useFetchData from '@/hooks/useFetchData'; // Import your hook
+
 const LoginForm: React.FC = () => {
   const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+  const { fetchData } = useFetchData(); // Get the fetch function from the hook
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,6 +37,12 @@ const LoginForm: React.FC = () => {
 
       const userInfo = userResponse.data;
       login(token, userInfo);
+
+
+
+      // Call the fetch data function after login
+      // console.log("fetchData will be called")
+      await fetchData(); // Wait for the data fetching to complete
       router.push(`/dashboard`);
     } catch (error) {
       const axiosError = error as AxiosError;

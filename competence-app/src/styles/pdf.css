@@ -10,7 +10,7 @@
 /*******************************************/
 /* Overview of the difficulties */
 
-.table {
+.print-container .table {
   width: 100%;
   /* Ensure the table fits the full width of the page */
   font-size: 8px;
@@ -21,7 +21,7 @@
   /* Remove margins for compact layout */
 }
 
-.table thead th {
+.print-container .table thead th {
   background-color: hsl(177, 56%, 56%);
   /* Light background for headers */
   font-weight: bold;
@@ -34,7 +34,7 @@
   /* Center header text */
 }
 
-.table tbody td {
+.print-container .table tbody td {
   border: 1px solid #070844;
   /* Light border for table cells */
   padding: 4px;
@@ -48,7 +48,7 @@
 }
 
 /* Compact the images in the last column */
-.table tbody td img {
+.print-container .table tbody td img {
   width: 30px;
   /* Reduce image width */
   height: 15px;
@@ -58,19 +58,19 @@
 }
 
 /* Reduce padding for the observation/details rows */
-.table tbody tr td[colspan="2"] {
+.print-container .table tbody tr td[colspan="2"] {
   padding-left: 15px;
   /* Indent the details row slightly */
 }
 
 /* Ensure detailed rows are smaller and more compact */
-.table tbody tr {
+.print-container .table tbody tr {
   line-height: 1.2;
   /* Reduce line height for compact rows */
 }
 
 /* Prevent page breaks inside the table */
-.table {
+.print-container .table {
   page-break-inside: avoid;
 }
 
@@ -80,8 +80,7 @@
   /* Add margin at the bottom for space */
 }
 
-
-
+ 
 body {
   margin: 2cm 2cm 2cm 2cm;
   padding: 0;

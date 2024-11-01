@@ -44,8 +44,8 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
 
 
 
-  useEffect(() => {
-    const ctx = chartRef.current?.getContext('2d');
+  useEffect(() => { 
+    const ctx = chartRef.current?.getContext('2d', { willReadFrequently: true });
 
     if (!ctx) return;
 
@@ -119,8 +119,8 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
               const chartInstance = chartInstanceRef.current;
               if (chartInstance) {
                 const { width, height } = chartInstance.chartArea;
-                console.log("chartInstance width",chartInstance.width)
-                console.log("chartInstance height",chartInstance.height)
+                //console.log("chartInstance width",chartInstance.width)
+                //console.log("chartInstance height",chartInstance.height)
                 //setCanvasSize({ width, height }); // Set canvas size based on chart  
                 const centerX = width / 2 + chartInstance.chartArea.left;
                 const centerY = height / 2 + chartInstance.chartArea.top;

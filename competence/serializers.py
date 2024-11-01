@@ -59,11 +59,11 @@ class EleveSerializer(serializers.ModelSerializer):
     niveau = serializers.PrimaryKeyRelatedField(queryset=Niveau.objects.all())
 
     # For retrieve (GET), we show only the niveau.niveau as a string
-    niveau_niveau = serializers.CharField(source='niveau.niveau', read_only=True)
+    niveau_description = serializers.CharField(source='niveau.description', read_only=True)
 
     class Meta:
         model = Eleve
-        fields = ['id', 'nom', 'prenom', 'niveau','niveau_niveau', 'datenaissance', 'professeurs', 'professeurs_details']
+        fields = ['id', 'nom', 'prenom', 'niveau','niveau_description', 'datenaissance', 'professeurs', 'professeurs_details']
 
     def create(self, validated_data):
         # If professeurs are provided (Admin case), pop them out of the validated_data
@@ -444,7 +444,7 @@ class ReportCatalogueSerializer(serializers.ModelSerializer):
     resultats = ResultatSerializer(many=True)
     
     # Use CatalogueDescriptionSerializer for GET requests (nested read)
-    catalogue = CatalogueDescriptionSerializer(read_only=True)
+    catalogue = CatalogueDescriptionSerializer(read_only=True) 
 
     class Meta:
         model = ReportCatalogue

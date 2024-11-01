@@ -34,7 +34,7 @@ const Dashboard: React.FC = () => {
       const response = await axios.get(`${apiUrl}/shortreports/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Fetched short reports:', response.data);
+      //console.log('Fetched short reports:', response.data);
       setShortReports(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);

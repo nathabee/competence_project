@@ -10,8 +10,8 @@
 
 /* Root variables for colors */
 :root {
-  --custom-blue: #47cab4;
-  --custom-blue-complement:  #e2d89f;
+  --custom-blue: #d4f0eb;
+  --custom-blue-complement:  #deecbe;
   --custom-warning: #fae46a;
   --custom-dark: #22473f;
   --custom-dark-shadow:  rgba(0, 0, 0, 0.1);
@@ -247,3 +247,37 @@ body {
   /* Optionally, add styles for when it's expanded */
   font-weight: bold; /* For example, make it bold when expanded */
 }
+
+
+/*******************************************************/
+/* Help in drawer */
+/* global.css */
+.drawer-content  {
+  padding: 1rem;
+  background:  var(--custom-gradient);
+  font-family: Arial, sans-serif; 
+  color: var(--custom-text); /* Optional: Set text color for better contrast with the background */
+  border-radius: 0 5px 5px 0; /* Optional: Customize rounded edges */
+  transition: box-shadow 0.3s ease; /* Smooth shadow transition on hover */
+}
+
+
+.help-drawer-heading { 
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.help-drawer-subheading { 
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+.help-drawer-paragraph {
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+

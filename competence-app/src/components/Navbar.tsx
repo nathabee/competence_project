@@ -126,14 +126,15 @@ export default function Navbar() {
                 )}
                 {userRoles.includes('teacher') && (
                   <>
-                    <Nav.Link href={`${basePath}/dashboard`}>Historique</Nav.Link>
-                    <Nav.Link href={`${basePath}/eleve`}>Gestion des élèves</Nav.Link>
-                    <Nav.Link href={`${basePath}/configuration`}>Configuration du PDF</Nav.Link>
-                    <Nav.Link href={`${basePath}/catalogue`}>Gestion du catalogue de tests</Nav.Link>
-                    <Nav.Link href={`${basePath}/test`}>Gestion des rapports</Nav.Link>
-                    <Nav.Link href={`${basePath}/overview`}>Résumé des tests en cours</Nav.Link>
-                    <Nav.Link href={`${basePath}/pdf`}>PDF</Nav.Link>
-                    <Nav.Link href={`${basePath}/pdfimage`}>PDF avec pictogrammes</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/dashboard`)}>Historique</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/eleve`)}>Gestion des élèves</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/configuration`)}>Configuration du PDF</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/catalogue`)}>Gestion du catalogue de tests</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/test`)}>Gestion des rapports</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/overview`)}>Résumé des tests en cours</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/pdf`)}>PDF</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/pdfimage`)}>PDF avec pictogrammes</Nav.Link>
+ 
                   </>
                 )}
                 {userRoles.includes('analytics') && (

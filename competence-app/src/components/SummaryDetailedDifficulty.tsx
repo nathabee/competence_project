@@ -1,105 +1,207 @@
-'use client'; // Ensure client-side rendering
+'use client';
 
-import React from 'react';
-import Image from 'next/image'; // Import the Image component from next/image
-import { ReportCatalogue, Resultat } from '@/types/report'; // Ensure proper import of interfaces
-import { useAuth } from '@/context/AuthContext'; // Correctly using the context hook
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { Report, ReportCatalogue, Resultat } from '@/types/report'; // Import your types
+import { useAuth } from '@/context/AuthContext';
 import '@/styles/pdf.css';
+import { Eleve } from '@/types/eleve';
+import { User } from '@/types/user';
+import { PDFLayout } from '@/types/pdf';
+import PrintHeader from './PrintHeader';
 
-// Define the props type with an array of ReportCatalogue
 interface SummaryDetailedDifficultyProps {
-  report_catalogues: ReportCatalogue[]; // Array of ReportCatalogue[]
+  eleve: Eleve;
+  professor: User;
+  pdflayout: PDFLayout;
+  report: Report;
+  max_item: number;
+  self_page: boolean; // New parameter to determine pagination behavior
 }
 
-const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({ report_catalogues }) => {
-  // Use AuthContext to get the active report directly
+// Define row types
+interface MainRow {
+  type: 'main';
+  reportCatalogue: ReportCatalogue;
+  resultat: Resultat;
+}
+
+interface DetailRow {
+  type: 'detail';
+  detail: {
+    score: number;
+    item: {
+      description: string;
+      max_score: number;
+    };
+    observation: string;
+  };
+}
+
+type Row = MainRow | DetailRow;
+
+const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({
+  eleve,
+  professor,
+  pdflayout,
+  report,
+  max_item,
+  self_page,
+}) => {
   const { activeReport } = useAuth();
+  const cachedReport = activeReport ? activeReport.report_catalogues : report.report_catalogues;
 
-  // Use activeReport if available, otherwise fallback to passed props
-  const cachedReport = activeReport ? activeReport.report_catalogues : report_catalogues;
+  // Flatten results for easier handling
+  const flattenedResults: Row[] = cachedReport.flatMap((reportCatalogue: ReportCatalogue) =>
+    reportCatalogue.resultats
+      .filter((resultat: Resultat) => resultat.seuil2_percent < 100 || resultat.seuil1_percent < 100)
+      .flatMap((resultat: Resultat) => {
+        const mainRow: MainRow = {
+          type: 'main',
+          reportCatalogue,
+          resultat
+        };
+        const detailRows: DetailRow[] = resultat.seuil2_percent < 100 && resultat.resultat_details
+          ? resultat.resultat_details.map((detail) => ({
+            type: 'detail',
+            detail
+          }))
+          : [];
+        return [mainRow, ...detailRows];
+      })
+  );
 
+  // Split into pages of max_item rows
+  const paginatedResults: Row[][] = [];
+  for (let i = 0; i < flattenedResults.length; i += max_item) {
+    paginatedResults.push(flattenedResults.slice(i, i + max_item));
+  }
+
+  // State for current page
+  const [currentPage, setCurrentPage] = useState(0);
+
+  // Function to go to the previous page
+  const goToPreviousPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  // Function to go to the next page
+  const goToNextPage = () => {
+    if (currentPage < paginatedResults.length - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // Function to render the table based on rows
+  const renderTable = (rows: Row[]) => (
+    <table className="table table-bordered">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Type de tests</th>
+          <th>Score</th>
+          <th>Max score</th>
+          <th>Avancement</th>
+          <th>seuil1</th>
+          <th>seuil2</th>
+          <th>seuil3</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row: Row, rowIndex) => {
+          if (row.type === 'main') {
+            const { reportCatalogue, resultat } = row; // Now this is properly typed
+            const isBold = resultat.seuil1_percent < 100;
+            const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`;
+            const base64Image = localStorage.getItem(imageKey) || null;
+
+            return (
+              <tr key={rowIndex} style={isBold ? { fontWeight: 'bold' } : {}}>
+                <td>
+                  {base64Image ? (
+                    <Image
+                      src={`${base64Image}`}
+                      alt="Groupage Icon"
+                      width={20}
+                      height={20}
+                      style={{ marginRight: '10px' }}
+                    />
+                  ) : null}
+                  {reportCatalogue.catalogue.description}
+                </td>
+                <td>{resultat.groupage.label_groupage}</td>
+                <td>{resultat.score.toFixed(0)}</td>
+                <td>{resultat.groupage.max_point.toFixed(0)}</td>
+                <td>{Math.round((resultat.score / resultat.groupage.max_point) * 100)}%</td>
+                <td>{Math.round(resultat.seuil1_percent)}%</td>
+                <td>{Math.round(resultat.seuil2_percent)}%</td>
+                <td>{Math.round(resultat.seuil3_percent)}%</td>
+              </tr>
+            );
+          }
+
+          if (row.type === 'detail') {
+            const { detail } = row;
+            const testInError = (detail.score * 2) < detail.item.max_score;
+
+            return testInError ? (
+              <tr key={`${rowIndex}-detail`} style={{ fontWeight: 'normal' }}>
+                <td colSpan={2} style={{ paddingLeft: '30px' }}>{detail.item.description}</td>
+                <td>{Math.round(detail.score)}</td>
+                <td>{detail.item.max_score}</td>
+                <td>{detail.observation}</td>
+                <td colSpan={3}></td>
+              </tr>
+            ) : null;
+          }
+          return null;
+        })}
+      </tbody>
+    </table>
+  );
+
+  // Rendering logic based on self_page
   return (
-    <div> 
-      <table className="table table-bordered">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Type de tests</th>
-            <th>Score</th>
-            <th>Max score</th>
-            <th>Avancement</th> 
-            <th>seuil1</th>
-            <th>seuil2</th>
-            <th>seuil3</th> 
-          </tr>
-        </thead>
-        <tbody>
-          {cachedReport && cachedReport.length > 0 ? (
-            cachedReport.map((reportCatalogue: ReportCatalogue, reportCatalogueIndex: number) => (
-              reportCatalogue.resultats
-                // Apply filtering rules for displaying results
-                .filter((resultat: Resultat) => resultat.seuil2_percent < 100 || resultat.seuil1_percent < 100)
-                .map((resultat: Resultat, resIndex: number) => {
-                  // Construct the image key from the groupage_icon
-                  const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`; // Updated key construction for consistency
+    <div>
+      {self_page ? (
+        // Render with pagination
+        <>
+          <div id={`printable-summary-${currentPage}`} className="print-container">
+            <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report} />
+            <h2>Rapport détaillé des difficultés rencontrées:</h2>
+            {renderTable(paginatedResults[currentPage])}
+          </div>
 
-                  // Retrieve the Base64 image data from local storage
-                  const base64Image = localStorage.getItem(imageKey) || null;
+          {/* Pagination Controls */}
+          <div className="pagination-controls">
+            <button onClick={goToPreviousPage} disabled={currentPage === 0}>
+              Précédent
+            </button>
+            <span>
+              Page {currentPage + 1} sur {paginatedResults.length}
+            </span>
+            <button onClick={goToNextPage} disabled={currentPage === paginatedResults.length - 1}>
+              Suivant
+            </button>
+          </div>
+        </>
+      ) : (
+        // Render all results without pagination
+        <div>
+          {Array.from({ length: paginatedResults.length }).map((_, pageIndex) => (
+            <div key={pageIndex}>
+              <div id={`printable-summary-${pageIndex}`} className="print-container">
+                <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report} />
+                <h2>Rapport détaillé des difficultés rencontrées:</h2>
+                {renderTable(paginatedResults[pageIndex])}
+              </div>
+            </div>
+          ))}
+        </div>
 
-                  // Determine if the row should be bold (seuil1_percent < 100)
-                  const isBold = resultat.seuil1_percent < 100;
-
-                  return (
-                    <React.Fragment key={`${reportCatalogueIndex}-${resIndex}`}>
-                      <tr style={isBold ? { fontWeight: 'bold' } : {}}>
-                        <td>{base64Image ? (
-                          <Image
-                            src={`${base64Image}`} 
-                            alt="Groupage Icon"
-                            width={20} // Set width
-                            height={20} // Set height
-                            style={{ marginRight: '10px' }} // Inline styles for margin
-                          />
-                          ) : ("")}{reportCatalogue.catalogue.description}</td>
-                        <td>{resultat.groupage.label_groupage}</td>
-                        <td>{resultat.score.toFixed(0)}</td>
-                        <td>{resultat.groupage.max_point.toFixed(0)}</td>
-                        <td>{Math.round((resultat.score / resultat.groupage.max_point) * 100)}%</td> 
-                        <td>{Math.round(resultat.seuil1_percent)}%</td>
-                        <td>{Math.round(resultat.seuil2_percent)}%</td>
-                        <td>{Math.round(resultat.seuil3_percent)}%</td>  
-                      </tr>
-                      {/* Check for detailed errors if seuil2_percent < 100 */}
-                      {resultat.seuil2_percent < 100 && resultat.resultat_details && (
-                        resultat.resultat_details.map((detail, detailIndex) => {
-                          // Check if the test is in error
-                          const testInError = (detail.score * 2) < detail.item.max_score;
-
-                          // Render test details if in error
-                          return testInError ? (
-                            <tr key={`${reportCatalogueIndex}-${resIndex}-detail-${detailIndex}`} style={{ fontWeight: 'normal' }}>
-                              <td colSpan={2} style={{ paddingLeft: '30px' }}> {/* Indentation for clarity */}
-                                {detail.item.description}
-                              </td>
-                              <td>{Math.round(detail.score)}</td>
-                              <td>{detail.item.max_score}</td>
-                              <td>{detail.observation}</td>
-                              <td colSpan={3}></td> {/* Empty cells for alignment */}
-                            </tr>
-                          ) : null;
-                        })
-                      )}
-                    </React.Fragment>
-                  );
-                })
-            ))
-          ) : (
-            <tr>
-              <td colSpan={10}>No data available</td>
-            </tr>
-          )}
-        </tbody>
-      </table>
+      )}
     </div>
   );
 };

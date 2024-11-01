@@ -12,11 +12,11 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
   if (eleves.length === 0) return <p>Pas d&apos;élève trouvé.</p>;
 
   // Get unique levels (niveaux)
-  const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => eleve.niveau)));
+  const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => eleve.niveau_description)));
 
   // Filter eleves based on selected niveau
   const filteredEleves = eleves.filter(eleve => {
-    return !selectedNiveau || eleve.niveau_niveau === selectedNiveau;
+    return !selectedNiveau || eleve.niveau_description === selectedNiveau;
   });
 
   // Handle selecting an eleve
@@ -38,14 +38,15 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
             className="form-select" // Add a class if you want to control via CSS
           >
             <option value="">All</option>
-            {uniqueNiveaux.map(niveau => (
-              <option key={niveau} value={niveau}>
+            {uniqueNiveaux.map((niveau, index) => (
+              <option key={niveau || index} value={niveau}>
                 {niveau}
               </option>
             ))}
           </select>
         </label>
       </div>
+
 
       <table className="table">
         <thead>
@@ -67,9 +68,9 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
             >
               <td>{eleve.nom}</td>
               <td>{eleve.prenom}</td>
-              <td>{eleve.niveau_niveau}</td>
+              <td>{eleve.niveau_description}</td>
               <td>
-                {eleve.datenaissance }
+                {eleve.datenaissance}
               </td>
               <td>
                 {eleve.professeurs_details?.map(prof => prof.username).join(', ') || 'N/A'}

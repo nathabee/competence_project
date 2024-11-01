@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
@@ -8,26 +8,17 @@ import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ReportEleveSelection from '@/components/ReportEleveSelection';
-
 import { ReportCatalogue, ResultatDetail, ScoreRulePoint, Resultat } from '@/types/report';
-import { ReportCataloguePatch, ResultatPatch } from '@/types/reportpatch'; 
+import { ReportCataloguePatch, ResultatPatch } from '@/types/reportpatch';
 
 const Test: React.FC = () => {
   const router = useRouter();
-  const { scoreRulePoints,
-    setScoreRulePoints,
-    activeReport,
-    setActiveReport,
-    activeCatalogues,
-    activeEleve,
-    user } = useAuth();
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<boolean>(false);
+  const { scoreRulePoints, activeReport, activeEleve, user, setActiveReport, activeCatalogues, activeLayout } = useAuth();
   const [reportData, setReportData] = useState<ReportCatalogue[]>([]);
-  //const [originalData, setOriginalData] = useState<ReportCatalogue[]>([]);
   const [isModified, setIsModified] = useState<boolean[]>(new Array(reportData.length).fill(false));
-
-
+  const [loading, setLoading] = useState<boolean>(true);
+  const [isError, setIsError] = useState<boolean>(false);
+  const [token, setToken] = useState<string | null>(null);
 
   const defaultScoreRulePoint = useMemo(() => ({
     id: 1,
@@ -35,61 +26,48 @@ const Test: React.FC = () => {
     scorelabel: "?",
     score: -1,
     description: "Default score rule"
-  }), []); // Memoize this object
+  }), []);
 
+  // Retrieve the token client-side only
   useEffect(() => {
-    const fetchData = async () => {
-      const token = getTokenFromCookies(); // Automatically gets the token from cookies
+    const retrievedToken = getTokenFromCookies();
+    if (!retrievedToken || isTokenExpired(retrievedToken)) {
+      router.push(`/login`);
+    } else {
+      setToken(retrievedToken);
+      setLoading(false); // Set loading to false once token is verified
+    }
 
-      if (!token || isTokenExpired(token)) {
-        router.push(`/login`);
-        return;
-      }
 
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+    if (activeReport) {
+      setReportData(activeReport.report_catalogues || []); 
+    }
 
-      try {
-        if (!scoreRulePoints || scoreRulePoints.length === 0) {
-          const scoreRuleResponse = await axios.get<ScoreRulePoint[]>(`${apiUrl}/scorerulepoints/`, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-          console.log('Fetched scoreRuleResponse:', scoreRuleResponse.data);
-          setScoreRulePoints(scoreRuleResponse.data);
-        }
+  }, [router, activeReport]);
 
-        if (activeReport) {
-          setReportData(activeReport.report_catalogues || []);
-          //setOriginalData(activeReport.report_catalogues || []);
-        }
+  if (loading) {
+    return (
+      <div className="loading-indicator">
+        <p>Chargement des données...</p>
+        <Spinner animation="border" />
+      </div>
+    );
+  }
 
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [router, activeCatalogues, activeReport]);
-
+  if (!token) return null; // Don't render if there's no valid token
+  
   const handleObservationChange = (reportcatalogueIndex: number, resultatIndex: number, detailIndex: number, value: string) => {
     setReportData((prevData) => {
       const newData = [...prevData];
       newData[reportcatalogueIndex].resultats[resultatIndex].resultat_details[detailIndex].observation = value;
-
-      // Mark this specific resultat as modified
       setIsModified((prev) => {
         const newModified = [...prev];
         newModified[resultatIndex] = true;
         return newModified;
       });
-
       return newData;
     });
   };
-
-
 
   const handleScoreLabelChange = (
     reportcatalogueIndex: number,
@@ -98,69 +76,34 @@ const Test: React.FC = () => {
     selectedLabel: string,
     scorerule: number
   ) => {
-    // Find the score rule point based on the selected label
     const scoreRulePoint =
       scoreRulePoints?.find(
         (srp) => srp.scorerule === scorerule && srp.scorelabel === selectedLabel
-      ) || defaultScoreRulePoint; // Fallback to default if not found
+      ) || defaultScoreRulePoint;
 
     setReportData((prevData) => {
       const newData = [...prevData];
       const detail = newData[reportcatalogueIndex].resultats[resultatIndex].resultat_details[detailIndex];
-
-      // Update the scorelabel
       detail.scorelabel = selectedLabel;
-
-      // Extract the max score for the current detail
       const maxScore = detail.item.max_score;
-
-      // Mark this specific resultat as modified
       setIsModified((prev) => {
         const newModified = [...prev];
         newModified[resultatIndex] = true;
         return newModified;
       });
-
-      // Determine the score based on the scorerule
-      if (detail.item.scorerule === 8) {
-        // Set score to the integer value of selectedLabel
-        detail.score = parseInt(selectedLabel, 10); // Convert selectedLabel to an integer
-      } else {
-        // Use the score from found scoreRulePoint or the default
-        detail.score = scoreRulePoint.score;
-      }
-
-      // Log an error if the score exceeds the maximum allowed score
-      if (detail.score > maxScore) {
-        console.error(`Score (${detail.score}) exceeds max score (${maxScore}) for item: ${detail.item.description}`);
-        // Optionally reset score to maxScore or keep the previous score
-        detail.score = Math.min(detail.score, maxScore); // Ensures score doesn't exceed maxScore
-      }
-
-      return newData; // Return the updated data
+      detail.score = detail.item.scorerule === 8 ? parseInt(selectedLabel, 10) : scoreRulePoint.score;
+      if (detail.score > maxScore) detail.score = Math.min(detail.score, maxScore);
+      return newData;
     });
   };
 
-
   const handleSaveResultat = async (catalogueIndex: number, resultatIndex: number) => {
-    //console.log(`Starting save for catalogueIndex: ${catalogueIndex}, resultatIndex: ${resultatIndex}`);
-
-    const token = document.cookie.split('authToken=')[1]?.split(';')[0];
-    //console.log('Token:', token);
-
     const apiUrl = process.env.NEXT_PUBLIC_API_URL;
-    //console.log('API URL:', apiUrl);
-
     const patchData: ReportCataloguePatch = { id: reportData[catalogueIndex].id, resultats: [] };
-    //console.log('Initial patchData:', JSON.stringify(patchData));
-
     const resultat = reportData[catalogueIndex].resultats[resultatIndex];
-    //console.log('Resultat to save:', JSON.stringify(resultat));
-
     const resultatPatch: ResultatPatch = { id: resultat.id, resultat_details: [] };
 
     resultat.resultat_details.forEach((detail: ResultatDetail) => {
-      //console.log(`Processing detail with ID: ${detail.id}`);
       resultatPatch.resultat_details.push({
         id: detail.id,
         item_id: detail.item.id,
@@ -169,36 +112,36 @@ const Test: React.FC = () => {
         observation: detail.observation,
       });
     });
-
     patchData.resultats.push(resultatPatch);
-    //console.log('Final patchData:', JSON.stringify(patchData));
+    setLoading(true);
+    setIsError(false);
 
     try {
-      //console.log('Sending PATCH request...');
       const response = await axios.patch(`${apiUrl}/fullreports/${activeReport?.id}/`, {
         id: activeReport?.id || 0,
         eleve: activeEleve?.id || 0,
         professeur: user?.id || 0,
         pdflayout: 1,
-        report_catalogues_data: [patchData], // wrap in an array
+        report_catalogues_data: [patchData],
       }, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log('Patch request successful for fullreports id', response.data);
-
 
       setIsModified((prev) => {
         const newModified = [...prev];
         newModified[resultatIndex] = false;
         return newModified;
       });
-
-      setActiveReport(response.data); // Update the active report with the response 
+      setActiveReport(response.data);
     } catch (error) {
-      console.error('Erreur mis a jour du resultat:', error);
+      setIsError(true);
+      console.error('Error updating report:', error);
+    } finally {
+      setLoading(false);
     }
   };
+ 
+ 
 
   const handleSubmit = async () => {
     // Ensure activeReport is not null
@@ -241,7 +184,10 @@ const Test: React.FC = () => {
       }
     });
 
-    //console.log('Final patch data to be sent:', patchData);
+    //console.log('Final patch data to be sent:', patchData); 
+
+    setLoading(true); 
+    setIsError(false);
 
     try {
       if (patchData.length > 0) {
@@ -268,7 +214,11 @@ const Test: React.FC = () => {
         console.log('No actual changes detected'); // This might not occur anymore since we're sending all data
       }
     } catch (error) {
+      setIsError(true);
       console.error('Error updating report:', error);
+      return('Erreur mise à jour du rapport. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -286,6 +236,10 @@ const Test: React.FC = () => {
       return; // Prevent API call if activeCatalogues is not valid
     }
 
+
+
+    setLoading(true); 
+    setIsError(false);
     try {
       const catalogueIds = activeCatalogues.map(cat => cat.id);
       const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -300,12 +254,16 @@ const Test: React.FC = () => {
       });
 
       const createdReport = reportCreationResponse.data;
-      console.log("post fullreports for creation", createdReport);
+      //console.log("post fullreports for creation", createdReport);
       setActiveReport(createdReport);
 
       router.push(`/test/`);
     } catch (error) {
-      console.error('Erreur création du rapport:', error);
+      setIsError(true);
+      console.error('Error creating report:', error);
+      return('Erreur creation du rapport. Veuillez réessayer.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -318,23 +276,29 @@ const Test: React.FC = () => {
     );
   }
 
-  if (error) {
+
+  if (isError) {
     return <p>Erreur récupération des données. Recommencez plus tard SVP.</p>;
   }
+
+  
   return (
-    <div className="container mt-3 ml-2"> 
-      {activeEleve ? (
-        <>
-          <button onClick={handleSubmit} className="button-warning">Sauvegarde du rapport</button>
+    <div className="container mt-3 ml-2">
+    {activeEleve && activeLayout && activeCatalogues ? (
+      <>
+        <button onClick={createReport} className="button-warning">Création nouveau Report</button>
+      </>
+    ) : (
+      <p>Commencez par sélectionner un élève.</p>
+    )}
 
-          <button onClick={createReport} className="button-warning">Création nouveau Report</button>
-        </>
-      ) : (
-        <p>Commencez par sélectionner un élève.</p>
-      )}
+    {activeReport && (
+      <>
+        <button onClick={handleSubmit} className="button-warning">Sauvegarde du rapport</button>
+      </>
+    )}
 
-
-      <h1>History report eleve :</h1>
+    <h1>History report élève :</h1>
       {activeEleve ? (
         <>
           <h2>Report obtenus par l&apos;élève sélectionné :</h2>
