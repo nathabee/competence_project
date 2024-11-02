@@ -120,10 +120,10 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
                     <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report} />
                     <div className="print-banner"><div></div></div>
                     <h3>{chartData.description}</h3>
-                    {isImageChart ? (
-                        <RadarChartImage chartData={{ labels: chartData.labels, data: chartData.data, labelImages: chartData.labelImages }} />
-                    ) : (
-                        <RadarChart chartData={{ labels: chartData.labels, data: chartData.data }} />
+                    {isImageChart ? ( 
+                        <RadarChartImage chartData={{ labels: chartData.labels, data: chartData.data, labelImages: chartData.labelImages }} /> 
+                    ) : ( 
+                        <RadarChart chartData={{ labels: chartData.labels, data: chartData.data }} /> 
                     )}
                     <ScoreOverview reportCatalogue={reportCatalogues[index]} />
                     <div className="print-footer">
@@ -133,6 +133,8 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
                 </div>
             ))}
 
+            <div className="spacing"></div> {/* This div creates space between sections */}
+        
             {/* Last Page: PrintHeader + SummaryDetailedDifficulty */}
             <SummaryDetailedDifficulty eleve={eleve} professor={professor} pdflayout={pdflayout} report={report} max_item={40} self_page={false} />
         </div>

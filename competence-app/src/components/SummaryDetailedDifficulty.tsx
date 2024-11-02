@@ -192,11 +192,14 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({
         <div>
           {Array.from({ length: paginatedResults.length }).map((_, pageIndex) => (
             <div key={pageIndex}>
+
+              <div className="spacing"></div> {/* This div creates space between sections */}
               <div id={`printable-summary-${pageIndex}`} className="print-container">
                 <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report} />
                 <h2>Rapport détaillé des difficultés rencontrées:</h2>
                 {renderTable(paginatedResults[pageIndex])}
               </div>
+
             </div>
           ))}
         </div>

@@ -73,6 +73,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (typeof window !== 'undefined') {
       const { authToken } = parseCookies();
       if (authToken) {
+        // we come hier after start app, or after refresh in browser or after nav.link
+        // Get the current time in German 24-hour format with seconds included
+        const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
+        
+        // Log the message with time
+        console.log("initialize data from local storage", time);
         setIsLoggedIn(true);
         setToken(authToken); // Set token in state
         const roles = JSON.parse(localStorage.getItem('userRoles') || '[]');
@@ -98,9 +104,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setActiveLayout(savedLayout);
         setLayouts(savedLayouts);
       } else {
-        setIsLoggedIn(false);
-        setUserRoles([]);
-        setUser(null);
+        const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
+        console.log("token not valid",time) 
+        //setUserRoles([]);
+        //setUser(null);
+        logout();
       }
     }
   }, []);
@@ -125,6 +133,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       destroyCookie(null, 'authToken');
       localStorage.removeItem('userRoles');
       localStorage.removeItem('userInfo');
+      setIsLoggedIn(false);
       setUser(null);
       setUserRoles([]);
       setIsLoggedIn(false);

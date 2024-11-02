@@ -11,23 +11,23 @@ interface FullReportDisplayProps {
 }
 
 const FullReportDisplay: React.FC<FullReportDisplayProps> = ({ report }) => {
-  const [expanded, setExpanded] = useState<boolean>(false);
+  const [expandedFR, setExpandedFR] = useState<boolean>(false);
 
-  const toggleExpand = () => {
-    setExpanded(!expanded);
+  const toggleExpandFR = () => {
+    setExpandedFR(!expandedFR);
   };
 
   return (
     <div className="report-card">
-      <div className="card-header" onClick={toggleExpand} style={{ cursor: 'pointer'}}> {/*}, backgroundColor: expanded ? '#f0f0f0' : '#ffffff' }}>  */}
+      <div className="card-header" onClick={toggleExpandFR} style={{ cursor: 'pointer'}}> {/*}, backgroundColor: expandedFR ? '#f0f0f0' : '#ffffff' }}>  */}
         <h4>Report ID: {report.id}</h4> 
         <p>Professeur ID: {report.professeur}</p>
         <p>Créé le: {formatDate(report.created_at)}</p>
         <p>Mise en page du PDF: {report.pdflayout}</p>
-        {expanded ? '▲' : '▼'} {/* Arrow to indicate expand/collapse */}
+        {expandedFR ? '▲' : '▼'} {/* Arrow to indicate expand/collapse */}
       </div>
 
-      {expanded && (
+      {expandedFR && (
         <div className="card-body">
           <h5>Type de tests:</h5>
           <ul>

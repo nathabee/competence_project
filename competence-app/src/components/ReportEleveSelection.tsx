@@ -14,7 +14,7 @@ interface ReportEleveSelectionProps {
 const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) => {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [expanded, setExpanded] = useState<boolean>(true); // State for expanding/collapsing all reports 
+  const [expanded, setExpanded] = useState<boolean>(false); // State for expanding/collapsing all reports 
   const { catalogue, setActiveReport, setActiveCatalogues, layouts, setActiveLayout } = useAuth(); // Access the functions from AuthContext
 
 
@@ -39,7 +39,8 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
   }, [eleve]);
 
   const handleSelectReport = (report: Report) => {
-    toggleExpand(); // Hide reports
+    //toggleExpand(); // Hide reports
+    setExpanded(false);
 
     // Step 1: Extract catalogue IDs from the report's report_catalogues
     const catalogueIds = report.report_catalogues.map(reportCatalogue => reportCatalogue.catalogue.id);

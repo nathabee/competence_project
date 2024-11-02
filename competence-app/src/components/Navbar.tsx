@@ -54,6 +54,7 @@ export default function Navbar() {
         </button>
 
         {/* Flex container for active data */}
+        {isLoggedIn ? (
         <div className="navbar-active-data">
           {/* Eleve section */} 
           <div>
@@ -85,7 +86,7 @@ export default function Navbar() {
 
           {/* Catalogue section */}
           <div className="catalogue-container">
-            {activeCatalogues && activeCatalogues.length > 0 ? (
+            { activeCatalogues && activeCatalogues.length > 0 ? (
               activeCatalogues.map(cat => (
                 <div key={cat.id} className="catalogue-item">
                   {cat.description}
@@ -113,7 +114,7 @@ export default function Navbar() {
           <div>
           <DynamicHelpDrawer    /> 
           </div>
-        </div>
+        </div> ) : (<div/>) }
 
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
           {isSidebarOpen && <h2>Menu</h2>} {/* Only show Menu when sidebar is open */}
