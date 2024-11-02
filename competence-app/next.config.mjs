@@ -24,6 +24,7 @@ export const nextConfig = {
   }, 
   webpack: (config) => {
     if (env === 'demo') { 
+      console.log(`env is demo : axios path is src/demo/utils/demoAxios.ts`);
       config.resolve.alias = {
         ...config.resolve.alias,
         axios: path.resolve(__dirname, 'src/demo/utils/demoAxios.ts'),

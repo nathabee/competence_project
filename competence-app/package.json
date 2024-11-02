@@ -9,9 +9,7 @@
     "local-start": "dotenv -e .env.local next start",
     "build": "dotenv -e .env.production next build",
     "start": "dotenv -e .env.production next start",
-    "demolocal-build": "dotenv -e .env.demolocal next build ",
-    "demolocal-start": "dotenv -e .env.demolocal next start",
-    "obsolete-demo-test": "dotenv -e .env.demo next build &&  dotenv -e .env.demo npx serve out --single --prefix /competence_project",
+    "demo-test": "dotenv -e .env.demolocal next build &&  dotenv -e .env.demolocal npx serve out --single --prefix /",
     "demo-deploy": "dotenv -e .env.demo npm run build   && touch ./out/.nojekyll && gh-pages -d out -t true",
     "test": "dotenv -e .env.local jest",
     "lint": "next lint"

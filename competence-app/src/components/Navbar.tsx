@@ -15,7 +15,7 @@ export default function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to manage sidebar visibility
   const router = useRouter();
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""; 
+  //const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""; 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -123,7 +123,7 @@ export default function Navbar() {
             {isLoggedIn ? (
               <>
                 {userRoles.includes('admin') && (
-                  <Nav.Link href={`${basePath}/admin`}>Console administration</Nav.Link>
+                  <Nav.Link onClick={() => handleRedirect(`/admin`)}>Console administration</Nav.Link>
                 )}
                 {userRoles.includes('teacher') && (
                   <>
@@ -140,16 +140,16 @@ export default function Navbar() {
                 )}
                 {userRoles.includes('analytics') && (
                   <>
-                    <Nav.Link href={`${basePath}/statistiques/configuration`}>
+                   <Nav.Link onClick={() => handleRedirect(`/statistiques/configuration`)}>
                       Configuration Statistiques
                     </Nav.Link>
-                    <Nav.Link href={`${basePath}/statistiques/pdf`}>PDF Statistiques</Nav.Link>
+                    <Nav.Link onClick={() => handleRedirect(`/statistiques/pdf`)}>PDF Statistiques</Nav.Link>
                   </>
                 )}
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
               </>
             ) : (
-              <Nav.Link href={`${basePath}/login`}>Login</Nav.Link>
+              <Nav.Link onClick={() => handleRedirect(`/login`)}>Login</Nav.Link>
             )}
           </Nav>
         </div>
