@@ -6,13 +6,33 @@ import HelpDrawer from './HelpDrawer';
 import { Typography, Divider } from '@mui/material';
 import GeneralHelpContent from './GeneralHelpContent';
 
+// Helper function to normalize pathname
+/*
+the URL structure differs slightly because it creates a separate file for each path as a directory. 
+This difference results in a trailing slash (/) at the end of the URL for static files by default. 
+
+Why There’s a Trailing Slash in Static Exports
+When you use next export to generate a static site, Next.js creates each page as a folder with an index.html 
+file inside, which is standard for many static site generators. For example:
+
+/dashboard becomes a directory with an index.html file inside, so the URL for this page ends with 
+a / to follow the directory structure (/dashboard/).
+If you serve these files, accessing /dashboard (without the trailing slash) may lead to a redirect
+ to /dashboard/ since /dashboard is treated as a folder.
+However, when you run Next.js in server mode (without next export), it uses clean URLs without trailing 
+slashes by default, so you’ll see /dashboard instead of /dashboard/.
+*/
+const normalizePathname = (pathname: string): string => {
+  return pathname.endsWith('/') && pathname !== '/' ? pathname.slice(0, -1) : pathname;
+};
+
 const DynamicHelpDrawer: React.FC = () => {
   const pathname = usePathname();
-  let helpContent: JSX.Element;  // Declared only once outside the switch
+  const normalizedPathname = normalizePathname(pathname);
 
-
-
-  switch (pathname) {
+  let helpContent: JSX.Element;
+  console.log("DynamicHelpDrawer pathname", normalizedPathname);
+  switch (pathname) { 
     case '/dashboard':
       helpContent = (
         <div>

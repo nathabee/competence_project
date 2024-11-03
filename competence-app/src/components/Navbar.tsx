@@ -123,33 +123,33 @@ export default function Navbar() {
             {isLoggedIn ? (
               <>
                 {userRoles.includes('admin') && (
-                  <Nav.Link onClick={() => handleRedirect(`/admin`)}>Console administration</Nav.Link>
+                  <Nav.Link onClick={() => { toggleSidebar();handleRedirect(`/admin`)}}>Console administration</Nav.Link>
                 )}
                 {userRoles.includes('teacher') && (
                   <>
-                  <Nav.Link onClick={() => handleRedirect(`/dashboard`)}>Historique</Nav.Link>
-                  <Nav.Link onClick={() => handleRedirect(`/eleve`)}>Gestion des élèves</Nav.Link>
-                  <Nav.Link onClick={() => handleRedirect(`/configuration`)}>Configuration du PDF</Nav.Link>
-                  <Nav.Link onClick={() => handleRedirect(`/catalogue`)}>Gestion du catalogue de tests</Nav.Link>
-                  <Nav.Link onClick={() => handleRedirect(`/test`)}>Gestion des rapports</Nav.Link>
-                  <Nav.Link onClick={() => handleRedirect(`/overview`)}>Résumé des tests en cours</Nav.Link>
-                  <Nav.Link onClick={() => handleRedirect(`/pdf`)}>PDF</Nav.Link>
-                  <Nav.Link onClick={() => handleRedirect(`/pdfimage`)}>PDF avec pictogrammes</Nav.Link>
+                  <Nav.Link onClick={() => { toggleSidebar(); handleRedirect(`/dashboard`)}}>Historique</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/eleve`)}}>Gestion des élèves</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/configuration`)}}>Configuration du PDF</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/catalogue`)}}>Gestion du catalogue de tests</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/test`)}}>Gestion des rapports</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/overview`)}}>Résumé des tests en cours</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdf`)}}>PDF</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdfimage`)}}>PDF avec pictogrammes</Nav.Link>
  
                   </>
                 )}
                 {userRoles.includes('analytics') && (
                   <>
-                   <Nav.Link onClick={() => handleRedirect(`/statistiques/configuration`)}>
+                   <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/statistiques/configuration`)}}>
                       Configuration Statistiques
                     </Nav.Link>
-                    <Nav.Link onClick={() => handleRedirect(`/statistiques/pdf`)}>PDF Statistiques</Nav.Link>
+                    <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/statistiques/pdf`)}}>PDF Statistiques</Nav.Link>
                   </>
                 )}
                 <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
               </>
             ) : (
-              <Nav.Link onClick={() => handleRedirect(`/login`)}>Login</Nav.Link>
+              <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/login`)}}>Login</Nav.Link>
             )}
           </Nav>
         </div>

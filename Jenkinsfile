@@ -14,20 +14,15 @@ pipeline {
         stage('BackUp') {
             steps {
                 script {
-                    // Check if BACKUPDIR exists and set permissions or create backup
                     sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}" 
-
                     echo "Backup of project directory created at ${BACKUPDIR}"
-
-                    // Backup MySQL database using Jenkins credentials
                     sh "mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases competencedb > '${BACKUPDIR}/db_backup_${timestamp}.sql' || echo 'MySQL backup failed.'"
                     echo "MySQL database backup created."
                 }
             }
         }
 
- 
-        // 2.1 Initial Checkout using Jenkins' built-in mechanism
+        // 2. Checkout Stage
         stage('Checkout') {
             steps {
                 checkout([
@@ -40,22 +35,7 @@ pipeline {
             }
         }
 
-        // 2.2 Update repository with sudo as the 'nathabee' user for further actions
-        stage('Update Repository') {
-            steps {
-                script {
-                    // Discard any local changes and pull the latest from GitHub
-                    sh """
-                        cd ${PROJECT_PATH}
-                        sudo -u nathabee git reset --hard
-                        sudo -u nathabee git pull origin main
-                    """
-                }
-            }
-        }
-
-
-        // 3. Stop Services Stage
+        // 3. Stop Services
         stage('Stop Services') {
             steps {
                 script {
@@ -64,19 +44,18 @@ pipeline {
                 }
             }
         }
-        // 4. Install Dependencies Stage
+
+        // 4. Install Dependencies
         stage('Install Dependencies') {
             steps {
-                script { 
-                    // Activate virtual environment and install Python dependencies
+                script {
                     sh ". ${VENV_PATH}/bin/activate && pip install -r ${PROJECT_PATH}/requirements.txt"
-            
                     sh "cd ${PROJECT_PATH}/competence-app && npm install"
                 }
             }
         }
 
-        // 5. Database Migrations Stage
+        // 5. Database Migrations
         stage('Database Migrations') {
             steps {
                 script {
@@ -86,7 +65,7 @@ pipeline {
             }
         }
 
-        // 6. Build Frontend Stage
+        // 6. Build Frontend
         stage('Build Frontend') {
             steps {
                 script {
@@ -95,31 +74,43 @@ pipeline {
             }
         }
 
-        // 7. Start Services Stage
+        // 7. Collect Static Files and Update Permissions
+        stage('Collect Static Files') {
+            steps {
+                script {
+                    // Run Django collectstatic to gather static files
+                    sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py collectstatic --noinput"
+
+                    // Copy collected static files to the deployment directory and set permissions
+                    sh """
+                        sudo cp -r ${PROJECT_PATH}/staticfiles/* ${STATIC_FILES_PATH}/
+                        sudo chown -R www-data:webusers ${STATIC_FILES_PATH}/
+                        sudo chmod -R 775 ${STATIC_FILES_PATH}/
+                    """
+                }
+            }
+        }
+
+
+        // 8. Start Services
         stage('Start Services') {
             steps {
                 script {
-                    
                     sh 'sudo systemctl start gunicorn || echo "Failed to start gunicorn"'
                     sh 'sudo systemctl start npm-app || echo "Failed to start npm-app"'
                 }
             }
         }
 
-        // 8. Run Tests Stage
+        // 9. Run Tests
         stage('Run Tests') {
             steps {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
-
-                        //export DJANGO_TEST_USER=$TEACHER_USER
-                        //export DJANGO_TEST_PASS=$TEACHER_PASS
-
                         sh """
                             . ${VENV_PATH}/bin/activate
                             cd ${PROJECT_PATH}
                             python manage.py test competence.tests.test_integration_workflow
-
                         """
                         sh "cd ${PROJECT_PATH}/competence-app && npm run test"
                     }
@@ -127,7 +118,7 @@ pipeline {
             }
         }
 
-        // 9. Health Check Stage
+        // 10. Health Check
         stage('Health Check') {
             steps {
                 script {
