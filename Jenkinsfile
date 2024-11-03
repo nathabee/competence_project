@@ -4,7 +4,7 @@ pipeline {
         PROJECT_PATH = "/home/nathabee/competence_project"
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
-        STATIC_FILES_PATH = "/var/www/staticfiles"
+        STATIC_FILES_PATH = "/var/www/html/competence_project/staticfiles"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
     }
