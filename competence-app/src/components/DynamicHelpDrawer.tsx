@@ -31,7 +31,7 @@ const DynamicHelpDrawer: React.FC = () => {
   const normalizedPathname = normalizePathname(pathname);
 
   let helpContent: JSX.Element;
-  console.log("DynamicHelpDrawer pathname", normalizedPathname);
+  console.log("DynamicHelpDrawer normalizedPathname", normalizedPathname);
   switch (pathname) { 
     case '/dashboard':
       helpContent = (
@@ -285,6 +285,7 @@ const DynamicHelpDrawer: React.FC = () => {
       break;
 
     default:
+      console.log("DynamicHelpDrawer default route:", normalizedPathname);
       helpContent = (
         <div>
           <GeneralHelpContent />
