@@ -11,6 +11,8 @@
     "start": "dotenv -e .env.production next start",
     "demo-test": "dotenv -e .env.demolocal next build &&  dotenv -e .env.demolocal npx serve out --single --prefix /",
     "demo-deploy": "dotenv -e .env.demo npm run build   && touch ./out/.nojekyll && gh-pages -d out -t true",
+    "demo-build-local": "dotenv -e .env.demolocal npm run build   && touch ./out/.nojekyll ",
+    "demo-build-prod": "dotenv -e .env.demo npm run build   && touch ./out/.nojekyll ",
     "test": "dotenv -e .env.local jest",
     "lint": "next lint"
   },

@@ -92,7 +92,9 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
         const labelImages = reportcatalogue.resultats.map((res) => {
             const imageKey = `competence_icon_${res.groupage.groupage_icon_id}`;
             const base64Data = localStorage.getItem(imageKey);
-            return base64Data ? base64Data : 'assets/logo.png'; // Default image if Base64 not found
+            //return base64Data ? base64Data : 'assets/logo.png'; // Default image if Base64 not found
+            return base64Data ? base64Data :  `${process.env.NEXT_PUBLIC_MEDIA_URL}competence/png/logo.png`; // Default image if Base64 not found
+           
         });
 
         const data = reportcatalogue.resultats.map((res) =>

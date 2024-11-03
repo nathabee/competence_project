@@ -1,3 +1,5 @@
+'use client';
+
 // Import necessary data for the mock
 import catalogues from '../data/catalogues.json';
 import eleves from '../data/eleves.json';
@@ -102,6 +104,9 @@ export const axios = {
         [`${apiUrl}/myimage/10/base64/`]: `${mediaUrl}competence/png/probleme.png`,
         [`${apiUrl}/myimage/11/base64/`]: `${mediaUrl}competence/png/spacial.png`,
       }; 
+
+      console.log("debug moking api url ",url)
+      console.log("decoded is ",imagePathMap[url])
 
       const imagePath = imagePathMap[url];
       if (imagePath) {

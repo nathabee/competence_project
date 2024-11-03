@@ -40,7 +40,7 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
   };
 
   useEffect(() => { 
-    const ctx = chartRef.current?.getContext('2d', { willReadFrequently: true });
+    const ctx = chartRef.current?.getContext('2d'); /*  { willReadFrequently: true }*/
 
     if (!ctx) return;
 
