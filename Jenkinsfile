@@ -10,19 +10,24 @@ pipeline {
     }
     stages {
 
-        // 1. Backup
+        // 0. Backup
         stage('BackUp') {
             steps {
                 script {
+                    // Check if BACKUPDIR exists and set permissions or create backup
                     sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}" 
+
                     echo "Backup of project directory created at ${BACKUPDIR}"
+
+                    // Backup MySQL database using Jenkins credentials
                     sh "mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases competencedb > '${BACKUPDIR}/db_backup_${timestamp}.sql' || echo 'MySQL backup failed.'"
                     echo "MySQL database backup created."
                 }
             }
         }
 
-        // 2. Checkout Stage
+
+        // 1. Initial Checkout using Jenkins' built-in mechanism
         stage('Checkout') {
             steps {
                 checkout([
@@ -32,6 +37,20 @@ pipeline {
                     extensions: [[$class: 'WipeWorkspace']],
                     userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
                 ])
+            }
+        }
+
+        // 2. Update repository with sudo as the 'nathabee' user for further actions
+        stage('Update Repository') {
+            steps {
+                script {
+                    // Discard any local changes and pull the latest from GitHub
+                    sh """
+                        cd ${PROJECT_PATH}
+                        sudo -u nathabee git reset --hard
+                        sudo -u nathabee git pull origin main
+                    """
+                }
             }
         }
 
