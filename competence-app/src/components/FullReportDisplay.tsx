@@ -4,7 +4,7 @@
 
 import React, { useState } from 'react';
 import { Report } from '@/types/report';
-import { formatDate } from '../utils/helper';  
+import { formatDate } from  '@/utils/helper';  
 
 interface FullReportDisplayProps {
   report: Report; // Accept the full report as a prop

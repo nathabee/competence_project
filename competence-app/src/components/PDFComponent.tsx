@@ -12,6 +12,9 @@ import { PDFLayout } from '@/types/pdf';
 import ScoreOverview from './ScoreOverview'; // Import ScoreOverview
 import SummaryDetailedDifficulty from './SummaryDetailedDifficulty'; // Import summary component
 
+import { getImageData } from '@/utils/helper';  // to be able to mok it
+
+
 interface PDFComponentProps {
     report: Report;
     eleve: Eleve;
@@ -91,10 +94,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
 
         const labelImages = reportcatalogue.resultats.map((res) => {
             const imageKey = `competence_icon_${res.groupage.groupage_icon_id}`;
-            const base64Data = localStorage.getItem(imageKey);
-            //return base64Data ? base64Data : 'assets/logo.png'; // Default image if Base64 not found
-            return base64Data ? base64Data :  `${process.env.NEXT_PUBLIC_MEDIA_URL}competence/png/logo.png`; // Default image if Base64 not found
-           
+            return getImageData(imageKey);            
         });
 
         const data = reportcatalogue.resultats.map((res) =>
@@ -123,7 +123,11 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
                     <div className="print-banner"><div></div></div>
                     <h3>{chartData.description}</h3>
                     {isImageChart ? ( 
-                        <RadarChartImage chartData={{ labels: chartData.labels, data: chartData.data, labelImages: chartData.labelImages }} /> 
+                        <RadarChartImage chartData={{   labels: chartData.labels, 
+                                                        data: chartData.data, 
+                                                        labelImages: chartData.labelImages   }} />                            
+                                                        //labelImages: chartData.labelImages.map((image) => 
+                                                        //    typeof image === 'string' ? image : image.src ) }} /> 
                     ) : ( 
                         <RadarChart chartData={{ labels: chartData.labels, data: chartData.data }} /> 
                     )}

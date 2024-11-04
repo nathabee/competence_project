@@ -5,6 +5,7 @@ import Image from 'next/image'; // Import the Image component from next/image
 import { ReportCatalogue, Resultat } from '@/types/report'; // Ensure proper import of interfaces
 import { useAuth } from '@/context/AuthContext'; // Correctly using the context hook
 import '@/app/globals.css';
+import logo from  "@/assets/logo.png";
 
 // Define the props type with an array of ReportCatalogue
 interface SummaryScoreProps {
@@ -57,8 +58,8 @@ const SummaryScore: React.FC<SummaryScoreProps> = ({ report_catalogues }) => {
                     <td>{resultat.seuil2_percent}</td>
                     <td>{resultat.seuil3_percent}</td>
                     <td>
-                      <Image
-                        src={base64Image ? `${base64Image}` : "../assets/logo.png"} // Use Base64 image if available, otherwise default image
+                      <Image 
+                        src={base64Image ? `${base64Image}` : logo} // Use Base64 image if available, otherwise default image
                         alt={base64Image ? "Groupage Icon" : "Default Icon"} // Update alt text accordingly
                         width={50} // Set width
                         height={50} // Set height

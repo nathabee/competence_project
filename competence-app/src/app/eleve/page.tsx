@@ -9,7 +9,7 @@ import ReportEleveSelection from '@/components/ReportEleveSelection';
 import EleveForm from '@/components/EleveForm';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
-import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt'; 
+import { getTokenFromCookies } from  '@/utils/jwt'; 
 
 const ElevePage: React.FC = () => {
     const router = useRouter();
@@ -24,7 +24,7 @@ const ElevePage: React.FC = () => {
         const fetchData = async () => {
             const token = getTokenFromCookies();
 
-            if (!token || isTokenExpired(token)) {
+            if (!token ) {
                 router.push(`/login`);
                 return;
             }

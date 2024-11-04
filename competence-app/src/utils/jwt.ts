@@ -1,6 +1,9 @@
 
 import { jwtDecode } from 'jwt-decode';
 
+console.log("original jwt loaded env=",process.env.NEXT_PUBLIC_ENV );
+// const isDemo = process.env.NEXT_PUBLIC_ENV === 'demo';
+
 /**
  * Interface for JWT Payload
  */
@@ -34,13 +37,15 @@ export function isTokenExpired(token: string): boolean {
  * Extracts the 'authToken' from the cookies string.
  * 
  * @param {string | undefined} cookieString - The cookie string (optional).
- * @returns {string | null} - The 'authToken' if found, or null if not present.
+ * @returns {string | null} - The 'authToken' if found and valid, or null if not present or expired.
  */
 export function getTokenFromCookies(cookieString: string = document.cookie): string | null {
   const cookies = cookieString.split(';');
-  for (const cookie of cookies) { // Use 'const' instead of 'let'
+  for (const cookie of cookies) {
     const [name, value] = cookie.trim().split('=');
-    if (name === 'authToken') return value;
+    if (name === 'authToken' && !isTokenExpired(value)) { // Added validity check
+      return value; // Return the valid token
+    }
   }
-  return null;
+  return null; // Return null if not found or invalid
 }

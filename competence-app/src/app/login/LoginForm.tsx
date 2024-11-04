@@ -3,8 +3,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import axios, { AxiosError } from 'axios';
-import { setCookie } from 'nookies';
+import axios, { AxiosError } from 'axios'; 
 import { useAuth } from '../../context/AuthContext';
 
 import useFetchData from '@/hooks/useFetchData'; // Import your hook
@@ -25,11 +24,7 @@ const LoginForm: React.FC = () => {
         { username, password }
       );
 
-      const { access: token } = response.data;
-      setCookie(null, 'authToken', token, {
-        maxAge: 30 * 24 * 60 * 60, // 30 days
-        path: '/',
-      });
+      const { access: token } = response.data; 
 
       const userResponse = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/users/me/`, {
         headers: { Authorization: `Bearer ${token}` },

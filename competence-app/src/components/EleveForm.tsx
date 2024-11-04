@@ -6,7 +6,7 @@ import { useAuth } from '@/context/AuthContext'; // Assuming you have an authent
 import { Eleve } from '@/types/eleve'; // Import the Eleve type
 import { User } from '@/types/user'; // Import the User type for professors
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
-import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt'; // Import JWT utility functions
+import { isTokenExpired, getTokenFromCookies } from  '@/utils/jwt';  // Import JWT utility functions
 
 interface EleveFormProps {
     setEleves: React.Dispatch<React.SetStateAction<Eleve[]>>; // Updated type for setEleves to accept functional updates

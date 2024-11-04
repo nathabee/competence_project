@@ -11,21 +11,18 @@ interface LayoutDisplayProps {
 const LayoutDisplay: React.FC<LayoutDisplayProps> = ({ layout }) => {
     if (!layout) {
         return <p>No layout information available.</p>; // Handle case when layout is not passed
-    }
-
-    // Use the base64 encoded image
-    const imageBase64 = layout.header_icon_base64;
+    } 
 
     return (
         <div>
             <h2>Mise en page choisie:</h2>
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <Image
-                    src={`${imageBase64}`}   //MIME are included in imageBase64
-                    alt="Icon en-tête"
-                    width={50} // Specify width
-                    height={50} // Specify height
-                    style={{ marginRight: '10px' }} // Inline styles for margin
+                  src={`${layout.header_icon_base64}`} // Use Base64 string directly
+                  alt="Icon"
+                  width={50} // Specify width
+                  height={50} // Specify height
+                  style={{ marginRight: '10px' }} // Inline styles for margin
                 />
                 <p>Nom de l&apos;école: {layout.schule_name}</p>
             </div>

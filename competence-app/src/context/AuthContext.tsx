@@ -3,21 +3,24 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
-import { Catalogue, Report, ScoreRulePoint } from '@/types/report';
+import { Catalogue, Report, ScoreRulePoint ,ReportCatalogue,Resultat} from '@/types/report';
 import { PDFLayout } from '@/types/pdf';
 import { Eleve, Niveau } from '@/types/eleve';
-import { User } from '@/types/user';
-// import { getOrFetchBase64Image } from '@/utils/helper';
-import { fetchBase64Image } from '@/utils/helper'; // Import the new function
+import { User } from '@/types/user';  
+import { fetchBase64Image } from '@/utils/helper';  
+
+import { getTokenFromCookies, isTokenExpired } from '@/utils/jwt';
+
+
 
 interface AuthContextType {
   user: User | null;
   userRoles: string[];
-  isLoggedIn: boolean;
+  isLoggedIn: boolean; 
+
   login: (token: string, userInfo: User) => void;
   logout: () => void;
 
- 
   activeCatalogues: Catalogue[];
   setActiveCatalogues: (catalogues: Catalogue[]) => void;
 
@@ -30,17 +33,15 @@ interface AuthContextType {
   activeLayout: PDFLayout | null;
   setActiveLayout: (layout: PDFLayout | null) => void;
 
-  // Handle lists
   catalogue: Catalogue[];
   setCatalogue: (catalogue: Catalogue[]) => void;
 
   eleves: Eleve[];
   setEleves: React.Dispatch<React.SetStateAction<Eleve[]>>;
 
-  layouts: PDFLayout[]; // Array of all available layouts
-  setLayouts: (layouts: PDFLayout[]) => void; // Setter for layouts
+  layouts: PDFLayout[];
+  setLayouts: (layouts: PDFLayout[]) => void;
 
-  // Store score rule points
   scoreRulePoints: ScoreRulePoint[] | null;
   setScoreRulePoints: (points: ScoreRulePoint[]) => void;
 
@@ -51,78 +52,89 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [userRoles, setUserRoles] = useState<string[]>([]);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [activeCatalogues, setActiveCatalogues] = useState<Catalogue[]>([]);
-  const [activeEleve, setActiveEleve] = useState<Eleve | null>(null);
-  const [token, setToken] = useState<string | null>(null); // State for token
-  //const [isTourCompleted, setIsTourCompleted] = useState(false);
-
-  const [catalogue, setCatalogue] = useState<Catalogue[]>([]);
-  const [eleves, setEleves] = useState<Eleve[]>([]);
-  const [scoreRulePoints, setScoreRulePoints] = useState<ScoreRulePoint[] | null>(null);
-  const [activeReport, setActiveReportState] = useState<Report | null>(null); // Rename state setter
-  const [activeLayout, setActiveLayout] = useState<PDFLayout | null>(null);
-  const [layouts, setLayouts] = useState<PDFLayout[]>([]);
-  const [niveaux, setNiveaux] = useState<Niveau[] | null>(null); // Add niveaux state
-
-  
+  const [user, internalSetUser] = useState<User | null>(null);
+  const [userRoles, internalSetUserRoles] = useState<string[]>([]);
+  const [isLoggedIn, internalSetIsLoggedIn] = useState(false);
+  const [activeCatalogues, internalSetActiveCatalogues] = useState<Catalogue[]>([]);
+  const [activeEleve, internalSetActiveEleve] = useState<Eleve | null>(null); 
+  const [catalogue, internalSetCatalogue] = useState<Catalogue[]>([]);
+  const [eleves, internalSetEleves] = useState<Eleve[]>([]);
+  const [scoreRulePoints, internalSetScoreRulePoints] = useState<ScoreRulePoint[] | null>(null);
+  const [activeReport, internalSetActiveReport] = useState<Report | null>(null);
+  const [activeLayout, internalSetActiveLayout] = useState<PDFLayout | null>(null);
+  const [layouts, internalSetLayouts] = useState<PDFLayout[]>([]);
+  const [niveaux, internalSetNiveaux] = useState<Niveau[] | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const { authToken } = parseCookies();
       if (authToken) {
-        // we come hier after start app, or after refresh in browser or after nav.link
-        // Get the current time in German 24-hour format with seconds included
-        const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
-        
-        // Log the message with time
-        console.log("initialize data from local storage", time);
-        setIsLoggedIn(true);
-        setToken(authToken); // Set token in state
+        internalSetIsLoggedIn(true); 
         const roles = JSON.parse(localStorage.getItem('userRoles') || '[]');
-        setUserRoles(roles);
+        internalSetUserRoles(roles);
         const savedUser = JSON.parse(localStorage.getItem('userInfo') || 'null');
-        setUser(savedUser);
+        internalSetUser(savedUser);
         const savedNiveaux = JSON.parse(localStorage.getItem('niveaux') || '[]');
-        setNiveaux(savedNiveaux); // Load niveaux from localStorage
+        internalSetNiveaux(savedNiveaux);
 
-        
- 
-
-        // Load state from localStorage
         const savedCatalogues = JSON.parse(localStorage.getItem('activeCatalogues') || '[]');
         const savedEleve = JSON.parse(localStorage.getItem('activeEleve') || 'null');
         const savedReport = JSON.parse(localStorage.getItem('activeReport') || 'null');
         const savedLayout = JSON.parse(localStorage.getItem('activeLayout') || 'null');
         const savedLayouts = JSON.parse(localStorage.getItem('layouts') || '[]');
 
-        setActiveCatalogues(savedCatalogues);
-        setActiveEleve(savedEleve);
-        setActiveReport(savedReport);
-        setActiveLayout(savedLayout);
-        setLayouts(savedLayouts);
+        internalSetActiveCatalogues(savedCatalogues);
+        internalSetActiveEleve(savedEleve);
+        internalSetActiveReport(savedReport);
+        internalSetActiveLayout(savedLayout);
+        internalSetLayouts(savedLayouts);
       } else {
-        const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
-        console.log("token not valid",time) 
-        //setUserRoles([]);
-        //setUser(null);
-        logout();
+        logout(); 
       }
     }
   }, []);
 
+  // retrieve image whenever new report is active
+  useEffect(() => {
+    const token = getTokenFromCookies();
+    if (token && activeReport) {
+      console.log("authentify ok going to fetch data" );
+      const fetchImages = async () => {
+        try {
+          await Promise.all(
+            activeReport.report_catalogues.map(async (reportCatalogue: ReportCatalogue) => {
+              await Promise.all(
+                reportCatalogue.resultats.map(async (resultat: Resultat) => {
+                  if (resultat.groupage.groupage_icon_id) {
+                    const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`;
+                    console.log("call fetchBase64Image with imageKey",imageKey) 
+                    await fetchBase64Image(imageKey, resultat.groupage.groupage_icon_id, token);
+                  }
+                })
+              );
+            })
+          );
+        } catch (error) {
+          console.error("Error fetching images:", error);
+        }
+      };
+
+      fetchImages();
+    } else if (!token || isTokenExpired(token)) {
+      console.error("Token is either missing or expired.");
+      // Handle the token expiration logic here
+    }
+  }, [activeReport]); // Run effect when activeReport changes
 
   const login = (token: string, userInfo: User) => {
     if (typeof window !== 'undefined') {
       setCookie(null, 'authToken', token, {
-        maxAge: 30 * 24 * 60 * 60, // 30 days
+        maxAge: 30 * 24 * 60 * 60,
         path: '/',
-      });
-      setUser(userInfo);
-      setUserRoles(userInfo.roles);
-      setIsLoggedIn(true);
+      }); 
+      internalSetUser(userInfo);
+      internalSetUserRoles(userInfo.roles);
+      internalSetIsLoggedIn(true);
       localStorage.setItem('userRoles', JSON.stringify(userInfo.roles));
       localStorage.setItem('userInfo', JSON.stringify(userInfo));
     }
@@ -131,192 +143,146 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     if (typeof window !== 'undefined') {
       destroyCookie(null, 'authToken');
+      internalSetIsLoggedIn(false); 
       localStorage.removeItem('userRoles');
       localStorage.removeItem('userInfo');
-      setIsLoggedIn(false);
-      setUser(null);
-      setUserRoles([]);
-      setIsLoggedIn(false);
-      setActiveCatalogues([]);
-      setToken(null); // Clear token in state
-      setActiveEleve(null);
-      setActiveReport(null);
-      setActiveLayout(null);
-      setCatalogue([]); 
-      setEleves([]); 
-      setLayouts([]);
-      setScoreRulePoints([]) ;
-
-      // Clear local storage entries related to active selections
       localStorage.removeItem('activeCatalogues');
+      localStorage.removeItem('activeReport');
       localStorage.removeItem('activeEleve');
       localStorage.removeItem('activeReport');
       localStorage.removeItem('activeLayout');
-      localStorage.removeItem('layouts');
-      localStorage.removeItem('catalogue');
       localStorage.removeItem('eleves');
+      localStorage.removeItem('catalogue');
       localStorage.removeItem('niveaux');
-      localStorage.removeItem('user');
-
-      // Remove all Base64 images with competence_ prefix
-      Object.keys(localStorage).forEach((key) => {
-        if (key.startsWith('competence') &&
-          (key.endsWith('.png') ||
-            key.endsWith('.jpg') ||
-            key.endsWith('.jpeg') ||
-            key.endsWith('.gif'))) {
+      localStorage.removeItem('layouts'); 
+      localStorage.removeItem('scoreRulePoints');
+      localStorage.removeItem('scoreRulePoints');
+      internalSetIsLoggedIn(false);
+      internalSetUser(null);
+      internalSetUserRoles([]);
+      internalSetActiveCatalogues([]);
+      internalSetActiveEleve(null);
+      internalSetActiveReport(null);
+      internalSetActiveLayout(null);
+      internalSetCatalogue([]);
+      internalSetEleves([]);
+      internalSetLayouts([]);
+      internalSetScoreRulePoints([]);
+      // Remove all items from local storage that start with 'competence_'
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('competence_')) {
           localStorage.removeItem(key);
         }
       });
+      localStorage.clear();
     }
   };
 
-  /*
-  const completeTour = () => {
-    localStorage.setItem('isTourCompleted', 'true');
-    setIsTourCompleted(true);
-  };
-*/
+ 
 
-  const updateCatalogue = (newCatalogue: Catalogue[]) => {
-    setCatalogue(newCatalogue);
+  const setCatalogue = (newCatalogue: Catalogue[]) => {
+    internalSetCatalogue(newCatalogue);
     if (typeof window !== 'undefined') {
       localStorage.setItem('catalogue', JSON.stringify(newCatalogue));
     }
   };
 
-  const updateEleves: React.Dispatch<React.SetStateAction<Eleve[]>> = (newEleves) => {
+  const setEleves: React.Dispatch<React.SetStateAction<Eleve[]>> = (newEleves) => {
     if (typeof newEleves === 'function') {
-      setEleves((prevEleves) => newEleves(prevEleves));
+      internalSetEleves((prevEleves) => newEleves(prevEleves));
     } else {
-      setEleves(newEleves);
+      internalSetEleves(newEleves);
     }
     if (typeof window !== 'undefined') {
       localStorage.setItem('eleves', JSON.stringify(newEleves));
     }
   };
 
-  const updateLayout = (layout: PDFLayout | null) => {
-    setActiveLayout(layout);
+  const setActiveLayout = (layout: PDFLayout | null) => {
+    internalSetActiveLayout(layout);
     if (typeof window !== 'undefined') {
       localStorage.setItem('activeLayout', JSON.stringify(layout));
     }
   };
 
-  const updateScoreRulePoints = (points: ScoreRulePoint[]) => {
-    setScoreRulePoints(points);
+  const setScoreRulePoints = (points: ScoreRulePoint[]) => {
+    internalSetScoreRulePoints(points);
     if (typeof window !== 'undefined') {
       localStorage.setItem('scoreRulePoints', JSON.stringify(points));
     }
   };
 
-  const setActiveReport = async (report: Report | null) => {
+  const setActiveReport = (report: Report | null) => {
     if (report) {
-      //console.log("Fetching Base64 images for report...");
-      //console.log(report);
+      const updatedReport = {
+        ...report,
+        report_catalogues: report.report_catalogues.map((catalogue) => ({
+          ...catalogue,
+          resultats: catalogue.resultats,
+        })),
+      };
 
-      try {
-        // Fetch Base64 images for each result
-        await Promise.all(
-          report.report_catalogues.flatMap(async (catalogue) =>
-            Promise.all(
-              catalogue.resultats.map(async (resultat) => {
-                //console.log("groupage_icon_id",resultat.groupage.groupage_icon_id);
-                // Check if the groupage_icon is present
-                if (resultat.groupage.groupage_icon_id) {
-                  const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`;
-                  if (token) { // Ensure token is available
-                    //console.log("token available to fetch groupage_icon_id",resultat.groupage.groupage_icon_id);
-                    await fetchBase64Image(imageKey, resultat.groupage.groupage_icon_id, token); // Pass the token
-                  }
-                }
-                return resultat; // Return original resultat
-              })
-            )
-          )
-        );
-
-        // Update the report without base64 images in resultats
-        const updatedReport = {
-          ...report,
-          report_catalogues: report.report_catalogues.map((catalogue) => ({
-            ...catalogue,
-            resultats: catalogue.resultats, // Keep original resultats
-          })),
-        };
-
-        // Store in state and localStorage
-        setActiveReportState(updatedReport); // Internal state setter
-        if (typeof window !== 'undefined') {
-          localStorage.setItem('activeReport', JSON.stringify(updatedReport));
-        }
-      } catch (error) {
-        console.error("Error while setting active report:", error);
-        // Optionally handle the error further, like displaying a notification to the user
+      internalSetActiveReport(updatedReport);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('activeReport', JSON.stringify(updatedReport));
       }
     } else {
-      // Clear the state and localStorage if no report
-      setActiveReportState(null);
+      internalSetActiveReport(null);
       if (typeof window !== 'undefined') {
         localStorage.removeItem('activeReport');
       }
     }
   };
 
-  const setNiveauxState = (newNiveaux: Niveau[]) => {
-    setNiveaux(newNiveaux);
+  const setNiveaux = (newNiveaux: Niveau[]) => {
+    internalSetNiveaux(newNiveaux);
     if (typeof window !== 'undefined') {
-      localStorage.setItem('niveaux', JSON.stringify(newNiveaux)); // Save to localStorage
+      localStorage.setItem('niveaux', JSON.stringify(newNiveaux));
     }
   };
-
 
   return (
     <AuthContext.Provider value={{
       user,
       userRoles,
-      isLoggedIn,
+      isLoggedIn, 
       login,
       logout,
       activeCatalogues,
       setActiveCatalogues: (catalogues: Catalogue[]) => {
-        setActiveCatalogues(catalogues);
+        internalSetActiveCatalogues(catalogues);
         if (typeof window !== 'undefined') {
           localStorage.setItem('activeCatalogues', JSON.stringify(catalogues));
         }
       },
       activeEleve,
-
       setActiveEleve: (eleve: Eleve | null) => {
-        setActiveEleve(eleve);
-
-        // Reset activeReport when activeEleve is changed
-        setActiveReport(null); // This will also clear the localStorage for 'activeReport'
-
+        internalSetActiveEleve(eleve);
+        setActiveReport(null);
         if (typeof window !== 'undefined') {
           localStorage.setItem('activeEleve', JSON.stringify(eleve));
-          localStorage.removeItem('activeReport'); // Clear the report in localStorage
+          localStorage.removeItem('activeReport');
         }
       },
       catalogue,
-      setCatalogue: updateCatalogue,
+      setCatalogue,
       eleves,
-      setEleves: updateEleves,
+      setEleves,
       scoreRulePoints,
-      setScoreRulePoints: updateScoreRulePoints,
+      setScoreRulePoints,
       activeReport,
       setActiveReport,
       activeLayout,
-      setActiveLayout: updateLayout,
+      setActiveLayout,
       layouts,
       setLayouts: (layouts: PDFLayout[]) => {
-        setLayouts(layouts);
+        internalSetLayouts(layouts);
         if (typeof window !== 'undefined') {
           localStorage.setItem('layouts', JSON.stringify(layouts));
         }
       },
       niveaux,
-      setNiveaux: setNiveauxState,
+      setNiveaux,
     }}>
       {children}
     </AuthContext.Provider>

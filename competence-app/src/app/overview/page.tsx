@@ -13,7 +13,7 @@ import UserDisplay from '@/components/UserDisplay';
 import EleveDisplay from '@/components/EleveDisplay';
 import CatalogueDisplay from '@/components/CatalogueDisplay';
 import LayoutDisplay from '@/components/LayoutDisplay';
-import { isTokenExpired ,getTokenFromCookies} from '@/utils/jwt';  
+import { isTokenExpired ,getTokenFromCookies} from  '@/utils/jwt';  
 import { useRouter } from 'next/navigation'; 
 
 const Overview: React.FC = () => {  

@@ -6,8 +6,7 @@ import PrintHeader from './components/PrintHeader';  // Import   component
 import RadarChart from './components/RadarChart';  // Import RadarChart component 
 import inputData from './data/inputData';
 import SummaryScore from './components/SummaryScore';
-import ScoreEleve from './components/ScoreEleve';
-//import logo from './logo.png'; // Import the image
+import ScoreEleve from './components/ScoreEleve'; 
 import { calculateAvancement, getMatiereDescription, safeStringify } from './utils/utils';
 import defaultConfig from './data/config.json'; // Default configuration
 import logo from './assets/logo.png';

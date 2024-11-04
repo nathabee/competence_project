@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState , useCallback} from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import { ShortReport } from '@/types/shortreport';
 import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { isTokenExpired, getTokenFromCookies } from '@/utils/jwt';
+import {  getTokenFromCookies } from '@/utils/jwt'; 
 import ShortReportDisplay from '@/components/ShortReportDisplay'; // Updated import for display component
 
 
@@ -19,8 +19,9 @@ const Dashboard: React.FC = () => {
 
   // Fetch reports from API
   const fetchData = useCallback(async () => {
-    const token = getTokenFromCookies();
-    if (!token || isTokenExpired(token)) {
+    const token = getTokenFromCookies(); // Get token from cookies
+
+    if (!token) { // If there's no token or it's expired
       router.push(`/login`);
       return;
     }
@@ -34,7 +35,6 @@ const Dashboard: React.FC = () => {
       const response = await axios.get(`${apiUrl}/shortreports/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      //console.log('Fetched short reports:', response.data);
       setShortReports(response.data);
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -48,6 +48,7 @@ const Dashboard: React.FC = () => {
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
 
   if (loading) {
     return (

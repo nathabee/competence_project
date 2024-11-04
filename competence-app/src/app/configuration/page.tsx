@@ -1,33 +1,32 @@
 'use client';
  
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import LayoutDisplay from '@/components/LayoutDisplay';
 import LayoutSelection from '@/components/LayoutSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext'; 
-import { isTokenExpired,getTokenFromCookies } from '@/utils/jwt';  
+import { getTokenFromCookies } from '@/utils/jwt'; 
  
  
    
 
   const Configuration: React.FC = () => {
     const router = useRouter();
-    const { layouts, activeLayout } = useAuth();
-    const [token, setToken] = useState<string | null>(null);
-  
-    // Client-only token retrieval using useEffect
+    const { layouts, activeLayout } = useAuth(); 
+   
+    // Use useEffect to set the token client-side only
     useEffect(() => {
       const retrievedToken = getTokenFromCookies();
-      if (!retrievedToken || isTokenExpired(retrievedToken)) {
-        router.push(`/login`);
-      } else {
-        setToken(retrievedToken);
-      }
-    }, [router]);
-  
-    if (!token) return null; // Show nothing or a loading indicator until token is verified
+      if (!retrievedToken  ) {
+          router.push(`/login`);
+      }  
+  }, [router]);
+
+
+
+   
   
 
   

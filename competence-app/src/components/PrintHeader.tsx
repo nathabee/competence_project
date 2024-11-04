@@ -5,7 +5,7 @@ import { PDFLayout } from '../types/pdf';
 import { User } from '../types/user';
 import { Eleve } from '../types/eleve';
 import { Report } from '../types/report';
-import { formatDate } from '../utils/helper';
+import { formatDate } from '@/utils/helper';
 
 interface PrintHeaderProps {
   layout: PDFLayout;

@@ -1,6 +1,9 @@
 // src/hooks/useFetchData.ts
+'use client';
+
+
 import { useAuth } from '@/context/AuthContext';
-import { getTokenFromCookies, isTokenExpired } from '@/utils/jwt';
+import { getTokenFromCookies, isTokenExpired } from '@/utils/jwt'; 
 import axios from 'axios';
 import { ScoreRulePoint  } from '@/types/report';
 

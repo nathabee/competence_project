@@ -3,20 +3,17 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 //import Spinner from 'react-bootstrap/Spinner';
-import { isTokenExpired,getTokenFromCookies } from '@/utils/jwt';  
+import { getTokenFromCookies } from '@/utils/jwt';  
  
 
 export default function AdminPage() { 
     const router = useRouter(); 
-
- 
+    // Use useEffect to set the token client-side only
     useEffect(() => {
-        const token = getTokenFromCookies(); // Automatically gets the token from cookies
-    
-        if (!token || isTokenExpired(token)) {
-          router.push(`/login`);
-          return;
-        } else {
+        const token = getTokenFromCookies();
+        if (!token  ) {
+            router.push(`/login`);
+        }  else {
             // Redirect to the Django admin console
             //const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || 'http://127.0.0.1:8000/admin/';
             //window.location.href = `${adminUrl}?token=${token}`; // Redirect to admin with the token
@@ -27,7 +24,9 @@ export default function AdminPage() {
             // This part assumes you can access the admin without a username/password
             window.location.href = adminUrl; // Redirect to admin URL
         }
-    }, [router]);
+    }, [router]); //[router,token,logout ]);
+
+ 
 
     return <div>Redirection vers console d&apos;administration...</div>; // Optional loading state
 }

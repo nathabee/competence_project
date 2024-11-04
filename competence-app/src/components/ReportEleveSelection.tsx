@@ -44,10 +44,10 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
 
     // Step 1: Extract catalogue IDs from the report's report_catalogues
     const catalogueIds = report.report_catalogues.map(reportCatalogue => reportCatalogue.catalogue.id);
-    //console.log("catalogueIds in the report",catalogueIds)
-    //console.log("catalogue from context",catalogue)
-    //console.log("Type of catalogueIds:", catalogueIds.map(id => typeof id));
-    //console.log("Type of catalogue IDs in context:", catalogue.map(cat => typeof cat.id));
+    console.log("catalogueIds in the report",catalogueIds)
+    console.log("catalogue from context",catalogue)
+    console.log("Type of catalogueIds:", catalogueIds.map(id => typeof id));
+    console.log("Type of catalogue IDs in context:", catalogue.map(cat => typeof cat.id));
 
     // Step 2: Find the corresponding catalogue objects in the context
     const selectedCatalogues = catalogue.filter(cat => catalogueIds.includes(cat.id));
@@ -63,7 +63,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
     // Step 5: Find the layout object that matches the report's pdflayout id
     const selectedLayout = layouts.find(layout => layout.id === report.pdflayout);
 
-    //console.log(" layout.id in the report", report.pdflayout)
+    console.log(" layout.id in the report", report.pdflayout)
     //console.log("layouts from context",layouts)
 
     // Step 6: Update the active layout in the context
@@ -79,6 +79,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
       console.error(`Expected layout for ID ${report.pdflayout} not found in context. Report ID: ${report.id}`);
     }
 
+    console.log("setActiveReport will be called",report)
     setActiveReport(report); // Set the clicked report as the activeReport
   };
 

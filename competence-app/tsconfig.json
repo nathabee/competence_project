@@ -23,9 +23,10 @@
     ],
     "paths": {
       "@/*": [
-        "./src/*"
-      ]
+        "./src/*", 
+      ], 
     },
+    "baseUrl": ".", // This is needed if you want to use absolute imports
     "target": "ES2017",
     "types": ["jest", "@testing-library/jest-dom"]
   },

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Navbar as BootstrapNavbar, Nav, Container } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext'; // Adjust the path accordingly
-import { formatDate } from '../utils/helper';
+import { formatDate } from '@/utils/helper';
 import '../app/globals.css'; // Import global styles  
 import Image from 'next/image'; // Import Image from next/image
 import DynamicHelpDrawer from '@/components/DynamicHelpDrawer';
