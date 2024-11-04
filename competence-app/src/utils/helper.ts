@@ -40,7 +40,7 @@ export async function fetchBase64Image(itemKey: string, idImage: number, token: 
     //console.log("look if there is a stored image for key",itemKey);
 
     if (!storedImage || isExpired) {
-      console.log(`Fetching image for key ${itemKey} from ${idImage}...`); //ok
+      //console.log(`Fetching image for key ${itemKey} from ${idImage}...`); //ok
       
       // Fetch the image data from your Django API
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/myimage/${idImage}/base64/`, {
@@ -52,12 +52,12 @@ export async function fetchBase64Image(itemKey: string, idImage: number, token: 
       if (base64Image && !base64Image.includes("default")) {
         localStorage.setItem(itemKey, base64Image);
         localStorage.setItem(`${itemKey}_timestamp`, Date.now().toString());
-        console.log(`Image successfully stored in localStorage with key ${itemKey}`);
+        //console.log(`Image successfully stored in localStorage with key ${itemKey}`);
       } else {
         console.log(`No valid image found for key ${itemKey}. Skipping storage.`);
       }
     } //else {
-      console.log(`Image already exists in localStorage for key ${itemKey}.`);
+      //console.log(`Image already exists in localStorage for key ${itemKey}.`);
     //}
   } catch (error) {
     console.error(`Error fetching image for key ${itemKey}:`, error);

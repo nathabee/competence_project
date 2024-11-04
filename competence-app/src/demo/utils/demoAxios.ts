@@ -1,4 +1,3 @@
-
 'use client';
 
 // Import necessary data for the mock
@@ -11,21 +10,6 @@ import reportsRaw from '@/demo/data/json/fullreports.json';
 import scorerulepoints from '@/demo/data/json/scorerulepoints.json';
 import tokenData from '@/demo/data/json/token.json';
 import userme from '@/demo/data/json/userme.json';
-
-/*
-import logo from  "@/assets/logo.png";
-import image1 from '@/demo/png/beebot.png';
-import image2 from '@/demo/png/categorisation.png';
-import image3 from '@/demo/png/couleur.png';
-import image4 from '@/demo/png/histoire.png';
-import image5 from '@/demo/png/nombre.png';
-import image6 from '@/demo/png/phonologie.png';
-import image7 from '@/demo/png/prenom.png';
-import image8 from '@/demo/png/probleme.png';
-import image9 from '@/demo/png/spacial.png';
-import image10 from '@/demo/png/probleme.png';
-import image11 from '@/demo/png/spacial.png';
-*/
 
 import { Report } from '../../types/report';
 import { ReportPatch } from '../../types/reportpatch';
@@ -83,7 +67,7 @@ const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 export const axios = {
   get: async <T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
-    console.log('AXIOS Mocking GET url:', url); //ok
+    //console.log('AXIOS Mocking GET url:', url); //ok
     if (config) {
       console.log('GET config:', config);  //ok
     }
@@ -122,11 +106,11 @@ export const axios = {
         [`${apiUrl}/myimage/10/base64/`]: `${mediaUrl}png/probleme.png`,
         [`${apiUrl}/myimage/11/base64/`]: `${mediaUrl}png/spacial.png`,
       };
-      
+
       const imagePath = imagePathMap[url];
       if (imagePath) {
         try {
-          console.log('AXIOS Mocking GET going to call convertImageToBase64 for path:', imagePath); 
+          //console.log('AXIOS Mocking GET going to call convertImageToBase64 for path:', imagePath); 
           const base64Image = await convertImageToBase64(imagePath);
           const imageResponse: ImageResponse = {
             image_base64: base64Image,
@@ -153,7 +137,7 @@ export const axios = {
     if (config) {
       console.log('POST config:', config);
     }
-    console.log('POST mock request received:', url);
+    //console.log('POST mock request received:', url);
 
     if (url === `${apiUrl}/token/`) {
       return { data: tokenData as T };
@@ -177,7 +161,7 @@ export const axios = {
   },
 
   patch: async <T>(url: string, data?: ReportPatch, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
-    console.log('PATCH request URL:', url, 'Data:', data);
+    //console.log('PATCH request URL:', url, 'Data:', data);
     if (config) {
       console.log('PATCH config:', config);
     }

@@ -14,9 +14,9 @@ const useFetchData = () => {
 
     const fetchData = async () => {
         const token = getTokenFromCookies();
-        const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
+        //const time = new Date().toLocaleTimeString('de-DE', { hour12: false });
 
-        console.log("fetchData time",time);
+        //console.log("fetchData time",time);
 
         if (!token || isTokenExpired(token)) {
             console.log("fetchData token expired out");
@@ -34,7 +34,7 @@ const useFetchData = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 //console.log('useFetchData catalogue:', response.data);
-                console.log('useFetchData catalogue');
+                //console.log('useFetchData catalogue');
                 setCatalogue(response.data);
             }
 
@@ -43,7 +43,7 @@ const useFetchData = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 //console.log("get layoutsResponse ", layoutsResponse.data)
-                console.log('useFetchData layouts');
+                //console.log('useFetchData layouts');
                 setLayouts(layoutsResponse.data);
             }
 
@@ -54,7 +54,7 @@ const useFetchData = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 }); 
                 //console.log("get niveauResponse ", niveauResponse.data)
-                console.log('useFetchData niveaux');
+                //console.log('useFetchData niveaux');
                 setNiveaux(niveauResponse.data); // Save in AuthContext and localStorage
             }
 
@@ -64,7 +64,7 @@ const useFetchData = () => {
                 headers: { Authorization: `Bearer ${token}` },
                 });
                 //console.log('Fetched scoreRuleResponse:', scoreRuleResponse.data);
-                console.log('useFetchData scoreRulePoints');
+                //console.log('useFetchData scoreRulePoints');
                 setScoreRulePoints(scoreRuleResponse.data);
             }
 

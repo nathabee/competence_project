@@ -98,7 +98,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const token = getTokenFromCookies();
     if (token && activeReport) {
-      console.log("authentify ok going to fetch data" );
+      //console.log("authentify ok going to fetch data" );
       const fetchImages = async () => {
         try {
           await Promise.all(
@@ -107,7 +107,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 reportCatalogue.resultats.map(async (resultat: Resultat) => {
                   if (resultat.groupage.groupage_icon_id) {
                     const imageKey = `competence_icon_${resultat.groupage.groupage_icon_id}`;
-                    console.log("call fetchBase64Image with imageKey",imageKey) 
+                    //console.log("call fetchBase64Image with imageKey",imageKey) 
                     await fetchBase64Image(imageKey, resultat.groupage.groupage_icon_id, token);
                   }
                 })

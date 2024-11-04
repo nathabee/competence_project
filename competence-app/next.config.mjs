@@ -18,7 +18,7 @@ console.log(`NEXT_PUBLIC_MEDIA_URL: ${process.env.NEXT_PUBLIC_MEDIA_URL}`);
  * Next.js config
  */
 export const nextConfig = {
-  //reactStrictMode: true,
+  reactStrictMode: true,
   images: {
     unoptimized: true, // Disable default image optimization
   },
