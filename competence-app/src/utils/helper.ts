@@ -30,7 +30,7 @@ export async function fetchBase64Image(itemKey: string, idImage: number, token: 
 
 
   try {
-    console.log(`fetchBase64Image original helper (no moking!!!!)  `);
+    console.log(`fetchBase64Image original helper (no moking!!!!)  `); //ok
     const storedImage = localStorage.getItem(itemKey);
     const storedTimestamp = localStorage.getItem(`${itemKey}_timestamp`);
     const cacheExpiryTime = 60 * 60 * 1000; // 1 hour in milliseconds
@@ -40,7 +40,7 @@ export async function fetchBase64Image(itemKey: string, idImage: number, token: 
     //console.log("look if there is a stored image for key",itemKey);
 
     if (!storedImage || isExpired) {
-      console.log(`Fetching image for key ${itemKey} from ${idImage}...`);
+      console.log(`Fetching image for key ${itemKey} from ${idImage}...`); //ok
       
       // Fetch the image data from your Django API
       const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/myimage/${idImage}/base64/`, {

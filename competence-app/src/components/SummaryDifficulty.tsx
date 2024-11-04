@@ -58,9 +58,9 @@ const SummaryDifficulty: React.FC<SummaryDifficultyProps> = ({ report_catalogues
                       <td>{resultat.score.toFixed(2)}</td>
                       <td>{resultat.groupage.max_point.toFixed(2)}</td>
                       <td>{Math.round((resultat.score / resultat.groupage.max_point) * 100)}%</td> 
-                      <td>{resultat.seuil1_percent}</td>
-                      <td>{resultat.seuil2_percent}</td>
-                      <td>{resultat.seuil3_percent}</td>
+                      <td>{Math.round(resultat.seuil1_percent)}%</td>
+                      <td>{Math.round(resultat.seuil2_percent)}%</td>
+                      <td>{Math.round(resultat.seuil3_percent)}%</td>
                       <td>
                         <Image
                           src={base64Image ? `${base64Image}` : logo } // Use Base64 image if available, otherwise default image

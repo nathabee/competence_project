@@ -2,15 +2,30 @@
 'use client';
 
 // Import necessary data for the mock
-import catalogues from '../data/catalogues.json';
-import eleves from '../data/eleves.json';
-import niveaux from '../data/niveaux.json';
-import pdflayouts from '../data/pdflayouts.json';
-import shortreports from '../data/shortreports.json';
-import reportsRaw from '../data/fullreports.json';
-import scorerulepoints from '../data/scorerulepoints.json';
-import tokenData from '../data/token.json';
-import userme from '../data/userme.json';
+import catalogues from '@/demo/data/json/catalogues.json';
+import eleves from '@/demo/data/json/eleves.json';
+import niveaux from '@/demo/data/json/niveaux.json';
+import pdflayouts from '@/demo/data/json/pdflayouts.json';
+import shortreports from '@/demo/data/json/shortreports.json';
+import reportsRaw from '@/demo/data/json/fullreports.json';
+import scorerulepoints from '@/demo/data/json/scorerulepoints.json';
+import tokenData from '@/demo/data/json/token.json';
+import userme from '@/demo/data/json/userme.json';
+
+/*
+import logo from  "@/assets/logo.png";
+import image1 from '@/demo/png/beebot.png';
+import image2 from '@/demo/png/categorisation.png';
+import image3 from '@/demo/png/couleur.png';
+import image4 from '@/demo/png/histoire.png';
+import image5 from '@/demo/png/nombre.png';
+import image6 from '@/demo/png/phonologie.png';
+import image7 from '@/demo/png/prenom.png';
+import image8 from '@/demo/png/probleme.png';
+import image9 from '@/demo/png/spacial.png';
+import image10 from '@/demo/png/probleme.png';
+import image11 from '@/demo/png/spacial.png';
+*/
 
 import { Report } from '../../types/report';
 import { ReportPatch } from '../../types/reportpatch';
@@ -64,12 +79,13 @@ interface AxiosRequestConfig {
  
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 export const axios = {
   get: async <T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
-    console.log('AXIOS Mocking GET url:', url);
+    console.log('AXIOS Mocking GET url:', url); //ok
     if (config) {
-      console.log('GET config:', config);
+      console.log('GET config:', config);  //ok
     }
 
     if (url === `${apiUrl}/catalogues/`) return { data: catalogues as T };
@@ -94,22 +110,23 @@ export const axios = {
     const base64Pattern = /\/base64\/$/;
     if (base64Pattern.test(url)) {
       const imagePathMap: Record<string, string> = {
-        [`${apiUrl}/myimage/1/base64/`]: '/demo/media/competence/png/beebot.png',
-        [`${apiUrl}/myimage/2/base64/`]: '/demo/media/competence/png/categorisation.png',
-        [`${apiUrl}/myimage/3/base64/`]: '/demo/media/competence/png/couleur.png',
-        [`${apiUrl}/myimage/4/base64/`]: '/demo/media/competence/png/histoire.png',
-        [`${apiUrl}/myimage/5/base64/`]: '/demo/media/competence/png/nombre.png',
-        [`${apiUrl}/myimage/6/base64/`]: '/demo/media/competence/png/phonologie.png',
-        [`${apiUrl}/myimage/7/base64/`]: '/demo/media/competence/png/prenom.png',
-        [`${apiUrl}/myimage/8/base64/`]: '/demo/media/competence/png/probleme.png',
-        [`${apiUrl}/myimage/9/base64/`]: '/demo/media/competence/png/spacial.png',
-        [`${apiUrl}/myimage/10/base64/`]: '/demo/media/competence/png/probleme.png',
-        [`${apiUrl}/myimage/11/base64/`]: '/demo/media/competence/png/spacial.png',
+        [`${apiUrl}/myimage/1/base64/`]: `${mediaUrl}png/beebot.png`,
+        [`${apiUrl}/myimage/2/base64/`]: `${mediaUrl}png/categorisation.png`,
+        [`${apiUrl}/myimage/3/base64/`]: `${mediaUrl}png/couleur.png`,
+        [`${apiUrl}/myimage/4/base64/`]: `${mediaUrl}png/histoire.png`,
+        [`${apiUrl}/myimage/5/base64/`]: `${mediaUrl}png/nombre.png`,
+        [`${apiUrl}/myimage/6/base64/`]: `${mediaUrl}png/phonologie.png`,
+        [`${apiUrl}/myimage/7/base64/`]: `${mediaUrl}png/prenom.png`,
+        [`${apiUrl}/myimage/8/base64/`]: `${mediaUrl}png/probleme.png`,
+        [`${apiUrl}/myimage/9/base64/`]: `${mediaUrl}png/spacial.png`,
+        [`${apiUrl}/myimage/10/base64/`]: `${mediaUrl}png/probleme.png`,
+        [`${apiUrl}/myimage/11/base64/`]: `${mediaUrl}png/spacial.png`,
       };
-
+      
       const imagePath = imagePathMap[url];
       if (imagePath) {
         try {
+          console.log('AXIOS Mocking GET going to call convertImageToBase64 for path:', imagePath); 
           const base64Image = await convertImageToBase64(imagePath);
           const imageResponse: ImageResponse = {
             image_base64: base64Image,
