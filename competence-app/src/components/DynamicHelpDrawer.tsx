@@ -285,7 +285,7 @@ const DynamicHelpDrawer: React.FC = () => {
       break;
 
     default:
-      console.log("DynamicHelpDrawer default route:", normalizedPathname);
+      //console.log("DynamicHelpDrawer default route:", normalizedPathname);
       helpContent = (
         <div>
           <GeneralHelpContent />

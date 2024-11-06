@@ -3,17 +3,19 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import { Eleve  } from '@/types/eleve'; 
+import { Eleve } from '@/types/eleve';
 import EleveSelection from '@/components/EleveSelection';
 import ReportEleveSelection from '@/components/ReportEleveSelection';
 import EleveForm from '@/components/EleveForm';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
-import { getTokenFromCookies } from  '@/utils/jwt'; 
+import { getTokenFromCookies } from '@/utils/jwt';
+import { useTranslation } from 'react-i18next';
 
 const ElevePage: React.FC = () => {
     const router = useRouter();
-    const { user, activeEleve} = useAuth();  
+    const { user, activeEleve } = useAuth();
+    const { t } = useTranslation();
     const [eleves, setEleves] = useState<Eleve[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
@@ -24,7 +26,7 @@ const ElevePage: React.FC = () => {
         const fetchData = async () => {
             const token = getTokenFromCookies();
 
-            if (!token ) {
+            if (!token) {
                 router.push(`/login`);
                 return;
             }
@@ -37,10 +39,11 @@ const ElevePage: React.FC = () => {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 //console.log('Fetched eleveResponse:', eleveResponse.data);
-                setEleves(eleveResponse.data); 
+                setEleves(eleveResponse.data);
 
             } catch (fetchError) { // Renamed the error variable
-                console.error('Erreur lors de la récupération des données:', fetchError);
+                console.error(t('messages.loadError'), fetchError);
+
                 setError(true); // Set error to true
             } finally {
                 setLoading(false);
@@ -48,8 +51,11 @@ const ElevePage: React.FC = () => {
         };
 
         fetchData();
+
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router]);
- 
+
 
     // Filter élèves based on search term
     const filteredEleves = eleves.filter(eleve =>
@@ -62,28 +68,31 @@ const ElevePage: React.FC = () => {
         selectable: eleve.professeurs_details?.some((prof) => prof.id === user?.id)
     }));
 
+
     if (loading) {
         return (
             <div className="loading-indicator">
-                <p>Chargement des données élèves...</p>
+                <p>{t('messages.loadingStudents')}</p>
                 <Spinner animation="border" />
             </div>
         );
     }
 
     if (error) {
-        return <p>Erreur chargement des élèves. Recommencez SVP.</p>;
+        return <p>{t('messages.loadError')}</p>;
     }
 
+
     return (
+
         <div className="container mt-3 ml-2 eleve-page">
-            <h1>Gestion des Élèves</h1> 
+            <h1>{t('pageHeaders.studentManagement')}</h1>
 
             {loading && <Spinner animation="border" />}
 
             {error && (
                 <div className="alert alert-danger" role="alert">
-                    Erreur lors du chargement des élèves. Recommencez SVP.
+                    {t('messages.loadError')}
                 </div>
             )}
 
@@ -92,45 +101,51 @@ const ElevePage: React.FC = () => {
                 <>
                     <div className="tab-content mt-3">
                         {/* Other rendering logic for eleves data */}
+
+
+                        <div className="tab-content mt-3">
+                            <div className="search-bar mb-4">
+                                <input
+                                    type="text"
+                                    placeholder={t('form.searchPlaceholder')}
+                                    value={searchTerm}
+                                    onChange={(e) => setSearchTerm(e.target.value)}
+                                    className="form-control"
+                                />
+                            </div>
+
+                            {activeEleve ? (
+                                <>
+                                    {t('report.selectedStudentReport', {
+                                        name: `${activeEleve.nom} ${activeEleve.prenom}`,
+                                    })}
+                                    <ReportEleveSelection eleve={activeEleve} />
+                                </>
+                            ) : (
+                                <p>{t('messages.selectStudent')}</p>
+                            )}
+
+                            <EleveSelection eleves={elevesWithSelectableState} />
+
+
+                            <div className="mt-4">
+                                <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
+                                    {t('form.addStudent')}
+                                </button>
+                            </div>
+
+                            {isFormOpen && (
+                                <div className="eleve-form mt-4">
+                                    <EleveForm setEleves={setEleves} closeForm={() => setIsFormOpen(false)} />
+                                </div>
+                            )}
+
+
+                        </div>
                     </div>
                 </>
             )}
 
-
-            <div className="tab-content mt-3">
-                <div className="search-bar mb-4">
-                    <input
-                        type="text"
-                        placeholder="Rechercher par nom ou prénom..."
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        className="form-control"
-                    />
-                </div>
-
-                <EleveSelection eleves={elevesWithSelectableState} />
-
-                <div className="mt-4">
-                    <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
-                        Ajouter un nouvel élève
-                    </button>
-                </div>
-
-                {isFormOpen && (
-                    <div className="eleve-form mt-4">
-                        <EleveForm setEleves={setEleves} closeForm={() => setIsFormOpen(false)} />
-                    </div>
-                )}
-
-                {activeEleve ? (
-                    <>
-                        <h2>Report obtenus par l&apos;élève sélectionné ({activeEleve.nom} {activeEleve.prenom}) :</h2>
-                        <ReportEleveSelection eleve={activeEleve} />
-                    </>
-                ) : (
-                    <p>Selectionner un élève.</p>
-                )}
-            </div>
         </div>
     );
 };

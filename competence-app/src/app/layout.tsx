@@ -6,6 +6,7 @@ import './globals.css'; // Import global styles
 import BootstrapClient from '@/components/BootstrapClient'; // Import client-side Bootstrap component
 import Navbar from '@/components/Navbar'; // Import Navbar component
 import { AuthProvider } from '@/context/AuthContext'; // Import AuthProvider
+import '@/i18n'; // Initialize i18next mutilanguage read src/i18n.ts
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

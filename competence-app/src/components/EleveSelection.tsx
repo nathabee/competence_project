@@ -4,19 +4,21 @@ import React, { useState } from 'react';
 import { EleveSelectionProps, Eleve } from '@/types/eleve'; // Update import path based on your types
 import { useAuth } from '@/context/AuthContext'; // Use AuthContext to manage state
 import '@/app/globals.css';
+import { useTranslation } from 'react-i18next';
 
 const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
   const { activeEleve, setActiveEleve } = useAuth(); // Get activeEleve and setter from AuthContext
   const [selectedNiveau, setSelectedNiveau] = useState<string | null>(null);
+  const { t } = useTranslation();
 
-  if (eleves.length === 0) return <p>Pas d&apos;élève trouvé.</p>;
+  if (eleves.length === 0) return <p>{t('messages.noStudent')}</p>;
 
   // Get unique levels (niveaux)
-  const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => eleve.niveau_description)));
+   const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => t(eleve.niveau_description))));
 
   // Filter eleves based on selected niveau
   const filteredEleves = eleves.filter(eleve => {
-    return !selectedNiveau || eleve.niveau_description === selectedNiveau;
+    return !selectedNiveau || t(eleve.niveau_description) === selectedNiveau;
   });
 
   // Handle selecting an eleve
@@ -26,18 +28,18 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
 
   return (
     <div className="mb-4">
-      <h2>Élève Selection</h2>
+      <h2>{t('pageHeaders.studentSelection')}</h2>
 
       <div className="filters">
         <label>
-          Niveau:
+        {t('tableHeaders.level')}:
           <select
             value={selectedNiveau || ''}
             onChange={e => setSelectedNiveau(e.target.value || null)}
             style={{ width: '200px', padding: '5px', fontSize: '16px' }} // Inline styling to adjust size
             className="form-select" // Add a class if you want to control via CSS
           >
-            <option value="">All</option>
+            <option value="">{t('option.all')}</option>
             {uniqueNiveaux.map((niveau, index) => (
               <option key={niveau || index} value={niveau}>
                 {niveau}
@@ -51,11 +53,11 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
       <table className="table">
         <thead>
           <tr>
-            <th>Nom</th>
-            <th>Prénom</th>
-            <th>Niveau</th>
-            <th>Date de Naissance</th>
-            <th>Professeurs</th>
+          <th>{t('tableHeaders.name')}</th>
+          <th>{t('tableHeaders.firstName')}</th>
+          <th>{t('tableHeaders.level')}</th>
+          <th>{t('tableHeaders.birthDate')}</th>
+          <th>{t('tableHeaders.professors')}</th>
           </tr>
         </thead>
         <tbody>
@@ -68,7 +70,7 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
             >
               <td>{eleve.nom}</td>
               <td>{eleve.prenom}</td>
-              <td>{eleve.niveau_description}</td>
+              <td>{t(eleve.niveau_description)}</td>
               <td>
                 {eleve.datenaissance}
               </td>

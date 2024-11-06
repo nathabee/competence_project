@@ -156,6 +156,8 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
         chartInstanceRef.current.destroy();
       }
     };
+  
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chartData]);
 
   return (

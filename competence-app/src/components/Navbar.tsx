@@ -8,6 +8,7 @@ import { formatDate } from '@/utils/helper';
 import '../app/globals.css'; // Import global styles  
 import Image from 'next/image'; // Import Image from next/image
 import DynamicHelpDrawer from '@/components/DynamicHelpDrawer';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
 
 export default function Navbar() {
   const { userRoles, isLoggedIn, logout,
@@ -30,7 +31,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    router.push('/');
+    router.push('/home');
   };
 
   const toggleSidebar = () => {
@@ -111,6 +112,7 @@ export default function Navbar() {
               )
             )}
           </div>
+          <div><LanguageSwitcher/></div>
           <div>
           <DynamicHelpDrawer    /> 
           </div>
@@ -151,6 +153,7 @@ export default function Navbar() {
             ) : (
               <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/login`)}}>Login</Nav.Link>
             )}
+            
           </Nav>
         </div>
       </Container>

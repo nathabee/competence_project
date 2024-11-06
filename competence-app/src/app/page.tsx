@@ -1,3 +1,4 @@
+// src/app/page.tsx
 'use client'; // Mark this as a Client Component
 
 import { useEffect } from 'react';
@@ -21,15 +22,15 @@ export default function HomePage() {
 
       // Check roles and redirect accordingly
       if (roles.includes('admin')) {
-        router.push(`/admin`);
+        router.push('/admin');
       } else if (roles.includes('teacher')) {
-        router.push(`/dashboard`);
+        router.push('/dashboard');
       } else if (roles.includes('statistic')) {
-        router.push(`/statistiques`);
+        router.push('/statistiques');
       }
     } else {
       // Redirect to login if no token exists
-      router.push('/login');
+    router.push('/home');
     }
   }, [router, basePath]);
 

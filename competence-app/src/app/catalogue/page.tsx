@@ -7,10 +7,12 @@ import CatalogueSelection from '@/components/CatalogueSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext';
 import {  getTokenFromCookies } from '@/utils/jwt'; 
+//import { useTranslation } from 'react-i18next';
 
 const Catalogue: React.FC = () => {
     const router = useRouter();
     const { catalogue, activeCatalogues } = useAuth();
+    //const { t } = useTranslation(); // Hook to use translations
  
 
     // Use useEffect to set the token client-side only
