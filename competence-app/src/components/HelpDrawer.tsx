@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Drawer, Button, Typography } from '@mui/material';
+import useTranslation from '@/utils/translationHelper';
 
 interface HelpDrawerProps {
   helpContent: JSX.Element; // Changing type to JSX.Element to support structured content
@@ -7,6 +8,7 @@ interface HelpDrawerProps {
 
 const HelpDrawer: React.FC<HelpDrawerProps> = ({ helpContent }) => {
   const [open, setOpen] = useState(false);
+  const t  = useTranslation(); // Hook to use translations
 
   const toggleDrawer = (open: boolean) => () => {
     setOpen(open);
@@ -15,7 +17,7 @@ const HelpDrawer: React.FC<HelpDrawerProps> = ({ helpContent }) => {
   return (
     <>
       <Button variant="contained" onClick={toggleDrawer(true)}>
-        Besoin d&apos;aide ?
+      {t('hlp_needHelp')}
       </Button>
       <Drawer
         anchor="right"
@@ -35,7 +37,7 @@ const HelpDrawer: React.FC<HelpDrawerProps> = ({ helpContent }) => {
       >
         <div className="drawer-content">
           <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-            Bienvenue dans la section d&apos;aide
+          {t('hlp_wellcomeHelp')}
           </Typography>
 
           {/* Render structured helpContent with Typography elements */}

@@ -10,6 +10,8 @@ import Image from 'next/image'; // Import Image from next/image
 import DynamicHelpDrawer from '@/components/DynamicHelpDrawer';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
+import useTranslation from '@/utils/translationHelper';
+
 
 export default function Navbar() {
   const { userRoles, isLoggedIn, logout,
@@ -17,7 +19,8 @@ export default function Navbar() {
   const [isSticky, setIsSticky] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // State to manage sidebar visibility
   const router = useRouter();
-  //const basePath = process.env.NEXT_PUBLIC_BASE_PATH || ""; 
+  const  t = useTranslation();
+  //const basePath = process.env.NEXT_PUBLIC_BASE_PATH  || ""; 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -60,11 +63,11 @@ export default function Navbar() {
         <div className="navbar-active-data">
           {/* Eleve section */} 
           <div>
-            Eleve:
+          {t('nav_Stud')}:
             {activeEleve ? (
               `${activeEleve.nom} ${activeEleve.prenom}`
             ) : (
-              <span className="warning-message" onClick={() => handleRedirect('/eleve')}>Choisir un eleve</span>
+              <span className="warning-message" onClick={() => handleRedirect('/eleve')}>{t('nav_chooseStud')}</span>
             )}
           </div>
 
@@ -82,7 +85,7 @@ export default function Navbar() {
                 )} {activeLayout.schule_name} 
               </div>
             ) : (
-              <p className="warning-message" onClick={() => handleRedirect('/configuration')}>Choisir une configuration</p>
+              <p className="warning-message" onClick={() => handleRedirect('/configuration')}>{t('nav_chooseConf')}</p>
             )}
           </div>
 
@@ -95,7 +98,7 @@ export default function Navbar() {
                 </div>
               ))
             ) : (
-              <p className="warning-message" onClick={() => handleRedirect('/catalogue')}>Choisir un catalogue</p>
+              <p className="warning-message" onClick={() => handleRedirect('/catalogue')}>{t('nav_chooseCtg')}</p>
             )}
           </div>
 
@@ -103,11 +106,11 @@ export default function Navbar() {
           <div>
             {activeReport ? (
               <>
-                Report ID: {activeReport.id} | Created At: {formatDate(activeReport.created_at)}
+               {t('tbH_rptId')}: {activeReport.id} | {t('tbH_createdAt')}: {formatDate(activeReport.created_at)}
               </>
             ) : (
               activeEleve && activeLayout && activeCatalogues && activeCatalogues.length > 0 ? (
-                <p className="warning-message" onClick={() => handleRedirect('/test')}>Choisir de modifier ou de créer un report</p>
+                <p className="warning-message" onClick={() => handleRedirect('/test')}>{t('nav_chooseRpt')}</p>
               ) : (
                 ""
               )
@@ -120,7 +123,7 @@ export default function Navbar() {
         </div> ) : (<div/>) }
 
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          {isSidebarOpen && <h2>Menu</h2>} {/* Only show Menu when sidebar is open */}
+          {isSidebarOpen && <h2>{t('nav_menu')}</h2>} {/* Only show Menu when sidebar is open */}
 
           <Nav className="flex-column">
             {isLoggedIn ? (
@@ -130,14 +133,14 @@ export default function Navbar() {
                 )}
                 {userRoles.includes('teacher') && (
                   <>
-                  <Nav.Link onClick={() => { toggleSidebar(); handleRedirect(`/dashboard`)}}>Historique</Nav.Link>
-                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/eleve`)}}>Gestion des élèves</Nav.Link>
-                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/configuration`)}}>Configuration du PDF</Nav.Link>
-                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/catalogue`)}}>Gestion du catalogue de tests</Nav.Link>
-                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/test`)}}>Gestion des rapports</Nav.Link>
-                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/overview`)}}>Résumé des tests en cours</Nav.Link>
-                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdf`)}}>PDF</Nav.Link>
-                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdfimage`)}}>PDF avec pictogrammes</Nav.Link>
+                  <Nav.Link onClick={() => { toggleSidebar(); handleRedirect(`/dashboard`)}}>{t('pgH_histo')}</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/eleve`)}}>{t('pgH_studMgmt')}</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/configuration`)}}>{t('pgH_confMgmt')}</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/catalogue`)}}>{t('pgH_ctgMgmt')}</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/test`)}}>{t('pgH_rptMgmt')}</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/overview`)}}>{t('pgH_overview')} </Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdf`)}}>{t('pgH_PDF')}</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdfimage`)}}>{t('pgH_iconPDF')}</Nav.Link>
  
                   </>
                 )}
@@ -149,10 +152,10 @@ export default function Navbar() {
                     <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/statistiques/pdf`)}}>PDF Statistiques</Nav.Link>
                   </>
                 )}
-                <Nav.Link onClick={handleLogout}>Logout</Nav.Link>
+                <Nav.Link onClick={handleLogout}>{t('pgH_logout')}</Nav.Link>
               </>
             ) : (
-              <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/login`)}}>Login</Nav.Link>
+              <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/login`)}}>{t('pgH_login')}</Nav.Link>
             )}
             
           </Nav>
