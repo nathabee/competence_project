@@ -30,7 +30,7 @@ export async function fetchBase64Image(itemKey: string, idImage: number, token: 
 
 
   try {
-    console.log(`fetchBase64Image original helper (no moking!!!!)  `); //ok
+    //console.log(`fetchBase64Image original helper (no moking!!!!)  `); //ok
     const storedImage = localStorage.getItem(itemKey);
     const storedTimestamp = localStorage.getItem(`${itemKey}_timestamp`);
     const cacheExpiryTime = 60 * 60 * 1000; // 1 hour in milliseconds

@@ -7,6 +7,8 @@ pipeline {
         STATIC_FILES_PATH = "/var/www/html/competence_project/staticfiles"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
+        POPULATE_INITIAL_DATA =  "false"
+        POPULATE_TRANSLATION =  "true"
     }
     stages {
 
@@ -80,6 +82,16 @@ pipeline {
                 script {
                     sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
                     sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
+
+                    // Conditionally populate initial data if needed
+                    // Using `env.` prefix for Groovy conditional
+                    if (env.POPULATE_INITIAL_DATA == "true") {
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'" 
+                        }
+                    if (env.POPULATE_TRANSLATION == "true") { 
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_translation || echo 'Translation population skipped.'" 
+                        }
+
                 }
             }
         }

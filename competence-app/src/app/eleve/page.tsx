@@ -10,12 +10,12 @@ import EleveForm from '@/components/EleveForm';
 import { useAuth } from '@/context/AuthContext';
 import Spinner from 'react-bootstrap/Spinner';
 import { getTokenFromCookies } from '@/utils/jwt';
-import { useTranslation } from 'react-i18next';
+import useTranslation from '@/utils/translationHelper';  // translationHelper  is the default export we can rename automatically t } 
 
 const ElevePage: React.FC = () => {
     const router = useRouter();
     const { user, activeEleve } = useAuth();
-    const { t } = useTranslation();
+    const  t  = useTranslation();
     const [eleves, setEleves] = useState<Eleve[]>([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const [isFormOpen, setIsFormOpen] = useState<boolean>(false);
@@ -42,7 +42,7 @@ const ElevePage: React.FC = () => {
                 setEleves(eleveResponse.data);
 
             } catch (fetchError) { // Renamed the error variable
-                console.error(t('messages.loadError'), fetchError);
+                console.error( t('msg_loadErr' ), fetchError);
 
                 setError(true); // Set error to true
             } finally {
@@ -72,27 +72,27 @@ const ElevePage: React.FC = () => {
     if (loading) {
         return (
             <div className="loading-indicator">
-                <p>{t('messages.loadingStudents')}</p>
+                <p>{t('msg_loadStuds')}</p>
                 <Spinner animation="border" />
             </div>
         );
     }
 
     if (error) {
-        return <p>{t('messages.loadError')}</p>;
+        return <p>{t('msg_loadErr')}</p>;
     }
 
 
     return (
 
         <div className="container mt-3 ml-2 eleve-page">
-            <h1>{t('pageHeaders.studentManagement')}</h1>
+            <h1>{t('pgH_studMgmt')}</h1>
 
             {loading && <Spinner animation="border" />}
 
             {error && (
                 <div className="alert alert-danger" role="alert">
-                    {t('messages.loadError')}
+                    {t('msg_loadErr')}
                 </div>
             )}
 
@@ -107,7 +107,7 @@ const ElevePage: React.FC = () => {
                             <div className="search-bar mb-4">
                                 <input
                                     type="text"
-                                    placeholder={t('form.searchPlaceholder')}
+                                    placeholder={t('frm_srchPlcHldr')}
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     className="form-control"
@@ -116,13 +116,13 @@ const ElevePage: React.FC = () => {
 
                             {activeEleve ? (
                                 <>
-                                    {t('report.selectedStudentReport', {
+                                    {t('rpt_selStudRpt', {
                                         name: `${activeEleve.nom} ${activeEleve.prenom}`,
                                     })}
                                     <ReportEleveSelection eleve={activeEleve} />
                                 </>
                             ) : (
-                                <p>{t('messages.selectStudent')}</p>
+                                <p>{t('msg_selStud')}</p>
                             )}
 
                             <EleveSelection eleves={elevesWithSelectableState} />
@@ -130,7 +130,7 @@ const ElevePage: React.FC = () => {
 
                             <div className="mt-4">
                                 <button className="btn btn-primary" onClick={() => setIsFormOpen(true)}>
-                                    {t('form.addStudent')}
+                                    {t('frm_addStud')}
                                 </button>
                             </div>
 

@@ -7,6 +7,22 @@ from django.conf import settings
 import os
 
 
+        
+# Table: Translation  
+
+class Translation(models.Model):
+    key = models.CharField(max_length=255)  # The translation key (e.g. 'welcome')
+    language = models.CharField(max_length=10)  # Language code (e.g. 'en', 'fr', etc.)
+    translation = models.TextField()  # The translated text
+
+    def __str__(self):
+        return f'{self.key} - {self.language}'
+
+    class Meta:
+        unique_together = ('key', 'language')  # Ensure unique translations per (key, language)
+
+
+
 # Table: Niveau (Class Level & Evaluation Stage)
 class Niveau(models.Model):
     niveau = models.CharField(max_length=10)

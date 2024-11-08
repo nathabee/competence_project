@@ -2,10 +2,13 @@
 'use client';
 
 import React from 'react'; 
-import { useTranslation } from 'react-i18next';
+ import useTranslation from '@/utils/translationHelper';
+
+
+
 
 const HomePage: React.FC = () => { 
-  const { t } = useTranslation(); // Hook to use translations
+  const  t  = useTranslation(); // Hook to use translations
 
   return (
     <div className="container mt-3 ml-2">

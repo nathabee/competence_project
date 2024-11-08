@@ -1,0 +1,165 @@
+key,language,translation
+inf_welcome,en,Welcome to our application
+news,en,News: Multi-language selection English and French added. Currently only on the student page.
+frm_name,en,Last Name
+frm_first,en,First Name
+frm_level,en,Level
+frm_birthDt,en,Date of Birth
+frm_chooseLvl,en,Choose a level
+frm_prof,en,Professors
+frm_createStud,en,Create Student
+frm_addStud,en,Add New Student
+frm_srchPlcHldr,en,Search by name or first name...
+opt_all,en,All
+tbH_name,en,Last Name
+tbH_first,en,First Name
+tbH_level,en,Level
+tbH_birthDt,en,Date of Birth
+tbH_prof,en,Professors
+msg_req,en,This field is required
+msg_noInfo,en,No student information available.
+msg_chosenStud,en,Chosen student
+msg_noProf,en,No assigned professors
+msg_loadStuds,en,Loading student data...
+msg_loadErr,en,Error loading. Please try again.
+msg_selStud,en,Please select a student.
+msg_noStud,en,No student found.
+msg_chooseTest,en,Choose the tests to perform:
+msg_ctg,en,Catalogues management
+msg_chosenCtg,en,Chosen catalogue
+msg_noCtg,en,No catalogue found.
+msg_errCreateStud,en,Error create student. Please try again.
+msg_na,en,Not available
+pgH_studMgmt,en,Student Management
+pgH_studSel,en,Student Selection
+rpt_selStudRpt,en,Reports obtained by selected student: {{name}}
+NIV_desc0,en,Senior Kindergarten
+NIV_desc1,en,Grade 1
+NIV_desc2,en,Grade 2
+NIV_desc3,en,Grade 3
+NIV_desc4,en,Grade 4
+NIV_desc5,en,Grade 5
+language_list,en,"{""en"": ""English"", ""fr"": ""Français"", ""de"": ""Deutsch"", ""br"": ""Brezhoneg""}"
+inf_welcome,fr,Bienvenue dans notre application
+news,fr,Nouvelles : Sélection multilingue anglais et français ajoutée. Actuellement uniquement sur la page étudiant.
+frm_name,fr,Nom de famille
+frm_first,fr,Prénom
+frm_level,fr,Niveau
+frm_birthDt,fr,Date de naissance
+frm_chooseLvl,fr,Choisir un niveau
+frm_prof,fr,Professeurs
+frm_createStud,fr,Créer un étudiant
+frm_addStud,fr,Ajouter un nouvel étudiant
+frm_srchPlcHldr,fr,Rechercher par nom ou prénom...
+opt_all,fr,Tout
+tbH_name,fr,Nom de famille
+tbH_first,fr,Prénom
+tbH_level,fr,Niveau
+tbH_birthDt,fr,Date de naissance
+tbH_prof,fr,Professeurs
+msg_req,fr,Ce champ est requis
+msg_noInfo,fr,Aucune information sur l'étudiant disponible.
+msg_chosenStud,fr,Étudiant choisi
+msg_noProf,fr,Aucun professeur attribué
+msg_loadStuds,fr,Chargement des données des étudiants...
+msg_loadErr,fr,Erreur de chargement. Veuillez réessayer.
+msg_errCreateStud,fr,Erreur en création élève. Veuillez réessayer.
+msg_na,fr,Non disponible
+msg_selStud,fr,Veuillez sélectionner un étudiant.
+msg_noStud,fr,Aucun étudiant trouvé.
+msg_chooseTest,fr,Choisir la liste des tests à faire:
+msg_ctg,fr,Gestion des catalogues
+msg_chosenCtg,fr,Catalogue(s) choisi(s)
+msg_noCtg,fr,pas de catalogue trouvé.
+pgH_studMgmt,fr,Gestion des étudiants
+pgH_studSel,fr,Sélection des étudiants
+rpt_selStudRpt,fr,Rapports obtenus par l'étudiant sélectionné : {{name}}
+NIV_desc0,fr,Maternelle grande section
+NIV_desc1,fr,CP
+NIV_desc2,fr,CE1
+NIV_desc3,fr,CE2
+NIV_desc4,fr,CM1
+NIV_desc5,fr,CM2
+language_list,fr,"{""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English"", ""br"": ""Brezhoneg""}"
+inf_welcome,br,Degemer mat er gontadenn-mañ
+news,br,Keleier: Ouzhpennañ brezhoneg hag al lizherennoù saoznek. Kinniget evit ar bajenn skolier ivez.
+frm_name,br,Anv krign
+frm_first,br,Anv kentañ
+frm_level,br,Lenn
+frm_birthDt,br,Deiz ganedigezh
+frm_chooseLvl,br,Dibab ur level
+frm_prof,br,Professerien
+frm_createStud,br,Krouiñ ur skolier
+frm_addStud,br,Ouzhpennañ ur skolier nevez
+frm_srchPlcHldr,br,Klask evit anv pe anv kentañ...
+opt_all,br,An holl
+tbH_name,br,Anv krign
+tbH_first,br,Anv kentañ
+tbH_level,br,Lenn
+tbH_birthDt,br,Deiz ganedigezh
+tbH_prof,br,Professerien
+msg_req,br,Bez’ ezhomm eus an elfenn-mañ
+msg_noInfo,br,N’eus tamm wybodaeth eus an skolier
+msg_chosenStud,br,Skolier dibabet
+msg_noProf,br,N’eus professer ebet digaset
+msg_loadStuds,br,O kaout data skolier...
+msg_loadErr,br,Fazi en ober. Pleer adkregiñ.
+msg_selStud,br,Pleermed dilivad ur skolier
+msg_noStud,br,N’eus skolier ebet kavet.
+msg_chooseTest,br,Dibabit ar c’hontroù da ober:
+msg_ctg,br,Management kataloj
+msg_chosenCtg,br,Kataloj dibabet
+msg_noCtg,br,N’eus kataloj ebet kavet.
+msg_errCreateStud,br,Fazi e krouiñ skolier. Pleer adkregiñ.
+msg_na,br,N’eus ket disponabl
+pgH_studMgmt,br,Merañ ar skolier
+pgH_studSel,br,Dibab skolier
+rpt_selStudRpt,br,Sklaerioù war ur skolier dibabet: {{name}}
+NIV_desc0,br,Kenderc’h senior
+NIV_desc1,br,Klasa 1
+NIV_desc2,br,Klasa 2
+NIV_desc3,br,Klasa 3
+NIV_desc4,br,Klasa 4
+NIV_desc5,br,Klasa 5
+language_list,br,"{""br"": ""Brezhoneg"",""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English""}"
+inf_welcome,de,Willkommen in unserer Anwendung
+news,de,Neuigkeiten: Auswahl mehrerer Sprachen (Englisch und Französisch) hinzugefügt. Momentan nur auf der Studentenseite.
+frm_name,de,Nachname
+frm_first,de,Vorname
+frm_level,de,Stufe
+frm_birthDt,de,Geburtsdatum
+frm_chooseLvl,de,Wählen Sie eine Klasse
+frm_prof,de,Professoren
+frm_createStud,de,Schüler erstellen
+frm_addStud,de,Neuen Schüler hinzufügen
+frm_srchPlcHldr,de,Suche nach Namen oder Vorname...
+opt_all,de,Alle
+tbH_name,de,Nachname
+tbH_first,de,Vorname
+tbH_level,de,Stufe
+tbH_birthDt,de,Geburtsdatum
+tbH_prof,de,Professoren
+msg_req,de,Dieses Feld ist erforderlich
+msg_noInfo,de,Keine Informationen zum Schüler verfügbar.
+msg_chosenStud,de,Ausgewählter Schüler
+msg_noProf,de,Keine zugewiesenen Professoren
+msg_loadStuds,de,Lade Schülerdaten...
+msg_loadErr,de,Fehler beim Laden. Bitte versuchen Sie es erneut.
+msg_selStud,de,Bitte wählen Sie einen Schüler aus.
+msg_noStud,de,Kein Student gefunden.
+msg_chooseTest,de,Tests Auswahl:
+msg_ctg,de,Catalogue Verwaltung
+msg_chosenCtg,de,ausgewählten catalogue
+msg_noCtg,de,No catalogue gefunden.
+msg_errCreateStud,de,Fehler beim Schüler hinfügen. Please try again.
+msg_na,de,Nicht available
+pgH_studMgmt,de,Schülerverwaltung
+pgH_studSel,de,Schülerauswahl
+rpt_selStudRpt,de,Berichte des ausgewählten Schüler: {{name}}
+NIV_desc0,de,Vorschule
+NIV_desc1,de,1. Klasse
+NIV_desc2,de,2. Klasse
+NIV_desc3,de,3. Klasse
+NIV_desc4,de,4. Klasse
+NIV_desc5,de,5. Klasse
+language_list,de,"{""de"": ""Deutsch"", ""fr"": ""Français"",  ""en"": ""English"", ""br"": ""Brezhoneg""}"

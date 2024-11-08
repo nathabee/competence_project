@@ -33,6 +33,9 @@ from django.utils import timezone
 #from drf_yasg.utils import swagger_auto_schema
 #from drf_yasg import openapi    
 import base64 
+from django.http import JsonResponse
+from django.utils.translation import activate
+from .models import Translation
 
 
 
@@ -66,6 +69,7 @@ def api_overview(request):
         "myimages": request.build_absolute_uri('/api/myimages/'),  
         "eleve_reports": request.build_absolute_uri('/api/eleve/{eleve_id}/reports/').replace("{eleve_id}", "<eleve_id>"),
         "myimagebase64": request.build_absolute_uri('/api/myimage/{myimage_id}/base64/').replace("{myimage_id}", "<myimage_id>"),
+        "translation": request.build_absolute_uri('/api/translation/{lang}').replace("{lang}", "<lang>"),
        
 
     })
@@ -79,12 +83,33 @@ def api_overview(request):
 def custom_404(request, exception):
     return render(request, '404.html', status=404)
 
- 
+  
+####################################################################
+#  request without  login 
+##############################################################
+
+class TranslationView(APIView):
+    def get(self, request):
+        lang = request.query_params.get('lang', 'en')
+
+        # Get translations for the specified language
+        translations = Translation.objects.filter(language=lang)
+        data = {t.key: t.translation for t in translations}
+
+        # Get English fallback translations for missing keys
+        if lang != 'en':
+            fallback_translations = Translation.objects.filter(language='en')
+            for t in fallback_translations:
+                if t.key not in data:
+                    data[t.key] = t.translation  # Add English fallback if key is missing
+
+        return Response(data, status=status.HTTP_200_OK)
 
 ####################################################################
 #  APIView .... in this case we just have defined a GET
 ##############################################################
  
+
 class UserRolesView(APIView):
     permission_classes = [IsAuthenticated, isAllowedApiView]
 

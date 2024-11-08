@@ -3,23 +3,38 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { parseCookies, setCookie, destroyCookie } from 'nookies';
-import { Catalogue, Report, ScoreRulePoint ,ReportCatalogue,Resultat} from '@/types/report';
+import { Catalogue, Report, ScoreRulePoint, ReportCatalogue, Resultat } from '@/types/report';
 import { PDFLayout } from '@/types/pdf';
 import { Eleve, Niveau } from '@/types/eleve';
-import { User } from '@/types/user';  
-import { fetchBase64Image } from '@/utils/helper';  
+import { User } from '@/types/user';
+import { fetchBase64Image } from '@/utils/helper';
 
 import { getTokenFromCookies, isTokenExpired } from '@/utils/jwt';
+import defaultTranslation from '@/utils/defaultTranslation.json'; 
 
+const { language_list: initialLanguageList, ...initialTranslations } = defaultTranslation;
 
+// Define a type for translations to ensure each key maps to a string
+type Translations = { [key: string]: string };
+type LanguageList = { [key: string]: string };
 
 interface AuthContextType {
   user: User | null;
   userRoles: string[];
-  isLoggedIn: boolean; 
+  isLoggedIn: boolean;
 
   login: (token: string, userInfo: User) => void;
   logout: () => void;
+
+
+
+  activeLang: string;
+  setActiveLang: (lang: string) => void;
+  translations: Translations;
+  setTranslations: (translations: Translations) => void;
+  languageList: LanguageList;
+  setLanguageList: (languageList: LanguageList) => void;
+
 
   activeCatalogues: Catalogue[];
   setActiveCatalogues: (catalogues: Catalogue[]) => void;
@@ -56,7 +71,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userRoles, internalSetUserRoles] = useState<string[]>([]);
   const [isLoggedIn, internalSetIsLoggedIn] = useState(false);
   const [activeCatalogues, internalSetActiveCatalogues] = useState<Catalogue[]>([]);
-  const [activeEleve, internalSetActiveEleve] = useState<Eleve | null>(null); 
+  const [activeEleve, internalSetActiveEleve] = useState<Eleve | null>(null);
   const [catalogue, internalSetCatalogue] = useState<Catalogue[]>([]);
   const [eleves, internalSetEleves] = useState<Eleve[]>([]);
   const [scoreRulePoints, internalSetScoreRulePoints] = useState<ScoreRulePoint[] | null>(null);
@@ -64,12 +79,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activeLayout, internalSetActiveLayout] = useState<PDFLayout | null>(null);
   const [layouts, internalSetLayouts] = useState<PDFLayout[]>([]);
   const [niveaux, internalSetNiveaux] = useState<Niveau[] | null>(null);
+  const [languageList, internalSetLanguageList] = useState<LanguageList>( {});
+
+  const [translations, internalSetTranslations] = useState<Translations>( {} );
+  const [activeLang, internalSetActiveLang] = useState<string>('en');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const { authToken } = parseCookies();
       if (authToken) {
-        internalSetIsLoggedIn(true); 
+        internalSetIsLoggedIn(true);
         const roles = JSON.parse(localStorage.getItem('userRoles') || '[]');
         internalSetUserRoles(roles);
         const savedUser = JSON.parse(localStorage.getItem('userInfo') || 'null');
@@ -88,8 +107,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         internalSetActiveReport(savedReport);
         internalSetActiveLayout(savedLayout);
         internalSetLayouts(savedLayouts);
+ 
+
+        const parsedLanguageList = JSON.parse(initialLanguageList.replace(/'/g, '"'));
+        internalSetLanguageList( parsedLanguageList);
+        internalSetTranslations( initialTranslations );
+        //console.log("context end init   languageList",languageList)
+        //console.log("context end init   translations",translations)
+        //console.log("context end init   activeLang",activeLang)
+
+ 
+
       } else {
-        logout(); 
+        logout();
       }
     }
   }, []);
@@ -126,12 +156,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [activeReport]); // Run effect when activeReport changes
 
+
+
   const login = (token: string, userInfo: User) => {
     if (typeof window !== 'undefined') {
       setCookie(null, 'authToken', token, {
         maxAge: 30 * 24 * 60 * 60,
         path: '/',
-      }); 
+      });
       internalSetUser(userInfo);
       internalSetUserRoles(userInfo.roles);
       internalSetIsLoggedIn(true);
@@ -143,7 +175,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const logout = () => {
     if (typeof window !== 'undefined') {
       destroyCookie(null, 'authToken');
-      internalSetIsLoggedIn(false); 
+      internalSetIsLoggedIn(false);
       localStorage.removeItem('userRoles');
       localStorage.removeItem('userInfo');
       localStorage.removeItem('activeCatalogues');
@@ -154,8 +186,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('eleves');
       localStorage.removeItem('catalogue');
       localStorage.removeItem('niveaux');
-      localStorage.removeItem('layouts'); 
-      localStorage.removeItem('scoreRulePoints');
+      localStorage.removeItem('layouts');
       localStorage.removeItem('scoreRulePoints');
       internalSetIsLoggedIn(false);
       internalSetUser(null);
@@ -178,7 +209,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
- 
+
 
   const setCatalogue = (newCatalogue: Catalogue[]) => {
     internalSetCatalogue(newCatalogue);
@@ -197,6 +228,37 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('eleves', JSON.stringify(newEleves));
     }
   };
+
+
+  const setTranslations = (newTranslations: Translations) => {
+    internalSetTranslations(newTranslations);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('translations', JSON.stringify( newTranslations ));
+    } 
+    //console.log("newt value of  translations",translations);
+  };
+  
+
+
+
+  const setActiveLang = (lang: string = 'en') => {
+    internalSetActiveLang(lang);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lang', lang);
+    }
+  };
+
+
+  const setLanguageList = (newLanguageLists: LanguageList) => {
+
+    //console.log("old value before internalSetLanguageList ", languageList);
+    //console.log("auth context setLanguageList called with ", newLanguageLists);
+    internalSetLanguageList(newLanguageLists);
+
+    //console.log("new value after internalSetLanguageList ", languageList);
+  };
+
+
 
   const setActiveLayout = (layout: PDFLayout | null) => {
     internalSetActiveLayout(layout);
@@ -241,14 +303,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+
   return (
     <AuthContext.Provider value={{
       user,
       userRoles,
-      isLoggedIn, 
+      isLoggedIn,
       login,
       logout,
+
+      activeLang,
+      setActiveLang,
+      translations,
+      setTranslations,
+      languageList,
+      setLanguageList,
+
       activeCatalogues,
+
       setActiveCatalogues: (catalogues: Catalogue[]) => {
         internalSetActiveCatalogues(catalogues);
         if (typeof window !== 'undefined') {

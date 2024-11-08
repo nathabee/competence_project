@@ -6,7 +6,7 @@ from .views import (
  #   ResultatViewSet, ResultatDetailViewSet,  ScoreRuleViewSet, ReportFRViewSet,
      GroupageDataViewSet, ItemViewSet,
    ScoreRulePointViewSet, UserViewSet,EleveViewSet,CatalogueViewSet,
-    UserRolesView, api_overview, ShortReportViewSet,
+    UserRolesView, api_overview, ShortReportViewSet,TranslationView,
     EleveReportsView,PDFLayoutViewSet,FullReportViewSet,MyImageBase64View
 )
 
@@ -37,7 +37,9 @@ urlpatterns = [
     path('overview/', api_overview, name='api-overview'),
     path('user/roles/', UserRolesView.as_view(), name='user-roles'),
     path('eleve/<int:eleve_id>/reports/', EleveReportsView.as_view(), name='eleve-reports'), 
-    path('myimage/<int:myimage_id>/base64/', MyImageBase64View.as_view(), name='myimagebase64'),
+    path('myimage/<int:myimage_id>/base64/', MyImageBase64View.as_view(), name='myimagebase64'), 
+
+    path('translations/', TranslationView.as_view(), name='translations'),
     path('', include(router.urls)),  # Include all router URLs
 ]
 

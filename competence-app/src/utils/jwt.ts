@@ -1,7 +1,7 @@
 
 import { jwtDecode } from 'jwt-decode';
 
-console.log("original jwt loaded env2=",process.env.NEXT_PUBLIC_ENV );
+//console.log("original jwt loaded env2=",process.env.NEXT_PUBLIC_ENV );
 // const isDemo = process.env.NEXT_PUBLIC_ENV === 'demo';
 
 /**

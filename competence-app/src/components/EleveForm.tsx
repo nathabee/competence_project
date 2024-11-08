@@ -7,7 +7,8 @@ import { Eleve } from '@/types/eleve'; // Import the Eleve type
 import { User } from '@/types/user'; // Import the User type for professors
 import { useRouter } from 'next/navigation'; // Import useRouter for navigation
 import { isTokenExpired, getTokenFromCookies } from  '@/utils/jwt';  // Import JWT utility functions
-import { useTranslation } from 'react-i18next';
+
+import useTranslation from '@/utils/translationHelper';
 
 interface EleveFormProps {
     setEleves: React.Dispatch<React.SetStateAction<Eleve[]>>; // Updated type for setEleves to accept functional updates
@@ -22,7 +23,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
     const [niveau, setNiveau] = useState<string>('');
     const [selectedProfesseurs, setSelectedProfesseurs] = useState<string[]>([]); // State for selected professeurs (admin only)
     const [availableProfesseurs, setAvailableProfesseurs] = useState<User[]>([]); // State for available professeurs (admin only)
-    const { t } = useTranslation();
+    const t = useTranslation();
 
 
     // Calculate the date 5 years ago from today
@@ -50,7 +51,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
                 //console.log('Fetched users_role_teacher:', response.data);
                 setAvailableProfesseurs(response.data); // Assuming the API returns a list of users with the role 'teacher'
             } catch (error) {
-              console.error(t('messages.loadError'), error);
+              console.error(t('msg.loadErr'), error);
             }
         };
 
@@ -93,35 +94,35 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
 
             closeForm(); // Close the form after successful submission
         } catch (error) {
-            console.error('Erreur en création élève:', error);
+            console.error(t('msg_errCreateStud'), error);
         }
     };
 
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1>{t('welcome')}</h1> 
+      <h1>{t('inf_welcome')}</h1> 
       <div className="form-group">
-        <label>{t('form.name')}</label>
+        <label>{t('frm_name')}</label>
         <input
           type="text"
           className="form-control"
           value={nom}
           onChange={(e) => setNom(e.target.value)}
           required
-          placeholder={t('messages.required')}
+          placeholder={t('msg_req')}
         />
       </div>
 
       <div className="form-group">
-        <label>{t('form.firstName')}</label>
+        <label>{t('form_first')}</label>
         <input
           type="text"
           className="form-control"
           value={prenom}
           onChange={(e) => setPrenom(e.target.value)}
           required
-          placeholder={t('messages.required')}
+          placeholder={t('msg_req')}
         />
       </div>
 
@@ -133,7 +134,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
           onChange={(e) => setNiveau(e.target.value)}
           required
         >
-          <option value="" disabled>{t('form.chooseLevel')}</option>
+          <option value="" disabled>{t('frm_chooseLvl')}</option>
           {niveaux?.map((niveau) => (
             <option key={niveau.id} value={niveau.id}>
               {t(niveau.description)}
@@ -143,20 +144,20 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
       </div>
 
       <div className="form-group">
-        <label>{t('form.birthDate')}</label>
+        <label>{t('frm_birthDt')}</label>
         <input
           type="date"
           className="form-control"
           value={datenaissance}
           onChange={(e) => setDateNaissance(e.target.value)}
           required
-          placeholder={t('messages.required')}
+          placeholder={t('msg_req')}
         />
       </div>
 
       {user?.roles.includes('admin') && (
         <div className="form-group">
-          <label>{t('form.professors')}</label>
+          <label>{t('frm_prof')}</label>
           <select
             multiple
             className="form-control"
@@ -174,7 +175,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
       )}
 
       <button type="submit" className="btn btn-primary mt-3">
-        {t('form.createStudent')}
+        {t('frm_createStud')}
       </button>
     </form>
   );

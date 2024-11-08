@@ -4,7 +4,7 @@
         "nom": "Valjean",
         "prenom": "Jeanne",
         "niveau": 2,
-        "niveau_description": "niveau.description0",
+        "niveau_description": "NIV_desc0",
         "datenaissance": "2019-10-20",
         "professeurs_details": [
             {
@@ -22,7 +22,7 @@
         "nom": "Didereau",
         "prenom": "Jacques",
         "niveau": 2,
-        "niveau_description": "niveau.description0",
+        "niveau_description": "NIV_desc0",
         "datenaissance": "2019-09-30",
         "professeurs_details": [
             {
@@ -41,7 +41,7 @@
         "nom": "Solo",
         "prenom": "Mano",
         "niveau": 2,
-        "niveau_description": "niveau.description0",
+        "niveau_description": "NIV_desc0",
         "datenaissance": "2019-10-21",
         "professeurs_details": [
             {
@@ -60,7 +60,7 @@
         "nom": "Copereau",
         "prenom": "Philippe",
         "niveau": 3,
-        "niveau_description": "niveau.description1",
+        "niveau_description": "NIV_desc1",
         "datenaissance": "2019-10-21",
         "professeurs_details": [
             {
@@ -79,7 +79,7 @@
         "nom": "Grasseau",
         "prenom": "Jeannot",
         "niveau": 3,
-        "niveau_description": "niveau.description1",
+        "niveau_description": "NIV_desc1",
         "datenaissance": "2019-10-21",
         "professeurs_details": [
             {
@@ -98,7 +98,7 @@
         "nom": "ajout",
         "prenom": "moneleve",
         "niveau": 2,
-        "niveau_description": "niveau.description0",
+        "niveau_description": "NIV_desc0",
         "datenaissance": "2019-10-23",
         "professeurs_details": [
             {
@@ -117,7 +117,7 @@
         "nom": "Marcellin",
         "prenom": "Jeanne",
         "niveau": 2,
-        "niveau_description": "niveau.description0",
+        "niveau_description": "NIV_desc0",
         "datenaissance": "2019-10-23",
         "professeurs_details": [
             {

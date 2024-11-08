@@ -1,7 +1,7 @@
 from django.contrib import admin 
 from django.utils.html import format_html
 from .models import Niveau, Etape, Annee, Matiere, ScoreRule, ScoreRulePoint, Eleve, Catalogue, GroupageData, Item, \
-                    PDFLayout, Report, ReportCatalogue, Resultat, ResultatDetail, MyImage 
+                    PDFLayout, Report, ReportCatalogue, Resultat, ResultatDetail, MyImage , Translation
 
 import base64
   
@@ -27,7 +27,28 @@ class ReportCatalogueInline(admin.TabularInline):
  
 
 
- 
+# Define a custom filter class
+class KeyPrefixFilter(admin.SimpleListFilter):
+    title = 'Key Prefix (First 3 Letters)'  # Display title for the filter
+    parameter_name = 'key_prefix'  # Internal name of the filter
+
+    def lookups(self, request, model_admin):
+        # Gather all unique first-three-letter prefixes
+        prefixes = set([translation.key[:3] for translation in Translation.objects.all()])
+        return [(prefix, prefix) for prefix in prefixes]
+
+    def queryset(self, request, queryset):
+        # Apply the filter to the queryset
+        if self.value():
+            return queryset.filter(key__startswith=self.value())
+        return queryset
+
+# Register the Translation model with the custom filter
+@admin.register(Translation)
+class TranslationAdmin(admin.ModelAdmin):
+    list_display = ('key', 'language', 'translation')
+    search_fields = ('key', 'language')
+    list_filter = (KeyPrefixFilter,)  # Include the custom filter
  
 
 @admin.register(GroupageData)

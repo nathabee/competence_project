@@ -1,0 +1,41 @@
+[
+    {
+        "id": 107,
+        "username": "nathaprof",
+        "first_name": "Nathalie",
+        "last_name": "Farinier",
+        "roles": [
+            "teacher",
+            "admin",
+            "analytics"
+        ]
+    },
+    {
+        "id": 108,
+        "username": "Erinelle",
+        "first_name": "Josephine",
+        "last_name": "Lambert",
+        "roles": [
+            "teacher"
+        ]
+    },
+    {
+        "id": 101,
+        "username": "paf",
+        "first_name": "the",
+        "last_name": "dog",
+        "roles": [
+            "analytics"
+        ]
+    },
+    {
+        "id": 100,
+        "username": "cinderella",
+        "first_name": "Sina",
+        "last_name": "Rella",
+        "roles": [
+            "admin",
+            "analytics"
+        ]
+    }
+]

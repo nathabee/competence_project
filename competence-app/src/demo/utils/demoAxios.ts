@@ -10,6 +10,12 @@ import reportsRaw from '@/demo/data/json/fullreports.json';
 import scorerulepoints from '@/demo/data/json/scorerulepoints.json';
 import tokenData from '@/demo/data/json/token.json';
 import userme from '@/demo/data/json/userme.json';
+import users from '@/demo/data/json/users.json';
+
+import translationsFr from '@/demo/data/translation/translations_fr.json';
+import translationsEn from '@/demo/data/translation/translations_en.json';
+import translationsDe from '@/demo/data/translation/translations_de.json';
+import translationsBr from '@/demo/data/translation/translations_br.json';
 
 import { Report } from '../../types/report';
 import { ReportPatch } from '../../types/reportpatch';
@@ -90,6 +96,38 @@ export const axios = {
       return { data: filteredReports as T };
     }
 
+    // check if translation patern
+        // Handle the translations endpoint
+        const translationsPattern = new RegExp(`^${apiUrl}/translations\\?lang=(\\w+)$`);
+        const translationsMatch = url.match(translationsPattern);
+    
+        if (translationsMatch) {
+          const lang = translationsMatch[1]; // Extract language code
+          let translationData;
+    
+          switch (lang) {
+            case 'fr':
+              translationData = translationsFr;
+              break;
+            case 'en':
+              translationData = translationsEn;
+              break;
+            case 'de':
+              translationData = translationsDe;
+              break;
+            case 'br':
+                translationData = translationsBr;
+                break;
+            default:
+              translationData = translationsEn;
+              throw new Error(`Unsupported language code: ${lang}`);
+          }
+    
+          return { data: translationData as T };
+        }
+
+
+
     // Check if the URL ends with "/base64/" to apply image Base64 transformation 
     const base64Pattern = /\/base64\/$/;
     if (base64Pattern.test(url)) {
@@ -123,6 +161,18 @@ export const axios = {
       } else {
         throw new Error(`Unknown image path for URL: ${url}`);
       }
+    }
+
+        if (url.startsWith(`${apiUrl}/users/`)) {
+        const urlParams = new URLSearchParams(url.split('?')[1]); // Extract query params from URL
+        const role = urlParams.get('role'); // Get the role query parameter
+
+        if (role) {
+            // Filter users based on the role
+            const filteredUsers = users.filter(user => user.roles.includes(role));
+
+            return { data: filteredUsers as T };
+        }
     }
 
     // If no route matches

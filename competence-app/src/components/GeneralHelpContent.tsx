@@ -1,11 +1,11 @@
 import React from 'react';
 import { Typography, Divider, Accordion, AccordionSummary, AccordionDetails } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import '../app/globals.css';
-import { useTranslation } from 'react-i18next';
+import '../app/globals.css'; 
+import useTranslation from '@/utils/translationHelper';
 
 const GeneralHelpContent = () => {
-    const { t } = useTranslation(); // Hook to use translations
+    const t  = useTranslation(); // Hook to use translations
     return (
         <>
             <Accordion

@@ -1,13 +1,31 @@
 // utils/translationHelper.ts
 
-// Define a type for the translations object to ensure proper key-value pairing
-type Translations = {
-    [key: string]: string;
+ 
+
+import { useAuth } from '@/context/AuthContext'; // Use AuthContext to manage state
+
+ 
+
+
+// Helper function to replace placeholders within a translation string
+const replacePlaceholders = (template: string, replacements: { [key: string]: string }): string => {
+    return template.replace(/\{(\w+)\}/g, (_, key) => replacements[key] || `{${key}}`);
   };
   
-  // Use generics to allow `getTranslation` to infer the exact keys of the translation object if needed
-  const t = <T extends Translations>(translations: T, key: keyof T): string => {
-    return translations[key] || `Translation missing for ${String(key)}`;
-  };
+
+const useTranslation = () => {
+    const { translations } = useAuth();
   
-  export default t;
+    // Main t function with optional replacements
+    const t = (key: string, replacements: { [key: string]: string } = {}): string => {
+      const template = translations[key];
+      if (!template) {
+        return `${key}`;
+      }
+      return replacePlaceholders(template, replacements);
+    };
+  
+    return t;
+  };
+
+export default useTranslation;

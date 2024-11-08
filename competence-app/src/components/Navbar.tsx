@@ -10,6 +10,7 @@ import Image from 'next/image'; // Import Image from next/image
 import DynamicHelpDrawer from '@/components/DynamicHelpDrawer';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 
+
 export default function Navbar() {
   const { userRoles, isLoggedIn, logout,
     activeCatalogues, activeEleve, activeLayout, activeReport } = useAuth();
