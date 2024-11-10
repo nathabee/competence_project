@@ -72,11 +72,12 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 export const axios = {
-  get: async <T>(url: string, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
-    //console.log('AXIOS Mocking GET url:', url); //ok
-    if (config) {
-      console.log('GET config:', config);  //ok
-    }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  get: async <T>(url: string, _config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
+
+
+      //console.log('AXIOS Mocking GET url:', url); //ok
+ 
 
     if (url === `${apiUrl}/catalogues/`) return { data: catalogues as T };
     if (url === `${apiUrl}/eleves/`) return { data: eleves as T };

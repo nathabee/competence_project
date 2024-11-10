@@ -143,7 +143,11 @@ pipeline {
                             cd ${PROJECT_PATH}
                             python manage.py test competence.tests.test_integration_workflow
                         """
-                        sh "cd ${PROJECT_PATH}/competence-app && npm run test"
+                        // Set NODE_ENV=test before running npm tests
+                        sh """
+                            cd ${PROJECT_PATH}/competence-app
+                            export NODE_ENV=test && npm run test
+                        """
                     }
                 }
             }
