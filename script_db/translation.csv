@@ -113,6 +113,17 @@ pgH_select_report_description,en,"Select an existing report to edit or reprint, 
 hlp_save_report,en,Save a report
 pgH_save_report_description,en,"The report being edited will be saved. After saving, if any tests are incomplete, their category will be highlighted in yellow."
 hlp_wellcomeMsg,en,Welcome! Use the navigation to discover the app.
+tab_year,en,Year
+tab_level,en,Class
+tab_stage,en,Stage
+tab_subject,en,Subject
+tab_desc,en,Description
+msg_manyCtg,en,"Warning, you have selected more than one catalog"
+msg_noConf,en,No configuration found.
+msg_noSelectConf,en,No configuration selected.
+msg_load,en,Loading data...
+msg_refresh,en,Refresh data...
+en,en,Console administration
 language_list,en,"{""en"": ""English"", ""fr"": ""Français"", ""de"": ""Deutsch"", ""br"": ""Brezhoneg""}"
 inf_welcome,fr,Bienvenue dans notre application
 news,fr,Nouvelles : Sélection multilingue anglais et français ajoutée. Actuellement uniquement sur la page élève.
@@ -228,6 +239,17 @@ hlp_select_report,fr,Sélectionner un rapport
 pgH_select_report_description,fr,"Sélectionner un rapport existant pour le retravailler ou pour le réimprimer, ou créer un nouveau rapport."
 hlp_save_report,fr,Sauvegarder un rapport
 pgH_save_report_description,fr,"Le rapport en cours d'édition sera sauvegardé. Après sauvegarde, si des tests sont incomplets, leur catégorie sera mise en jaune."
+tab_year,fr,Annee
+tab_level,fr,Classe
+tab_stage,fr,Etape
+tab_subject,fr,Matière
+tab_desc,fr,Description
+msg_manyCtg,fr,"Attention, vous avez sélectionné plus d'un catalogue"
+msg_noConf,fr,pas de configuration trouvée.
+msg_noSelectConf,fr,pas de configuration sélectionnée.
+msg_load,fr,Chargement des données...
+msg_refresh,fr,Rafraîchir les données...
+pgH_admin,fr,Console administration
 language_list,fr,"{""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English"", ""br"": ""Brezhoneg""}"
 inf_welcome,br,Degemer mat er gontadenn-mañ
 news,br,Keleier: Ouzhpennañ brezhoneg hag al lizherennoù saoznek. Kinniget evit ar bajenn skolier ivez.
@@ -339,6 +361,17 @@ hlp_difficulties_summary,br,Farc'heziad an deviner
 pgH_difficulties_summary_description,br,An un drat-mat chadenni oh gwaret dabluel ho sempezi gmewedjeur !!!
 hlp_rptMgmt,br,Menage oubd...
 hlp_wellcomeMsg,br,Welcome! Use the navigation to discover the app.
+tab_year,br,Bloavezh
+tab_level,br,Klas
+tab_stage,br,Darempred
+tab_subject,br,Danvez
+tab_desc,br,Deskrivadur
+msg_manyCtg,br,"Diwallit, hoc'h eus dibabet muioc'h evit un dastumad"
+msg_noConf,br,Configuradur ebet kavet.
+msg_noSelectConf,br,Configuradur dibabet ebet.
+msg_load,br,O kargañ an titouroù...
+msg_refresh,br,Adfreskaat an titouroù...
+br,br,Konsol administret
 language_list,br,"{""br"": ""Brezhoneg"",""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English""}"
 inf_welcome,de,Willkommen in unserer Anwendung
 news,de,Neuigkeiten: Auswahl mehrerer Sprachen (Englisch und Französisch) hinzugefügt. Momentan nur auf der Studentenseite.
@@ -454,4 +487,15 @@ pgH_select_report_description,de,"Wählen Sie einen bestehenden Bericht zur Bear
 hlp_save_report,de,Bericht speichern
 pgH_save_report_description,de,"Der bearbeitete Bericht wird gespeichert. Nach dem Speichern wird die Kategorie von Tests, die unvollständig sind, gelb markiert."
 hlp_wellcomeMsg,de,Willkommen! Benutze the Menü um die App zu entdecken.
+tab_year,de,Jahr
+tab_level,de,Klasse
+tab_stage,de,Stufe
+tab_subject,de,Fach
+tab_desc,de,Beschreibung
+msg_manyCtg,de,"Achtung, Sie haben mehr als einen Katalog ausgewählt"
+msg_noConf,de,Keine Konfiguration gefunden.
+msg_noSelectConf,de,Keine Konfiguration ausgewählt.
+msg_load,de,Daten werden geladen...
+msg_refresh,de,Daten aktualisieren...
+de,de,Konsolenverwaltung
 language_list,de,"{""de"": ""Deutsch"", ""fr"": ""Français"",  ""en"": ""English"", ""br"": ""Brezhoneg""}"

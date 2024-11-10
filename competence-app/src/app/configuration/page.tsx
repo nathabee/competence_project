@@ -8,6 +8,7 @@ import LayoutSelection from '@/components/LayoutSelection';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { useAuth } from '@/context/AuthContext'; 
 import { getTokenFromCookies } from '@/utils/jwt'; 
+import useTranslation from '@/utils/translationHelper';
  
  
    
@@ -15,7 +16,8 @@ import { getTokenFromCookies } from '@/utils/jwt';
   const Configuration: React.FC = () => {
     const router = useRouter();
     const { layouts, activeLayout } = useAuth(); 
-   
+    const  t  = useTranslation(); // Hook to use translations
+  
     // Use useEffect to set the token client-side only
     useEffect(() => {
       const retrievedToken = getTokenFromCookies();
@@ -38,11 +40,11 @@ import { getTokenFromCookies } from '@/utils/jwt';
       {activeLayout ? (
       <LayoutDisplay layout={activeLayout} />  
       ) : (
-        <p>Pas de mise en page sélectionnée.</p>
+        <p>{t("msg_noSelectConf")}</p>
       )}
  
       {layouts.length === 0 ? (
-        <p>Pas de mise en page trouvée.</p>
+        <p>{t("msg_noConf")}</p>
       ) : (
         <LayoutSelection layouts={layouts} />
       )}

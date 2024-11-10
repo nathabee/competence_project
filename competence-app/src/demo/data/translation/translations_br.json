@@ -109,5 +109,16 @@
   "pgH_difficulties_summary_description": "An un drat-mat chadenni oh gwaret dabluel ho sempezi gmewedjeur !!!",
   "hlp_rptMgmt": "Menage oubd...",
   "hlp_wellcomeMsg": "Welcome! Use the navigation to discover the app.",
+  "tab_year": "Bloavezh",
+  "tab_level": "Klas",
+  "tab_stage": "Darempred",
+  "tab_subject": "Danvez",
+  "tab_desc": "Deskrivadur",
+  "msg_manyCtg": "Diwallit, hoc'h eus dibabet muioc'h evit un dastumad",
+  "msg_noConf": "Configuradur ebet kavet.",
+  "msg_noSelectConf": "Configuradur dibabet ebet.",
+  "msg_load": "O kargañ an titouroù...",
+  "msg_refresh": "Adfreskaat an titouroù...",
+  "br": "Konsol administret", 
   "language_list": "{\"br\": \"Brezhoneg\",\"fr\": \"Français\", \"de\": \"Deutsch\", \"en\": \"English\"}"
 }

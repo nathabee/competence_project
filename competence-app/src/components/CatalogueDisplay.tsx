@@ -3,30 +3,32 @@
 import React from 'react';
 import { Catalogue } from '@/types/report';
 import '@/app/globals.css'; // Import global styles
+import useTranslation from '@/utils/translationHelper';
 
 interface CatalogueDisplayProps {
     selectedCatalogue: Catalogue[]; // Catalogues we want to display
 }
 
 const CatalogueDisplay: React.FC<CatalogueDisplayProps> = ({ selectedCatalogue }) => {
+    const  t  = useTranslation(); // Hook to use translations
+
     // Check if there are selected catalogues to display
     if (!selectedCatalogue.length) {
-        return <p>Pas d&apos;information sur le catalogue disponible</p>;
+        return <p>{t("msg_noCtg")}</p>;
     }
 
     return (
         <div className="mb-4">
-            <h2>Affichage des types de test sélectionnés</h2>
 
             {/* Catalogue Table */}
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Year</th>
-                        <th>Level</th>
-                        <th>Stage</th>
-                        <th>Subject</th>
-                        <th>Description</th>
+                        <th>{t("tab_year")}</th>
+                        <th>{t("tab_level")}</th>
+                        <th>{t("tab_stage")}</th>
+                        <th>{t("tab_subject")}</th>
+                        <th>{t("tab_desc")}</th>
                     </tr>
                 </thead>
                 <tbody>

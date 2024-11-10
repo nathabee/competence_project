@@ -8,6 +8,7 @@ import Spinner from 'react-bootstrap/Spinner';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {  getTokenFromCookies } from '@/utils/jwt'; 
 import ShortReportDisplay from '@/components/ShortReportDisplay'; // Updated import for display component
+import useTranslation from '@/utils/translationHelper';
 
 
 const Dashboard: React.FC = () => {
@@ -16,6 +17,7 @@ const Dashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<boolean>(false);
   const [shortReports, setShortReports] = useState<ShortReport[]>([]);
+  const  t  = useTranslation(); // Hook to use translations
 
   // Fetch reports from API
   const fetchData = useCallback(async () => {
@@ -53,23 +55,23 @@ const Dashboard: React.FC = () => {
   if (loading) {
     return (
       <div className="loading-indicator">
-        <p>Chargement des données...</p>
+        <p>{t("msg_load")}</p>
         <Spinner animation="border" />
       </div>
     );
   }
 
   if (error) {
-    return <p>Erreur chargement des données. Essayez plus tard SVP.</p>;
+    return <p>{t("msg_loadErr")}</p>;
   }
 
   return (
     <div className="container mt-3 ml-2">
-      <h1>Historique</h1> 
+      <h1>{t("pgH_histo")}</h1> 
 
       {/* Refresh Button */}
       <button onClick={fetchData} className="btn btn-primary mb-3">
-         Rafraîchir les données
+      {t("msg_refresh")}
       </button>
 
       {/* Passing the fetched reports to ShortReportDisplay */}

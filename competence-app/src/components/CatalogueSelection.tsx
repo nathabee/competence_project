@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { CatalogueSelectionProps, Catalogue } from '@/types/report'; // Ensure proper import of interfaces
 import { useAuth } from '@/context/AuthContext'; // Use AuthContext instead of TestContext
 import '@/app/globals.css';
+import useTranslation from '@/utils/translationHelper';
 
 const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) => {
   const { activeCatalogues, setActiveCatalogues } = useAuth(); // Use activeCatalogues for multi-selection
@@ -11,7 +12,8 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [selectedStage, setSelectedStage] = useState<string | null>(null);
   const [selectedSubject, setSelectedSubject] = useState<string | null>(null);
-
+  const  t  = useTranslation(); // Hook to use translations
+  
   // Check if there are any catalogues available
   if (!catalogue.length) return <p>No Catalogue found...</p>;
 
@@ -46,21 +48,21 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
   return (
     <div className="mb-4">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <h2>Sélection des types de test:</h2>
+ 
         
         {/* Conditional rendering of the warning message */}
         {activeCatalogues.length > 1 && (
           <span className="warning-message">
-            Attention, vous avez sélectionné plus d&apos;un catalogue
+            {t("msg_manyCtg")}
           </span>
         )}
       </div>
 
       <div className="filters">
         <label>
-          Year:
+        {t("tab_year")}:
           <select value={selectedYear || ''} onChange={e => setSelectedYear(e.target.value || null)}>
-            <option value="">All</option>
+            <option value="">{t("opt_all")}</option>
             {uniqueYears.map(year => (
               <option key={year} value={year}>{year}</option>
             ))}
@@ -68,9 +70,9 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
         </label>
 
         <label>
-          Level:
+        {t("tab_level")}:
           <select value={selectedLevel || ''} onChange={e => setSelectedLevel(e.target.value || null)}>
-            <option value="">All</option>
+            <option value="">{t("opt_all")}</option>
             {uniqueLevels.map(level => (
               <option key={level} value={level}>{level}</option>
             ))}
@@ -78,9 +80,9 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
         </label>
 
         <label>
-          Stage:
+        {t("tab_stage")}:
           <select value={selectedStage || ''} onChange={e => setSelectedStage(e.target.value || null)}>
-            <option value="">All</option>
+            <option value="">{t("opt_all")}</option>
             {uniqueStages.map(stage => (
               <option key={stage} value={stage}>{stage}</option>
             ))}
@@ -88,9 +90,9 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
         </label>
 
         <label>
-          Subject:
+        {t("tab_subject")}:
           <select value={selectedSubject || ''} onChange={e => setSelectedSubject(e.target.value || null)}>
-            <option value="">All</option>
+            <option value="">{t("opt_all")}</option>
             {uniqueSubjects.map(subject => (
               <option key={subject} value={subject}>{subject}</option>
             ))}
@@ -101,11 +103,11 @@ const CatalogueSelection: React.FC<CatalogueSelectionProps> = ({ catalogue }) =>
       <table className="table">
         <thead>
           <tr>
-            <th>Année</th>
-            <th>Classe</th>
-            <th>Etape</th>
-            <th>Matière</th>
-            <th>Description</th>
+            <th>{t("tab_year")}</th>
+            <th>{t("tab_level")}</th>
+            <th>{t("tab_stage")}</th>
+            <th>{t("tab_subject")}</th>
+            <th>{t("tab_desc")}</th>
           </tr>
         </thead>
         <tbody>

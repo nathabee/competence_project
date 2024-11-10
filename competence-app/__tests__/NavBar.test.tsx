@@ -1,13 +1,11 @@
 "use client";
 
-// __tests__/NavBar.test.tsx
+// __tests__/NavBar.test.tsx// __tests__/NavBar.test.tsx
 import { render, screen, fireEvent } from '@testing-library/react';
 import Navbar from '../src/components/Navbar'; // Adjust the import path as necessary
 import { useAuth } from '../src/context/AuthContext';
 import { useRouter } from 'next/navigation'; // Next.js 15.2 router
- 
-
-
+import defaultTranslation from '@/utils/defaultTranslation.json'; 
 
 // Mock the Auth context and Next.js router
 jest.mock('../src/context/AuthContext', () => ({
@@ -19,18 +17,18 @@ jest.mock('next/navigation', () => ({
   usePathname: jest.fn(() => '/mocked/path'), // Mocked pathname
 }));
 
-
-
 describe('Navbar Component', () => {
   const mockRouterPush = jest.fn();
 
   beforeEach(() => {
+    // Mocking Next.js router
     (useRouter as jest.Mock).mockReturnValue({
       push: mockRouterPush,
     });
   });
 
   it('toggles sidebar visibility when hamburger icon is clicked', () => {
+    // Mocking Auth Context including language and translation setup
     (useAuth as jest.Mock).mockReturnValue({
       userRoles: ['teacher'],
       isLoggedIn: true,
@@ -39,6 +37,17 @@ describe('Navbar Component', () => {
       activeEleve: null,
       activeLayout: null,
       activeReport: null,
+      activeLang: 'en',
+      setActiveLang: jest.fn(),
+      translations: defaultTranslation,
+      setTranslations: jest.fn(),
+      languageList: {
+        en: 'English',
+        fr: 'Français',
+        de: 'Deutsch',
+        br: 'Breton'
+      },
+      setLanguageList: jest.fn()
     });
 
     render(<Navbar />);
@@ -67,13 +76,27 @@ describe('Navbar Component', () => {
       activeEleve: null,
       activeLayout: null,
       activeReport: null,
+      activeLang: 'en',
+      setActiveLang: jest.fn(),
+      translations: defaultTranslation,
+      setTranslations: jest.fn(),
+      languageList: {
+        en: 'English',
+        fr: 'Français',
+        de: 'Deutsch',
+        br: 'Breton'
+      },
+      setLanguageList: jest.fn()
     });
 
     render(<Navbar />);
 
-    // Assert the presence of 'Historique' link for the teacher role
-    expect(screen.getByText(/Historique/i)).toBeInTheDocument();
-    expect(screen.getByText(/Logout/i)).toBeInTheDocument();
+    // Assert the presence of 'Historique' link for the teacher role 
+     
+    expect(screen.getByText(new RegExp(defaultTranslation.pgH_histo, 'i'))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(defaultTranslation.pgH_logout, 'i'))).toBeInTheDocument();
+ 
+
   });
 
   it('renders correctly when user is logged in as admin', () => {
@@ -85,14 +108,27 @@ describe('Navbar Component', () => {
       activeEleve: null,
       activeLayout: null,
       activeReport: null,
+      activeLang: 'en',
+      setActiveLang: jest.fn(),
+      translations: defaultTranslation,
+      setTranslations: jest.fn(),
+      languageList: {
+        en: 'English',
+        fr: 'Français',
+        de: 'Deutsch',
+        br: 'Breton'
+      },
+      setLanguageList: jest.fn()
     });
 
     render(<Navbar />);
 
     // Assert the presence of admin links
-    expect(screen.getByText(/Console administration/i)).toBeInTheDocument();
-    expect(screen.getByText(/Logout/i)).toBeInTheDocument();
-  });
+    //const errorMessage = await screen.findByText(new RegExp(defaultTranslation.msg_loadErr, 'i'));
+    expect(screen.getByText(new RegExp(defaultTranslation.pgH_admin, 'i'))).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(defaultTranslation.pgH_logout, 'i'))).toBeInTheDocument();
+  
+  }); 
 
   it('renders login link when user is not logged in', () => {
     (useAuth as jest.Mock).mockReturnValue({
@@ -103,6 +139,17 @@ describe('Navbar Component', () => {
       activeEleve: null,
       activeLayout: null,
       activeReport: null,
+      activeLang: 'en',
+      setActiveLang: jest.fn(),
+      translations: defaultTranslation,
+      setTranslations: jest.fn(),
+      languageList: {
+        en: 'English',
+        fr: 'Français',
+        de: 'Deutsch',
+        br: 'Breton'
+      },
+      setLanguageList: jest.fn()
     });
 
     render(<Navbar />);
@@ -120,10 +167,22 @@ describe('Navbar Component', () => {
       activeEleve: null,
       activeLayout: null,
       activeReport: null,
+      activeLang: 'en',
+      setActiveLang: jest.fn(),
+      translations: defaultTranslation,
+      setTranslations: jest.fn(),
+      languageList: {
+        en: 'English',
+        fr: 'Français',
+        de: 'Deutsch',
+        br: 'Breton'
+      },
+      setLanguageList: jest.fn()
     });
 
     render(<Navbar />);
-    const logoutButton = screen.getByText(/Logout/i);
+    
+    const logoutButton = screen.getByText(new RegExp(defaultTranslation.pgH_logout, 'i'));
     fireEvent.click(logoutButton);
 
     expect(logoutMock).toHaveBeenCalled(); // Ensure logout function was called

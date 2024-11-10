@@ -35,7 +35,7 @@ export default function Navbar() {
 
   const handleLogout = () => {
     logout();
-    router.push('/home');
+    router.push('/');  // 20241110  home to / 
   };
 
   const toggleSidebar = () => {
@@ -123,13 +123,13 @@ export default function Navbar() {
         </div> ) : (<div/>) }
 
         <div className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-          {isSidebarOpen && <h2>{t('nav_menu')}</h2>} {/* Only show Menu when sidebar is open */}
+          {isSidebarOpen && <h2>Menu</h2>} {/* Only show Menu when sidebar is open */}
 
           <Nav className="flex-column">
             {isLoggedIn ? (
               <>
                 {userRoles.includes('admin') && (
-                  <Nav.Link onClick={() => { toggleSidebar();handleRedirect(`/admin`)}}>Console administration</Nav.Link>
+                  <Nav.Link onClick={() => { toggleSidebar();handleRedirect(`/admin`)}}>{t('pgH_admin')}</Nav.Link>
                 )}
                 {userRoles.includes('teacher') && (
                   <>
@@ -155,7 +155,7 @@ export default function Navbar() {
                 <Nav.Link onClick={handleLogout}>{t('pgH_logout')}</Nav.Link>
               </>
             ) : (
-              <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/login`)}}>{t('pgH_login')}</Nav.Link>
+              <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/login`)}}>login</Nav.Link>
             )}
             
           </Nav>

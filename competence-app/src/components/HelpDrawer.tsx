@@ -43,7 +43,7 @@ const HelpDrawer: React.FC<HelpDrawerProps> = ({ helpContent }) => {
           {/* Render structured helpContent with Typography elements */}
           {helpContent}
 
-          <Button onClick={toggleDrawer(false)}>Fermer</Button>
+          <Button onClick={toggleDrawer(false)}> {t('btn_close')}</Button>
         </div>
       </Drawer>
     </>

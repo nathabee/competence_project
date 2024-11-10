@@ -113,5 +113,16 @@
   "hlp_save_report": "Bericht speichern",
   "pgH_save_report_description": "Der bearbeitete Bericht wird gespeichert. Nach dem Speichern wird die Kategorie von Tests, die unvollständig sind, gelb markiert.",
   "hlp_wellcomeMsg": "Willkommen! Benutze the Menü um die App zu entdecken.",
+  "tab_year": "Jahr",
+  "tab_level": "Klasse",
+  "tab_stage": "Stufe",
+  "tab_subject": "Fach",
+  "tab_desc": "Beschreibung",
+  "msg_manyCtg": "Achtung, Sie haben mehr als einen Katalog ausgewählt",
+  "msg_noConf": "Keine Konfiguration gefunden.",
+  "msg_noSelectConf": "Keine Konfiguration ausgewählt.",
+  "msg_load": "Daten werden geladen...",
+  "msg_refresh": "Daten aktualisieren...",
+  "de": "Konsolenverwaltung",
   "language_list": "{\"de\": \"Deutsch\", \"fr\": \"Français\",  \"en\": \"English\", \"br\": \"Brezhoneg\"}"
 }

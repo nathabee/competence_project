@@ -113,5 +113,16 @@
   "pgH_select_report_description": "Sélectionner un rapport existant pour le retravailler ou pour le réimprimer, ou créer un nouveau rapport.",
   "hlp_save_report": "Sauvegarder un rapport",
   "pgH_save_report_description": "Le rapport en cours d'édition sera sauvegardé. Après sauvegarde, si des tests sont incomplets, leur catégorie sera mise en jaune.",
+  "tab_year": "Annee",
+  "tab_level": "Classe",
+  "tab_stage": "Etape",
+  "tab_subject": "Matière",
+  "tab_desc": "Description",
+  "msg_manyCtg": "Attention, vous avez sélectionné plus d'un catalogue",
+  "msg_noConf": "pas de configuration trouvée.",
+  "msg_noSelectConf": "pas de configuration sélectionnée.",
+  "msg_load": "Chargement des données...",
+  "msg_refresh": "Rafraîchir les données...",
+  "pgH_admin": "Console administration",
   "language_list": "{\"fr\": \"Français\", \"de\": \"Deutsch\", \"en\": \"English\", \"br\": \"Brezhoneg\"}"
 }
