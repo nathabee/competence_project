@@ -123,6 +123,7 @@
   "msg_noSelectConf": "No configuration selected.",
   "msg_load": "Loading data...",
   "msg_refresh": "Refresh data...",
-  "en": "Console administration",
+  "pgH_admin": "Console administration",
+  "lang": "en", 
   "language_list": "{\"en\": \"English\", \"fr\": \"Français\", \"de\": \"Deutsch\", \"br\": \"Brezhoneg\"}"
 }

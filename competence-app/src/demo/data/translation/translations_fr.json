@@ -124,5 +124,6 @@
   "msg_load": "Chargement des données...",
   "msg_refresh": "Rafraîchir les données...",
   "pgH_admin": "Console administration",
+  "lang": "fr", 
   "language_list": "{\"fr\": \"Français\", \"de\": \"Deutsch\", \"en\": \"English\", \"br\": \"Brezhoneg\"}"
 }

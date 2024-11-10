@@ -123,6 +123,7 @@
   "msg_noSelectConf": "Keine Konfiguration ausgewählt.",
   "msg_load": "Daten werden geladen...",
   "msg_refresh": "Daten aktualisieren...",
-  "de": "Konsolenverwaltung",
+  "pgH_admin": "Konsolenverwaltung",
+  "lang": "de", 
   "language_list": "{\"de\": \"Deutsch\", \"fr\": \"Français\",  \"en\": \"English\", \"br\": \"Brezhoneg\"}"
 }

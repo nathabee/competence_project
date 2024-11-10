@@ -119,6 +119,7 @@
   "msg_noSelectConf": "Configuradur dibabet ebet.",
   "msg_load": "O kargañ an titouroù...",
   "msg_refresh": "Adfreskaat an titouroù...",
-  "br": "Konsol administret", 
+  "pgH_admin": "Konsol administret", 
+  "lang": "br", 
   "language_list": "{\"br\": \"Brezhoneg\",\"fr\": \"Français\", \"de\": \"Deutsch\", \"en\": \"English\"}"
 }
