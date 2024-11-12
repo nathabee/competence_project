@@ -12,6 +12,7 @@
                 "username": "nathaprof",
                 "first_name": "Nathalie",
                 "last_name": "Farinier",
+                "lang": "fr",
                 "roles": [
                     "teacher"
                 ]
@@ -30,6 +31,7 @@
                 "username": "nathaprof",
                 "first_name": "Nathalie",
                 "last_name": "Farinier",
+                "lang": "fr",
                 "roles": [
                     "teacher"
                 ]
@@ -49,6 +51,7 @@
                 "username": "nathaprof",
                 "first_name": "Nathalie",
                 "last_name": "Farinier",
+                "lang": "fr",
                 "roles": [
                     "teacher"
                 ]
@@ -67,7 +70,8 @@
                 "id": 107,
                 "username": "nathaprof",
                 "first_name": "Nathalie",
-                "last_name": "Farinier",
+                "last_name": "Bordas",
+                "lang": "fr",
                 "roles": [
                     "teacher"
                 ]
@@ -83,10 +87,11 @@
         "datenaissance": "2019-10-21",
         "professeurs_details": [
             {
-                "id": 107,
-                "username": "nathaprof",
-                "first_name": "Nathalie",
-                "last_name": "Farinier",
+                "id": 12,
+                "username": "jakez",
+                "first_name": "Jakez",
+                "last_name": "Bara",
+                "lang": "br",
                 "roles": [
                     "teacher"
                 ]
@@ -102,10 +107,11 @@
         "datenaissance": "2019-10-23",
         "professeurs_details": [
             {
-                "id": 107,
-                "username": "nathaprof",
-                "first_name": "Nathalie",
-                "last_name": "Farinier",
+                "id": 11,
+                "username": "jakob",
+                "first_name": "Jakob",
+                "last_name": "Brotmann",
+                "lang": "de",
                 "roles": [
                     "teacher"
                 ]
@@ -121,10 +127,11 @@
         "datenaissance": "2019-10-23",
         "professeurs_details": [
             {
-                "id": 107,
-                "username": "nathaprof",
-                "first_name": "Nathalie",
-                "last_name": "Farinier",
+                "id": 10,
+                "username": "jacques",
+                "first_name": "jacques",
+                "last_name": "Dupain",
+                "lang": "fr",
                 "roles": [
                     "teacher"
                 ]

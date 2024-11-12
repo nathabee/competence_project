@@ -125,6 +125,7 @@ msg_load,en,Loading data...
 msg_refresh,en,Refresh data...
 pgH_admin,en,Console administration
 lang,en,en
+pgH_rptCarousel,en,Carousel Report
 language_list,en,"{""en"": ""English"", ""fr"": ""Français"", ""de"": ""Deutsch"", ""br"": ""Brezhoneg""}"
 inf_welcome,fr,Bienvenue dans notre application
 news,fr,Nouvelles : Sélection multilingue anglais et français ajoutée. Actuellement uniquement sur la page élève.
@@ -252,6 +253,7 @@ msg_load,fr,Chargement des données...
 msg_refresh,fr,Rafraîchir les données...
 pgH_admin,fr,Console administration
 lang,fr,fr
+pgH_rptCarousel,fr,Test carousel
 language_list,fr,"{""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English"", ""br"": ""Brezhoneg""}"
 inf_welcome,br,Degemer mat er gontadenn-mañ
 news,br,Keleier: Ouzhpennañ brezhoneg hag al lizherennoù saoznek. Kinniget evit ar bajenn skolier ivez.
@@ -374,6 +376,7 @@ msg_noSelectConf,br,Configuradur dibabet ebet.
 msg_load,br,O kargañ an titouroù...
 msg_refresh,br,Adfreskaat an titouroù...
 pgH_admin,br,Konsol administret
+pgH_rptCarousel,br,Karusel Raport
 lang,br,br
 language_list,br,"{""br"": ""Brezhoneg"",""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English""}"
 inf_welcome,de,Willkommen in unserer Anwendung
@@ -502,4 +505,5 @@ msg_load,de,Daten werden geladen...
 msg_refresh,de,Daten aktualisieren...
 pgH_admin,de,Konsolenverwaltung
 lang,de,de
+pgH_rptCarousel,de,Karusel Report
 language_list,de,"{""de"": ""Deutsch"", ""fr"": ""Français"",  ""en"": ""English"", ""br"": ""Brezhoneg""}"

@@ -25,7 +25,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view, action
 from django.db.models import F
   
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import  Group
+from competence.models import CustomUser  
 from django.shortcuts import render
  
 from rest_framework import status
@@ -166,7 +167,7 @@ class EleveReportsView(APIView):
 
 class UserViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, isAllowed]
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
 
     def get_permissions(self):
@@ -187,7 +188,7 @@ class UserViewSet(viewsets.ModelViewSet):
     def teacher_list(self, request):
         # Find all users who belong to the 'teacher' group
         teacher_group = Group.objects.get(name="teacher")
-        teachers = User.objects.filter(groups=teacher_group)
+        teachers = CustomUser.objects.filter(groups=teacher_group)
         serializer = self.get_serializer(teachers, many=True)
         return Response(serializer.data)
  

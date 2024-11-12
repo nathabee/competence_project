@@ -1,3 +1,5 @@
+"use client";
+
 // __tests__/UserProfile.test.tsx
 import { render, screen } from '@testing-library/react';
 import EleveDisplay from '../src/components/EleveDisplay';

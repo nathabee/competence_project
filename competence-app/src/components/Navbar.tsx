@@ -138,6 +138,7 @@ export default function Navbar() {
                   <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/configuration`)}}>{t('pgH_confMgmt')}</Nav.Link>
                   <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/catalogue`)}}>{t('pgH_ctgMgmt')}</Nav.Link>
                   <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/test`)}}>{t('pgH_rptMgmt')}</Nav.Link>
+                  <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/carousel`)}}>{t('pgH_rptCarousel')}</Nav.Link>
                   <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/overview`)}}>{t('pgH_overview')} </Nav.Link>
                   <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdf`)}}>{t('pgH_PDF')}</Nav.Link>
                   <Nav.Link onClick={() =>  { toggleSidebar(); handleRedirect(`/pdfimage`)}}>{t('pgH_iconPDF')}</Nav.Link>

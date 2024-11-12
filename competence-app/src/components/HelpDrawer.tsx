@@ -1,3 +1,5 @@
+'use client';
+
 import { useState } from 'react';
 import { Drawer, Button, Typography } from '@mui/material';
 import useTranslation from '@/utils/translationHelper';

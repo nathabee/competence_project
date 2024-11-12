@@ -173,3 +173,11 @@ CSRF_TRUSTED_ORIGINS = [
     'http://nathabee.de:3000',  # Add this if you're testing locally
 ]
  
+
+
+AUTH_USER_MODEL = 'competence.CustomUser'
+
+
+
+# Get the default user password from .env
+DEFAULT_USER_PASSWORD = config('DEFAULT_USER_PASSWORD', default='password123')

@@ -125,5 +125,6 @@
   "msg_refresh": "Rafraîchir les données...",
   "pgH_admin": "Console administration",
   "lang": "fr", 
+  "pgH_rptCarousel": "Test carousel",
   "language_list": "{\"fr\": \"Français\", \"de\": \"Deutsch\", \"en\": \"English\", \"br\": \"Brezhoneg\"}"
 }

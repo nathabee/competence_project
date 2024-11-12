@@ -120,6 +120,7 @@
   "msg_load": "O kargañ an titouroù...",
   "msg_refresh": "Adfreskaat an titouroù...",
   "pgH_admin": "Konsol administret", 
+  "pgH_rptCarousel": "Karusel Raport",
   "lang": "br", 
   "language_list": "{\"br\": \"Brezhoneg\",\"fr\": \"Français\", \"de\": \"Deutsch\", \"en\": \"English\"}"
 }

@@ -125,5 +125,6 @@
   "msg_refresh": "Daten aktualisieren...",
   "pgH_admin": "Konsolenverwaltung",
   "lang": "de", 
+  "pgH_rptCarousel": "Karusel Report",
   "language_list": "{\"de\": \"Deutsch\", \"fr\": \"Français\",  \"en\": \"English\", \"br\": \"Brezhoneg\"}"
 }

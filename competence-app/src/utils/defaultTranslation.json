@@ -125,5 +125,6 @@
   "msg_refresh": "Refresh data...",
   "pgH_admin": "Console administration",
   "lang": "en", 
+  "pgH_rptCarousel": "Carousel Report",
   "language_list": "{\"en\": \"English\", \"fr\": \"Français\", \"de\": \"Deutsch\", \"br\": \"Brezhoneg\"}"
 }

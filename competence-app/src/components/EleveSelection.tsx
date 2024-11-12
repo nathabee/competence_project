@@ -11,7 +11,7 @@ const EleveSelection: React.FC<EleveSelectionProps> = ({ eleves }) => {
   const [selectedNiveau, setSelectedNiveau] = useState<string | null>(null);
   const  t  = useTranslation();
 
-  if (eleves.length === 0) return <p>{t('messages.noStudent')}</p>;
+  if (eleves.length === 0) return <p>{t('msg_noStud')}</p>;
 
   // Get unique levels (niveaux)
    const uniqueNiveaux = Array.from(new Set(eleves.map(eleve => t(eleve.niveau_description))));

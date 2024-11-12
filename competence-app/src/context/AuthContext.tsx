@@ -165,6 +165,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         path: '/',
       });
       internalSetUser(userInfo);
+      if (userInfo.lang != activeLang)
+        internalSetActiveLang(userInfo.lang || 'en'); 
       internalSetUserRoles(userInfo.roles);
       internalSetIsLoggedIn(true);
       localStorage.setItem('userRoles', JSON.stringify(userInfo.roles));
@@ -242,12 +244,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
 
   const setActiveLang = (lang: string = 'en') => {
-    internalSetActiveLang(lang);
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lang', lang);
+    if (lang !== activeLang) { // Only set if lang has changed
+      internalSetActiveLang(lang);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('lang', lang);
+      }
     }
   };
-
 
   const setLanguageList = (newLanguageLists: LanguageList) => {
 

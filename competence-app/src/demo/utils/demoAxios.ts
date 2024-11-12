@@ -8,8 +8,7 @@ import pdflayouts from '@/demo/data/json/pdflayouts.json';
 import shortreports from '@/demo/data/json/shortreports.json';
 import reportsRaw from '@/demo/data/json/fullreports.json';
 import scorerulepoints from '@/demo/data/json/scorerulepoints.json';
-import tokenData from '@/demo/data/json/token.json';
-import userme from '@/demo/data/json/userme.json';
+import tokenData from '@/demo/data/json/token.json'; 
 import users from '@/demo/data/json/users.json';
 
 import translationsFr from '@/demo/data/translation/translations_fr.json';
@@ -18,8 +17,23 @@ import translationsDe from '@/demo/data/translation/translations_de.json';
 import translationsBr from '@/demo/data/translation/translations_br.json';
 
 import { Report } from '../../types/report';
-import { ReportPatch } from '../../types/reportpatch';
+import { ReportPatch } from '../../types/reportpatch'; 
 
+
+// Type guard to ensure that data is a valid Report
+function isReport(data: unknown): data is Report {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'eleve' in data &&
+    'professeur' in data &&
+    'pdflayout' in data &&
+    'id' in data &&
+    'created_at' in data &&
+    'updated_at' in data &&
+    'report_catalogues' in data
+  );
+}
 
 
 interface ImageResponse {
@@ -72,11 +86,13 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 const mediaUrl = process.env.NEXT_PUBLIC_MEDIA_URL;
 
 export const axios = {
+
+
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
   get: async <T>(url: string, _config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
+ 
 
-
-      //console.log('AXIOS Mocking GET url:', url); //ok
+    console.log('AXIOS Mocking GET url:', url); //ok
  
 
     if (url === `${apiUrl}/catalogues/`) return { data: catalogues as T };
@@ -85,8 +101,22 @@ export const axios = {
     if (url === `${apiUrl}/pdf_layouts/`) return { data: pdflayouts as T };
     if (url === `${apiUrl}/shortreports/`) return { data: shortreports as T };
     if (url === `${apiUrl}/scorerulepoints/`) return { data: scorerulepoints as T };
-    if (url === `${apiUrl}/token/`) return { data: tokenData as T };
-    if (url === `${apiUrl}/users/me/`) return { data: userme as T };
+    //if (url === `${apiUrl}/token/`) return {   save in localstorage the username  ; data: tokenData as T };
+
+    if (url === `${apiUrl}/users/me/`) {
+      const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}'); // Get the stored user info
+      if (userInfo && userInfo.username) {
+        // Find the complete user data from `users.json`
+        const user = users.find(u => u.username === userInfo.username);
+        if (user) {
+          return { data: user as T };
+        } else {
+          throw new Error('User not found');
+        }
+      } else {
+        throw new Error('User not logged in');
+      }
+    }
 
     const reportsPattern = new RegExp(`^${apiUrl}/eleve/(\\d+)/reports/$`);
     const match = url.match(reportsPattern);
@@ -180,36 +210,65 @@ export const axios = {
     throw new Error(`Unknown API route: ${url}`);
   },
 
-
-
- 
-
-  post: async <T>(url: string, data?: Report, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
+  post: async <T, R = Report>(url: string, data?: R, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
     if (config) {
-      console.log('POST config:', config);
+        console.log('POST config:', config);
     }
-    //console.log('POST mock request received:', url);
 
+    // Handle POST request for token (expects username and password)
     if (url === `${apiUrl}/token/`) {
-      return { data: tokenData as T };
+        // Check if data contains username and password
+        if (!data || typeof data !== 'object' || !('username' in data) || !('password' in data)) {
+            throw new Error('Invalid request data for token');
+        }
+
+        // Extract username and password
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { username, password } = data as { username: string; password: string };
+
+        console.log("Handle POST request for token username", username);
+        
+        // Find the user in the list
+        const user = users.find(u => u.username === username);
+
+        // If user exists, return token data
+        if (user) {
+            localStorage.setItem('userInfo', JSON.stringify(user));
+            return { data: tokenData as T };
+        } else {
+            throw new Error('Invalid username or password');
+        }
     }
 
+    // Handle POST request for creating a full report (expects Report type)
     if (url === `${apiUrl}/fullreports/`) {
-      return {
-        data: {
-          id: 7,
-          eleve: data?.eleve,
-          professeur: data?.professeur,
-          pdflayout: data?.pdflayout,
-          created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString(),
-          report_catalogues: data?.report_catalogues || [],
-        } as T,
-      };
+        if (!data) {
+            throw new Error('No data provided for fullreports');
+        }
+
+        // Handle the case when data is of type Report
+        if (isReport(data)) {
+            // Create a new Report object
+            const newReport: Report = {
+                id: 7, // Mock ID for the new report
+                eleve: data.eleve,  // Copying over the student info
+                professeur: data.professeur,  // Copying over the professor info
+                pdflayout: 1, // Add a placeholder for pdflayout
+                report_catalogues: data.report_catalogues || [],  // Copying over report catalogues
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+            };
+
+            return { data: newReport as T }; // Returning the new Report as the response
+        } else {
+            throw new Error('Invalid Report data format for /fullreports/ endpoint');
+        }
     }
 
-    throw new Error(`Unknown API route: ${url}`);
+      // If the route is unknown, throw an error
+      throw new Error(`Unknown API route: ${url}`);
   },
+
 
   patch: async <T>(url: string, data?: ReportPatch, config?: AxiosRequestConfig): Promise<AxiosResponse<T>> => {
     //console.log('PATCH request URL:', url, 'Data:', data);

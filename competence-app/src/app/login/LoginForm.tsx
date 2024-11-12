@@ -1,6 +1,7 @@
 'use client';
 // src/app/login/LoginForm.tsx
 
+
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios, { AxiosError } from 'axios'; 
@@ -31,6 +32,7 @@ const LoginForm: React.FC = () => {
       });
 
       const userInfo = userResponse.data;
+      console.log("userInfo",userInfo);
       login(token, userInfo);
 
 
@@ -91,3 +93,4 @@ const LoginForm: React.FC = () => {
 };
 
 export default LoginForm;
+

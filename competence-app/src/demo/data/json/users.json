@@ -1,41 +1,65 @@
 [
-    {
-        "id": 107,
-        "username": "nathaprof",
-        "first_name": "Nathalie",
-        "last_name": "Farinier",
+    { 
+        "id": 10,
+        "username": "jacques",
+        "first_name": "jacques",
+        "last_name": "Dupain",
+        "lang": "fr",
         "roles": [
-            "teacher",
-            "admin",
-            "analytics"
+            "teacher"
         ]
     },
-    {
-        "id": 108,
-        "username": "Erinelle",
-        "first_name": "Josephine",
-        "last_name": "Lambert",
+    { 
+        "id": 11,
+        "username": "jakob",
+        "first_name": "Jakob",
+        "last_name": "Brotmann",
+        "lang": "de",
+        "roles": [
+            "teacher"
+        ]
+    },
+    { 
+        "id": 12,
+        "username": "jakez",
+        "first_name": "Jakez",
+        "last_name": "Bara",
+        "lang": "br",
+        "roles": [
+            "teacher"
+        ]
+    },
+    { 
+        "id": 13,
+        "username": "james",
+        "first_name": "James",
+        "last_name": "Breadman",
+        "lang": "en",
         "roles": [
             "teacher"
         ]
     },
     {
+
         "id": 101,
-        "username": "paf",
-        "first_name": "the",
-        "last_name": "dog",
+        "username": "nathaprof",
+        "first_name": "Nathalie",
+        "last_name": "Bordas",
+        "lang": "fr",
         "roles": [
-            "analytics"
+            "teacher"
         ]
+    
     },
-    {
-        "id": 100,
-        "username": "cinderella",
-        "first_name": "Sina",
-        "last_name": "Rella",
-        "roles": [
-            "admin",
-            "analytics"
-        ]
+    { 
+
+    "id": 102,
+    "username": "nathaprof",
+    "first_name": "Nathalie",
+    "last_name": "Legrand",
+    "lang": "fr",
+    "roles": [
+        "admin","analytics"
+    ]
     }
 ]

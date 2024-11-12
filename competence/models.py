@@ -1,5 +1,4 @@
-from django.db import models
-from django.contrib.auth.models import User
+from django.db import models 
 from django.utils import timezone
 from django.core.files import File
 from PIL import Image
@@ -7,6 +6,24 @@ from django.conf import settings
 import os
 
 
+from django.contrib.auth.models import AbstractUser
+from django.conf import settings
+
+# Table: customize User   
+
+class CustomUser(AbstractUser):
+    LANGUAGE_CHOICES = [
+        ('en', 'English'),
+        ('fr', 'Francais'),
+        ('br', 'Breton'),
+        ('de', 'Deutsch'),
+        # Add other languages as needed
+    ]
+    lang = models.CharField(
+        max_length=2,
+        choices=LANGUAGE_CHOICES,
+        default='en',  # Default to English
+    )
         
 # Table: Translation  
 
@@ -123,7 +140,7 @@ class Eleve(models.Model):
     prenom = models.CharField(max_length=100)
     niveau = models.ForeignKey('Niveau', on_delete=models.CASCADE, default=1)
     datenaissance = models.DateField(null=True, blank=True)
-    professeurs = models.ManyToManyField(User, related_name='eleves', blank=True)
+    professeurs = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='eleves', blank=True)
 
     class Meta:
         indexes = [
@@ -141,7 +158,7 @@ class Catalogue(models.Model):
     annee = models.ForeignKey('Annee', on_delete=models.CASCADE, default=1)
     matiere = models.ForeignKey('Matiere', on_delete=models.CASCADE, default=1)
     description = models.TextField(blank=True, null=True)
-    professeurs = models.ManyToManyField(User, related_name='catalogues', blank=True)
+    professeurs = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name='catalogues', blank=True)
     
     print(f"Catalogue modele", description)
 
@@ -301,7 +318,7 @@ class PDFLayout(models.Model):
 # Table: Report
 class Report(models.Model):
     eleve = models.ForeignKey('Eleve', on_delete=models.CASCADE, related_name='reports')
-    professeur = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    professeur = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     pdflayout = models.ForeignKey('PDFLayout', on_delete=models.CASCADE)

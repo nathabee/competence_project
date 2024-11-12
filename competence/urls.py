@@ -1,9 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from .views import (
-    NiveauViewSet, EtapeViewSet, AnneeViewSet, MatiereViewSet,
-    #ReportCatalogueViewSet ,ReportViewSet, EleveAnonymizedViewSet,
- #   ResultatViewSet, ResultatDetailViewSet,  ScoreRuleViewSet, ReportFRViewSet,
+    NiveauViewSet, EtapeViewSet, AnneeViewSet, MatiereViewSet, 
      GroupageDataViewSet, ItemViewSet,
    ScoreRulePointViewSet, UserViewSet,EleveViewSet,CatalogueViewSet,
     UserRolesView, api_overview, ShortReportViewSet,TranslationView,

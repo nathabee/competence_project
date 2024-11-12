@@ -7,8 +7,9 @@ pipeline {
         STATIC_FILES_PATH = "/var/www/html/competence_project/staticfiles"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
-        POPULATE_INITIAL_DATA =  "false"
-        POPULATE_TRANSLATION =  "true"
+ 
+        RESET_DB =  "true"
+        POPULATE_TRANSLATION =  "true" 
     }
     stages {
 
@@ -18,9 +19,7 @@ pipeline {
                 script {
                     // Check if BACKUPDIR exists and set permissions or create backup
                     sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}" 
-
                     echo "Backup of project directory created at ${BACKUPDIR}"
-
                     // Backup MySQL database using Jenkins credentials
                     sh "mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases competencedb > '${BACKUPDIR}/db_backup_${timestamp}.sql' || echo 'MySQL backup failed.'"
                     echo "MySQL database backup created."
@@ -28,8 +27,7 @@ pipeline {
             }
         }
 
-
-        // 1. Initial Checkout using Jenkins' built-in mechanism
+        // 1. Initial Checkout
         stage('Checkout') {
             steps {
                 checkout([
@@ -42,11 +40,10 @@ pipeline {
             }
         }
 
-        // 2. Update repository with sudo as the 'nathabee' user for further actions
+        // 2. Update repository
         stage('Update Repository') {
             steps {
                 script {
-                    // Discard any local changes and pull the latest from GitHub
                     sh """
                         cd ${PROJECT_PATH}
                         sudo -u nathabee git reset --hard
@@ -66,6 +63,17 @@ pipeline {
             }
         }
 
+        // Pause for manual intervention after stopping services
+        stage('Manual Intervention') {
+            steps {
+                script {
+                    if (env.RESET_DB == "true") {
+                    input message: "Pipeline paused. Please complete any necessary manual tasks (add in .env DEFAULT_USER_PASSWORD, database drop,create,superuser,clean migration directory), then proceed to resume." 
+                    }
+                }
+            }
+        }
+
         // 4. Install Dependencies
         stage('Install Dependencies') {
             steps {
@@ -80,18 +88,23 @@ pipeline {
         stage('Database Migrations') {
             steps {
                 script {
-                    sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
-                    sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
 
-                    // Conditionally populate initial data if needed
-                    // Using `env.` prefix for Groovy conditional
-                    if (env.POPULATE_INITIAL_DATA == "true") {
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'" 
-                        }
-                    if (env.POPULATE_TRANSLATION == "true") { 
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_translation || echo 'Translation population skipped.'" 
-                        }
+                    if (env.RESET_DB == "true") {
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate  --fake competence zero"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions  || echo 'create_groups_and_permissions skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher  || echo 'populate_teacher skipped.'"
 
+                    }
+                    else {       
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
+                    }
+
+                    if (env.POPULATE_TRANSLATION == "true") {
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_translation || echo 'Translation population skipped.'"
+                    }
                 }
             }
         }
@@ -105,14 +118,11 @@ pipeline {
             }
         }
 
-        // 7. Collect Static Files and Update Permissions
+        // 7. Collect Static Files
         stage('Collect Static Files') {
             steps {
                 script {
-                    // Run Django collectstatic to gather static files
                     sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py collectstatic --noinput"
-
-                    // Copy collected static files to the deployment directory and set permissions
                     sh """
                         sudo cp -r ${PROJECT_PATH}/staticfiles/* ${STATIC_FILES_PATH}/
                         sudo chown -R www-data:webusers ${STATIC_FILES_PATH}/
@@ -121,7 +131,6 @@ pipeline {
                 }
             }
         }
-
 
         // 8. Start Services
         stage('Start Services') {
@@ -143,7 +152,6 @@ pipeline {
                             cd ${PROJECT_PATH}
                             python manage.py test competence.tests.test_integration_workflow
                         """
-                        // Set NODE_ENV=test before running npm tests
                         sh """
                             cd ${PROJECT_PATH}/competence-app
                             export NODE_ENV=test && npm run test
@@ -159,7 +167,6 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
                         def accessToken = sh(script: "curl -X POST -H 'Content-Type: application/json' -d '{\"username\":\"$TEACHER_USER\", \"password\":\"$TEACHER_PASS\"}' http://localhost:8080/api/token/ | jq -r .access", returnStdout: true).trim()
-                        
                         sh """
                         curl -H "Authorization: Bearer ${accessToken}" http://localhost:8080/api/
                         curl -I http://localhost:3000/evaluation
@@ -168,7 +175,6 @@ pipeline {
                 }
             }
         }
-
     }
 
     post {

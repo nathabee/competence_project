@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import  Group
 from .models import (
     Niveau, Etape, Annee, Matiere, Eleve, Catalogue, GroupageData,PDFLayout,MyImage,
     Item, Resultat, ResultatDetail, ScoreRule, ScoreRulePoint, Report, ReportCatalogue
@@ -10,7 +10,7 @@ from django.utils import timezone
 import base64
 #from django.core.files.base import ContentFile
  
-
+from competence.models import CustomUser  
  
  
 
@@ -18,15 +18,22 @@ class UserSerializer(serializers.ModelSerializer):
     roles = serializers.ListField(child=serializers.CharField(), write_only=True)
 
     class Meta:
-        model = User
-        fields = ['id', 'username', 'first_name', 'last_name', 'roles', 'password']
+        model = CustomUser
+        fields = ['id', 'username', 'first_name', 'last_name', 'roles', 'password','lang']
         extra_kwargs = {'password': {'write_only': True}}
 
     def create(self, validated_data):
+        lang = validated_data.pop('lang', None)  # Ensure that lang is correctly popped
+    
         roles = validated_data.pop('roles', [])
         password = validated_data.pop('password')  # Extract the password
-        user = User(**validated_data)
+        user = CustomUser(**validated_data)
         user.set_password(password)  # Hash the password
+            
+        if lang:
+            user.lang = lang  # Set the preferred language to the user model
+        
+
         user.save()
 
         # Assign the user to the specified roles (groups)
@@ -47,7 +54,7 @@ class UserSerializer(serializers.ModelSerializer):
 class EleveSerializer(serializers.ModelSerializer):
     # Automatically assign professeurs for non-admin users
     professeurs = serializers.PrimaryKeyRelatedField(
-        queryset=User.objects.filter(groups__name='teacher'),
+        queryset=CustomUser.objects.filter(groups__name='teacher'),
         many=True,
         write_only=True,
         required=False  # This field will not be required for teacher creation
@@ -499,7 +506,7 @@ class FullReportSerializer(serializers.ModelSerializer):
     report_catalogues = ReportCatalogueSerializer(many=True, read_only=True)  # For retrieving data
     report_catalogues_data = ReportCatalogueSerializer(many=True, write_only=True, required=False)  # For updates
     eleve = serializers.PrimaryKeyRelatedField(queryset=Eleve.objects.all())
-    professeur = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
+    professeur = serializers.PrimaryKeyRelatedField(queryset=CustomUser.objects.all())
     pdflayout = serializers.PrimaryKeyRelatedField(queryset=PDFLayout.objects.all())
 
     class Meta:
@@ -661,34 +668,4 @@ class ShortReportSerializer(serializers.ModelSerializer):
             }
         return None
 
-
-
-"""
-
-### must see if i use this....
-class ReportSerializer(serializers.ModelSerializer):
-    eleve = serializers.PrimaryKeyRelatedField(queryset=Eleve.objects.all())
-    professeur = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    report_catalogues = ReportCatalogueSerializer(many=True)  # Allow nested creation of ReportCatalogues
-    created_at = serializers.DateTimeField(read_only=True)  # Automatically set by the database
-    updated_at = serializers.DateTimeField(read_only=True)  # Automatically set by the database
-
-    class Meta:
-        model = Report
-        fields = ['id', 'eleve', 'professeur', 'pdflayout', 'report_catalogues', 'created_at', 'updated_at']
-
-    def create(self, validated_data):
-        # Remove report_catalogues from validated_data if it's not provided
-        report_catalogues_data = validated_data.pop('report_catalogues', [])
-
-        # Create the Report first
-        report = Report.objects.create(**validated_data)
-
-        # Now create each ReportCatalogue with the newly created report
-        for catalogue_data in report_catalogues_data:
-            # Ensure each catalogue_data has the report reference
-            catalogue_data['report'] = report
-            ReportCatalogue.objects.create(**catalogue_data)
-
-        return report
-"""
+  

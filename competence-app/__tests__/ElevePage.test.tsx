@@ -1,3 +1,5 @@
+"use client";
+
 // __tests__/ElevePage.test.tsx
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';

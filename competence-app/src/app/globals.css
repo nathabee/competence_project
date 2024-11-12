@@ -301,3 +301,33 @@ body {
 }
 
 /*****************************************/
+.carousel-navigation button {
+  margin: 10px;
+  padding: 10px;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.carousel-navigation button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.info-layer {
+  margin-bottom: 20px;
+}
+
+.button-warning {
+  background-color: #ff9800;
+  color: white;
+}
+
+.button-transparent {
+  background-color: transparent;
+  border: 1px solid #007BFF;
+}
+
+/*****************************************/

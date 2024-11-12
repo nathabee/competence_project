@@ -36,6 +36,7 @@ competence-app-demo/public/demo/
 node_modules/
 dist/
 build/
+competence-app/github-pages/out/
 
 # Django migrations
 **/migrations/**
