@@ -17,7 +17,7 @@
     "demo-local-build": "rm -rf  github-pages/out && dotenv -e .env.demolocal -- npm run build && touch ./out/.nojekyll && mv out github-pages",
     "demo-local-start": "dotenv -e .env.demolocal npx serve  github-pages --single --prefix /",
     "demo-prod-build": "rm -rf  github-pages/out &&   dotenv -e  .env.demo npm run build   && touch ./out/.nojekyll && mv out github-pages ",
-    "demo-deploy": "rm -rf github-page/out && dotenv -e .env.demo npm run build && mv out github-page/out && touch ./github-page/out/.nojekyll && touch ./github-page/.nojekyll && gh-pages -d github-page/ -t true",
+    "demo-deploy": "rm -rf github-pages/out && dotenv -e .env.demo npm run build && mv out github-pages/out && touch ./github-pages/out/.nojekyll && touch ./github-pages/.nojekyll && gh-pages -d github-pages/ -t true",
     "test": "dotenv -e .env.local jest",
     "lint": "next lint"
   },
