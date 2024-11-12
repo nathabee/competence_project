@@ -1,5 +1,6 @@
 from django.test import TestCase
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import  Group
+from competence.models import CustomUser  # Import your custom user model
 from rest_framework import status  
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import AccessToken
@@ -40,7 +41,7 @@ class ValidationTestSetup(TestCase):
         # Initialize the API utility class
         self.api_util = ApiUtil(self.client) 
         # Create admin user
-        self.admin_user = User.objects.create_user(username='adminuser', password='adminpass', is_staff=True)
+        self.admin_user = CustomUser.objects.create_user(username='adminuser', password='adminpass', is_staff=True)
         self.admin_group = Group.objects.get(name='admin')
         self.admin_user.groups.add(self.admin_group)
         self.admin_token = AccessToken.for_user(self.admin_user) 
@@ -59,23 +60,23 @@ class AdminPermissionTest(ValidationTestSetup):
         
 
     def test_user(self):
-        response = self.api_util._create_user('alluser', 'allpass', 'All', 'User', ['admin','teacher','analytics'])        
+        response = self.api_util._create_user('alluser', 'allpass', 'All', 'CustomUser', ['admin','teacher','analytics'])        
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='alluser').exists())
+        self.assertTrue(CustomUser.objects.filter(username='alluser').exists())
         self.alluser_user = response.data
         debug_print("test_create_user_all")
         debug_print(response.data)
         
  
-        response = self.api_util._create_user('newuser', 'newpass', 'New', 'User', ['analytics'])
+        response = self.api_util._create_user('newuser', 'newpass', 'New', 'CustomUser', ['analytics'])
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='newuser').exists())
+        self.assertTrue(CustomUser.objects.filter(username='newuser').exists())
          
-        response = self.api_util._create_user('admuser', 'admpass', 'Adm', 'User', ['admin' ])
+        response = self.api_util._create_user('admuser', 'admpass', 'Adm', 'CustomUser', ['admin' ])
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='admuser').exists())
+        self.assertTrue(CustomUser.objects.filter(username='admuser').exists())
         debug_print("test_create_user_admin")
         debug_print(response.data)
          
@@ -93,9 +94,9 @@ class AdminPermissionTest(ValidationTestSetup):
 
         if alluser:
             alluser_id = alluser['id']
-            debug_print(f"User 'alluser' has the ID: {alluser_id}")
+            debug_print(f"CustomUser 'alluser' has the ID: {alluser_id}")
         else:
-            debug_print("User 'alluser' not found")
+            debug_print("CustomUser 'alluser' not found")
   
  
         alluser_id = self.alluser_user['id']
@@ -109,7 +110,7 @@ class AdminPermissionTest(ValidationTestSetup):
         response = self.api_util._delete_user( alluser_id )
         
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertFalse(User.objects.filter(username='alluser').exists())
+        self.assertFalse(CustomUser.objects.filter(username='alluser').exists())
 
 
 class TeacherPermissionTest(ValidationTestSetup): 
@@ -123,7 +124,7 @@ class TeacherPermissionTest(ValidationTestSetup):
         response = self.api_util._create_user('teacher1', 'newpass', 'New', 'Teacher', ['teacher'])
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='teacher1').exists())
+        self.assertTrue(CustomUser.objects.filter(username='teacher1').exists())
         
  
         self.client.credentials()

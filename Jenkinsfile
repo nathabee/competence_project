@@ -8,7 +8,7 @@ pipeline {
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
  
-        RESET_DB =  "true"
+        RESET_DB =  "false"
         POPULATE_TRANSLATION =  "true" 
     }
     stages {
@@ -68,7 +68,7 @@ pipeline {
             steps {
                 script {
                     if (env.RESET_DB == "true") {
-                    input message: "Pipeline paused. Please complete any necessary manual tasks (add in .env DEFAULT_USER_PASSWORD, database drop,create,superuser,clean migration directory), then proceed to resume." 
+                    input message: "Pipeline paused. Please check if you really want to reset database. Please complete any necessary manual tasks (add in .env new values if necessary, clean migration directory), then proceed to resume." 
                     }
                 }
             }
@@ -85,6 +85,21 @@ pipeline {
         }
 
         // 5. Database Migrations
+
+        // drop and create database
+        stage('drop and create Database') {
+            steps {
+                script {
+                    if (env.RESET_DB == "true") {
+                        sh """
+                            mysql --defaults-extra-file=/var/lib/jenkins/.my.cnf -e 'DROP DATABASE IF EXISTS competencedb; CREATE DATABASE competencedb;'
+                        """
+
+                        }
+                }
+            }
+        }
+
         stage('Database Migrations') {
             steps {
                 script {
@@ -92,6 +107,7 @@ pipeline {
                     if (env.RESET_DB == "true") {
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate  --fake competence zero"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py createsuperuser --noinput"
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'"
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions  || echo 'create_groups_and_permissions skipped.'"
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher  || echo 'populate_teacher skipped.'"

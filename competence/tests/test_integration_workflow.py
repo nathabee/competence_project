@@ -1,5 +1,6 @@
 from django.test import TestCase
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import  Group
+from competence.models import CustomUser  # Import your custom user model
 from rest_framework import status  
 from rest_framework.test import APIClient
 from rest_framework_simplejwt.tokens import AccessToken
@@ -40,7 +41,7 @@ class IntegrationTestSetup(TestCase):
         # Initialize the API utility class
         self.api_util = ApiUtil(self.client) 
         # Create admin user
-        self.admin_user = User.objects.create_user(username='adminuser', password='adminpass', is_staff=True)
+        self.admin_user = CustomUser.objects.create_user(username='adminuser', password='adminpass', is_staff=True)
         self.admin_group = Group.objects.get(name='admin')
         self.admin_user.groups.add(self.admin_group)
         self.admin_token = AccessToken.for_user(self.admin_user) 
@@ -82,7 +83,7 @@ class Workflow_Teacher(IntegrationTestSetup):
         response = self.api_util._create_user('teacher1', 'newpass', 'New', 'Teacher', ['teacher'])
         
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertTrue(User.objects.filter(username='teacher1').exists())
+        self.assertTrue(CustomUser.objects.filter(username='teacher1').exists())
         
  
         self.client.credentials()

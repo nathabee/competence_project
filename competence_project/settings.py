@@ -181,3 +181,7 @@ AUTH_USER_MODEL = 'competence.CustomUser'
 
 # Get the default user password from .env
 DEFAULT_USER_PASSWORD = config('DEFAULT_USER_PASSWORD', default='password123')
+DJANGO_SUPERUSER_USERNAME = config("DJANGO_SUPERUSER_USERNAME", default='compet')
+DJANGO_SUPERUSER_EMAIL = config("DJANGO_SUPERUSER_EMAIL", default='admin@nathabee.de')
+DJANGO_SUPERUSER_PASSWORD = config("DJANGO_SUPERUSER_PASSWORD", default='password123')
+
