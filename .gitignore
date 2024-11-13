@@ -37,6 +37,7 @@ node_modules/
 dist/
 build/
 gh-pages/out/
+gh-pages/staticfiles/
 
 # Django migrations
 **/migrations/**

@@ -114,8 +114,16 @@ pipeline {
 
                     }
                     else {       
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
+                    // Check if there are any changes before running migrate
+                    def migrationOutput = sh(script: ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations", returnStdout: true).trim()
+                    
+                    // Check if "No changes detected" is in the output
+                    if (migrationOutput.contains("No changes detected")) {
+                        echo "No changes detected in the models, skipping migration."
+                    } else {
+                        echo "Changes detected, running migrations."
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
+                    }
                     }
 
                     if (env.POPULATE_TRANSLATION == "true") {
