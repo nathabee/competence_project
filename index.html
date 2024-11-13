@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Project Landing Page</title>
+</head>
+
+<body>
+  <div class="container">
+    <!-- Project Information Section -->
+    <section class="project-info">
+      <h1>Welcome to the Competence App</h1>
+      <p>This is a demonstration version of the Competence App, allowing users to explore core functionalities in a
+        simulated environment.</p>
+    </section>
+
+    <!-- Demo Information Section -->
+    <section class="demo-info">
+      <h2>About the Demo</h2>
+      <p>This demo uses static data stored in JSON files and has no backend database connection. This allows you to
+        experience the interface and functionalities without real data.</p>
+    </section>
+
+    <!-- Language and User Selection -->
+    <section class="language-selection">
+
+
+      <h2>Select a Language and User</h2>
+      <p>Choose a language and user below to continue:</p>
+      <select id="user-selection" onchange="showLoginMessage()">
+        <option value="" disabled selected>Select a language/user</option>
+        <option value="fr&jacques">Francais - French</option>
+        <option value="en&james">English - James</option>
+        <option value="br&jakez">Breton - Jakez</option>
+        <option value="de&jakob">German - Jakob</option>
+      </select>
+      <button onclick="redirectToLogin()">Go to Login</button>
+
+
+
+      <!-- Message in red that informs the user about the password not being checked -->
+      <div id="login-message" style="color: red; font-weight: bold; margin-top: 1em; display: none;">
+        Please log in with the user selected. The password will not be checked in this demonstration.
+      </div>
+      
+    </section>
+  </div>
+
+  <script>
+    // Redirect function to login page with user and language parameters
+    function redirectToLogin() {
+      const userSelection = document.getElementById('user-selection').value;
+      if (userSelection) {
+        const [lang, user] = userSelection.split('&');
+        // Dynamically construct the URL with selected language and user
+        window.location.href = `out/login?lang=${lang}&user=${user}`;
+      } else {
+        alert('Please select a language and user.');
+      }
+    }
+
+    // Show the login message when a language is selected
+    function showLoginMessage() {
+      const userSelection = document.getElementById('user-selection').value;
+      const messageElement = document.getElementById('login-message');
+      if (userSelection) {
+        messageElement.style.display = 'block'; // Show the message
+      } else {
+        messageElement.style.display = 'none'; // Hide the message if no selection is made
+      }
+    }
+  </script>
+
+  <style>
+    /* Basic styling for the landing page */
+    /* globals.css */
+
+    @import "~bootstrap/dist/css/bootstrap.min.css";
+
+    /* Root variables for colors */
+    :root {
+      --custom-blue: #d4f0eb;
+      --custom-blue-complement: #deecbe;
+      --custom-warning: #fae46a;
+      --custom-dark: #22473f;
+      --custom-dark-shadow: rgba(0, 0, 0, 0.1);
+      --custom-light: #d1f3f1;
+      --custom-transparent: rgba(255, 255, 255, 0);
+      --custom-text: #343a40;
+      --custom-text-on-dark: white;
+      --custom-link-hover: #ff9100;
+      --custom-alert: #c4361d;
+      --custom-dropdown-bg: white;
+      --custom-dropdown-border: #9cee83;
+      --custom-gradient: linear-gradient(to right, var(--custom-blue-complement), var(--custom-blue));
+    }
+
+    /* Gradient background */
+    body {
+      background: var(--custom-gradient);
+      font-family: Arial, sans-serif;
+      align-items: center;
+    }
+
+    .container {
+      overflow: auto;
+      margin: 10%;
+    }
+
+    .card {
+      background-color: var(--custom-blue);
+      box-shadow: 0 4px 8px var(--custom-dark-shadow);
+      border-radius: 10px;
+    }
+
+    /* Ensure the container uses the full width and adapts */
+    .container-fluid {
+      width: 100%;
+      padding: 0;
+    }
+
+    /* Table responsive to allow horizontal scroll */
+    .table-responsive {
+      overflow-x: auto;
+      margin-bottom: 15px;
+    }
+
+    .table th,
+    .table td {
+      white-space: nowrap;
+    }
+
+    .selected-row td {
+      background-color: var(--custom-blue) !important;
+    }
+
+    .project-info,
+    .demo-info,
+    .language-selection {
+      margin-bottom: 2em;
+    }
+
+    /* Styling for the main heading (h1) */
+    h1 {
+      font-size: 3em; /* Make the h1 bigger */
+      text-align: center; /* Center align the text */
+      margin-bottom: 1em; /* Add some space below the heading */
+      color: var(--custom-dark);
+    }
+
+    /* Styling for the paragraph (p) */
+    p {
+      font-size: 1.2em; /* Slightly larger font size for better readability */
+      margin-bottom: 1.5em; /* Add more space between paragraphs */
+      line-height: 1.6; /* Increase line spacing for better readability */
+      color: var(--custom-text);
+    }
+
+    select,
+    button {
+      padding: 0.5em;
+      font-size: 1em;
+      margin-top: 1em;
+    }
+
+    .shadow-container {
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 8px;
+      padding: 16px;
+      margin-bottom: 20px;
+      background-color: var(--custom-blue);
+      color: var(--custom-text);
+      transition: box-shadow 0.3s ease;
+    }
+
+    .shadow-container:hover {
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</body>
+
+</html>

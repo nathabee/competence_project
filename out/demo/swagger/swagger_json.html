@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competence Project API Documentation</title>
+    <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@latest/swagger-ui.css">
+    <style>
+        body { margin: 0; padding: 0; }
+        #swagger-ui { margin: 20px; }
+    </style>
+</head>
+<body>
+    <!--
+    curl -o swagger.json http://localhost:8080/swagger/?format=openapi
+    -->
+    <div id="swagger-ui"></div>
+    <script src="https://unpkg.com/swagger-ui-dist@latest/swagger-ui-bundle.js"></script>
+    <script>
+        SwaggerUIBundle({
+            url: "./swagger.json",  // Path to your Swagger JSON file
+            dom_id: '#swagger-ui',
+            presets: [SwaggerUIBundle.presets.apis],
+            layout: "BaseLayout"
+        });
+    </script>
+</body>
+</html>
