@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Competence Project - REST API Documentation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #1e90ff;
+        }
+
+        pre {
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        code {
+            color: #d63384;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+
+        <header>
+            <h1>Competence Project REST API</h1>
+        </header>
+
+        <section>
+            <p>This document defines the REST API for the <strong>Competence Project</strong>, which allows the
+                management of evaluations for kindergarten students. The API provides access to add, retrieve, and
+                manage data about students, evaluations, results, and more.</p>
+        </section>
+
+        <section>
+            <h2>Base URL</h2>
+            <p><strong>Base URL:</strong> <code>to be defined</code></p>
+        </section>
+
+        <section>
+            <h2>Endpoints Overview</h2>
+            <ul>
+                <li><a href="#eleves">/eleves/</a> - Manage students (Eleves)</li>
+                <li><a href="#resultats">/resultats/</a> - Manage evaluation results (Resultats)</li>
+                <li><a href="#catalogues">/catalogues/</a> - Manage evaluation catalogues (Catalogues)</li>
+                <li><a href="#items">/items/</a> - Manage evaluation items (Items)</li>
+                <li><a href="#niveaux">/niveaux/</a> - Manage class levels (Niveaux)</li>
+                <li><a href="#etapes">/etapes/</a> - Manage evaluation stages (Etapes)</li>
+                <li><a href="#annees">/annees/</a> - Manage academic years (Annees)</li>
+            </ul>
+        </section>
+
+        <section id="eleves">
+            <h2>/eleves/ - Manage Students (Eleves)</h2>
+            <p>API endpoint to create, retrieve, update, and delete student (Eleve) records.</p>
+            <pre><code>GET /eleves/</code></pre>
+            <pre><code>POST /eleves/</code></pre>
+        </section>
+
+        <section id="resultats">
+            <h2>/resultats/ - Manage Evaluation Results (Resultats)</h2>
+            <p>API endpoint to manage the evaluation results of students.</p>
+            <pre><code>GET /resultats/</code></pre>
+            <pre><code>POST /resultats/</code></pre>
+        </section>
+
+        <section id="catalogues">
+            <h2>/catalogues/ - Manage Evaluation Catalogues (Catalogues)</h2>
+            <p>API endpoint to manage evaluation catalogues, which define the structure of evaluations.</p>
+            <pre><code>GET /catalogues/</code></pre>
+            <pre><code>POST /catalogues/</code></pre>
+        </section>
+
+        <section id="items">
+            <h2>/items/ - Manage Evaluation Items (Items)</h2>
+            <p>API endpoint to manage individual evaluation items within a catalogue.</p>
+            <pre><code>GET /items/</code></pre>
+            <pre><code>POST /items/</code></pre>
+        </section>
+
+        <section id="niveaux">
+            <h2>/niveaux/ - Manage Class Levels (Niveaux)</h2>
+            <p>API endpoint to manage class levels, such as CP, E1, and M1.</p>
+            <pre><code>GET /niveaux/</code></pre>
+            <pre><code>POST /niveaux/</code></pre>
+        </section>
+
+        <section id="etapes">
+            <h2>/etapes/ - Manage Evaluation Stages (Etapes)</h2>
+            <p>API endpoint to manage the different stages of evaluations (e.g., Debut, Inter, Final).</p>
+            <pre><code>GET /etapes/</code></pre>
+            <pre><code>POST /etapes/</code></pre>
+        </section>
+
+        <section id="annees">
+            <h2>/annees/ - Manage Academic Years (Annees)</h2>
+            <p>API endpoint to manage academic years (e.g., 2024-2025).</p>
+            <pre><code>GET /annees/</code></pre>
+            <pre><code>POST /annees/</code></pre>
+        </section>
+
+        <footer>
+            <p>&copy; 2024 Competence Project REST API Documentation</p>
+        </footer>
+    </div>
+</body>
+
+</html>

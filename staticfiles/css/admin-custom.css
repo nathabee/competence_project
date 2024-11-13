@@ -1,0 +1,46 @@
+/* static/css/admin-custom.css */
+
+/* Root variables for colors */
+:root {
+    --custom-blue: #47cab4;
+    --custom-blue-complement:  #e2d89f;
+    --custom-warning: #fae46a;
+    --custom-dark: #22473f;
+    --custom-dark-shadow:  rgba(0, 0, 0, 0.1);
+    --custom-light: #d1f3f1;
+    /*--custom-light-pink: rgba(255, 235, 239, 0.8); /* Light pink with transparency */
+    /*--custom-dark-pink: rgba(255, 204, 213, 0.8); /* Darker pink with transparency */
+    --custom-transparent: rgba(255, 255, 255, 0); /* Fully transparent */
+    --custom-text: #343a40;
+    --custom-text-on-dark: white;
+    --custom-link-hover: #ff9100;
+    --custom-alert: #c4361d;
+    --custom-dropdown-bg: white;
+    --custom-dropdown-border: #9cee83;
+    --custom-gradient: linear-gradient(to right, var(--custom-blue-complement), var(--custom-alert));
+  }
+  
+   
+body {
+    background: var(--custom-gradient);
+    font-family: Arial, sans-serif;
+    /* Ensure there’s no rule hiding elements */
+    overflow: auto;
+    display: block;  /* Ensure the body is visible */
+}
+
+.container {
+    overflow: auto; /* This should ensure content isn't hidden */
+    display: block;  /* Make sure containers are shown */
+}
+      
+ 
+.image-preview-container {
+    display: flex;
+    align-items: center;
+}
+.image-preview-container img {
+    max-width: 100px; 
+    max-height: 100px;
+    margin-left: 10px; /* Adjust spacing as necessary */
+} 

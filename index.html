@@ -57,6 +57,15 @@
       <button onclick="redirectToLogin()">Go to Login</button>
     </section>
 
+
+  <section class="documentation"></section>
+  <h2>Documentation</h2>
+  <p>Static files of the project are available hier :</p>
+    <button onclick="redirectToStaticfiles()">Check static documentation</button>
+
+  </section>
+
+
     <script>
       function redirectToLogin() {
         // Get selected radio button
@@ -71,16 +80,22 @@
           console.log(`Selected User: ${user}, Language: ${lang}`);
 
           // Redirect with the appropriate language and user in the query parameters
-          window.location.href = `/out/login?lang=${lang}&user=${user}`;
+          window.location.href = `out/login?lang=${lang}&user=${user}`;
         } else {
           alert("Please select a user to proceed.");
         }
+      }
+
+      
+      function redirectToStaticfiles() { 
+          window.location.href = `staticfiles/html/`;
+ 
       }
     </script>
 
     <style>
       /* Basic styling for the landing page */
-      @import "~bootstrap/dist/css/bootstrap.min.css";
+      @import "staticfiles/rest_framework/css/bootstrap.min.css";
 
       :root {
         --custom-blue: #d4f0eb;

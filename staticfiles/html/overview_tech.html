@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kindergarten Evaluation Project - Technical Overview</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>Technical Overview</h2>
+        <p>The Kindergarten Evaluation Project is a platform built to assist teachers in assessing the developmental
+            progress of kindergarten students. It leverages modern web technologies to provide a smooth experience for
+            data entry and result visualization.</p>
+
+        <h3>Frontend Technologies</h3>
+        <p>The frontend uses HTML, CSS, JavaScript, and possibly modern frameworks like React or Vue.js to offer an
+            interactive and user-friendly interface. The data entry screens will allow teachers to input evaluation
+            results, and a dedicated module will visualize the children’s performance using radar diagrams to highlight
+            various competencies.</p>
+
+        <h3>Backend Technologies</h3>
+        <p>The backend is developed using Django, a powerful Python-based framework that provides robust support for
+            building RESTful APIs. The backend handles user authentication, student data management, and processing of
+            evaluation results. Teachers can access different API endpoints to input and retrieve data.</p>
+
+        <p>The REST API enables easy integration with other educational tools, and it supports both data entry and
+            result retrieval.</p>
+            
+        <ul>
+            <li>Static REST API specification can be found <a href="swagger_json.html"> here</a>.</li>
+
+            <p>This document defines the REST API for the <strong>Competence Project</strong>, which allows the
+                management of evaluations for kindergarten students. The API provides access to add, retrieve, and
+                manage data about students, evaluations, results, and more.</p>
+            <!-- li>Swagger REST API documentation can be found <a href="/swagger/" target="_blank">here</a>.</li -->
+        </ul>
+
+        <h3>Database</h3>
+        <p>MySQL is used as the primary database to store student information, evaluation results, and user data. The
+            database is structured to efficiently handle large sets of student data and provides reliable storage for
+            the evaluation results, which can be compared over time.</p>
+
+        <h3>Radar Diagram Visualization</h3>
+        <p>For visualizing the evaluation results, radar diagrams will be generated on the frontend using JavaScript
+            libraries like Chart.js or D3.js. These diagrams will provide a clear, graphical representation of each
+            student’s performance across various competencies (e.g., language comprehension, math skills, and
+            problem-solving abilities).</p>
+
+        <p>The radar diagrams allow teachers and parents to quickly identify areas where students may need additional
+            support.</p>
+    </div>
+</body>
+
+</html>

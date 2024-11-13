@@ -45,10 +45,14 @@ When you want to update the gh-pages branch with new static content:
 
 ### Modify and test the code
 Ensure the following files are updated in competence_project/gh-pages/:
-index.html
-.nojekyll
-out directory (the static export from competence-app)
+```bash 
+index.html (is making a small presentation of the static website)
+.nojekyll (so that github page is serving sub directories)
+out  => ( directory containing the static export from competence-app)
 README.md (for branch-specific instructions, manually updated as needed)
+```
+
+
 Command for test in local :
 
 ```bash 
@@ -57,43 +61,21 @@ npm run demo-local-build
 npm run demo-local-start
 ```
 
-### Deploy the modification
-Command for Deployment:
-
-```bash 
-cd competence_project/competence_app
-git checkout  main
-npm run demo-deploy
-
-```
-
-```json 
-"demo-deploy": "rm -rf ../gh-pages/out && dotenv -e .env.demo npm run build && mv out ../gh-pages/out && touch ../gh-pages/out/.nojekyll && touch ../gh-pages/.nojekyll && gh-pages -d ../gh-pages/ -t true",
-
-```
+  
 
 ### Deploying on GitHub Pages
 Switch to the Main Branch for Development
 Go back to the main branch to make changes:
 
 
-```bash 
-cd ~/coding/nathabee-cloud/competence_project
-git checkout main
-
-```
-Build and Deploy
-Inside the competence-app directory, run the deployment command:
-
-
 
 ```bash 
-cd competence-app
+cd competence_project/competence_app
+git checkout  main
 npm run demo-deploy
+
 
 ```
 Now, the updated static files are deployed on GitHub Pages using the gh-pages branch.
  
-
-
-
+ 
