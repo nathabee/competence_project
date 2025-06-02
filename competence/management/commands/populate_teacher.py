@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group
-from competence.models import CustomUser
+from competence.models import CustomUser, Catalogue  # Make sure Catalogue is imported
 from django.conf import settings 
- 
 
 
 class Command(BaseCommand):
@@ -11,12 +10,12 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         # Define the user data with roles
         users_data = [
-            {'username': 'jacques', 'first_name': 'Jacques', 'last_name': 'Dupain', 'lang': 'fr',  'is_staff': False,'roles': ['teacher']},
-            {'username': 'jakob', 'first_name': 'Jakob', 'last_name': 'Brotmann', 'lang': 'de',  'is_staff': False,'roles': ['teacher']},
-            {'username': 'jakez', 'first_name': 'Jakez', 'last_name': 'Bara', 'lang': 'br',  'is_staff': False, 'roles': ['teacher']},
-            {'username': 'james', 'first_name': 'James', 'last_name': 'Breadman', 'lang': 'en',  'is_staff': False, 'roles': ['teacher']},
-            {'username': 'nathaprof', 'first_name': 'Nathalie', 'last_name': 'Legrand', 'lang': 'fr',  'is_staff': False, 'roles':['teacher'] },
-            {'username': 'nathachef', 'first_name': 'Nathalie', 'last_name': 'Bordas', 'lang': 'fr', 'is_staff': True, 'roles': ['admin', 'statistics']}
+            {'username': 'jacques', 'first_name': 'Jacques', 'last_name': 'Dupain', 'lang': 'fr',  'is_staff': False, 'roles': ['teacher'], 'catalogues': [34, 35, 36]},
+            {'username': 'jakob', 'first_name': 'Jakob', 'last_name': 'Brotmann', 'lang': 'de',  'is_staff': False, 'roles': ['teacher'], 'catalogues': [43, 44, 45]},
+            {'username': 'jakez', 'first_name': 'Jakez', 'last_name': 'Bara', 'lang': 'br',  'is_staff': False, 'roles': ['teacher'], 'catalogues': [40, 41, 42]},
+            {'username': 'james', 'first_name': 'James', 'last_name': 'Breadman', 'lang': 'en',  'is_staff': False, 'roles': ['teacher'], 'catalogues': [37, 38, 39]},
+            {'username': 'nathaprof', 'first_name': 'Nathalie', 'last_name': 'Legrand', 'lang': 'fr',  'is_staff': False, 'roles': ['teacher'], 'catalogues': [31, 32, 33]},
+            {'username': 'nathachef', 'first_name': 'Nathalie', 'last_name': 'Bordas', 'lang': 'fr', 'is_staff': True, 'roles': ['admin', 'statistics'], 'catalogues': [31, 32, 33]}
         ]
 
         # Use the default password from settings
@@ -47,9 +46,18 @@ class Command(BaseCommand):
                 user.groups.add(group)  # Add the user to each specified group
                 if created:
                     self.stdout.write(self.style.SUCCESS(f"Created group: {role}"))
-            
+
             # Save changes to the user after adding groups
             user.save()
             self.stdout.write(self.style.SUCCESS(f"Assigned roles {user_data['roles']} to user: {user_data['username']}"))
 
-        self.stdout.write(self.style.SUCCESS("Finished creating users and assigning roles."))
+            # Associate catalogues with the user (professor)
+            for catalogue_id in user_data['catalogues']:
+                try:
+                    catalogue = Catalogue.objects.get(id=catalogue_id)
+                    user.catalogues.add(catalogue)  # Add the catalogue to the user
+                    self.stdout.write(self.style.SUCCESS(f"Associated catalogue {catalogue_id} with user: {user_data['username']}"))
+                except Catalogue.DoesNotExist:
+                    self.stdout.write(self.style.WARNING(f"Catalogue with id {catalogue_id} not found"))
+
+        self.stdout.write(self.style.SUCCESS("Finished creating users, assigning roles, and associating catalogues."))

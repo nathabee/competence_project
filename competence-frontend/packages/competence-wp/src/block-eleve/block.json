@@ -1,0 +1,20 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "competence-wp/block-eleve",
+	"version": "0.1.0",
+	"title": "Block Eleve",
+	"keywords": [ "student", "dashboard", "login", "auth" ],
+	"category": "widgets",
+    "icon": "buddicons-replies",
+	"description": "Eleve block for competence project.",
+	"example": {},
+	"supports": {
+		"html": false
+	},
+	"textdomain":"block-eleve",
+	"editorScript": "file:./index.js",
+	"editorStyle": "file:./index.css",
+	"style": "file:./index.css",
+	"viewScript": "file:./view.js"
+}

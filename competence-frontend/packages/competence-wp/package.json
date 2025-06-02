@@ -1,0 +1,36 @@
+{
+	"name": "competence-wp",
+	"version": "0.1.0",
+	"description": "Example block scaffolded with Create Block tool.",
+	"author": "The WordPress Contributors",
+	"license": "GPL-2.0-or-later",
+	"main": "build/index.js",
+	"scripts": {
+		"clean": "rm -rf ./vendor/shared ./build ./competence-wp ./competence-wp.zip && mkdir -p ./vendor/shared ./competence-wp",
+		"copy-shared": "cp -R ../shared/wp-build/* ./vendor/shared",
+		"merge-blocks": "cp -rp ./build/* ./competence-wp/ && cp src/block-eleve/block.json ./competence-wp/block-eleve && cp src/block-login/block.json ./competence-wp/block-login && cp competence-wp.php ./competence-wp/",
+		"generate-manifest": "node ./scripts/generate-blocks-manifest.js",
+		"zip": "zip -r ./competence-wp.zip competence-wp ",
+		"build": "npm run clean && npm run copy-shared && webpack --config webpack.config.js && npm run merge-blocks && npm run generate-manifest && npm run zip",
+		"format": "wp-scripts format",
+		"lint:css": "wp-scripts lint-style",
+		"lint:js": "wp-scripts lint-js",
+		"packages-update": "wp-scripts packages-update",
+		"plugin-zip": "wp-scripts plugin-zip",
+		"start": "wp-scripts start --blocks-manifest"
+	},
+	"devDependencies": {
+		"@wordpress/babel-preset-default": "^8.24.0",
+		"@wordpress/scripts": "^30.17.0",
+		"babel-loader": "^10.0.0",
+		"css-loader": "^7.1.2",
+		"mini-css-extract-plugin": "^2.9.2",
+		"postcss-loader": "^8.1.1",
+		"sass-loader": "^16.0.5"
+	},
+	"dependencies": {
+		"@wordpress/block-editor": "^14.19.0",
+		"@wordpress/blocks": "^14.13.0",
+		"@wordpress/i18n": "^5.24.0"
+	}
+}

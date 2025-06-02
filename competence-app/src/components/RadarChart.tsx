@@ -9,6 +9,7 @@ import {
     Tooltip,
     Legend
 } from 'chart.js';
+import useTranslation from '@/utils/translationHelper';
 
 // Register the necessary components for the radar chart
 Chart.register(RadialLinearScale, RadarController, LineElement, PointElement, Filler, Tooltip, Legend);
@@ -24,6 +25,7 @@ interface RadarChartProps {
 const RadarChart: React.FC<RadarChartProps> = ({ chartData }) => {
     const chartRef = useRef<HTMLCanvasElement>(null);
     const chartInstanceRef = useRef<Chart | null>(null);
+    const  t  = useTranslation();
 
     useEffect(() => {
         const ctx = chartRef.current?.getContext('2d', { willReadFrequently: true });
@@ -41,7 +43,7 @@ const RadarChart: React.FC<RadarChartProps> = ({ chartData }) => {
             data: {
                 labels: chartData.labels,  // Groupage labels
                 datasets: [{
-                    label: 'Avancement',
+                    label: t('pdf_ChartLabel')  ,
                     data: chartData.data,  // Avancement scores
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',

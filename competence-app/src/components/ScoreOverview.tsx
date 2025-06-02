@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image'; // Import the Image component from Next.js
 import { ReportCatalogue, Resultat } from '@/types/report'; // Ensure you import these types correctly
+import useTranslation from '@/utils/translationHelper';
 
 interface ScoreOverviewProps {
     reportCatalogue: ReportCatalogue; // Updated prop type
@@ -10,6 +11,7 @@ interface ScoreOverviewProps {
 
 const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
     const [base64Images, setBase64Images] = useState<{ [key: string]: string }>({});
+    const  t  = useTranslation();
 
     useEffect(() => {
         // Load base64 images from localStorage on the client side
@@ -38,9 +40,9 @@ const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
             <table className="table">
                 <thead>
                     <tr>
-                        <th>Type de tests</th>
-                        <th>Score</th>
-                        <th>Maximum</th>
+                        <th>{t('tbH_typeTest')}</th>
+                        <th>{t('tbH_score')}</th>
+                        <th>{t('tbH_MaxScore')}</th>
                         <th>%</th> 
                     </tr>
                 </thead>
@@ -71,7 +73,7 @@ const ScoreOverview: React.FC<ScoreOverviewProps> = ({ reportCatalogue }) => {
                         })
                     ) : (
                         <tr>
-                            <td colSpan={10}>Pas de données disponible</td>
+                            <td colSpan={10}>{t('msg_noData')}</td>
                         </tr>
                     )}
                 </tbody>

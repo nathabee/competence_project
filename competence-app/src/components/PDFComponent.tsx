@@ -13,6 +13,7 @@ import ScoreOverview from './ScoreOverview'; // Import ScoreOverview
 import SummaryDetailedDifficulty from './SummaryDetailedDifficulty'; // Import summary component
 
 import { getImageData } from '@/utils/helper';  // to be able to mok it
+import useTranslation from '@/utils/translationHelper';
 
 
 interface PDFComponentProps {
@@ -31,6 +32,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
     isImageChart,
 }) => {
     const reportCatalogues = report.report_catalogues;
+    const  t  = useTranslation();
 
     const handlePrintPDF = async () => {
         const printButton = document.querySelector('.btn') as HTMLElement;
@@ -112,7 +114,7 @@ const PDFComponent: React.FC<PDFComponentProps> = ({
     return (
         <div>
             <button onClick={handlePrintPDF} className="button-warning">
-                Imprimer PDF
+            {t('btn_print')}
             </button>
 
             {/* Generate pages for each reportCatalogue */}

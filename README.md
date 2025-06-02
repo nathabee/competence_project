@@ -143,6 +143,7 @@ Start the Django development server on a custom port (python manage.py runserver
 
 ```bash
 cd competence_project
+source venv/bin/activate
 python manage.py runserver localhost:8080 --insecure
 ``` 
 Your server should now be running and accessible via the specified IP and port.

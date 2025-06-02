@@ -6,6 +6,7 @@ import { User } from '../types/user';
 import { Eleve } from '../types/eleve';
 import { Report } from '../types/report';
 import { formatDate } from '@/utils/helper';
+import useTranslation from '@/utils/translationHelper';
 
 interface PrintHeaderProps {
   layout: PDFLayout;
@@ -16,6 +17,7 @@ interface PrintHeaderProps {
 
 const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve, report }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const  t  = useTranslation();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -34,7 +36,7 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve, rep
       };
 
       image.onerror = (error) => {
-        console.error("Erreur chargement image:", error);
+        console.error(t('msg_loadErrIcon'), error);
       };
     }
   }, [layout.header_icon_base64]); // Updated dependency to use the new property
@@ -52,14 +54,14 @@ const PrintHeader: React.FC<PrintHeaderProps> = ({ layout, professor, eleve, rep
       <div className="print-header-gap">   </div>
       <div className="print-header-info">
         <div className="print-header-professor">
-          <div>Pédagogue : {professor.last_name} {professor.first_name} </div>
+          <div>{t('pdf_prof')} : {professor.last_name} {professor.first_name} </div>
         </div> 
 
         <div className="print-header-eleve">
-          <div>Elève : {eleve.nom}  {eleve.prenom} , {eleve.niveau_description}</div>
+          <div>{t('pdf_stdt')} : {eleve.nom}  {eleve.prenom} , {eleve.niveau_description}</div>
         </div>
         <div>
-          <p>Rapport créé le: {formatDate(report.created_at)}</p>
+          <p>{t('pdf_rptCreatDt')}: {formatDate(report.created_at)}</p>
         </div>
       </div>
     </div>

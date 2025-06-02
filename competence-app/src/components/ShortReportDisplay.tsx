@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ShortReport, ShortReportCatalogue } from '@/types/shortreport';
+import useTranslation from '@/utils/translationHelper';
 
 interface ShortReportDisplayProps {
   reports: ShortReport[];
@@ -13,7 +14,7 @@ interface ShortReportCatalogueDisplayProps {
 }
 
 const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
-
+  const  t  = useTranslation();
   // Check for negative seuils in the report's catalogues
   const hasNegativeSeuil = (report: ShortReport): boolean => {
     return report.report_catalogues.some(catalogue =>
@@ -32,18 +33,18 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
           return (
             <div key={report.id} className="report-card mb-3">
               <h5 style={{ color: isNegativeSeuil ? 'var(--custom-alert)' : 'inherit' }}>
-                Report ID: {report.id} | élève: {report.eleve.prenom} {report.eleve.nom} {report.eleve.niveau}
+              {t('tbH_rptId')}: {report.id} | {t('pdf_stdt')}: {report.eleve.prenom} {report.eleve.nom} {report.eleve.niveau}
               </h5>
               <p>
                 {report.professeur ? (
                   <span>
-                    Professeur: {report.professeur.first_name} {report.professeur.last_name}
+                    {t('pdf_prof')}: {report.professeur.first_name} {report.professeur.last_name}
                   </span>
                 ) : (
-                  <span>Professeur non attribué</span>
+                  <span>{t('msg_noProf')}</span>
                 )}
                 <br />
-                Date création: {new Date(report.created_at).toLocaleString()} | Mise a jour: {new Date(report.updated_at).toLocaleString()}
+                {t('pdf_rptCreatDt')}: {new Date(report.created_at).toLocaleString()} | {t('pdf_UpdDt')}: {new Date(report.updated_at).toLocaleString()}
               </p>
 
               {/* Report Catalogues */}
@@ -58,7 +59,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
                       />
                     ))
                   ) : (
-                    <p>Pas de catalogue trouvé pour ce rapport</p>
+                    <p>{t('msg_noCtg')}</p>
                   )}
                 </div> 
               </div>
@@ -66,7 +67,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
           );
         })
       ) : (
-        <p>Pas de rapport disponible.</p>
+        <p>{t('msg_noRpt')}</p>
       )}
     </div>
   );
@@ -75,6 +76,7 @@ const ShortReportDisplay: React.FC<ShortReportDisplayProps> = ({ reports }) => {
 // Component to display a single report catalogue and its resultats
 const ReportCatalogueDisplay: React.FC<ShortReportCatalogueDisplayProps> = ({ reportCatalogue, isNegativeSeuil }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const  t  = useTranslation();
 
   return (
     <div className="catalogue-item mb-2">
@@ -92,12 +94,12 @@ const ReportCatalogueDisplay: React.FC<ShortReportCatalogueDisplayProps> = ({ re
             <ul>
               {reportCatalogue.resultats.map(result => (
                 <li key={result.id}>
-                  {result.groupage.label_groupage} | Score: {Math.round(result.score)}/ Max: {result.groupage.max_point} | Seuil1: {Math.round(result.seuil1_percent)}% | Seuil2: {Math.round(result.seuil2_percent)}% | Seuil3: {Math.round(result.seuil3_percent)}%
+                  {result.groupage.label_groupage} | {t('tbH_score')}: {Math.round(result.score)}/ {t('tbH_MaxScore')}: {result.groupage.max_point} | {t('tbH_Seuil1')}: {Math.round(result.seuil1_percent)}% | {t('tbH_Seuil2')}: {Math.round(result.seuil2_percent)}% | {t('tbH_Seuil3')}: {Math.round(result.seuil3_percent)}%
                 </li>
               ))}
             </ul>
           ) : (
-            <p>Pas de resultat disponible pour ce test</p>
+            <p>{t('msg_noData')}</p>
           )}
         </div>
       )}

@@ -5,6 +5,7 @@ import Image from 'next/image'; // Import Image from next/image
 import { PDFLayout } from '../types/pdf'; // Update import path based on your types
 import { useAuth } from '@/context/AuthContext'; // Use AuthContext to manage state
 import '@/app/globals.css';
+import useTranslation from '@/utils/translationHelper';
 
 interface LayoutSelectionProps {
   layouts: PDFLayout[]; // Accept an array of PDFLayout
@@ -12,8 +13,9 @@ interface LayoutSelectionProps {
 
 const LayoutSelection: React.FC<LayoutSelectionProps> = ({ layouts }) => {
   const { activeLayout, setActiveLayout } = useAuth(); // Get activeLayout and setter from AuthContext 
+  const  t  = useTranslation();
 
-  if (layouts.length === 0) return <p>No Layouts found.</p>;
+  if (layouts.length === 0) return <p>{t('msg_noLyt')}</p>;
 
   // Handle selecting a layout
   const handleLayoutSelect = (selectedLayout: PDFLayout) => {
@@ -22,16 +24,16 @@ const LayoutSelection: React.FC<LayoutSelectionProps> = ({ layouts }) => {
 
   return (
     <div className="mb-4">
-      <h2>Layout Selection</h2>
+      <h2>{t('pgH_select_conf')}</h2>
 
       <table className="table">
         <thead>
           <tr>
-            <th>Icone en-tête</th>
-            <th>Ecole</th>
-            <th>Message en-tête:</th>
-            <th>Pied de page 1</th>
-            <th>Pied de page 2</th>
+            <th>{t('pdf_lytIconeTop')}</th>
+            <th>{t('pdf_lytSchlName')}</th>
+            <th>{t('pdf_lytMsgTop')}:</th>
+            <th>{t('pdf_lytMsgFoot1')}</th>
+            <th>{t('pdf_lytMsgFoot2')}</th>
           </tr>
         </thead>
         <tbody>

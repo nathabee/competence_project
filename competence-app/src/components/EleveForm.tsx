@@ -51,7 +51,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
                 //console.log('Fetched users_role_teacher:', response.data);
                 setAvailableProfesseurs(response.data); // Assuming the API returns a list of users with the role 'teacher'
             } catch (error) {
-              console.error(t('msg.loadErr'), error);
+              console.error(t('msg_loadErr'), error);
             }
         };
 
@@ -101,7 +101,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <h1>{t('inf_welcome')}</h1> 
+      <h1>{t('pgH_formStudent')}</h1> 
       <div className="form-group">
         <label>{t('frm_name')}</label>
         <input
@@ -115,7 +115,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
       </div>
 
       <div className="form-group">
-        <label>{t('form_first')}</label>
+        <label>{t('frm_first')}</label>
         <input
           type="text"
           className="form-control"
@@ -127,7 +127,7 @@ const EleveForm: React.FC<EleveFormProps> = ({ setEleves, closeForm }) => {
       </div>
 
       <div className="form-group">
-        <label>{t('form.level')}</label>
+        <label>{t('frm_level')}</label>
         <select
           className="form-control"
           value={niveau}

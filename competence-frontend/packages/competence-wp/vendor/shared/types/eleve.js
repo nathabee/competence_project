@@ -1,0 +1,2 @@
+// types/eleve.ts
+export {};

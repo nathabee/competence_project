@@ -4,6 +4,8 @@ import { useAuth } from '@/context/AuthContext';
 import { ReportCatalogue, ResultatDetail, ScoreRulePoint } from '@/types/report';
 import { ReportCataloguePatch, ResultatPatch } from '@/types/reportpatch';
 import { getTokenFromCookies } from '@/utils/jwt';
+import useTranslation from '@/utils/translationHelper';
+
 
 const TestCarousel: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -12,6 +14,7 @@ const TestCarousel: React.FC = () => {
     const [isModified, setIsModified] = useState<boolean[]>([]);
     const [loading, setLoading] = useState(false);
     const [isError, setIsError] = useState(false);
+    const  t  = useTranslation();
 
     const defaultScoreRulePoint = useMemo(() => ({
         id: 1,
@@ -176,10 +179,10 @@ const TestCarousel: React.FC = () => {
         <div>
             {currentDetail && scoreRulePoints && (
                 <div>
-                    <h3>Type de test: {reportData[catalogueIndex]?.catalogue.description}</h3>
-                    <h4>Résultat: {reportData[catalogueIndex].resultats[resultatIndex]?.groupage.desc_groupage}</h4>
-                    <p>Test: {currentDetail.item.description}</p>
-                    <p>Score maximal: {currentDetail.item.max_score}</p>
+                    <h3>{t('tbH_typeTest')}: {reportData[catalogueIndex]?.catalogue.description}</h3>
+                    <h4>{t('tbH_resultat')}: {reportData[catalogueIndex].resultats[resultatIndex]?.groupage.desc_groupage}</h4>
+                    <p>{t('tbH_test')}: {currentDetail.item.description}</p>
+                    <p>{t('tbH_score')}  {t('tbH_MaxScore')}: {currentDetail.item.max_score}</p>
 
                     <input
                         type="number"
@@ -212,15 +215,15 @@ const TestCarousel: React.FC = () => {
  
 
                     <div className="carousel-navigation">
-                        <button onClick={prevTest} disabled={currentIndex === 0}>Précédent</button>
-                        <button onClick={nextTest} disabled={currentIndex === detailIndices.length - 1}>Suivant</button>
+                        <button onClick={prevTest} disabled={currentIndex === 0}>{t('nav_back')}</button>
+                        <button onClick={nextTest} disabled={currentIndex === detailIndices.length - 1}>{t('nav_next')}</button>
  
                     </div>
                 </div>
             )}
 
-            {loading && <p>Chargement en cours...</p>}
-            {isError && <p>Erreur lors de la sauvegarde. Veuillez réessayer.</p>}
+            {loading && <p>{t('msg_load')}</p>}
+            {isError && <p>{t('msg_err_sav')}</p>}
         </div>
     );
 };

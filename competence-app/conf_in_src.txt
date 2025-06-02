@@ -1,0 +1,20 @@
+declare module 'bootstrap/dist/js/bootstrap.bundle.min.js';
+
+  {
+    "compilerOptions": {
+      "target": "esnext",
+      "module": "commonjs",
+      "jsx": "react-jsx",  
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "baseUrl": ".",
+      "paths": {
+        "@/*": ["src/*"]  
+      },
+    },
+    "include": ["src/**/*", "__tests__/**/*","./jest.setup.ts"],
+    "exclude": ["node_modules"]
+  }
+  

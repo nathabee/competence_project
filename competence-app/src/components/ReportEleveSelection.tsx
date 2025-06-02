@@ -6,6 +6,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Report } from '@/types/report';
 import { Eleve } from '@/types/eleve';
 import FullReportDisplay from '@/components/FullReportDisplay'; // Import the new component
+import useTranslation from '@/utils/translationHelper';
 
 interface ReportEleveSelectionProps {
   eleve: Eleve;
@@ -16,6 +17,7 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
   const [loading, setLoading] = useState<boolean>(true);
   const [expanded, setExpanded] = useState<boolean>(false); // State for expanding/collapsing all reports 
   const { catalogue, setActiveReport, setActiveCatalogues, layouts, setActiveLayout } = useAuth(); // Access the functions from AuthContext
+  const  t  = useTranslation();
 
 
   useEffect(() => {
@@ -44,10 +46,10 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
 
     // Step 1: Extract catalogue IDs from the report's report_catalogues
     const catalogueIds = report.report_catalogues.map(reportCatalogue => reportCatalogue.catalogue.id);
-    console.log("catalogueIds in the report",catalogueIds)
-    console.log("catalogue from context",catalogue)
-    console.log("Type of catalogueIds:", catalogueIds.map(id => typeof id));
-    console.log("Type of catalogue IDs in context:", catalogue.map(cat => typeof cat.id));
+    //console.log("catalogueIds in the report",catalogueIds)
+    //console.log("catalogue from context",catalogue)
+    //console.log("Type of catalogueIds:", catalogueIds.map(id => typeof id));
+    //console.log("Type of catalogue IDs in context:", catalogue.map(cat => typeof cat.id));
 
     // Step 2: Find the corresponding catalogue objects in the context
     const selectedCatalogues = catalogue.filter(cat => catalogueIds.includes(cat.id));
@@ -89,12 +91,12 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
   const toggleExpand = () => setExpanded(!expanded);
 
   if (loading) {
-    return <p>Chargement des rapports...</p>;
+    return <p>{t('msg_load')}</p>;
   }
 
   return (
     <div>
-      <button onClick={toggleExpand}>{expanded ? 'Cacher' : 'Montrer'}</button>
+      <button onClick={toggleExpand}>{expanded ? t('btn_hide'): t('btn_show')}</button>
 
       {expanded && (
         <div>
@@ -102,13 +104,13 @@ const ReportEleveSelection: React.FC<ReportEleveSelectionProps> = ({ eleve }) =>
             reports.map((report) => (
               <div key={report.id} className="shadow-container">
                 <button className="button-warning" onClick={() => handleSelectReport(report)}>
-                  Sélectionner ce rapport
+                {t('btn_rptSelect')}
                 </button>
                 <FullReportDisplay report={report} />
               </div>
             ))
           ) : (
-            <p>Pas de rapport de tests trouvé pour cet élève.</p>
+            <p>{t('msg_noStdtRpt')}</p>
           )}
         </div>
       )}

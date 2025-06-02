@@ -9,6 +9,7 @@ pipeline {
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
  
         RESET_DB =  "false"
+        INIT_DB =  "true"
         POPULATE_TRANSLATION =  "true" 
     }
     stages {
@@ -112,6 +113,11 @@ pipeline {
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions  || echo 'create_groups_and_permissions skipped.'"
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher  || echo 'populate_teacher skipped.'"
 
+                    }
+                    else if (env.INIT_DB == "true") {  
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions  || echo 'create_groups_and_permissions skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher  || echo 'populate_teacher skipped.'"
                     }
                     else {       
                     // Check if there are any changes before running migrate

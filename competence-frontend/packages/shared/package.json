@@ -1,0 +1,33 @@
+{
+  "name": "@competence/shared",
+  "version": "1.0.0",
+  "main": "./wp-build/index.js",
+  "types": "./wp-build/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./wp-build/index.js",
+      "types": "./wp-build/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "npm run build:wp",
+    "build:wp": "rm -rf wp-build && tsc --project tsconfig.wp.json && npm run copy-assets",
+    "copy-assets": "cp -R src/assets wp-build/assets && cp -R src/styles wp-build/styles"
+
+  },
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "devDependencies": {
+    "@types/jwt-decode": "^2.2.1",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "react": "^18",
+    "react-dom": "^18",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "jwt-decode": "^4.0.0"
+  }
+}

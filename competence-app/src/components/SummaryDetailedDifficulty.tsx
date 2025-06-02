@@ -9,6 +9,7 @@ import { Eleve } from '@/types/eleve';
 import { User } from '@/types/user';
 import { PDFLayout } from '@/types/pdf';
 import PrintHeader from './PrintHeader';
+import useTranslation from '@/utils/translationHelper';
 
 interface SummaryDetailedDifficultyProps {
   eleve: Eleve;
@@ -49,6 +50,7 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({
   self_page,
 }) => {
   const { activeReport } = useAuth();
+  const  t  = useTranslation();
   const cachedReport = activeReport ? activeReport.report_catalogues : report.report_catalogues;
 
   // Flatten results for easier handling
@@ -100,13 +102,13 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({
       <thead>
         <tr>
           <th></th>
-          <th>Type de tests</th>
-          <th>Score</th>
-          <th>Max score</th>
-          <th>Avancement</th>
-          <th>seuil1</th>
-          <th>seuil2</th>
-          <th>seuil3</th>
+          <th>{t('tbH_typeTest')}</th>
+          <th>{t('tbH_score')}</th>
+          <th>{t('tbH_MaxScore')}</th>
+          <th>{t('pdf_ChartLabel')}</th>
+          <th>{t('tbH_Seuil1')}</th>
+          <th>{t('tbH_Seuil2')}</th>
+          <th>{t('tbH_Seuil3')}</th>
         </tr>
       </thead>
       <tbody>
@@ -170,20 +172,20 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({
         <>
           <div id={`printable-summary-${currentPage}`} className="print-container">
             <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report} />
-            <h2>Rapport détaillé des difficultés rencontrées:</h2>
+            <h2>{t('tbH_detailRptPb')}:</h2>
             {renderTable(paginatedResults[currentPage])}
           </div>
 
           {/* Pagination Controls */}
           <div className="pagination-controls">
             <button onClick={goToPreviousPage} disabled={currentPage === 0}>
-              Précédent
+            {t('nav_back')}
             </button>
             <span>
-              Page {currentPage + 1} sur {paginatedResults.length}
+            {t('nav_page')} {currentPage + 1} {t('nav_of')}sur {paginatedResults.length}
             </span>
             <button onClick={goToNextPage} disabled={currentPage === paginatedResults.length - 1}>
-              Suivant
+            {t('nav_next')} 
             </button>
           </div>
         </>
@@ -196,7 +198,7 @@ const SummaryDetailedDifficulty: React.FC<SummaryDetailedDifficultyProps> = ({
               <div className="spacing"></div> {/* This div creates space between sections */}
               <div id={`printable-summary-${pageIndex}`} className="print-container">
                 <PrintHeader layout={pdflayout} professor={professor} eleve={eleve} report={report} />
-                <h2>Rapport détaillé des difficultés rencontrées:</h2>
+                <h2>{t('tbH_detailRptPb')}:</h2>
                 {renderTable(paginatedResults[pageIndex])}
               </div>
 

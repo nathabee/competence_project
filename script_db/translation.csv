@@ -123,9 +123,59 @@ msg_noConf,en,No configuration found.
 msg_noSelectConf,en,No configuration selected.
 msg_load,en,Loading data...
 msg_refresh,en,Refresh data...
-pgH_admin,en,Console administration
+pgH_rptCarousel,en,Test carousel
+tbH_profid,en,Teacher Ref
+tbH_typeTest,en,Test type
+tbH_ctgTest,en,Test category
+tbH_test,en,Test
+tbH_score,en,Score
+tbH_MaxScore,en,Max score
+tbH_Label,en,Label
+tbH_Desc,en,Description
+pdf_prof,en,Teacher
+pdf_lytChosen,en,Chosen layout
+pdf_lytIconeTop,en,Header icon
+pdf_lytSchlName,en,School name
+pdf_lytMsgTop,en,Header message
+pdf_lytMsgFoot1,en,Footer message 1
+pdf_lytMsgFoot2,en,Footer message 2
+msg_noLyt,en,No print configuration found.
+pgH_select_conf,en,Select a configuration for printing
+btn_print,en,Print PDF
+pdf_stdt,en,Student
+pdf_rptCreatDt,en,Report created on
+pdf_ChartLabel,en,Progress
+msg_loadErrIcon,en,Image loading error
+pgH_admin,en,Administration console
+msg_noStdtRpt,en,No test report found for this student.
+msg_noRpt,en,No report available.
+pdf_UpdDt,en,Modification date
+tbH_Seuil1,en,Threshold 1
+tbH_Seuil2,en,Threshold 2
+tbH_Seuil3,en,Threshold 3
+nav_back,en,Previous
+nav_next,en,Next
+nav_page,en,Page
+nav_of,en,of
+tbH_detailRptPb,en,Detailed report of encountered difficulties
+tbH_scoreTotal,en,Total score
+tbH_icon,en,Icon
+tbH_compet,en,Acquired skill
+tbH_CatalogTest,en,Test catalog
+msg_noUserData,en,No user information available.
+tbH_resultat,en,Result
+msg_err_sav,en,Error during save. Please try again.
+tab_id,en,Identifier
+tab_lang,en,Language
+tab_roles,en,Roles
+btn_rptSelect,en,Select this report
+btn_show,en,Show
+btn_hide,en,Hide
+pgH_formStudent,en,Fill out the form to add a student:
+pgH_summaryScor,en,Score Summary
+pgH_summaryDifficult,en,Difficulty Summary
+pgH_summaryTest,en,Summary of ongoing tests
 lang,en,en
-pgH_rptCarousel,en,Carousel Report
 language_list,en,"{""en"": ""English"", ""fr"": ""Français"", ""de"": ""Deutsch"", ""br"": ""Brezhoneg""}"
 inf_welcome,fr,Bienvenue dans notre application
 news,fr,Nouvelles : Sélection multilingue anglais et français ajoutée. Actuellement uniquement sur la page élève.
@@ -145,7 +195,7 @@ tbH_level,fr,Niveau
 tbH_birthDt,fr,Date de naissance
 tbH_prof,fr,Professeurs
 msg_req,fr,Ce champ est requis
-msg_noInfo,fr,Aucune information sur l'élève disponible.
+msg_noInfo,fr,Aucune information disponible.
 msg_chosenStud,fr,Étudiant choisi
 msg_noProf,fr,Aucun professeur attribué
 msg_loadStuds,fr,Chargement des données des élèves...
@@ -251,9 +301,60 @@ msg_noConf,fr,pas de configuration trouvée.
 msg_noSelectConf,fr,pas de configuration sélectionnée.
 msg_load,fr,Chargement des données...
 msg_refresh,fr,Rafraîchir les données...
-pgH_admin,fr,Console administration
-lang,fr,fr
 pgH_rptCarousel,fr,Test carousel
+tbH_profid,fr,Professeur Ref
+tbH_typeTest,fr,Type de tests
+tbH_ctgTest,fr,Categorie de tests
+tbH_test,fr,Test
+tbH_score,fr,Score
+tbH_MaxScore,fr,Maximum
+tbH_Label,fr,Label
+tbH_Desc,fr,Description
+pdf_prof,fr,Pédagogue
+pdf_lytChosen,fr,Mise en page choisie
+pdf_lytIconeTop,fr,Icone en-tête
+pdf_lytSchlName,fr,Nom de l'école
+pdf_lytMsgTop,fr,Message en-tête
+pdf_lytMsgFoot1,fr,Pied de page 1
+pdf_lytMsgFoot2,fr,Pied de page 2
+msg_noLyt,fr,pas de configuration d'impression trouvée.
+pgH_select_conf,fr,Sélectionner une configuration pour l'impression
+btn_print,fr,Imprimer PDF
+pdf_stdt,fr,Elève
+pdf_rptCreatDt,fr,Date création
+pdf_ChartLabel,fr,Avancement
+msg_loadErrIcon,fr,Erreur chargement image
+msg_noData,fr,Pas de données disponible.
+pgH_admin,fr,Console administration
+msg_noStdtRpt,fr,Pas de rapport de tests trouvé pour cet élève.
+msg_noRpt,fr,Pas de rapport disponible.
+pdf_UpdDt,fr,Date de modification
+tbH_Seuil1,fr,Seuil 1
+tbH_Seuil2,fr,Seuil 2
+tbH_Seuil3,fr,Seuil 3
+nav_back,fr,Précédent
+nav_next,fr,Suivant
+nav_page,fr,Page
+nav_of,fr,sur
+tbH_detailRptPb,fr,Rapport détaillé des difficultés rencontrées
+tbH_scoreTotal,fr,Total score
+tbH_icon,fr,Icône
+tbH_compet,fr,Compétence acquise
+tbH_CatalogTest,fr,Catalogue de tests
+msg_noUserData,fr,Pas d'information utilisateur disponible.
+tbH_resultat,fr,Résultat
+msg_err_sav,fr,Erreur lors de la sauvegarde. Veuillez réessayer.
+tab_id,fr,Identifiant
+tab_lang,fr,langue
+tab_roles,fr,Roles
+btn_rptSelect,fr,Sélectionner ce rapport
+btn_show,fr,Montrer
+btn_hide,fr,Cacher
+pgH_formStudent,fr,Remplir le formulaire pour ajouter un élève:
+pgH_summaryScor,fr,Résumé des scores
+pgH_summaryDifficult,fr,Résumé des difficultés
+pgH_summaryTest,fr,Résumé des tests en cours
+lang,fr,fr
 language_list,fr,"{""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English"", ""br"": ""Brezhoneg""}"
 inf_welcome,br,Degemer mat er gontadenn-mañ
 news,br,Keleier: Ouzhpennañ brezhoneg hag al lizherennoù saoznek. Kinniget evit ar bajenn skolier ivez.
@@ -375,8 +476,58 @@ msg_noConf,br,Configuradur ebet kavet.
 msg_noSelectConf,br,Configuradur dibabet ebet.
 msg_load,br,O kargañ an titouroù...
 msg_refresh,br,Adfreskaat an titouroù...
-pgH_admin,br,Konsol administret
-pgH_rptCarousel,br,Karusel Raport
+pgH_rptCarousel,br,Karousel test
+tbH_profid,br,Ref Skolaer
+tbH_typeTest,br,Seurt test
+tbH_ctgTest,br,Rummad testoù
+tbH_test,br,Test
+tbH_score,br,Skor
+tbH_MaxScore,br,Skor uhelañ
+tbH_Label,br,Label
+tbH_Desc,br,Deskrivadur
+pdf_prof,br,Skolaer
+pdf_lytChosen,br,Emdroadur dibabet
+pdf_lytIconeTop,br,Arlun talbenn
+pdf_lytSchlName,br,Anv skol
+pdf_lytMsgTop,br,Kemennadenn talbenn
+pdf_lytMsgFoot1,br,Kemennadenn troad 1
+pdf_lytMsgFoot2,br,Kemennadenn troad 2
+msg_noLyt,br,Konfigurañ moullañ ebet kavet.
+pgH_select_conf,br,Diuzañ ur c'honfigurañ evit moullañ
+btn_print,br,Moullañ PDF
+pdf_stdt,br,Skoliad
+pdf_rptCreatDt,br,Rapor krouet d'ar
+pdf_ChartLabel,br,Kenderc'had
+msg_loadErrIcon,br,Fazi kargañ skeudenn
+pgH_admin,br,Konsol renerezh
+msg_noStdtRpt,br,Raport test ebet kavet evit ar skolajiad-mañ.
+msg_noRpt,br,Raport ebet a zo.
+pdf_UpdDt,br,Deiziad kemmañ
+tbH_Seuil1,br,Treuzwel 1
+tbH_Seuil2,br,Treuzwel 2
+tbH_Seuil3,br,Treuzwel 3
+nav_back,br,Kent
+nav_next,br,War-lerc'h
+nav_page,br,Pajenn
+nav_of,br,eus
+tbH_detailRptPb,br,Raport munud war ar c’hudennoù darempredet
+tbH_scoreTotal,br,Skor hollek
+tbH_icon,br,Arlun
+tbH_compet,br,Arouezet skiant-prenet
+tbH_CatalogTest,br,Roll testennoù
+msg_noUserData,br,Roadennoù implijer ebet.
+tbH_resultat,br,Disoc'h
+msg_err_sav,br,Fazi en ur enrollañ. Klaskit en-dro mar plij.
+tab_id,br,Anaouder
+tab_lang,br,Yezh
+tab_roles,br,Perzhioù
+btn_rptSelect,br,Diuzañ ar raport-mañ
+btn_show,br,Diskouez
+btn_hide,br,Kuzhat
+pgH_formStudent,br,Leuniañ ar furmskrid evit ouzhpennañ ur skolaji:
+pgH_summaryScor,br,Diverrañ ar poentoù
+pgH_summaryDifficult,br,Diverrañ an diaesterioù
+pgH_summaryTest,br,Diverrañ an testoù war ober
 lang,br,br
 language_list,br,"{""br"": ""Brezhoneg"",""fr"": ""Français"", ""de"": ""Deutsch"", ""en"": ""English""}"
 inf_welcome,de,Willkommen in unserer Anwendung
@@ -503,7 +654,57 @@ msg_noConf,de,Keine Konfiguration gefunden.
 msg_noSelectConf,de,Keine Konfiguration ausgewählt.
 msg_load,de,Daten werden geladen...
 msg_refresh,de,Daten aktualisieren...
-pgH_admin,de,Konsolenverwaltung
+pgH_rptCarousel,de,Testkarussell
+tbH_profid,de,Lehrer Ref
+tbH_typeTest,de,Testtyp
+tbH_ctgTest,de,Testkategorie
+tbH_test,de,Test
+tbH_score,de,Ergebnis
+tbH_MaxScore,de,Maximalergebnis
+tbH_Label,de,Etikett
+tbH_Desc,de,Beschreibung
+pdf_prof,de,Lehrer
+pdf_lytChosen,de,Gewähltes Layout
+pdf_lytIconeTop,de,Kopfzeilen-Symbol
+pdf_lytSchlName,de,Schulname
+pdf_lytMsgTop,de,Kopfzeilen-Nachricht
+pdf_lytMsgFoot1,de,Fußzeile Nachricht 1
+pdf_lytMsgFoot2,de,Fußzeile Nachricht 2
+msg_noLyt,de,Keine Druckkonfiguration gefunden.
+pgH_select_conf,de,Druckkonfiguration wählen
+btn_print,de,PDF drucken
+pdf_stdt,de,Schüler
+pdf_rptCreatDt,de,Bericht erstellt am
+pdf_ChartLabel,de,Fortschritt
+msg_loadErrIcon,de,Bildladefehler
+pgH_admin,de,Verwaltungskonsole
+msg_noStdtRpt,de,Kein Testbericht für diesen Schüler gefunden.
+msg_noRpt,de,Kein Bericht verfügbar.
+pdf_UpdDt,de,Änderungsdatum
+tbH_Seuil1,de,Schwelle 1
+tbH_Seuil2,de,Schwelle 2
+tbH_Seuil3,de,Schwelle 3
+nav_back,de,Zurück
+nav_next,de,Weiter
+nav_page,de,Seite
+nav_of,de,von
+tbH_detailRptPb,de,Detaillierter Bericht über aufgetretene Schwierigkeiten
+tbH_scoreTotal,de,Gesamtergebnis
+tbH_icon,de,Symbol
+tbH_compet,de,Erworbene Kompetenz
+tbH_CatalogTest,de,Testkatalog
+msg_noUserData,de,Keine Benutzerinformationen verfügbar.
+tbH_resultat,de,Ergebnis
+msg_err_sav,de,Fehler beim Speichern. Bitte erneut versuchen.
+tab_id,de,Kennung
+tab_lang,de,Sprache
+tab_roles,de,Rollen
+btn_rptSelect,de,Diesen Bericht auswählen
+btn_show,de,Anzeigen
+btn_hide,de,Verbergen
+pgH_formStudent,de,"Formular ausfüllen, um einen Schüler hinzuzufügen:"
+pgH_summaryScor,de,Ergebnisübersicht
+pgH_summaryDifficult,de,Übersicht der Schwierigkeiten
+pgH_summaryTest,de,Zusammenfassung der laufenden Tests
 lang,de,de
-pgH_rptCarousel,de,Karusel Report
 language_list,de,"{""de"": ""Deutsch"", ""fr"": ""Français"",  ""en"": ""English"", ""br"": ""Brezhoneg""}"

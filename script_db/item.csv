@@ -156,3 +156,32 @@ id,groupagedata,temps,description,observation,scorerule,max_score,itempos,link
 156,75,évaluations repères GS : LA SUITE NUMÉRIQUE,LA SUITE NUMÉRIQUE,,8,15,6,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
 157,76,évaluations repères GS : LA RÉSOLUTION DE PROBLEMES,LA RÉSOLUTION DE PROBLEMES,,8,6,7,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
 158,77,évaluations repères GS : PHONOLOGIE,PHONOLOGIE,,8,31,8,https://ec72.fr/wp-content/uploads/sites/42/2021/09/Evaldiag-GS-livret-ma%C3%AEtre-DEC72-Juin21.docx.pdf
+
+
+161,78,benchmark preschool: COLORS,COLORS,,8,22,1,
+162,79,benchmark preschool: RECOGNITION OF FIRST NAME,RECOGNITION OF FIRST NAME,,8,5,2,
+163,80,benchmark preschool: SPATIAL AND TOPOLOGICAL ORIENTATION,SPATIAL AND TOPOLOGICAL ORIENTATION,,8,32,3,
+164,81,benchmark preschool: CATEGORIZATION,CATEGORIZATION,,8,6,4,
+165,82,benchmark preschool: STORY MEMORIZATION,STORY MEMORIZATION,,8,10,5,
+166,83,benchmark preschool: NUMERIC SEQUENCE,NUMERIC SEQUENCE,,8,15,6,
+167,84,benchmark preschool: PROBLEM SOLVING,PROBLEM SOLVING,,8,6,7,
+168,85,benchmark preschool: PHONOLOGY,PHONOLOGY,,8,31,8,
+
+169,86,bevenn skol-vamm : LIVIÑ,LIVIÑ,,8,22,1,
+170,87,bevenn skol-vamm : ANV AR PRENAME,ANV AR PRENAME,,8,5,2,
+171,88,bevenn skol-vamm : RANNIEZH SPATIEL HA TOPOLOJEK,RANNIEZH SPATIEL HA TOPOLOJEK,,8,32,3,
+172,89,bevenn skol-vamm : KATEGORIZAÑ,KATEGORIZAÑ,,8,6,4,
+173,90,bevenn skol-vamm : MIRAÑ ISTORIOÙ,MIRAÑ ISTORIOÙ,,8,10,5,
+174,91,bevenn skol-vamm : HEULIAD NIVEREL,HEULIAD NIVEREL,,8,15,6,
+175,92,bevenn skol-vamm : SOLIAD PROBLEM, SOLIAD PROBLEM,,8,6,7,
+176,93,bevenn skol-vamm : FONOLOJIEZH,FONOLOJIEZH,,8,31,8,
+
+177,94,Referenz Kindergarten: FARBEN,FARBEN,,8,22,1,
+178,95,Referenz Kindergarten: ERKENNUNG DES VORNAMENS,ERKENNUNG DES VORNAMENS,,8,5,2,
+179,96,Referenz Kindergarten: RÄUMLICHE UND TOPOLOGISCHE ORIENTIERUNG,RÄUMLICHE UND TOPOLOGISCHE ORIENTIERUNG,,8,32,3,
+180,97,Referenz Kindergarten: KATEGORISIERUNG,KATEGORISIERUNG,,8,6,4,
+181,98,Referenz Kindergarten: GESCHICHTENERINNERUNG,GESCHICHTENERINNERUNG,,8,10,5,
+182,99,Referenz Kindergarten: ZAHLENFOLGE,ZAHLENFOLGE,,8,15,6,
+183,100,Referenz Kindergarten: PROBLEMLÖSUNG,PROBLEMLÖSUNG,,8,6,7,
+184,101,Referenz Kindergarten: PHONOLOGIE,PHONOLOGIE,,8,31,8,
+

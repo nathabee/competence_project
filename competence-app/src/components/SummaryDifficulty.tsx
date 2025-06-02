@@ -6,6 +6,7 @@ import { ReportCatalogue, Resultat } from '@/types/report'; // Ensure proper imp
 import { useAuth } from '@/context/AuthContext'; // Correctly using the context hook
 import '@/app/globals.css';
 import logo from  "@/assets/logo.png";
+import useTranslation from '@/utils/translationHelper';
 
 // Define the props type with an array of ReportCatalogue
 interface SummaryDifficultyProps {
@@ -15,6 +16,7 @@ interface SummaryDifficultyProps {
 const SummaryDifficulty: React.FC<SummaryDifficultyProps> = ({ report_catalogues }) => {
   // Use AuthContext to get the active report directly
   const { activeReport } = useAuth();
+  const  t  = useTranslation();
 
   // Use activeReport if available, otherwise fallback to passed props
   const cachedReport = activeReport ? activeReport.report_catalogues : report_catalogues;
@@ -24,15 +26,15 @@ const SummaryDifficulty: React.FC<SummaryDifficultyProps> = ({ report_catalogues
       <table className="table table-bordered">
         <thead>
           <tr>
-            <th>Catalogue</th>
-            <th>Groupage</th>
-            <th>Total score</th>
-            <th>Max score</th>
-            <th>Compétence acquise</th> 
-            <th>seuil1_percent</th>
-            <th>seuil2_percent</th>
-            <th>seuil3_percent</th>
-            <th>icône</th>
+            <th>{t('tbH_CatalogTest')}</th>
+            <th>{t('tbH_ctgTest')}</th>
+            <th>{t('tbH_scoreTotal')}</th>
+            <th>{t('tbH_MaxScore')}</th>
+            <th>{t('tbH_compet')}</th> 
+            <th>{t('tbH_Seuil1')}</th>
+            <th>{t('tbH_Seuil2')}</th>
+            <th>{t('tbH_Seuil3')}</th>
+            <th>{t('tbH_icon')}</th>
           </tr>
         </thead>
         <tbody>
@@ -76,7 +78,7 @@ const SummaryDifficulty: React.FC<SummaryDifficultyProps> = ({ report_catalogues
             ))
           ) : (
             <tr>
-              <td colSpan={10}>No data available</td>
+              <td colSpan={10}>{t('msg_noData')}</td>
             </tr>
           )}
         </tbody>

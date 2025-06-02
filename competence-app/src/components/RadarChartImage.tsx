@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import useTranslation from '@/utils/translationHelper';
 
 Chart.register(RadialLinearScale, RadarController, LineElement, PointElement, Filler, Tooltip, Legend);
 
@@ -25,6 +26,7 @@ interface RadarChartImageProps {
 const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstanceRef = useRef<Chart | null>(null);
+  const  t  = useTranslation();
   
   // Create an array of empty labels
   const labelEmpty = new Array(chartData.labels.length).fill("");  
@@ -68,7 +70,7 @@ const RadarChartImage: React.FC<RadarChartImageProps> = ({ chartData }) => {
         data: {
           labels: labelEmpty, // Use the empty labels array instead of chartData.labels
           datasets: [{
-            label: 'Progress',
+            label:  t('pdf_ChartLabel'),
             data: chartData.data,
             backgroundColor: 'rgba(54, 162, 235, 0.2)', 
             borderColor: 'rgba(54, 162, 235, 1)',

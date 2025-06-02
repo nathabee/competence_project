@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {  
+      "clean": "rm -rf node_modules package-lock.json packages/*/node_modules packages/*/package-lock.json packages/shared/wp-build",
+      "build": "npm run clean && npm install && npm run build:all",
+      "build:all": "npm run build -w @competence/shared && npm run build -w react-app && npm run build -w competence-wp"
+
+
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "typescript": "^5.3"
+  },
+  "packageManager": "npm@10.9.2" 
+}
