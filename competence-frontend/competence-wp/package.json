@@ -4,7 +4,7 @@
   "scripts": {
     "clean": "rm -rf ./build ./dist",
     "buildpack": "wp-scripts build",
-    "buildmanifest": "wp-scripts build-blocks-manifest --input=build --output=build/blocks-manifest.php", 
+    "buildmanifest": "wp-scripts build-blocks-manifest --input=build --output=build/blocks-manifest.php",
     "zip": "rm -rf ./dist && ./build_zip.sh",
     "build": "npm run clean && npm run buildpack   && npm run buildmanifest && npm run zip",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -23,6 +23,7 @@
     "@wordpress/blocks": "^14.14.0",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
+    "react-bootstrap": "^2.10.10",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.6.2"
   }

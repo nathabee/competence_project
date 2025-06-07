@@ -1,7 +1,8 @@
 // src/pages/CompetenceDashboard.tsx
 
-// for wordpress only
+import React from 'react';
+import ShortReportHistory from '@components/ShortReportHistory';
 
+const CompetenceDashboard = () => <ShortReportHistory />;
 
-const CompetenceDashboard = () => <h2>🏠 Welcome to Competence Dashboard</h2>;
 export default CompetenceDashboard;
