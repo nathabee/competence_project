@@ -1,13 +1,14 @@
-# Django Competence Project
+# Competence Project
 
-![Work In Progress](https://img.shields.io/badge/status-work%20in%20progress-yellow)
-
+ 
 ## Overview
 
 This project is a Django-based system designed to manage and evaluate student competencies through various assessments. It stores student data, tracks evaluation results, and analyzes progress over time. It integrates with a REST API, enabling access by an Android application.
 
+Frontend : React App or Wordpress plugin
 
-## Project Demo
+
+## Project Demo (demo of react-app)
 
 A demo version is available on [**GitHub Pages**](https://nathabee.github.io/competence_project/).  
 <a href="https://nathabee.github.io/competence_project/" target="_blank"></a>
@@ -26,6 +27,7 @@ This demo showcases the frontend, compiled as static files and deployed to GitHu
 
 - `competence_project/`: Django backend for competence evaluation.
 - `competence/`: Django app containing models, views, serializers, and migrations.
+- `competence-frontend` : wordpress plugin (later with shared code and will replace the react-app from competence_app)
 - `competence_app/`: Frontend built with Next.js and React.
 - `db_scripts/`: SQL scripts for initializing and seeding the database.
 - `static/`: Static files (CSS, JavaScript, images).
@@ -35,7 +37,7 @@ This demo showcases the frontend, compiled as static files and deployed to GitHu
 ## Branches
 
 - `main`: Contains all project files (backend and frontend).
-- `github-pages`: Contains the frontend export for GitHub Pages.
+- `github-pages`: Contains a fromtenmd static version with dummy data for GitHub Pages.
 
 
 
@@ -47,12 +49,8 @@ This demo showcases the frontend, compiled as static files and deployed to GitHu
 - Automated testing with Jest.
 - CI/CD pipeline implemented.
 - Demo project available on GitHub Pages.
-
-## 📈 Future Plans
-
-- Complete API development for mobile integration.
-- Quality and performance checks.
-- More extensive API testing and documentation.
+- plugin in work in progress
+ 
 
 ## 🚀 Getting Started
 
@@ -241,6 +239,59 @@ dotenv -e .env.local jest
 ```
 
 
+
+
+Here's a new chapter you can **append** to your `README.md`, covering the `competence-frontend` project and the WordPress plugin integration:
+
+---
+
+## 🌐 WordPress Frontend Plugin (`competence-frontend`)
+
+This repository also includes a React-based WordPress plugin that brings the frontend into a traditional CMS environment.
+
+### 🔌 What Is It?
+
+The `competence-frontend` project contains a **WordPress plugin** (`competence-wp`) that embeds a **React single-page application (SPA)** directly into WordPress pages. This allows the frontend to be served **within a WordPress site**, while still communicating with the **Django backend via a REST API**.
+
+> This approach bridges modern SPA usability with the powerful content management features of WordPress.
+
+### 📁 Folder Structure
+
+```
+competence-frontend/
+│
+├── competence-wp/           # WordPress plugin source
+│   ├── src/                 # React code for the plugin
+│   ├── dist/, build/        # Output folders
+│   ├── package.json         # Plugin dependencies and scripts
+│   └── competence-wp.php    # WordPress plugin bootstrap
+│
+├── react-app/               # Standalone frontend app (Next.js)
+├── shared/                  # Shared assets/utilities
+```
+
+### 🚀 Features of the Plugin
+
+* 📦 **Bundled as a WordPress plugin**, installable and activatable in any WP instance
+* 🧩 Registers Gutenberg blocks to inject the React app
+* 🔧 Provides a WP Admin Settings screen to configure the Django API URL
+* 🌐 Automatically creates the pages (`/competence_home`, `/competence_dashboard`, etc.)
+* 🗂 Embeds an SPA (React + TypeScript) inside Gutenberg block content
+
+### 🖥 How It Works
+
+* Uses `react-dom` to mount the app on blocks like `<!-- wp:competence/competence-app /-->`
+* Handles routing inside the SPA via `react-router-dom`
+* Dynamically pulls the Django backend URL from `wp_localize_script()`
+
+### 🧪 Demo & Development
+
+* Demo plugin included in the static GitHub Pages site for frontend showcase.
+* Can be tested inside any WordPress instance by copying the `competence-wp/` folder to your `wp-content/plugins/`.
+
+---
+
+Let me know if you’d like it placed earlier in the README or broken into two chapters (`competence-frontend` and `competence-wp`).
 
 
 ## 🛠️ Jenkins Pipeline Stages

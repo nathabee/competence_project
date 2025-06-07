@@ -50,6 +50,43 @@ gh-pages/staticfiles/
 .DS_Store
 Thumbs.db
 
+# Node.js
+node_modules/
+build/
+dist/
+
+# Output zips
+*.zip
+
+# Logs
+*.log
+nohup.out
+
+# IDE files
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Compiled files
+*.tsbuildinfo
+
+# React
+.env*
+.next/
+out/
+
+# WordPress plugin builds
+competence-frontend/competence-wp/build/
+competence-frontend/competence-wp/dist/
+competence-frontend/competence-wp/node_modules/
+
+# Next.js
+competence-frontend/react-app/.next/
+competence-frontend/react-app/node_modules/
+
+
 #my tools
 setme
 

@@ -1,0 +1,9 @@
+competence-wp version actuelle
+
+competence-wp-20250604a 
+competence-wp-20250604b 
+competence-wp-20250605a  KO pas registration essaie avec routine
+competence-wp-20250605b copy from 20250604b webpack registration call component ok 
+duplication pour ajouter routing
+
+
