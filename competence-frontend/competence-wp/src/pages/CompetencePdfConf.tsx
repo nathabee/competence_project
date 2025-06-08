@@ -1,8 +1,8 @@
 // src/pages/CompetenceStudentMgt.tsx
 
 import React from 'react';
-import PdfConf from '@components/PdfConf';
+import Configuration from '@components/Configuration';
 
-const CompetencePdfConf = () => < PdfConf />;
+const CompetencePdfConf = () => < Configuration />;
 
 export default CompetencePdfConf;
