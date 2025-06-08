@@ -95,6 +95,14 @@ The React app and the WordPress plugin both rely on shared modules:
 - [ ] Build React standalone app using shared code
 - [ ] Use fake data to compile a static standalone app for GitHub Pages
 
+| Strategy                                               | Why it Helps                             |
+| ------------------------------------------------------ | ---------------------------------------- |
+| ✅ **Write a clean README** (you're already doing this) | Shows communication skills               |
+| 🎥 **Record a 2-min demo video**                       | Recruiters *love* this – instant wow     |
+| ✍️ **Blog post / LinkedIn post**                       | Explains your thinking, shows confidence |
+| 📦 **Mock mode** for portfolio/demo                    | Lets people test without needing Django  |
+| 🧪 Mention tests or CI setup                           | Signals “team-ready” professionalism     |
+
 
 ### ✅ **1. React app → WordPress plugin**
  

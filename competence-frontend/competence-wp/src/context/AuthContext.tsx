@@ -1,5 +1,5 @@
 'use client';
-// src/context/AithContext.tsx
+// src/context/AuthContext.tsx
 
 // shared component
 // use client is needed by nextjs (useeeffect...) but will be ignored by wordpress

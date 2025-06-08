@@ -27,13 +27,43 @@ function competence_wp_create_pages() {
             'block' => '<!-- wp:competence/competence-app /-->',
         ],
         [
+            'title' => 'Home',
+            'slug'  => 'competence_home',
+            'block' => '<!-- wp:competence/competence-app /-->',
+        ],
+        [
             'title' => 'Dashboard',
             'slug'  => 'competence_dashboard',
             'block' => '<!-- wp:competence/competence-app /-->',
         ],
         [
-            'title' => 'Home',
-            'slug'  => 'competence_home',
+            'title' => 'Catalogue Management',
+            'slug'  => 'competence_catalogue_mgt',
+            'block' => '<!-- wp:competence/competence-app /-->',
+        ],
+        [
+            'title' => 'Report Management',
+            'slug'  => 'competence_report_mgt',
+            'block' => '<!-- wp:competence/competence-app /-->',
+        ],
+        [
+            'title' => 'Student Management',
+            'slug'  => 'competence_student_mgt',
+            'block' => '<!-- wp:competence/competence-app /-->',
+        ],
+        [
+            'title' => 'Overview Ongoing Test',
+            'slug'  => 'competence_overview_test',
+            'block' => '<!-- wp:competence/competence-app /-->',
+        ],
+        [
+            'title' => 'PDF Setup',
+            'slug'  => 'competence_pdf_conf',
+            'block' => '<!-- wp:competence/competence-app /-->',
+        ],
+        [
+            'title' => 'PDF View',
+            'slug'  => 'competence_pdf_view',
             'block' => '<!-- wp:competence/competence-app /-->',
         ],
         [
