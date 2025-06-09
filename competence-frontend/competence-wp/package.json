@@ -14,6 +14,7 @@
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@types/chart.js": "^2.9.41",
     "@types/wordpress__blocks": "^12.5.17",
     "@wordpress/scripts": "^30.18.0",
     "path-browserify": "^1.0.1",
@@ -21,6 +22,9 @@
   },
   "dependencies": {
     "@wordpress/blocks": "^14.14.0",
+    "chart.js": "^4.4.9",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "jwt-decode": "^4.0.0",
     "react": "^18.3.1",
     "react-bootstrap": "^2.10.10",
