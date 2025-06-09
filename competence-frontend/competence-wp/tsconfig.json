@@ -19,7 +19,8 @@
       "@app/*": ["app/*"],
       "@pages/*": ["pages/*"],
       "@utils/*": ["utils/*"],
-      "@assets/*": ["assets/*"]
+      "@assets/*": ["assets/*"],
+      "@styles/*": ["styles/*"]
 
 
     }
