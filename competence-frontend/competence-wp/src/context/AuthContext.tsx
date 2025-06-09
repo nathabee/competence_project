@@ -5,31 +5,31 @@
 // use client is needed by nextjs (useeeffect...) but will be ignored by wordpress
 
 
-import React, { createContext, useContext, useState,useEffect } from 'react'; 
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
- 
-import  {Catalogue, Report, ScoreRulePoint, ReportCatalogue, Resultat } from '@mytypes/report';
-import  { PDFLayout } from '@mytypes/pdf';
-import  { Eleve, Niveau } from '@mytypes/eleve';
-import  { User } from '@mytypes/user';
+
+import { Catalogue, Report, ScoreRulePoint, ReportCatalogue, Resultat } from '@mytypes/report';
+import { PDFLayout } from '@mytypes/pdf';
+import { Eleve, Niveau } from '@mytypes/eleve';
+import { User } from '@mytypes/user';
 import { fetchBase64Image } from '@utils/helper';
 
-import { getToken, isTokenExpired } from '@utils/jwt'; 
+import { getToken, isTokenExpired } from '@utils/jwt';
 
 
- 
-
-  
-  
 
 
- 
+
+
+
+
+
 
 interface AuthContextType {
 
   token: string | null;
   setToken: (token: string | null) => void;
-  
+
   user: User | null;
   userRoles: string[];
   isLoggedIn: boolean;
@@ -38,7 +38,7 @@ interface AuthContextType {
   logout: () => void;
 
 
- 
+
 
   activeCatalogues: Catalogue[];
   setActiveCatalogues: (catalogues: Catalogue[]) => void;
@@ -83,14 +83,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [activeReport, internalSetActiveReport] = useState<Report | null>(null);
   const [activeLayout, internalSetActiveLayout] = useState<PDFLayout | null>(null);
   const [layouts, internalSetLayouts] = useState<PDFLayout[]>([]);
-  const [niveaux, internalSetNiveaux] = useState<Niveau[] | null>(null); 
+  const [niveaux, internalSetNiveaux] = useState<Niveau[] | null>(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-    const savedToken = localStorage.getItem('authToken');
-    if (savedToken) {
-      internalSetToken(savedToken);
-      internalSetIsLoggedIn(true);
+      const savedToken = localStorage.getItem('authToken');
+      if (savedToken) {
+        console.log('Auth Context reloaded from localstorage');
+
+        internalSetToken(savedToken);
         internalSetIsLoggedIn(true);
         const roles = JSON.parse(localStorage.getItem('userRoles') || '[]');
         internalSetUserRoles(roles);
@@ -104,15 +105,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const savedReport = JSON.parse(localStorage.getItem('activeReport') || 'null');
         const savedLayout = JSON.parse(localStorage.getItem('activeLayout') || 'null');
         const savedLayouts = JSON.parse(localStorage.getItem('layouts') || '[]');
+        const savedCatalogueList = JSON.parse(localStorage.getItem('catalogue') || '[]');
 
         internalSetActiveCatalogues(savedCatalogues);
         internalSetActiveEleve(savedEleve);
         internalSetActiveReport(savedReport);
         internalSetActiveLayout(savedLayout);
         internalSetLayouts(savedLayouts);
- 
- 
- 
+        internalSetCatalogue(savedCatalogueList);
+
+
+
 
       } else {
         logout();
@@ -154,19 +157,33 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [activeReport]); // Run effect when activeReport changes
 
+  // check every 10s if token expired
+  useEffect(() => {
+    const check = () => {
+      const newToken = getToken();
+      setToken(newToken); // this will reset token to null if expired
+      if (!newToken) {
+        internalSetIsLoggedIn(false);
+      }
+    };
 
+    check();
+    const interval = setInterval(check, 10000); // check every 10s
 
-const login = (token: string, userInfo: User) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('authToken', token);
-    internalSetToken(token);
-    internalSetUser(userInfo);
-    internalSetUserRoles(userInfo.roles);
-    internalSetIsLoggedIn(true); 
-    localStorage.setItem('userRoles', JSON.stringify(userInfo.roles));
-    localStorage.setItem('userInfo', JSON.stringify(userInfo));
-  }
-};
+    return () => clearInterval(interval);
+  }, []);
+
+  const login = (token: string, userInfo: User) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('authToken', token);
+      internalSetToken(token);
+      internalSetUser(userInfo);
+      internalSetUserRoles(userInfo.roles);
+      internalSetIsLoggedIn(true);
+      localStorage.setItem('userRoles', JSON.stringify(userInfo.roles));
+      localStorage.setItem('userInfo', JSON.stringify(userInfo));
+    }
+  };
 
   const logout = () => {
     if (typeof window !== 'undefined') {
@@ -185,7 +202,6 @@ const login = (token: string, userInfo: User) => {
       localStorage.removeItem('niveaux');
       localStorage.removeItem('layouts');
       localStorage.removeItem('scoreRulePoints');
-      internalSetIsLoggedIn(false);
       internalSetUser(null);
       internalSetUserRoles([]);
       internalSetActiveCatalogues([]);
@@ -208,15 +224,15 @@ const login = (token: string, userInfo: User) => {
 
 
   const setToken = (newToken: string | null) => {
-  internalSetToken(newToken);
-  if (typeof window !== 'undefined') {
-    if (newToken) {
-      localStorage.setItem('authToken', newToken);
-    } else {
-      localStorage.removeItem('authToken');
+    internalSetToken(newToken);
+    if (typeof window !== 'undefined') {
+      if (newToken) {
+        localStorage.setItem('authToken', newToken);
+      } else {
+        localStorage.removeItem('authToken');
+      }
     }
-  }
-};
+  };
 
   const setCatalogue = (newCatalogue: Catalogue[]) => {
     internalSetCatalogue(newCatalogue);
@@ -237,8 +253,8 @@ const login = (token: string, userInfo: User) => {
   };
 
 
- 
-  
+
+
 
 
   const setActiveLayout = (layout: PDFLayout | null) => {

@@ -7,6 +7,7 @@ import { useStudents } from '@hooks/useStudents';
 import StudentSelection from '@components/StudentSelection';
 import StudentForm from '@components/StudentForm';
 import StudentDisplay from '@components/StudentDisplay';
+import { useProtectedPage } from '@hooks/useProtectedPage';
 
 const StudentMgt = () => {
   const { activeEleve } = useAuth();
@@ -17,6 +18,9 @@ const StudentMgt = () => {
   const filtered = students.filter(s =>
     `${s.nom} ${s.prenom}`.toLowerCase().includes(search.toLowerCase())
   );
+
+
+  useProtectedPage(); // handles token check + redirect
 
   return (
     <div className="container mt-3">

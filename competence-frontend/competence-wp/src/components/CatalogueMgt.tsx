@@ -1,23 +1,15 @@
- 
-
 'use client';
 
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
 import CatalogueDisplay from '@components/CatalogueDisplay';
 import CatalogueSelection from '@components/CatalogueSelection';
 import { useAuth } from '@context/AuthContext';
-import { getToken } from '@utils/jwt'; 
+import { useProtectedPage } from '@hooks/useProtectedPage';
 
 const CatalogueMgt: React.FC = () => {
-  const navigate = useNavigate(); 
-const { activeCatalogues, catalogue } = useAuth();
+  useProtectedPage(); // handles token check + redirect
 
-
-  useEffect(() => {
-    const token = getToken();
-    if (!token) navigate('/login');
-  }, [navigate]);
+  const { activeCatalogues, catalogue } = useAuth();
 
   return (
     <div className="container mt-3 ml-2">
@@ -32,15 +24,14 @@ const { activeCatalogues, catalogue } = useAuth();
         )}
 
         <h2>Available Tests</h2>
-{catalogue.length === 0 ? (
-  <p>No catalogue data found</p>
-) : (
-  <CatalogueSelection catalogue={catalogue} />
-)}
-
+        {catalogue.length === 0 ? (
+          <p>No catalogue data found</p>
+        ) : (
+          <CatalogueSelection catalogue={catalogue} />
+        )}
       </div>
     </div>
   );
-}; 
+};
 
 export default CatalogueMgt;

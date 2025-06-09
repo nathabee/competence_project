@@ -5,13 +5,13 @@ import logo from  "@assets/logo.png";
 export function getApiUrl(): string {
   // Check WordPress global variable
   if (typeof window !== 'undefined' && 'competenceSettings' in window) {
-    console.log('✅ Using WordPress competenceSettings.apiUrl');
+    //console.log('✅ Using WordPress competenceSettings.apiUrl');
     return (window as any).competenceSettings.apiUrl;
   }
 
   // Check React/Next.js env
   if (typeof process !== 'undefined' && process.env?.NEXT_PUBLIC_API_URL) {
-    console.log('✅ Using process.env.NEXT_PUBLIC_API_URL');
+    //console.log('✅ Using process.env.NEXT_PUBLIC_API_URL');
     return process.env.NEXT_PUBLIC_API_URL;
   }
 
@@ -78,21 +78,17 @@ export async function fetchBase64Image(itemKey: string, idImage: number, token: 
 } 
 
 export const formatDate = (dateString: string | null | undefined): string => {
-  // Return an empty string if the dateString is null, undefined, or invalid
   if (!dateString || isNaN(new Date(dateString).getTime())) {
     return "";
   }
 
-  // Parse the date string into a Date object
   const date = new Date(dateString);
-  
-  // Extract components of the date
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');  // Months are 0-indexed
+
   const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
 
-  // Return formatted string: YYYY-MM-DD HH:MM
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
+  return `${day}/${month}/${year} à ${hours}h${minutes}`;
 };
