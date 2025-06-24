@@ -1,12 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect,useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import CompetenceHeader from '@app/CompetenceHeader';
 import AppRoutes from '@app/router';
 
 // Redirect if at root
-if (window.location.pathname === '/') {
-  window.history.replaceState({}, '', '/competence_home');
-}
+//if (window.location.pathname === '/') {
+//  window.history.replaceState({}, '', '/competence_dashboard');
+//}
 
 const App = () => {
   useEffect(() => {
@@ -24,39 +24,63 @@ const App = () => {
           {
             pageLanguage: 'en',
             includedLanguages: 'fr,en',
-            autoDisplay: false
+            autoDisplay: false,
+            default: 'fr'
           },
           'google_translate_element'
         );
 
         // Force default translation after a delay
-        setTimeout(() => {
-          setDefaultLanguage('French');
-        }, 1000);
+        //setTimeout(() => {
+        //  setDefaultLanguage('French');
+        //}, 1000);
       };
 
     }
   }, []);
+ 
+
+
+
+
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false);
+    }
+  }, []);
 
   return (
-    <BrowserRouter basename={window.competenceSettings?.basename || '/'}>
-      {/* Add the translation box anywhere you want */}
-      <div className="translate-box" style={{ padding: '10px', textAlign: 'right' }}>
-        🌐 Translate: <span id="google_translate_element"></span>
-      </div>
+    <div className="competence-app-container">
+      <BrowserRouter basename={window.competenceSettings?.basename || '/'}>
+        <div className="translate-box" style={{ padding: '10px', textAlign: 'right' }}>
+          🌐 Translate: <span id="google_translate_element"></span>
+        </div>
 
-      <CompetenceHeader />
-      <AppRoutes />
-    </BrowserRouter>
+        <div className="app-layout">
+          {/* Sidebar */}
+          <div className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+            <button
+              className="hamburger-icon"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              ☰
+            </button>
+            <CompetenceHeader />
+          </div>
+
+          {/* Main Content */}
+          <div className="content-container">
+            <AppRoutes />
+          </div>
+        </div>
+      </BrowserRouter>
+    </div>
   );
 };
 
 export default App;
-
-
-
-
-
 
 
 

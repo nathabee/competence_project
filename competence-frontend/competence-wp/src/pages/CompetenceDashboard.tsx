@@ -1,8 +1,8 @@
 // src/pages/CompetenceDashboard.tsx
 
 import React from 'react';
-import ShortReportHistory from '@components/ShortReportHistory';
+import Dashboard from '@components/Dashboard';
 
-const CompetenceDashboard = () => <ShortReportHistory />;
+const CompetenceDashboard = () => < Dashboard />;
 
 export default CompetenceDashboard;

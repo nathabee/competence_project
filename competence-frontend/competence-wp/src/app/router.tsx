@@ -28,7 +28,7 @@ const AppRoutes = () => (
     <Route path="/competence_pdf_view" element={<CompetencePdfView />} />
     <Route path="/competence_error" element={<CompetenceError />} />
 
-    <Route path="/"  element={<CompetenceHome />} />
+    <Route path="/"  element={<CompetenceDashboard />} />
   </Routes>
 );
 
