@@ -18,10 +18,9 @@ pipeline {
         stage('BackUp') {
             steps {
                 script {
-                    // Check if BACKUPDIR exists and set permissions or create backup
-                    sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}" 
+                    sh "mkdir -p ${PROJECT_SAV}"
+                    sh "cp -r ${PROJECT_PATH} ${BACKUPDIR}"
                     echo "Backup of project directory created at ${BACKUPDIR}"
-                    // Backup MySQL database using Jenkins credentials
                     sh "mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases competencedb > '${BACKUPDIR}/db_backup_${timestamp}.sql' || echo 'MySQL backup failed.'"
                     echo "MySQL database backup created."
                 }

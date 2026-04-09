@@ -18,6 +18,41 @@ echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc] https://pkg.jenkins.
 sudo apt update
 sudo apt install -y jenkins
 ```
+
+add jenkins user in correct groupd to enable sav:
+
+```bash 
+ 
+sudo usermod -aG www-data jenkins
+sudo chgrp -R www-data /home/nathabee/competence_project /home/nathabee/sav /var/www/competence_project
+sudo chmod -R g+rwX /home/nathabee/competence_project /home/nathabee/sav /var/www/competence_project
+sudo find /home/nathabee/competence_project /home/nathabee/sav /var/www/competence_project -type d -exec chmod g+s {} \;
+ 
+
+sudo apt install -y acl
+
+sudo setfacl -m u:jenkins:rx /home/nathabee
+sudo setfacl -m u:jenkins:rwx /home/nathabee/sav
+sudo setfacl -R -m u:jenkins:rwx /home/nathabee/competence_project
+sudo setfacl -R -m u:jenkins:rwx /var/www/competence_project
+
+
+sudo -u jenkins mkdir -p /home/nathabee/sav/test_from_jenkins
+sudo -u jenkins touch /home/nathabee/sav/test_from_jenkins/ok
+sudo -u jenkins rm -rf /home/nathabee/sav/test_from_jenkins
+
+``` 
+
+### Note :
+Better long-term structure
+
+Your deployment paths are inside a private home directory. That is awkward for a service account.
+
+Cleaner long-term would be to move them to something like:
+
+/srv/competence_project
+/srv/competence_backups
+/var/www/competence_project
  
 
 ## 2. Check which port is fir Jenkins
