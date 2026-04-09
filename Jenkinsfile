@@ -8,9 +8,9 @@ pipeline {
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
  
-        RESET_DB =  "false"
-        INIT_DB =  "true"
-        POPULATE_TRANSLATION =  "true" 
+        RESET_DB = "false"
+        INIT_DB = "false"
+        POPULATE_TRANSLATION = "false"
     }
     stages {
 
@@ -87,49 +87,27 @@ pipeline {
 
         // 5. Database Migrations
 
-        // drop and create database
-        stage('drop and create Database') {
+ 
+        stage('Database Migrations') {
             steps {
                 script {
                     if (env.RESET_DB == "true") {
                         sh """
                             mysql --defaults-extra-file=/var/lib/jenkins/.my.cnf -e 'DROP DATABASE IF EXISTS competencedb; CREATE DATABASE competencedb;'
                         """
-
-                        }
-                }
-            }
-        }
-
-        stage('Database Migrations') {
-            steps {
-                script {
-
-                    if (env.RESET_DB == "true") {
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations"
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate  --fake competence zero"
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py createsuperuser --noinput"
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'"
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions  || echo 'create_groups_and_permissions skipped.'"
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher  || echo 'populate_teacher skipped.'"
-
-                    }
-                    else if (env.INIT_DB == "true") {  
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'"
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions  || echo 'create_groups_and_permissions skipped.'"
-                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher  || echo 'populate_teacher skipped.'"
-                    }
-                    else {       
-                    // Check if there are any changes before running migrate
-                    def migrationOutput = sh(script: ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py makemigrations", returnStdout: true).trim()
-                    
-                    // Check if "No changes detected" is in the output
-                    if (migrationOutput.contains("No changes detected")) {
-                        echo "No changes detected in the models, skipping migration."
-                    } else {
-                        echo "Changes detected, running migrations."
                         sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions || echo 'create_groups_and_permissions skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher || echo 'populate_teacher skipped.'"
                     }
+                    else if (env.INIT_DB == "true") {
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_data_init || echo 'Data init population skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py create_groups_and_permissions || echo 'create_groups_and_permissions skipped.'"
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py populate_teacher || echo 'populate_teacher skipped.'"
+                    }
+                    else {
+                        sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py migrate"
                     }
 
                     if (env.POPULATE_TRANSLATION == "true") {
@@ -171,33 +149,54 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
+                    sh """
+                        . ${VENV_PATH}/bin/activate
+                        cd ${PROJECT_PATH}
+                        python manage.py test competence.tests.test_integration_workflow
+                    """
+                    sh """
+                        cd ${PROJECT_PATH}/competence-app
+                        export NODE_ENV=test
+                        npm run test
+                    """
+                }
+            }
+        }
+
+        // 10. Health Check
+        stage('Health Check (internal)') {
+            steps {
+                script {
                     withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
+                        def accessToken = sh(
+                            script: '''
+                                set +x
+                                curl -fsS -X POST \
+                                -H "Content-Type: application/json" \
+                                -d "{\"username\":\"$TEACHER_USER\",\"password\":\"$TEACHER_PASS\"}" \
+                                http://127.0.0.1:8080/api/token/ | jq -r .access
+                            ''',
+                            returnStdout: true
+                        ).trim()
+
                         sh """
-                            . ${VENV_PATH}/bin/activate
-                            cd ${PROJECT_PATH}
-                            python manage.py test competence.tests.test_integration_workflow
-                        """
-                        sh """
-                            cd ${PROJECT_PATH}/competence-app
-                            export NODE_ENV=test && npm run test
+                            test -n "${accessToken}"
+                            test "${accessToken}" != "null"
+                            curl -fsS -H "Authorization: Bearer ${accessToken}" http://127.0.0.1:8080/api/
+                            curl -fsSI http://127.0.0.1:3000/
                         """
                     }
                 }
             }
         }
 
-        // 10. Health Check
-        stage('Health Check') {
+        stage('Smoke Check (external HTTPS)') {
             steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
-                        def accessToken = sh(script: "curl -X POST -H 'Content-Type: application/json' -d '{\"username\":\"$TEACHER_USER\", \"password\":\"$TEACHER_PASS\"}' http://localhost:8080/api/token/ | jq -r .access", returnStdout: true).trim()
-                        sh """
-                        curl -H "Authorization: Bearer ${accessToken}" http://localhost:8080/api/
-                        curl -I http://localhost:3000/
-                        """
-                    }
-                }
+                sh """
+                    curl -fsSI https://competence.nathabee.de/api/
+                    curl -fsSI https://competence.nathabee.de/admin/
+                    curl -fsSI https://competence.nathabee.de/
+                """
             }
         }
     }

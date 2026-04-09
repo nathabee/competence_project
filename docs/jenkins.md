@@ -156,15 +156,34 @@ stage('Collect Static Files') {
 
  
 
-## 7. In Jenkins UI, create the one credential your pipeline already expects
+
+#### 7. In Jenkins UI, create two separate things
+
+**A. Create the Jenkins administrator user**
+
+Create the first Jenkins admin user during the setup wizard, for example:
+
+* username: `jenkins-admin`
+  or
+* username: `nathabee`
+
+This account is only for administering Jenkins itself. It is not related to Django users. ([Jenkins][1])
+
+**B. Create the application credential used by the pipeline**
 
 Create a **Username with password** credential with:
 
 * **ID:** `competence-app-teacher-id`
-* username: one of your known teacher users
-* password: the known password you reset
 
-Your pipeline uses `withCredentials([usernamePassword(...)])`, and Jenkins credentials are the intended way to inject secrets into builds. The Credentials Binding plugin is specifically for that. ([Jenkins Plugins][2])
+Use a **dedicated Django application user** for this credential.
+Recommended:
+
+* active user
+* no superuser rights unless required
+* no admin/staff rights unless your tests really need admin behavior
+
+If your tests require a “teacher” domain role, then use a dedicated teacher test account. If the credential is only for API token issuance and basic authenticated API checks, a normal dedicated app user is cleaner. Jenkins credentials binding is the right storage mechanism for this. 
+
 
 ## 8. Create the pipeline job
 
