@@ -305,3 +305,159 @@ sudo tail -n 100 /var/log/apache2/competence-ssl-error.log
 * If media URLs 404, check the `/var/www/competence_project/media` path and the Apache `Alias /media/`.
 * If the root page gives `502` or `503`, the frontend process on port `3000` is likely not running yet.
  
+ ---
+ ## add jenkins
+
+
+### in Hetzner console add DNS record A and AAAA
+DNS in Hetzner
+IPv4
+A jenkins -> VPS_IPV4
+IPv6
+AAAA jenkins -> VPS_IPV6
+Hetzner Cloud Firewall
+inbound allow
+22/tcp
+80/tcp
+443/tcp
+
+do not open 8081
+You do not need to expose 8081 publicly once Apache proxies Jenkins. Keep 8081 for localhost access only if possible.
+
+local prerequisite check
+
+Before touching Apache, verify Jenkins is really running locally:
+
+curl -I http://127.0.0.1:8081/
+sudo systemctl status jenkins --no-pager
+
+
+### apache
+```bash
+ sudo tee /etc/apache2/sites-available/jenkins-http.conf >/dev/null <<'APACHE'
+<VirtualHost *:80>
+    ServerName jenkins.nathabee.de
+
+    Alias /.well-known/acme-challenge/ /var/www/certbot/.well-known/acme-challenge/
+    <Directory "/var/www/certbot/.well-known/acme-challenge/">
+        Options None
+        AllowOverride None
+        Require all granted
+    </Directory>
+
+    RewriteEngine On
+    RewriteCond %{REQUEST_URI} !^/\.well-known/acme-challenge/
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    ErrorLog  ${APACHE_LOG_DIR}/jenkins-http-error.log
+    CustomLog ${APACHE_LOG_DIR}/jenkins-http-access.log combined
+</VirtualHost>
+APACHE
+
+``` 
+
+enable it
+
+
+```bash
+sudo a2ensite jenkins-http.conf
+sudo apache2ctl configtest
+sudo systemctl reload apache2
+
+```
+
+### ssl conf
+
+
+```bash
+sudo tee /etc/apache2/sites-available/jenkins-ssl.conf >/dev/null <<'APACHE'
+<VirtualHost *:443>
+    ServerName jenkins.nathabee.de
+
+    SSLEngine on
+    SSLCertificateFile /etc/letsencrypt/live/jenkins.nathabee.de/fullchain.pem
+    SSLCertificateKeyFile /etc/letsencrypt/live/jenkins.nathabee.de/privkey.pem
+    Include /etc/letsencrypt/options-ssl-apache.conf
+
+    ProxyRequests Off
+    ProxyPreserveHost On
+    AllowEncodedSlashes NoDecode
+
+    RequestHeader set X-Forwarded-Proto "https"
+    RequestHeader set X-Forwarded-Port "443"
+
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+
+    RewriteEngine On
+    RewriteCond %{HTTP:Upgrade} websocket [NC]
+    RewriteCond %{HTTP:Connection} upgrade [NC]
+    RewriteRule ^/(.*)$ ws://127.0.0.1:8081/$1 [P,L]
+
+    ProxyPass        /  http://127.0.0.1:8081/ nocanon
+    ProxyPassReverse /  http://127.0.0.1:8081/
+
+    <Proxy http://127.0.0.1:8081/*>
+        Require all granted
+    </Proxy>
+
+    ErrorLog  ${APACHE_LOG_DIR}/jenkins-ssl-error.log
+    CustomLog ${APACHE_LOG_DIR}/jenkins-ssl-access.log combined
+</VirtualHost>
+APACHE
+
+``` 
+
+enable it
+
+
+```bash
+sudo a2ensite jenkins-ssl.conf
+sudo apache2ctl configtest
+sudo systemctl reload apache2
+
+
+``` 
+
+### certificate activation
+
+request certificate :
+```bash
+sudo certbot certonly --webroot \
+  -w /var/www/certbot \
+  -d jenkins.nathabee.de \
+  -m admin@nathabee.de \
+  --agree-tos \
+  --no-eff-email
+
+```
+
+
+### autorenew reload hook :
+
+
+```bash
+sudo install -d /etc/letsencrypt/renewal-hooks/deploy
+sudo tee /etc/letsencrypt/renewal-hooks/deploy/reload-apache.sh >/dev/null <<'SH'
+#!/usr/bin/env bash
+systemctl reload apache2
+SH
+sudo chmod +x /etc/letsencrypt/renewal-hooks/deploy/reload-apache.sh
+```
+
+### checks 
+
+
+```bash
+#local Jenkins check
+curl -I http://127.0.0.1:8081/
+#public checks
+curl -I http://jenkins.nathabee.de/
+curl -I https://jenkins.nathabee.de/
+#Apache config and logs
+sudo apache2ctl configtest
+sudo systemctl status apache2 --no-pager
+sudo tail -n 100 /var/log/apache2/jenkins-http-error.log
+sudo tail -n 100 /var/log/apache2/jenkins-ssl-error.log
+
+```

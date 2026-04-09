@@ -154,19 +154,19 @@ stage('Collect Static Files') {
 }
 ```
 
- 
+#### 7. add apache configguration for jenkins
+
+see docs/apache.md file
 
 
-#### 7. In Jenkins UI, create two separate things
+#### 8. In Jenkins UI, create two separate things
 
 **A. Create the Jenkins administrator user**
 
 Create the first Jenkins admin user during the setup wizard, for example:
 
 * username: `jenkins-admin`
-  or
-* username: `nathabee`
-
+ 
 This account is only for administering Jenkins itself. It is not related to Django users. ([Jenkins][1])
 
 **B. Create the application credential used by the pipeline**
@@ -184,8 +184,163 @@ Recommended:
 
 If your tests require a “teacher” domain role, then use a dedicated teacher test account. If the credential is only for API token issuance and basic authenticated API checks, a normal dedicated app user is cleaner. Jenkins credentials binding is the right storage mechanism for this. 
 
+##### how to create the competence-app-teacher-id :
 
-## 8. Create the pipeline job
+we need to create **two different things**:
+
+1. a **Django application user** in your app database
+2. a **Jenkins credential** that stores that user’s username/password
+
+They are not the same object.
+
+Your current pipeline only uses this credential in the internal health check via `withCredentials(...)`, and Jenkins binds that credential into environment variables only inside that block. ([Jenkins][1])
+
+Because of that, the clean choice is:
+
+* create a **normal active Django user**
+* **not staff**
+* **not superuser**
+* add teacher/domain permissions **only if your API really requires them**
+
+For a token request plus a basic authenticated API smoke check, a plain active user is usually enough. Django’s auth system is built around active users plus optional staff/superuser permissions when needed.  
+
+
+So the order is:
+
+1. create `compet_ci` in Django
+2. test `/api/token/` manually
+3. add Jenkins credential `competence-app-teacher-id`
+4. create the Pipeline job
+
+ 
+
+#####  django user compet_ci
+
+Use something like:
+
+* username: `compet_ci`
+* email: `fill_your_adresse_here`
+* password: a strong generated password
+
+Do **not** reuse `compet` and do **not** use the Jenkins admin account here.
+
+ 
+
+On the server:
+
+```bash
+cd /home/nathabee/competence_project
+source venv/bin/activate
+python manage.py shell
+```
+
+
+
+
+
+Then in the Django shell:
+
+```python
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
+
+
+username = "compet_ci"
+email = "fill_your_adresse_here"
+password = "PUT_A_STRONG_PASSWORD_HERE"
+
+user, created = User.objects.get_or_create(
+    username=username,
+    defaults={"email": email}
+)
+
+user.email = email
+user.is_active = True
+user.is_staff = False
+user.is_superuser = False
+user.set_password(password)
+user.save()
+
+print("created:", created)
+print("username:", user.username)
+print("active:", user.is_active)
+print("staff:", user.is_staff)
+print("superuser:", user.is_superuser)
+```
+
+Then exit the shell.
+
+#####   If your app really needs the “teacher” role
+
+Only do this if your API endpoint behind the health check requires teacher permissions.
+
+Back in `manage.py shell`:
+
+```python
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Group
+
+User = get_user_model()
+user = User.objects.get(username="compet_ci")
+group = Group.objects.get(name="teacher")
+user.groups.add(group)
+user.save()
+
+print(list(user.groups.values_list("name", flat=True)))
+```
+
+If your project uses a different group name, use that exact one.
+
+#####  Then create the Jenkins credential
+
+In Jenkins UI:
+
+* **Manage Jenkins**
+* **Credentials**
+* under **Stores scoped to Jenkins**, click **System**
+* click **Global credentials (unrestricted)**
+* **Add Credentials**
+
+Jenkins documents that path for adding global credentials. Credentials are stored in Jenkins and then referenced by `credentialsId` inside Pipeline. ([Jenkins][3])
+
+Use:
+
+* **Kind:** `Username with password`
+* **Scope:** Global
+* **Username:** `compet_ci`
+* **Password:** the password you set in Django
+* **ID:** `competence-app-teacher-id`
+* **Description:** `Django CI user for competence health check`
+
+Even though the ID contains `teacher`, it does not have to be a teacher unless your app logic requires that. It is just the lookup key used by the pipeline.
+
+#####   Why Global and not some special hidden scope
+
+Because your Pipeline job needs to read it by `credentialsId`. Jenkins’ credential model makes credentials available to jobs by ID, and the common job-usable place is global credentials under the Jenkins store. ([Jenkins][3])
+
+#####  Best next check before creating the job
+
+After creating the Django user, test it directly first:
+
+```bash
+curl -sS -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"username":"compet_ci","password":"YOUR_REAL_PASSWORD"}' \
+  https://competence.nathabee.de/api/token/
+```
+ 
+curl -sS -X POST \
+  -H "Content-Type: application/json" \
+  -H "X-Forwarded-Proto: https" \
+  -d '{"username":"compet_ci","password":"333Cochon&&&"}' \
+  http://127.0.0.1:8080/api/token/
+
+
+If that returns access/refresh tokens, your Django-side user is good. Then create the Jenkins credential with the same values.
+
+
+## 9. Create the pipeline job
 
 Create a **Pipeline** job and point it to:
 
@@ -195,7 +350,7 @@ Create a **Pipeline** job and point it to:
 
 Because the repo is public, you do **not** need Git credentials for checkout. If you later switch to SSH, Jenkins’ Git steps require an SSH private key credential; for authenticated HTTPS, they require username/password credentials. ([Jenkins][3])
 
-## 9. First run: keep it conservative
+## 10. First run: keep it conservative
 
 For the first run, do not try the whole world at once.
 
@@ -218,7 +373,7 @@ The first successful Jenkins proof should be:
 
 That is enough.
 
-## 10. First smoke checks after Jenkins starts
+## 11. First smoke checks after Jenkins starts
 
 Run these after Jenkins is up and the job exists:
 

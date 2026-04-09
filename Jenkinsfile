@@ -47,8 +47,8 @@ pipeline {
                 script {
                     sh """
                         cd ${PROJECT_PATH}
-                        sudo -u nathabee git reset --hard
-                        sudo -u nathabee git pull origin main
+                        sudo -u nathabee git fetch origin
+                        sudo -u nathabee git reset --hard origin/main
                     """
                 }
             }
@@ -173,6 +173,7 @@ pipeline {
                                 set +x
                                 curl -fsS -X POST \
                                 -H "Content-Type: application/json" \
+                                -H "X-Forwarded-Proto: https" \
                                 -d "{\"username\":\"$TEACHER_USER\",\"password\":\"$TEACHER_PASS\"}" \
                                 http://127.0.0.1:8080/api/token/ | jq -r .access
                             ''',
@@ -182,7 +183,10 @@ pipeline {
                         sh """
                             test -n "${accessToken}"
                             test "${accessToken}" != "null"
-                            curl -fsS -H "Authorization: Bearer ${accessToken}" http://127.0.0.1:8080/api/
+                            curl -fsS \
+                            -H "Authorization: Bearer ${accessToken}" \
+                            -H "X-Forwarded-Proto: https" \
+                            http://127.0.0.1:8080/api/
                             curl -fsSI http://127.0.0.1:3000/
                         """
                     }
