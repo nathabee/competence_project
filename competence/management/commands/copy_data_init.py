@@ -1,56 +1,86 @@
 import os
-import csv
+import shutil
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from competence.models import Annee, Catalogue, Etape, GroupageData, Niveau, Matiere, Item, ScoreRule,ScoreRulePoint,PDFLayout,MyImage
-from django.utils.timezone import make_aware
-from datetime import datetime
-#from django.core.files import File
-from PIL import Image
-import subprocess
+
 
 class Command(BaseCommand):
-
-    # resized is made in the model in save method
-    #def resize_image(self, image_path):
-    #    if not os.path.exists(image_path):
-    #        raise FileNotFoundError(f"The image {image_path} does not exist.")
-    #        
-    #    img = Image.open(image_path)
-    #    
-    #    # Resize while maintaining aspect ratio
-    #    img.thumbnail((100, 100), Image.LANCZOS)  # Use Image.LANCZOS instead of Image.ANTIALIAS##
-
-    #    # Save the image back to the same path or a new path
-    #    img.save(image_path)  # This will overwrite the original image. Use a new path if you want to keep the original.#
-
-    #    return image_path
-
-
-    help = 'Copy file data from script_db/competence into media origin'
- 
+    help = "Copy file data from script_db/competence into media/origin"
 
     def handle(self, *args, **kwargs):
+        base_dir = settings.BASE_DIR
 
+        src_dir = os.path.join(base_dir, "script_db", "competence")
+        media_root = settings.MEDIA_ROOT
 
-        # Define the source and destination directories
-        src_dir = 'script_db/competence'
-        dest_dir = '/var/www/competence_project/media/origin'
+        if not media_root:
+            self.stderr.write(
+                self.style.ERROR("MEDIA_ROOT is not configured in Django settings.")
+            )
+            return
 
-        # Check if the destination directory exists and has write permission
-        if os.path.exists(dest_dir) and os.access(dest_dir, os.W_OK):
-            self.stdout.write(self.style.SUCCESS(f'Target directory {dest_dir} exists and is writable.'))
-            try:
-                # Perform the copy operation
-                subprocess.run(['sudo', 'cp', '-r', src_dir, dest_dir], check=True)
-                self.stdout.write(self.style.SUCCESS(f'Successfully copied files from {src_dir} to {dest_dir}'))
-            except subprocess.CalledProcessError as e:
-                self.stderr.write(self.style.ERROR(f'Error copying files: {e}'))
-        else:
-            # Directory doesn't exist or is not writable
-            if not os.path.exists(dest_dir):
-                self.stderr.write(self.style.ERROR(f'Target directory {dest_dir} does not exist.'))
-            if not os.access(dest_dir, os.W_OK):
-                self.stderr.write(self.style.ERROR(f'No write permission for the directory {dest_dir}.'))
-            return  # Exit the command if the directory is not writable
+        dest_dir = os.path.join(media_root, "origin")
+        dest_competence_dir = os.path.join(dest_dir, "competence")
 
+        if not os.path.isdir(src_dir):
+            self.stderr.write(
+                self.style.ERROR(f"Source directory does not exist: {src_dir}")
+            )
+            return
+
+        try:
+            os.makedirs(dest_competence_dir, exist_ok=True)
+        except OSError as exc:
+            self.stderr.write(
+                self.style.ERROR(
+                    f"Unable to create destination directory {dest_competence_dir}: {exc}"
+                )
+            )
+            return
+
+        copied_any = False
+
+        for name in os.listdir(src_dir):
+            src_path = os.path.join(src_dir, name)
+            dest_path = os.path.join(dest_competence_dir, name)
+
+            if os.path.isdir(src_path):
+                try:
+                    shutil.copytree(src_path, dest_path, dirs_exist_ok=True)
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Copied directory: {src_path} -> {dest_path}")
+                    )
+                    copied_any = True
+                except Exception as exc:
+                    self.stderr.write(
+                        self.style.ERROR(
+                            f"Error copying directory {src_path} -> {dest_path}: {exc}"
+                        )
+                    )
+            elif os.path.isfile(src_path):
+                try:
+                    shutil.copy2(src_path, dest_path)
+                    self.stdout.write(
+                        self.style.SUCCESS(f"Copied file: {src_path} -> {dest_path}")
+                    )
+                    copied_any = True
+                except Exception as exc:
+                    self.stderr.write(
+                        self.style.ERROR(
+                            f"Error copying file {src_path} -> {dest_path}: {exc}"
+                        )
+                    )
+
+        if not copied_any:
+            self.stdout.write(
+                self.style.WARNING(
+                    f"No files or directories were copied from {src_dir}."
+                )
+            )
+            return
+
+        self.stdout.write(
+            self.style.SUCCESS(
+                f"Successfully copied data from {src_dir} to {dest_competence_dir}"
+            )
+        )

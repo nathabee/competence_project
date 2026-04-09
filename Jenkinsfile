@@ -4,7 +4,7 @@ pipeline {
         PROJECT_PATH = "/home/nathabee/competence_project"
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
-        STATIC_FILES_PATH = "/var/www/html/competence_project/staticfiles"
+        STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
  
@@ -153,11 +153,6 @@ pipeline {
             steps {
                 script {
                     sh ". ${VENV_PATH}/bin/activate && python ${PROJECT_PATH}/manage.py collectstatic --noinput"
-                    sh """
-                        sudo cp -r ${PROJECT_PATH}/staticfiles/* ${STATIC_FILES_PATH}/
-                        sudo chown -R www-data:webusers ${STATIC_FILES_PATH}/
-                        sudo chmod -R 775 ${STATIC_FILES_PATH}/
-                    """
                 }
             }
         }
@@ -199,7 +194,7 @@ pipeline {
                         def accessToken = sh(script: "curl -X POST -H 'Content-Type: application/json' -d '{\"username\":\"$TEACHER_USER\", \"password\":\"$TEACHER_PASS\"}' http://localhost:8080/api/token/ | jq -r .access", returnStdout: true).trim()
                         sh """
                         curl -H "Authorization: Bearer ${accessToken}" http://localhost:8080/api/
-                        curl -I http://localhost:3000/evaluation
+                        curl -I http://localhost:3000/
                         """
                     }
                 }

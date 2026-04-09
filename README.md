@@ -27,9 +27,9 @@ This demo showcases the frontend, compiled as static files and deployed to GitHu
 
 - `competence_project/`: Django backend for competence evaluation.
 - `competence/`: Django app containing models, views, serializers, and migrations.
-- `competence-frontend` : wordpress plugin (later with shared code and will replace the react-app from competence_app)
-- `competence_app/`: Frontend built with Next.js and React.
-- `db_scripts/`: SQL scripts for initializing and seeding the database.
+- `competence-frontend` : wordpress plugin (later with shared code and will replace the react-app from competence-app)
+- `competence-app/`: Frontend built with Next.js and React.
+- `script_db/`: SQL scripts for initializing and seeding the database.
 - `static/`: Static files (CSS, JavaScript, images).
 - `tools/`: Utility scripts for managing the project.
 - `Jenkinsfile`: CI/CD script for automated deployment.
@@ -89,33 +89,42 @@ Create the database with the correct parameters
   - **User**: `competence_user`
 
  
+check database is created :
+ ```bash  
+mysql -u competence_user -p competencedb
+
+```
 
 modify the  .env file which is installed in the same repository as manage.py
+
 ```bash
-cd competence_project
+cp .env.prod .env
+python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+
+#Use:
+#first output for DJANGO_SECRET_KEY
+#second output for JWT_SECRET_KEY
+
 nano .env
 ``` 
 
 
-```bash
-DJANGO_SECRET_KEY="your_secret_key"
-DJANGO_SERVER_IP="server_ip"
-DEBUG=False
-DBNAME="competencedb"
-DBUSER="competence_user"
-DBPASSWORD="password"
-DBHOST="localhost"
-DBPORT="3306"
-ALLOWED_HOSTS="0.0.0.0,localhost"
-PROF_ID_DEFAULT="default_user"
-```
 
 ### 3. Django Setup , migration and initialisation
+
+
 
 Set up your Python virtual environment and install the necessary dependencies:
 
 ```bash
 cd competence_project
+
+source venv/bin/activate
+python manage.py makemigrations competence
+# ./setup_django_migration.sh
+
+
 # start the file from tools/setup_django.sh it start the server in port 8080
 ./setup_django.sh -s
 
@@ -127,76 +136,179 @@ Run Django migrations (y/n): y
 ```
 
 
+
+create the source media:
+```bash
+cd /home/nathabee/competence_project
+mkdir -p media/competence/header_icons
+mkdir -p media/competence/png
+
+sudo mkdir -p /var/www/competence_project/media/origin
+sudo chown -R nathabee:www-data /var/www/competence_project
+sudo chmod -R 775 /var/www/competence_project
+cd /home/nathabee/competence_project
+
+if [ -e media ] && [ ! -L media ]; then
+    mv media media.bak
+fi
+
+ln -s /var/www/competence_project/media media
+ls -ld media /var/www/competence_project/media
+
+
+ 
+``` 
+
+
 Run the database scripts  directory to initialize the required tables:
  
-```bash
-cd competence_project
-./setup_django_migration.sh
-./setup_django_loaddata.sh
+```bash 
+cd /home/nathabee/competence_project
+source venv/bin/activate
+
+python manage.py copy_data_init
+python manage.py populate_data_init
+python manage.py create_groups_and_permissions
+python manage.py populate_teacher
+python manage.py populate_translation
 ```
 
 ### 4. Run the Backend Server
 
-Start the Django development server on a custom port (python manage.py runserver 0.0.0.0:8080) after activation the local pip env :
+#### pre-requise
+
+
+Configure DNS and Apache : see [apache.md](https://github.com/nathabee/competence_project/blob/main/docs/apache.md )
+
+
+#### install and test
+Start the Django development server locally after activating the virtual environment:
 
 ```bash
-cd competence_project
+cd /home/nathabee/competence_project
 source venv/bin/activate
-python manage.py runserver localhost:8080 --insecure
-``` 
-Your server should now be running and accessible via the specified IP and port.
+python manage.py runserver 127.0.0.1:8080 --insecure
+```
 
-```bash
-http://your_server:8080/api
-``` 
+At this stage, only the backend endpoints are expected to work.
 
-on production we can configure unicorn and start django this way after 
+After DNS and Apache are configured, these URLs should be available:
+
+* `https://competence.nathabee.de/api/` -> Django backend on `127.0.0.1:8080`
+* `https://competence.nathabee.de/admin/` -> Django backend on `127.0.0.1:8080`
+* `https://competence.nathabee.de/media/` -> `/var/www/competence_project/media/`
+
+The root URL `https://competence.nathabee.de/` is not expected to work yet, because the frontend on port `3000` is configured in the next chapter.
+
+
+### 5. fine tuning
+
+#### GUNICORN : adapt Backend server to production
+
+Install and configure Gunicorn on 127.0.0.1:8080.
+
+See [gunicorn.md](https://github.com/nathabee/competence_project/blob/main/docs/gunicorn.md)
+
+ 
+
+on production we can configure gunicorn and start django this way after 
 ```bash
 sudo systemctl start gunicorn  
 ``` 
 
+#### STATISTICS
 
 
-### 5. Run the Frontend Server API Setup
-Install frontend dependencies and build the app:
+##### 1. Create the real target directory
 
-#### Test environment
-in local test server create a competence-app/.env.local file with the values:
+```bash id="d7uw9z"
+sudo mkdir -p /var/www/competence_project/staticfiles
+sudo chown -R nathabee:www-data /var/www/competence_project
+sudo chmod -R 775 /var/www/competence_project
+```
+
+##### 2. Replace local `staticfiles` with a symlink
+
+```bash id="dtw08n"
+cd /home/nathabee/competence_project
+
+if [ -e staticfiles ] && [ ! -L staticfiles ]; then
+    mv staticfiles staticfiles.bak
+fi
+
+ln -s /var/www/competence_project/staticfiles staticfiles
+ls -ld staticfiles /var/www/competence_project/staticfiles
+```
+
+##### 3. Run collectstatic
+
+```bash id="m5mafc"
+cd /home/nathabee/competence_project
+source venv/bin/activate
+python manage.py collectstatic --noinput
+```
+
+##### 4. Verify that admin CSS is really there
+
+```bash id="f6ph5g"
+find /var/www/competence_project/staticfiles/admin/css -maxdepth 1 -type f | head
+```
+
+You should see files like `base.css`.
+
+---
+
+
+###  6. Frontend
+
+#### 6.1 Production frontend
+
+Modify `competence-app/.env.production` with the correct production values.
+
+Then install dependencies and build the frontend:
+
+```bash
+cd /home/nathabee/competence_project/competence-app
+npm install
+npm run build
+````
+
+Start the frontend service:
+
+```bash
+sudo systemctl start npm-app
+```
+
+If the service does not exist yet, create it before using Apache as reverse proxy for `/`.
+
+
+### Dev second
+
+```md
+#### 6.2 Local development frontend
+
+For local development, create `competence-app/.env.local`:
+
 ```bash
 NEXT_PUBLIC_ENV=developement
 NEXT_PUBLIC_API_URL=http://localhost:8080/api
 NEXT_PUBLIC_BASE_PATH=/evaluation
 NEXT_PUBLIC_ADMIN_URL=http://localhost:8080/admin/
-NEXT_PUBLIC_MEDIA_URL=http://localhost:8080/media 
+NEXT_PUBLIC_MEDIA_URL=http://localhost:8080/media
+```
 
-``` 
-
-to build and run the competence-app
+Then run:
 
 ```bash
-cd competence-app
+cd /home/nathabee/competence_project/competence-app
 npm install
 npm run local-build
 npm run local-start
+```
 
-``` 
-
-#### Production environement
-modifiy the competence-app/.env.production file with your server values
-
-
-to build and run the competence-app
-
-```bash
-cd competence-app
-npm install
-npm run build
-# npm run start
-sudo systemctl start npm-app
-```   
  
 
-### 6. Demo frontend app
+### 7. Demo frontend app
 
 The front end can be compiled in a static file to generate a static website.
 You can test this build locally or deploy it on github this way.
@@ -215,7 +327,7 @@ npm run demo-deploy
 ```
 
 
-### 7. Run tests automatically
+### 8. Run tests automatically
 
 
 #### backend test :
@@ -231,7 +343,7 @@ python manage.py test competence.tests.test_integration_workflow
 
 #### frontend test :
 This is using the JTEST library
-Test files are in competence_app/__tests__
+Test files are in competence-app/__tests__
 All the files defined in this directory will be called by JTEST 
 They are used to validate in stallation on production environment
 ```bash
@@ -240,12 +352,10 @@ dotenv -e .env.local jest
 
 
 
-
-Here's a new chapter you can **append** to your `README.md`, covering the `competence-frontend` project and the WordPress plugin integration:
-
+ 
 ---
 
-## 🌐 WordPress Frontend Plugin (`competence-frontend`)
+## 🌐 WordPress Frontend Plugin (`competence-frontend`) / no supported with installation => code need to be merged
 
 This repository also includes a React-based WordPress plugin that brings the frontend into a traditional CMS environment.
 
@@ -363,6 +473,30 @@ This final stage verifies that the application is running correctly after deploy
 
 
 
+## Remarks (for the developper) about the status of the project
+
+
+initially the django is in competence and competence_project
+initially the associated frontend is competence-app
+
+later we have created a competence-frontend to show how it is possible to shared code betweeen a react-app and a wordpress plugin
+
+then we have use the competence code in the beelab project in order to show the possibility to share code in backend and in frontend, so there was new modification that was not put to the competence inital project, because at that moment the competence project was set as deprecated
+/django and /wordpress are partially containing the code we need to use as reference in the future (wordpress contains a plugin for wordpress that can be used as frontend)
+the plugin is not implementing totally the competence-app
+the django part was modified n toder to use userCore separated from the competenceCore
+we have a duplication because the competence-app , competence-frontend are all using the django from competence and competence_project
+
+
+what we want to do in the future :
+
+* use a single source of truth for backend (use the django : it had the concept of demo user )
+* adapt the competence-app for that demo user concept (django backend)
+* check if the competence-frontend can be reuse in order to share code
+* finish the wordpress plugin by trying to see if competence-frontend wordpress plugin can beused for taht
+
+
+
 
 ## 📢 Contributing
 
@@ -374,7 +508,7 @@ For any inquiries, please contact [nathabee123@gmail.com](mailto:nathabee123@gma
 
 ---
 
-**Thank you for your support and patience!**
+**Thank you for your patience!**
 
 ## License
 
