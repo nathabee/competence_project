@@ -37,20 +37,18 @@ This demo showcases the frontend, compiled as static files and deployed to GitHu
 ## Branches
 
 - `main`: Contains all project files (backend and frontend).
-- `github-pages`: Contains a fromtenmd static version with dummy data for GitHub Pages.
+- `github-pages`: Contains a frontend static version with dummy data for GitHub Pages.
 
 
 
 
-## 🛠️ Current Status
+## Documentation
  
-- Initial setup and database model completed.
-- Django API and frontend setup.
-- Automated testing with Jest.
-- CI/CD pipeline implemented.
-- Demo project available on GitHub Pages.
-- plugin in work in progress
- 
+🛠️ Current Status   :   [TODO.md](https://github.com/nathabee/competence_project/blob/main/TODO.md )
+Configure DNS and Apache :  [apache.md](https://github.com/nathabee/competence_project/blob/main/docs/apache.md )
+Configure Jenkins :  [jenkins.md](https://github.com/nathabee/competence_project/blob/main/docs/jenkins.md )
+Operation Manual :  [operation-manual.md](https://github.com/nathabee/competence_project/blob/main/docs/operation-manual.md )
+service installation guide: se [systemctl-install.md](https://github.com/nathabee/competence_project/blob/main/docs/systemctl-install.md )
 
 ## 🚀 Getting Started
 
@@ -200,12 +198,11 @@ After DNS and Apache are configured, these URLs should be available:
 
 The root URL `https://competence.nathabee.de/` is not expected to work yet, because the frontend on port `3000` is configured in the next chapter.
 
+ 
 
-### 5. fine tuning
+#### start Backend server in production
 
-#### GUNICORN : adapt Backend server to production
-
-Install and configure Gunicorn on 127.0.0.1:8080.
+Install and configure Gunicorn on 127.0.0.1:8080 :
 
 See [gunicorn.md](https://github.com/nathabee/competence_project/blob/main/docs/gunicorn.md)
 
@@ -216,10 +213,10 @@ on production we can configure gunicorn and start django this way after
 sudo systemctl start gunicorn  
 ``` 
 
-#### STATISTICS
+### 5. Statistics
 
 
-##### 1. Create the real target directory
+#### 1. Create the real target directory
 
 ```bash id="d7uw9z"
 sudo mkdir -p /var/www/competence_project/staticfiles
@@ -227,9 +224,9 @@ sudo chown -R nathabee:www-data /var/www/competence_project
 sudo chmod -R 775 /var/www/competence_project
 ```
 
-##### 2. Replace local `staticfiles` with a symlink
+#### 2. Replace local `staticfiles` with a symlink
 
-```bash id="dtw08n"
+```bash
 cd /home/nathabee/competence_project
 
 if [ -e staticfiles ] && [ ! -L staticfiles ]; then
@@ -240,17 +237,17 @@ ln -s /var/www/competence_project/staticfiles staticfiles
 ls -ld staticfiles /var/www/competence_project/staticfiles
 ```
 
-##### 3. Run collectstatic
+#### 3. Run collectstatic
 
-```bash id="m5mafc"
+```bash
 cd /home/nathabee/competence_project
 source venv/bin/activate
 python manage.py collectstatic --noinput
 ```
 
-##### 4. Verify that admin CSS is really there
+#### 4. Verify that admin CSS is really there
 
-```bash id="f6ph5g"
+```bash
 find /var/www/competence_project/staticfiles/admin/css -maxdepth 1 -type f | head
 ```
 
@@ -263,15 +260,18 @@ You should see files like `base.css`.
 
 #### 6.1 Production frontend
 
+--- IF YOU ARE ON PRODUCTION ---
+
+For production, the frontend is built as a Next.js application and run through the `npm-app` systemd service on `127.0.0.1:3000`, behind Apache.
+
 Modify `competence-app/.env.production` with the correct production values.
 
-Then install dependencies and build the frontend:
+For manual production installation, follow the service installation guide in [`docs/systemctl-install.md`](./docs/systemctl-install.md), which covers:
 
-```bash
-cd /home/nathabee/competence_project/competence-app
-npm install
-npm run build
-````
+- Node 20 location used for production
+- frontend build with `npm install` and `npm run build`
+- creation of the `npm-app` systemd service
+- local service checks on `127.0.0.1:3000`
 
 Start the frontend service:
 
@@ -279,25 +279,35 @@ Start the frontend service:
 sudo systemctl start npm-app
 ```
 
-If the service does not exist yet, create it before using Apache as reverse proxy for `/`.
-
-
-### Dev second
-
-```md
-#### 6.2 Local development frontend
-
-For local development, create `competence-app/.env.local`:
+Check it locally:
 
 ```bash
-NEXT_PUBLIC_ENV=developement
+curl -I http://127.0.0.1:3000/
+```
+
+In a Jenkins-managed production deployment, Jenkins performs the build and then restarts `npm-app`.
+ 
+
+ 
+
+#### 6.2 Local development frontend
+
+
+--- IF YOU ARE ON DEV ---
+
+For local development, do not use Jenkins and do not use the `npm-app` systemd service.
+
+Create `competence-app/.env.local`:
+
+```bash
+NEXT_PUBLIC_ENV=development
 NEXT_PUBLIC_API_URL=http://localhost:8080/api
 NEXT_PUBLIC_BASE_PATH=/evaluation
 NEXT_PUBLIC_ADMIN_URL=http://localhost:8080/admin/
 NEXT_PUBLIC_MEDIA_URL=http://localhost:8080/media
 ```
 
-Then run:
+Then run the frontend locally as the development user:
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -305,6 +315,9 @@ npm install
 npm run local-build
 npm run local-start
 ```
+
+This development flow is separate from the production service setup.
+
 
  
 
@@ -404,97 +417,85 @@ competence-frontend/
 Let me know if you’d like it placed earlier in the README or broken into two chapters (`competence-frontend` and `competence-wp`).
 
 
-## 🛠️ Jenkins Pipeline Stages
+## 🛠️ Jenkins Pipeline Stages 
 
-The Jenkins pipeline consists of the following stages, each serving a specific purpose in the deployment process:
+The production Jenkins pipeline deploys the project from `main` into the live production tree.
 
 ### 1. Backup
-This stage creates backups of the project directory and the MySQL database.
-- **Actions**:
-  - Copies the project directory to a backup location.
-  - Creates a MySQL dump of the `competencedb` database for safekeeping.
+Creates a backup of the current project directory and a MySQL dump of `competencedb`.
 
-### 2. Checkout Stage
-This stage retrieves the latest code from the specified Git repository.
-- **Actions**:
-  - Checks out the `main` branch of the repository.
-  - Wipes the workspace to ensure a clean environment for the new code.
+### 2. Checkout
+Checks out the repository in the Jenkins workspace to load the pipeline definition from source control.
 
-### 3. Stop Services
-Before updating the application, it’s essential to stop any running services.
-- **Actions**:
-  - Stops the Gunicorn service.
-  - Stops the npm application.
+### 3. Update Repository
+Updates the live production repository at `/home/nathabee/competence_project` by fetching from GitHub and resetting to `origin/main`.
 
-### 4. Install Dependencies
-This stage installs necessary Python and Node.js dependencies.
-- **Actions**:
-  - Activates the Python virtual environment and installs Python packages from `requirements.txt`.
-  - Navigates to the frontend application directory and installs npm packages.
+### 4. Stop Services
+Stops the production services:
+- `gunicorn`
+- `npm-app`
 
-### 5. Database Migrations
-To ensure the database schema is up-to-date, migrations are executed.
-- **Actions**:
-  - Activates the Python virtual environment.
-  - Runs `makemigrations` and `migrate` commands to apply database migrations.
+### 5. Check Tool Versions
+Prints the active `PATH`, `node`, and `npm` versions used by the pipeline. This is important because the frontend build requires Node 20.
 
-### 6. Build Frontend
-This stage builds the frontend application for production.
-- **Actions**:
-  - Navigates to the frontend directory and runs the build command using npm.
+### 6. Install Dependencies
+- installs Python dependencies from `requirements.txt`
+- installs frontend dependencies in `competence-app`
 
-### 7. Collect Static Files and Update Permissions
-Static files are gathered and permissions are set for the web server.
-- **Actions**:
-  - Runs Django's `collectstatic` command to gather static files.
-  - Copies collected static files to the designated static files directory and updates permissions for proper access.
+### 7. Database Migrations
+Runs Django migrations.
+Optional initialization commands are available through pipeline flags, but the default production run keeps:
+- `RESET_DB = "false"`
+- `INIT_DB = "false"`
+- `POPULATE_TRANSLATION = "false"`
 
-### 8. Start Services
-After the update, services are started again to serve the application.
-- **Actions**:
-  - Starts the Gunicorn service.
-  - Starts the npm application.
+### 8. Build Frontend
+Builds the production frontend with `npm run build`.
 
-### 9. Run Tests
-Automated tests are executed to verify the integrity of the application.
-- **Actions**:
-  - Runs integration tests for the Django application.
-  - Executes frontend tests using npm.
+### 9. Collect Static Files
+Runs:
 
-### 10. Health Check
-This final stage verifies that the application is running correctly after deployment.
-- **Actions**:
-  - Authenticates using credentials to obtain an access token.
-  - Checks API endpoints and application availability via HTTP requests.
+```bash
+python manage.py collectstatic --noinput
+```
+
+The project uses `/var/www/competence_project/staticfiles` as the production static target.
+
+### 10. Start Services
+
+Starts:
+
+* `gunicorn`
+* `npm-app`
+
+### 11. Run Tests
+
+Runs:
+
+* Django integration tests
+* frontend test suite
+
+### 12. Internal Health Check
+
+Uses a Jenkins credential (`competence-app-teacher-id`) to obtain a JWT token from the Django API and verify:
+
+* authenticated API access
+* frontend availability on `127.0.0.1:3000`
+
+### 13. External HTTPS Smoke Check
+
+Verifies the public URLs:
+
+* `https://competence.nathabee.de/api/`
+* `https://competence.nathabee.de/admin/`
+* `https://competence.nathabee.de/`
 
 ## Post-Deployment Actions
-- **Success**: If all stages complete successfully, a success message is displayed.
-- **Failure**: If any stage fails, an error message is displayed.
 
+* **Success**: prints `Deployment successful!`
+* **Failure**: prints `Deployment failed.`
 
-
-## Remarks (for the developper) about the status of the project
-
-
-initially the django is in competence and competence_project
-initially the associated frontend is competence-app
-
-later we have created a competence-frontend to show how it is possible to shared code betweeen a react-app and a wordpress plugin
-
-then we have use the competence code in the beelab project in order to show the possibility to share code in backend and in frontend, so there was new modification that was not put to the competence inital project, because at that moment the competence project was set as deprecated
-/django and /wordpress are partially containing the code we need to use as reference in the future (wordpress contains a plugin for wordpress that can be used as frontend)
-the plugin is not implementing totally the competence-app
-the django part was modified n toder to use userCore separated from the competenceCore
-we have a duplication because the competence-app , competence-frontend are all using the django from competence and competence_project
-
-
-what we want to do in the future :
-
-* use a single source of truth for backend (use the django : it had the concept of demo user )
-* adapt the competence-app for that demo user concept (django backend)
-* check if the competence-frontend can be reuse in order to share code
-* finish the wordpress plugin by trying to see if competence-frontend wordpress plugin can beused for taht
-
+---
 
 
 

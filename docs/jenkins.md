@@ -19,10 +19,15 @@ sudo apt update
 sudo apt install -y jenkins
 ```
 
+### providory solution for acces right (to be inproved)
 add jenkins user in correct groupd to enable sav:
 
 ```bash 
- 
+
+sudo mkdir -p /home/nathabee/sav
+sudo chown nathabee:www-data /home/nathabee/sav
+sudo chmod 775 /home/nathabee/sav
+
 sudo usermod -aG www-data jenkins
 sudo chgrp -R www-data /home/nathabee/competence_project /home/nathabee/sav /var/www/competence_project
 sudo chmod -R g+rwX /home/nathabee/competence_project /home/nathabee/sav /var/www/competence_project
@@ -74,16 +79,17 @@ sudo mkdir -p /etc/systemd/system/jenkins.service.d
 sudo tee /etc/systemd/system/jenkins.service.d/override.conf >/dev/null <<'EOF'
 [Service]
 Environment="JENKINS_PORT=8081"
+Environment="PATH=/home/nathabee/.nvm/versions/node/v20.20.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+
 EOF
 ```
 
-Paste this:
 
-```ini
-[Service]
-Environment="JENKINS_PORT=8081"
-Environment="PATH=/home/nathabee/.nvm/versions/node/v20.20.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
-```
+
+
+Check File
+cat /etc/systemd/system/jenkins.service.d/override.conf
+ 
 
 Then:
 
@@ -115,11 +121,8 @@ After unlocking Jenkins, use **Install suggested plugins**. The Jenkins setup wi
 
 ### Backup directory
 
-```bash
-sudo mkdir -p /home/nathabee/sav
-sudo chown nathabee:www-data /home/nathabee/sav
-sudo chmod 775 /home/nathabee/sav
-```
+check /home/nathabee/sav exists (created at the beginning)  
+
 
 ### MySQL client file for Jenkins
 

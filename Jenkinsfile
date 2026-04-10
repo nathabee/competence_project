@@ -5,9 +5,11 @@ pipeline {
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
+        NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
+        PATH = "${NODE_BIN}:${env.PATH}"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_$timestamp"
- 
+
         RESET_DB = "false"
         INIT_DB = "false"
         POPULATE_TRANSLATION = "false"
@@ -74,6 +76,19 @@ pipeline {
             }
         }
 
+        stage('Check Tool Versions') {
+            steps {
+                script {
+                    sh '''
+                        echo "PATH=$PATH"
+                        which node
+                        node -v
+                        which npm
+                        npm -v
+                    '''
+                }
+            }
+        }
         // 4. Install Dependencies
         stage('Install Dependencies') {
             steps {
