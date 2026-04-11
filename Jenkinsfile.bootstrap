@@ -24,6 +24,7 @@ pipeline {
                 script {
                     def envText = sh(
                         script: """
+                            set +x
                             set -e
                             test -f "${env.PROJECT_ENV_FILE}" || {
                                 echo "ERROR: Missing ${env.PROJECT_ENV_FILE}" >&2
@@ -42,6 +43,9 @@ pipeline {
                                 fi
                                 printf '%s=%s\\n' "\$key" "\$value"
                             done
+
+                            value=\$(eval "printf '%s' \\"\\\${CI_INSTALL_FRONTEND_DEPS:-}\\"")
+                            printf '%s=%s\\n' "CI_INSTALL_FRONTEND_DEPS" "\$value"
                         """,
                         returnStdout: true
                     ).trim()
@@ -70,6 +74,10 @@ pipeline {
                         if (!cfg.containsKey(key) || cfg[key] == null || cfg[key].trim() == '') {
                             error("Missing ${key} in ${env.PROJECT_ENV_FILE}")
                         }
+                    }
+
+                    if (!cfg.CI_INSTALL_FRONTEND_DEPS?.trim()) {
+                        cfg.CI_INSTALL_FRONTEND_DEPS = 'false'
                     }
 
                     echo "Project .env loaded successfully."

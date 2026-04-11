@@ -145,3 +145,21 @@ Enable automatic start after reboot:
 sudo systemctl enable gunicorn
 sudo systemctl enable npm-app
 ```
+
+## in case jenkins test on dev
+
+( for the actual developper)
+
+if you test jenkins and systemd on dev
+you may make link from /home/nathabee/competence_project to  /home/nathabee/coding/github/competence_project 
+
+acl does not work on symlink so we need the real directory  /home/nathabee/coding/github/competence_project 
+:
+./tools/setup_environment.sh --install --ci \
+  --project-path /home/nathabee/coding/github/competence_project \
+  --project-owner nathabee \
+  --project-group www-data \
+  --sav-path /home/nathabee/sav \
+  --media-target /var/www/competence_project/media \
+  --static-target /var/www/competence_project/staticfiles \
+  --grant-jenkins-access

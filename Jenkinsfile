@@ -24,6 +24,7 @@ pipeline {
                 script {
                     def envText = sh(
                         script: """
+                            set +x
                             set -e
                             test -f "${env.PROJECT_ENV_FILE}" || {
                                 echo "ERROR: Missing ${env.PROJECT_ENV_FILE}" >&2
@@ -43,10 +44,8 @@ pipeline {
                                 printf '%s=%s\\n' "\$key" "\$value"
                             done
 
-                            for key in CI_INSTALL_FRONTEND_DEPS; do
-                                value=\$(eval "printf '%s' \\"\\\${\$key:-}\\"")
-                                printf '%s=%s\\n' "\$key" "\$value"
-                            done
+                            value=\$(eval "printf '%s' \\"\\\${CI_INSTALL_FRONTEND_DEPS:-}\\"")
+                            printf '%s=%s\\n' "CI_INSTALL_FRONTEND_DEPS" "\$value"
                         """,
                         returnStdout: true
                     ).trim()

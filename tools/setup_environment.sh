@@ -173,7 +173,10 @@ validate_db_identifier() {
 }
 
 ensure_defaults() {
-    [[ -d "${PROJECT_PATH}" ]] || die "Project path does not exist: ${PROJECT_PATH}"
+    [[ -e "${PROJECT_PATH}" ]] || die "Project path does not exist: ${PROJECT_PATH}"
+
+    PROJECT_PATH="$(readlink -f "${PROJECT_PATH}")"
+    [[ -d "${PROJECT_PATH}" ]] || die "Project path is not a directory: ${PROJECT_PATH}"
 
     if [[ -z "${VENV_PATH}" ]]; then
         VENV_PATH="${PROJECT_PATH}/venv"
