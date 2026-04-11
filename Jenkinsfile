@@ -115,8 +115,8 @@ pipeline {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        sudo -H -u '${env.PROJECT_OWNER}' git fetch origin
-                        sudo -H -u '${env.PROJECT_OWNER}' git reset --hard origin/main
+                        sudo -u '${env.PROJECT_OWNER}' git fetch origin
+                        sudo -u '${env.PROJECT_OWNER}' git reset --hard origin/main
                     """
                 }
             }
@@ -157,15 +157,15 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        sudo -H -u '${env.PROJECT_OWNER}' env PATH='${env.NODE_BIN}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \\
-                        bash -lc "cd '${env.PROJECT_PATH}' && ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --install-requirements"
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --install-requirements
                     """
 
                     sh """
                         set -e
-                        if [ '${cfg.CI_INSTALL_FRONTEND_DEPS}' = 'true' ]; then
-                            sudo -H -u '${env.PROJECT_OWNER}' env PATH='${env.NODE_BIN}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \\
-                            bash -lc "cd '${env.PROJECT_PATH}/competence-app' && npm install"
+                        if [ '${cfg.CI_INSTALL_FRONTEND_DEPS ?: 'true'}' = 'true' ]; then
+                            cd '${env.PROJECT_PATH}/competence-app'
+                            npm install
                         else
                             echo 'Skipping npm install because CI_INSTALL_FRONTEND_DEPS=false'
                         fi
@@ -191,8 +191,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        sudo -H -u '${env.PROJECT_OWNER}' env PATH='${env.NODE_BIN}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \\
-                        bash -lc "cd '${env.PROJECT_PATH}/competence-app' && test -f '${cfg.CI_FRONTEND_ENV_FILE}' || { echo 'ERROR: Missing frontend env file ${cfg.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app' >&2; exit 1; } && ${cfg.CI_FRONTEND_BUILD_CMD}"
+                        cd '${env.PROJECT_PATH}/competence-app'
+                        test -f '${cfg.CI_FRONTEND_ENV_FILE}' || {
+                            echo "ERROR: Missing frontend env file ${cfg.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app" >&2
+                            exit 1
+                        }
+                        ${cfg.CI_FRONTEND_BUILD_CMD}
                     """
                 }
             }
