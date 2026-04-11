@@ -2,25 +2,81 @@ pipeline {
     agent any
 
     parameters {
-        booleanParam(name: 'PREPARE_MEDIA', defaultValue: false, description: 'Create/check production media layout and media symlink.')
-        booleanParam(name: 'RESET_DB', defaultValue: false, description: 'Drop and recreate competencedb.')
-        booleanParam(name: 'INIT_DB', defaultValue: false, description: 'Run Django init data tasks.')
-        booleanParam(name: 'POPULATE_TRANSLATION', defaultValue: false, description: 'Run populate_translation.')
-        booleanParam(name: 'RESET_PASSWORDS', defaultValue: false, description: 'Reset example Django user passwords from .env DEFAULT_USER_PASSWORD.')
+        booleanParam(name: 'PREPARE_SHARED_PATHS', defaultValue: false, description: 'Prepare sav/media/staticfiles paths and symlinks.')
+        booleanParam(name: 'RESET_DB', defaultValue: false, description: 'Drop and recreate the application database defined in .env.')
+        booleanParam(name: 'CLEAR_MEDIA', defaultValue: false, description: 'Remove all files under the media target while keeping the root directory.')
+        booleanParam(name: 'CLEAR_STATICFILES', defaultValue: false, description: 'Remove all files under the staticfiles target while keeping the root directory.')
     }
 
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
+        PROJECT_OWNER = "nathabee"
+        PROJECT_GROUP = "www-data"
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
+
+        MEDIA_TARGET = "/var/www/competence_project/media"
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
+
         NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
+        PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
+
+        DBNAME = ""
+        CI_DEPLOY_ENV = ""
+        CI_UPDATE_DEPLOY_TREE = ""
+        CI_FRONTEND_ENV_FILE = ""
+        CI_FRONTEND_BUILD_CMD = ""
+        CI_RUN_EXTERNAL_SMOKE = ""
+
         PATH = "${NODE_BIN}:${env.PATH}"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_${timestamp}"
     }
 
     stages {
+
+        stage('Load Project .env') {
+            steps {
+                script {
+                    def envText = sh(
+                        script: """
+                            set -e
+                            test -f "${PROJECT_ENV_FILE}" || {
+                                echo "ERROR: Missing ${PROJECT_ENV_FILE}" >&2
+                                exit 1
+                            }
+
+                            set -a
+                            . "${PROJECT_ENV_FILE}"
+                            set +a
+
+                            for key in DBNAME CI_DEPLOY_ENV CI_UPDATE_DEPLOY_TREE CI_FRONTEND_ENV_FILE CI_FRONTEND_BUILD_CMD CI_RUN_EXTERNAL_SMOKE; do
+                                value=\$(eval "printf '%s' \\"\\\${\$key:-}\\"")
+                                if [ -z "\$value" ]; then
+                                    echo "ERROR: Missing \$key in ${PROJECT_ENV_FILE}" >&2
+                                    exit 1
+                                fi
+                                printf '%s=%s\\n' "\$key" "\$value"
+                            done
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    envText.split("\\r?\\n").each { line ->
+                        def idx = line.indexOf("=")
+                        if (idx > 0) {
+                            def key = line.substring(0, idx)
+                            def value = line.substring(idx + 1)
+                            env."${key}" = value
+                        }
+                    }
+
+                    echo "CI_DEPLOY_ENV=${env.CI_DEPLOY_ENV}"
+                    echo "DBNAME=${env.DBNAME}"
+                    echo "Bootstrap mode: reset/preparation only"
+                }
+            }
+        }
 
         stage('BackUp') {
             steps {
@@ -29,7 +85,7 @@ pipeline {
                         set -e
                         mkdir -p ${PROJECT_SAV}
                         cp -r ${PROJECT_PATH} ${BACKUPDIR}
-                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases competencedb > '${BACKUPDIR}/db_backup_${timestamp}.sql'
+                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases ${DBNAME} > '${BACKUPDIR}/db_backup_${timestamp}.sql'
                     """
                     echo "Backup of project directory created at ${BACKUPDIR}"
                     echo "MySQL database backup created."
@@ -37,28 +93,15 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
+        stage('Checkout Workspace') {
             steps {
                 checkout([
-                    $class: 'GitSCM',
+                    \$class: 'GitSCM',
                     branches: [[name: 'main']],
                     doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'WipeWorkspace']],
+                    extensions: [[\$class: 'WipeWorkspace']],
                     userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
                 ])
-            }
-        }
-
-        stage('Update Repository') {
-            steps {
-                script {
-                    sh """
-                        set -e
-                        cd ${PROJECT_PATH}
-                        sudo -u nathabee git fetch origin
-                        sudo -u nathabee git reset --hard origin/main
-                    """
-                }
             }
         }
 
@@ -75,81 +118,14 @@ pipeline {
             }
         }
 
-        stage('Manual Confirmation for DB Reset') {
+        stage('Manual Confirmation') {
             when {
-                expression { return params.RESET_DB }
-            }
-            steps {
-                input message: "RESET_DB is enabled. Confirm that competencedb must be dropped and recreated."
-            }
-        }
-
-        stage('Check Tool Versions') {
-            steps {
-                script {
-                    sh """
-                        set -e
-                        echo "PATH=$PATH"
-                        which node
-                        node -v
-                        which npm
-                        npm -v
-                    """
+                expression {
+                    return params.PREPARE_SHARED_PATHS || params.RESET_DB || params.CLEAR_MEDIA || params.CLEAR_STATICFILES
                 }
             }
-        }
-
-        stage('Install Dependencies') {
             steps {
-                script {
-                    sh """
-                        set -e
-                        cd ${PROJECT_PATH}
-                        chmod +x tools/setup_django.sh tools/reset-django-pwd.sh tools/setup_django_migration.sh tools/setup_django_loaddata.sh
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --install-requirements
-                    """
-                    sh """
-                        set -e
-                        cd ${PROJECT_PATH}/competence-app
-                        npm install
-                    """
-                }
-            }
-        }
-
-        stage('Prepare Media Layout') {
-            when {
-                expression { return params.PREPARE_MEDIA }
-            }
-            steps {
-                script {
-                    sh """
-                        set -e
-
-                        sudo mkdir -p /var/www/competence_project/media/origin/competence/header_icons
-                        sudo mkdir -p /var/www/competence_project/media/origin/competence/png
-                        sudo mkdir -p /var/www/competence_project/media/competence/header_icons
-                        sudo mkdir -p /var/www/competence_project/media/competence/png
-
-                        sudo chown -R nathabee:www-data /var/www/competence_project
-                        sudo find /var/www/competence_project -type d -exec chmod 2775 {} \\;
-                        sudo find /var/www/competence_project -type f -exec chmod 664 {} \\;
-
-                        cd ${PROJECT_PATH}
-
-                        if [ -L media ]; then
-                            ln -sfn /var/www/competence_project/media media
-                        elif [ ! -e media ]; then
-                            ln -s /var/www/competence_project/media media
-                        else
-                            echo "ERROR: ${PROJECT_PATH}/media exists and is not a symlink."
-                            echo "Refusing to modify it automatically in Jenkins."
-                            exit 1
-                        fi
-
-                        ls -ld media /var/www/competence_project/media
-                    """
-                }
+                input message: "Bootstrap will modify the environment. Confirm that you want to continue."
             }
         }
 
@@ -161,173 +137,87 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        mysql --defaults-extra-file=/var/lib/jenkins/.my.cnf -e 'DROP DATABASE IF EXISTS competencedb; CREATE DATABASE competencedb;'
+                        mysql --defaults-extra-file=/var/lib/jenkins/.my.cnf -e 'DROP DATABASE IF EXISTS \`${DBNAME}\`; CREATE DATABASE \`${DBNAME}\`;'
                     """
                 }
             }
         }
 
-        stage('Migrate Database') {
-            steps {
-                script {
-                    sh """
-                        set -e
-                        cd ${PROJECT_PATH}
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --migrate
-                    """
-                }
-            }
-        }
-
-        stage('Initialize Django Data') {
+        stage('Clear Media') {
             when {
-                expression { return params.INIT_DB || params.RESET_DB }
+                expression { return params.CLEAR_MEDIA }
             }
             steps {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --copy-data-init --populate-data-init --create-groups --populate-teacher
+                        test -d "${MEDIA_TARGET}" || {
+                            echo "ERROR: Missing media target ${MEDIA_TARGET}" >&2
+                            exit 1
+                        }
+                        find "${MEDIA_TARGET}" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+                        ls -ld "${MEDIA_TARGET}"
                     """
                 }
             }
         }
 
-        stage('Populate Translation') {
+        stage('Clear Static Files') {
             when {
-                expression { return params.POPULATE_TRANSLATION }
+                expression { return params.CLEAR_STATICFILES }
             }
             steps {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --populate-translation
+                        test -d "${STATIC_FILES_PATH}" || {
+                            echo "ERROR: Missing staticfiles target ${STATIC_FILES_PATH}" >&2
+                            exit 1
+                        }
+                        find "${STATIC_FILES_PATH}" -mindepth 1 -maxdepth 1 -exec rm -rf {} +
+                        ls -ld "${STATIC_FILES_PATH}"
                     """
                 }
             }
         }
 
-        stage('Reset Django Passwords') {
+        stage('Prepare Shared Paths') {
             when {
-                expression { return params.RESET_PASSWORDS }
+                expression { return params.PREPARE_SHARED_PATHS }
             }
             steps {
                 script {
                     sh """
                         set -e
                         cd ${PROJECT_PATH}
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --reset-passwords
+                        chmod +x tools/setup_environment.sh
+                        ./tools/setup_environment.sh --install --ci \
+                          --project-path ${PROJECT_PATH} \
+                          --project-owner ${PROJECT_OWNER} \
+                          --project-group ${PROJECT_GROUP} \
+                          --sav-path ${PROJECT_SAV} \
+                          --media-target ${MEDIA_TARGET} \
+                          --static-target ${STATIC_FILES_PATH} \
+                          --prepare-shared-paths
                     """
                 }
             }
         }
 
-        stage('Build Frontend') {
+        stage('Summary') {
             steps {
-                script {
-                    sh """
-                        set -e
-                        cd ${PROJECT_PATH}/competence-app
-                        npm run build
-                    """
-                }
-            }
-        }
-
-        stage('Collect Static Files') {
-            steps {
-                script {
-                    sh """
-                        set -e
-                        cd ${PROJECT_PATH}
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --collectstatic
-                    """
-                }
-            }
-        }
-
-        stage('Start Services') {
-            steps {
-                script {
-                    sh """
-                        set -e
-                        sudo systemctl start gunicorn
-                        sudo systemctl start npm-app
-                    """
-                }
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                script {
-                    sh """
-                        set -e
-                        . ${VENV_PATH}/bin/activate
-                        cd ${PROJECT_PATH}
-                        python manage.py test competence.tests.test_integration_workflow
-                    """
-                    sh """
-                        set -e
-                        cd ${PROJECT_PATH}/competence-app
-                        export NODE_ENV=test
-                        npm run test
-                    """
-                }
-            }
-        }
-
-        stage('Health Check (internal)') {
-            steps {
-                script {
-                    withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
-                        def accessToken = sh(
-                            script: '''
-                                set +x
-                                curl -fsS -X POST \
-                                -H "Content-Type: application/json" \
-                                -H "X-Forwarded-Proto: https" \
-                                -d "{\"username\":\"$TEACHER_USER\",\"password\":\"$TEACHER_PASS\"}" \
-                                http://127.0.0.1:8080/api/token/ | jq -r .access
-                            ''',
-                            returnStdout: true
-                        ).trim()
-
-                        sh """
-                            set -e
-                            test -n "${accessToken}"
-                            test "${accessToken}" != "null"
-                            curl -fsS \
-                              -H "Authorization: Bearer ${accessToken}" \
-                              -H "X-Forwarded-Proto: https" \
-                              http://127.0.0.1:8080/api/
-                            curl -fsSI http://127.0.0.1:3000/
-                        """
-                    }
-                }
-            }
-        }
-
-        stage('Smoke Check (external HTTPS)') {
-            steps {
-                sh """
-                    set -e
-                    curl -fsSI https://competence.nathabee.de/api/
-                    curl -fsSI https://competence.nathabee.de/admin/
-                    curl -fsSI https://competence.nathabee.de/
-                """
+                echo 'Bootstrap completed. No deploy/build/migrate/test/start was performed.'
+                echo 'Run the normal Jenkinsfile pipeline afterward for the real deployment flow.'
             }
         }
     }
 
     post {
         success {
-            echo 'Bootstrap/reset deployment successful!'
+            echo 'Bootstrap/reset completed successfully.'
         }
         failure {
-            echo 'Bootstrap/reset deployment failed.'
+            echo 'Bootstrap/reset failed.'
         }
     }
 }

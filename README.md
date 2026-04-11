@@ -140,7 +140,27 @@ Then edit:
 nano .env
 ```
 
-Make sure the database settings match the database, user, and password actually created by `setup_environment.sh`.
+* Make sure the database settings match the database, user, and password actually created by `setup_environment.sh`.
+
+
+
+* `CI_DEPLOY_ENV`
+  informational label for the pipeline
+
+* `CI_UPDATE_DEPLOY_TREE`
+  whether Jenkins is allowed to run `git fetch` + `git reset --hard` on the deployment tree
+  `false` in dev protects your working tree
+  `true` in prod updates the deploy tree from GitHub
+
+* `CI_FRONTEND_ENV_FILE`
+  the frontend env file that must exist in `competence-app/`
+
+* `CI_FRONTEND_BUILD_CMD`
+  the build command Jenkins should run for the frontend
+
+* `CI_RUN_EXTERNAL_SMOKE`
+  whether Jenkins should run the public HTTPS smoke checks
+
 
 ---
 

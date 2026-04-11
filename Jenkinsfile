@@ -7,12 +7,67 @@ pipeline {
         VENV_PATH = "/home/nathabee/competence_project/venv"
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
         NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
+        PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
+
+        DBNAME = ""
+        CI_DEPLOY_ENV = ""
+        CI_UPDATE_DEPLOY_TREE = ""
+        CI_FRONTEND_ENV_FILE = ""
+        CI_FRONTEND_BUILD_CMD = ""
+        CI_RUN_EXTERNAL_SMOKE = ""
+
         PATH = "${NODE_BIN}:${env.PATH}"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_${timestamp}"
     }
 
     stages {
+
+        stage('Load Project .env') {
+            steps {
+                script {
+                    def envText = sh(
+                        script: """
+                            set -e
+                            test -f "${PROJECT_ENV_FILE}" || {
+                                echo "ERROR: Missing ${PROJECT_ENV_FILE}" >&2
+                                exit 1
+                            }
+
+                            set -a
+                            . "${PROJECT_ENV_FILE}"
+                            set +a
+
+                            for key in DBNAME CI_DEPLOY_ENV CI_UPDATE_DEPLOY_TREE CI_FRONTEND_ENV_FILE CI_FRONTEND_BUILD_CMD CI_RUN_EXTERNAL_SMOKE; do
+                                value=\$(eval "printf '%s' \\"\\\${\$key:-}\\"")
+                                if [ -z "\$value" ]; then
+                                    echo "ERROR: Missing \$key in ${PROJECT_ENV_FILE}" >&2
+                                    exit 1
+                                fi
+                                printf '%s=%s\\n' "\$key" "\$value"
+                            done
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    envText.split("\\r?\\n").each { line ->
+                        def idx = line.indexOf("=")
+                        if (idx > 0) {
+                            def key = line.substring(0, idx)
+                            def value = line.substring(idx + 1)
+                            env."${key}" = value
+                        }
+                    }
+
+                    echo "DBNAME=${env.DBNAME}"
+                    echo "CI_DEPLOY_ENV=${env.CI_DEPLOY_ENV}"
+                    echo "CI_UPDATE_DEPLOY_TREE=${env.CI_UPDATE_DEPLOY_TREE}"
+                    echo "CI_FRONTEND_ENV_FILE=${env.CI_FRONTEND_ENV_FILE}"
+                    echo "CI_FRONTEND_BUILD_CMD=${env.CI_FRONTEND_BUILD_CMD}"
+                    echo "CI_RUN_EXTERNAL_SMOKE=${env.CI_RUN_EXTERNAL_SMOKE}"
+                }
+            }
+        }
 
         stage('BackUp') {
             steps {
@@ -21,7 +76,7 @@ pipeline {
                         set -e
                         mkdir -p ${PROJECT_SAV}
                         cp -r ${PROJECT_PATH} ${BACKUPDIR}
-                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases competencedb > '${BACKUPDIR}/db_backup_${timestamp}.sql'
+                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases ${DBNAME} > '${BACKUPDIR}/db_backup_${timestamp}.sql'
                     """
                     echo "Backup of project directory created at ${BACKUPDIR}"
                     echo "MySQL database backup created."
@@ -32,16 +87,19 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout([
-                    $class: 'GitSCM',
+                    \$class: 'GitSCM',
                     branches: [[name: 'main']],
                     doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'WipeWorkspace']],
+                    extensions: [[\$class: 'WipeWorkspace']],
                     userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
                 ])
             }
         }
 
         stage('Update Repository') {
+            when {
+                expression { return env.CI_UPDATE_DEPLOY_TREE == 'true' }
+            }
             steps {
                 script {
                     sh """
@@ -72,6 +130,8 @@ pipeline {
                 script {
                     sh """
                         set -e
+                        echo "DBNAME=$DBNAME"
+                        echo "CI_DEPLOY_ENV=$CI_DEPLOY_ENV"
                         echo "PATH=$PATH"
                         which node
                         node -v
@@ -118,7 +178,11 @@ pipeline {
                     sh """
                         set -e
                         cd ${PROJECT_PATH}/competence-app
-                        npm run build
+                        test -f "${CI_FRONTEND_ENV_FILE}" || {
+                            echo "ERROR: Missing frontend env file ${CI_FRONTEND_ENV_FILE} in ${PROJECT_PATH}/competence-app" >&2
+                            exit 1
+                        }
+                        ${CI_FRONTEND_BUILD_CMD}
                     """
                 }
             }
@@ -199,6 +263,9 @@ pipeline {
         }
 
         stage('Smoke Check (external HTTPS)') {
+            when {
+                expression { return env.CI_RUN_EXTERNAL_SMOKE == 'true' }
+            }
             steps {
                 sh """
                     set -e
