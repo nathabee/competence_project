@@ -71,12 +71,7 @@ pipeline {
                         }
                     }
 
-                    echo "DBNAME=${cfg.DBNAME}"
-                    echo "CI_DEPLOY_ENV=${cfg.CI_DEPLOY_ENV}"
-                    echo "CI_UPDATE_DEPLOY_TREE=${cfg.CI_UPDATE_DEPLOY_TREE}"
-                    echo "CI_FRONTEND_ENV_FILE=${cfg.CI_FRONTEND_ENV_FILE}"
-                    echo "CI_FRONTEND_BUILD_CMD=${cfg.CI_FRONTEND_BUILD_CMD}"
-                    echo "CI_RUN_EXTERNAL_SMOKE=${cfg.CI_RUN_EXTERNAL_SMOKE}"
+                    echo "Project .env loaded successfully."
                 }
             }
         }
