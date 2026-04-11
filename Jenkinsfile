@@ -196,6 +196,7 @@ pipeline {
                             echo "ERROR: Missing frontend env file ${cfg.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app" >&2
                             exit 1
                         }
+                        rm -rf .next
                         ${cfg.CI_FRONTEND_BUILD_CMD}
                     """
                 }
