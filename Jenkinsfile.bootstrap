@@ -140,7 +140,7 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        mysql --defaults-extra-file=/var/lib/jenkins/.my.cnf -e 'DROP DATABASE IF EXISTS \`${cfg.DBNAME}\`; CREATE DATABASE \`${DBNAME}\`;'
+                        mysql --defaults-extra-file=/var/lib/jenkins/.my.cnf -e 'DROP DATABASE IF EXISTS ${cfg.DBNAME}; CREATE DATABASE \`${DBNAME}\`;'
                     """
                 }
             }
