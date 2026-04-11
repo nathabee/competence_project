@@ -185,6 +185,18 @@ pipeline {
             }
         }
 
+        stage('Ensure CI Django User') {
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --ensure-ci-user
+                    """
+                }
+            }
+        }
+
         stage('Build Frontend') {
             steps {
                 script {

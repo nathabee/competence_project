@@ -20,6 +20,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+DEFAULT_USER_PASSWORD = config("DEFAULT_USER_PASSWORD", default="")
+CI_HEALTHCHECK_USERNAME = config("CI_HEALTHCHECK_USERNAME", default="compet_ci")
+CI_HEALTHCHECK_EMAIL = config("CI_HEALTHCHECK_EMAIL", default=DJANGO_SUPERUSER_EMAIL)
+
 
 # Define a function to get environment variables
 def get_env_variable(var_name, default=None):

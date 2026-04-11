@@ -30,6 +30,7 @@ DO_RESET_PASSWORDS=false
 DO_COLLECTSTATIC=false
 DO_CREATE_SUPERUSER=false
 DO_RUNSERVER=false
+DO_ENSURE_CI_USER=false
 
 show_help() {
     cat <<EOF
@@ -66,7 +67,7 @@ Flags:
       --collectstatic          Run python manage.py collectstatic --noinput
       --create-superuser       Run python manage.py createsuperuser (interactive only)
       --runserver              Run python manage.py runserver 0.0.0.0:8080 (interactive only)
-
+      --ensure-ci-user         Run python manage.py ensure_ci_user
 Examples:
   Interactive setup:
     $0 --setup
@@ -75,8 +76,7 @@ Examples:
     $0 --setup --ci --install-requirements --migrate
 
   CI reset/init path after DB reset:
-    $0 --setup --ci --install-requirements --migrate --copy-data-init --populate-data-init --create-groups --populate-teacher --populate-translation --collectstatic
-
+    $0 --setup --ci --install-requirements --migrate --copy-data-init --populate-data-init --create-groups --populate-teacher --ensure-ci-user --populate-translation --collectstatic
 Notes:
   - This script is the single entry point for Django-side setup tasks.
   - In CI mode, no prompts are shown.
@@ -330,6 +330,16 @@ start_django_server() {
     deactivate
 }
 
+run_ensure_ci_user() {
+    ensure_paths
+    cd "${PROJECT_PATH}"
+
+    activate_venv
+    info "Running ensure_ci_user..."
+    python manage.py ensure_ci_user
+    deactivate
+}
+
 run_selected_tasks() {
     if [[ "${DO_INSTALL_REQUIREMENTS}" == "true" ]]; then install_requirements; fi
     if [[ "${DO_START_PROJECT}" == "true" ]]; then start_django_project; fi
@@ -346,6 +356,7 @@ run_selected_tasks() {
     if [[ "${DO_COLLECTSTATIC}" == "true" ]]; then run_collectstatic; fi
     if [[ "${DO_CREATE_SUPERUSER}" == "true" ]]; then create_django_superuser; fi
     if [[ "${DO_RUNSERVER}" == "true" ]]; then start_django_server; fi
+    if [[ "${DO_ENSURE_CI_USER}" == "true" ]]; then run_ensure_ci_user; fi
 }
 
 interactive_setup() {
@@ -396,7 +407,9 @@ interactive_setup() {
     if prompt_yes_no "Start Django development server" "n"; then
         DO_RUNSERVER=true
     fi
-
+    if prompt_yes_no "Ensure CI health-check user" "n"; then
+        DO_ENSURE_CI_USER=true
+    fi
     run_selected_tasks
 }
 
@@ -509,6 +522,10 @@ parse_args() {
                 DO_RUNSERVER=true
                 shift
                 ;;
+            --ensure-ci-user)
+                DO_ENSURE_CI_USER=true
+                shift
+                ;;
             *)
                 die "Invalid option: $1"
                 ;;
@@ -542,6 +559,7 @@ main() {
                       "${DO_RESET_PASSWORDS}" == "true" || \
                       "${DO_COLLECTSTATIC}" == "true" || \
                       "${DO_CREATE_SUPERUSER}" == "true" || \
+                      "${DO_ENSURE_CI_USER}" == "true" || \
                       "${DO_RUNSERVER}" == "true" ]]; then
                     run_selected_tasks
                 else
