@@ -259,7 +259,9 @@ create_or_update_mysql_database_and_user() {
     validate_db_identifier "${DB_USER}" "Database user"
 
     local escaped_pass
+    local test_db_name
     escaped_pass="$(sql_escape_string "${DB_PASS}")"
+    test_db_name="test_${DB_NAME}"
 
     info "Creating/updating MySQL database '${DB_NAME}' and user '${DB_USER}'..."
 
@@ -272,10 +274,11 @@ CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${escaped_pass
 ALTER USER '${DB_USER}'@'localhost' IDENTIFIED BY '${escaped_pass}';
 
 GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'localhost';
+GRANT ALL PRIVILEGES ON \`${test_db_name}\`.* TO '${DB_USER}'@'localhost';
 FLUSH PRIVILEGES;
 SQL
 
-    info "MySQL setup complete with database '${DB_NAME}' and user '${DB_USER}'."
+    info "MySQL setup complete with database '${DB_NAME}', test database '${test_db_name}', and user '${DB_USER}'."
 }
 
 backup_existing_path_interactive() {
