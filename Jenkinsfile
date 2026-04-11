@@ -5,6 +5,7 @@ pipeline {
 
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
+        PROJECT_OWNER = "nathabee"
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
@@ -41,6 +42,11 @@ pipeline {
                                 fi
                                 printf '%s=%s\\n' "\$key" "\$value"
                             done
+
+                            for key in CI_INSTALL_FRONTEND_DEPS; do
+                                value=\$(eval "printf '%s' \\"\\\${\$key:-}\\"")
+                                printf '%s=%s\\n' "\$key" "\$value"
+                            done
                         """,
                         returnStdout: true
                     ).trim()
@@ -71,6 +77,10 @@ pipeline {
                         }
                     }
 
+                    if (!cfg.CI_INSTALL_FRONTEND_DEPS?.trim()) {
+                        cfg.CI_INSTALL_FRONTEND_DEPS = 'false'
+                    }
+
                     echo "Project .env loaded successfully."
                 }
             }
@@ -91,29 +101,19 @@ pipeline {
             }
         }
 
-        stage('Checkout') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'main']],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'WipeWorkspace']],
-                    userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
-                ])
-            }
-        }
+ 
 
         stage('Update Repository') {
             when {
-                expression { return cfg.CI_UPDATE_DEPLOY_TREE == 'true' }
+                expression { return cfg.CI_UPDATE_DEPLOY_TREE == 'true' && cfg.CI_DEPLOY_ENV != 'development' }
             }
             steps {
                 script {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        sudo -u nathabee git fetch origin
-                        sudo -u nathabee git reset --hard origin/main
+                        sudo -u '${env.PROJECT_OWNER}' git fetch origin
+                        sudo -u '${env.PROJECT_OWNER}' git reset --hard origin/main
                     """
                 }
             }

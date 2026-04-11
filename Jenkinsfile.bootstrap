@@ -2,9 +2,10 @@ def cfg = [:]
 
 pipeline {
     agent any
-
+ 
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
+        PROJECT_OWNER = "nathabee"
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
