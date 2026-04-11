@@ -44,7 +44,7 @@ nvm use
 npm run dev
 ``` 
 
-This uses `.env.local`.
+This uses `.env.development`.
 
 ### Test the local build
 
@@ -55,7 +55,7 @@ npm run local-build
 npm run local-start
 ```
 
-These commands use `.env.local`.
+These commands use `.env.development`.
 
 ### Test the production build locally
 

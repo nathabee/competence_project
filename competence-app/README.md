@@ -21,7 +21,7 @@ configure apache proxy
 
 
 ## Getting Started
-create a .env.local with NEXT_PUBLIC_API_URL
+create a .env.development with NEXT_PUBLIC_API_URL
 The prefix NEXT_PUBLIC_ is required for environment variables that need to be exposed to the client side 
 NEXT_PUBLIC_API_URL=http://localhost:8000/api
 

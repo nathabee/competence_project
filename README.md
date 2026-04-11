@@ -303,7 +303,7 @@ For development:
 
 * `.env.demo` for the GitHub Pages demo build
 * `.env.demolocal` for local demo testing
-* `.env.local` for local development against Django
+* `.env.development` for local development against Django
 
 For production:
 
@@ -344,7 +344,7 @@ In a Jenkins-managed deployment, Jenkins performs the build and restarts `npm-ap
 
 For local development, do not use Jenkins and do not use the `npm-app` systemd service.
 
-Check that `competence-app/.env.local` exists, then run:
+Check that `competence-app/.env.development` exists, then run:
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -394,7 +394,7 @@ python manage.py test competence.tests.test_integration_workflow
 This uses the frontend test setup in `competence-app/__tests__`.
 
 ```bash
-dotenv -e .env.local jest
+dotenv -e .env.development jest
 ```
 
 

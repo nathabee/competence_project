@@ -23,9 +23,9 @@
   },
 
   "scripts": {
-    "dev": "dotenv -e .env.local next dev",
-    "local-build": "dotenv -e .env.local next build",
-    "local-start": "dotenv -e .env.local next start",
+    "dev": "dotenv -e .env.development next dev",
+    "local-build": "dotenv -e .env.development next build",
+    "local-start": "dotenv -e .env.development next start",
     "build": "dotenv -e .env.production next build",
     "start": "dotenv -e .env.production next start",
     "demo-build": "dotenv -e .env.demo next build",
@@ -33,7 +33,7 @@
     "demo-local-build": "rm -rf ../gh-pages/staticfiles && cp -rp ../staticfiles ../gh-pages/ && rm -rf ../gh-pages/out && dotenv -e .env.demolocal next build && touch ./out/.nojekyll && mv out ../gh-pages",
     "demo-local-start": "dotenv -e .env.demolocal npx serve ../gh-pages --single --prefix /",
     "demo-deploy": "rm -rf ../gh-pages/staticfiles && cp -rp ../staticfiles ../gh-pages/ && rm -rf ../gh-pages/out && dotenv -e .env.demo next build && mv out ../gh-pages/out && touch ../gh-pages/out/.nojekyll && touch ../gh-pages/.nojekyll && gh-pages -d ../gh-pages/ -t true",
-    "test": "dotenv -e .env.local jest",
+    "test": "dotenv -e .env.development jest",
     "lint": "next lint"
   },
 
