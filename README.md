@@ -5,7 +5,7 @@
 
 This project is a Django-based system designed to manage and evaluate student competencies through various assessments. It stores student data, tracks evaluation results, and analyzes progress over time. It integrates with a REST API, enabling access by an Android application.
 
-Frontend : React App or Wordpress plugin
+Frontend: Next.js application or WordPress plugin
 
 
 ## Project Demo (demo of react-app)
@@ -27,7 +27,7 @@ This demo showcases the frontend, compiled as static files and deployed to GitHu
 
 - `competence_project/`: Django backend for competence evaluation.
 - `competence/`: Django app containing models, views, serializers, and migrations.
-- `competence-frontend` : wordpress plugin (later with shared code and will replace the react-app from competence-app)
+- `competence-frontend`: WordPress plugin project. Later it may share code with or replace parts of `competence-app`.
 - `competence-app/`: Frontend built with Next.js and React.
 - `script_db/`: SQL scripts for initializing and seeding the database.
 - `static/`: Static files (CSS, JavaScript, images).
@@ -48,155 +48,172 @@ This demo showcases the frontend, compiled as static files and deployed to GitHu
 Configure DNS and Apache :  [apache.md](https://github.com/nathabee/competence_project/blob/main/docs/apache.md )
 Configure Jenkins :  [jenkins.md](https://github.com/nathabee/competence_project/blob/main/docs/jenkins.md )
 Operation Manual :  [operation-manual.md](https://github.com/nathabee/competence_project/blob/main/docs/operation-manual.md )
-service installation guide: se [systemctl-install.md](https://github.com/nathabee/competence_project/blob/main/docs/systemctl-install.md )
+service installation guide: see [systemctl-install.md](https://github.com/nathabee/competence_project/blob/main/docs/systemctl-install.md )
 
 ## 🚀 Getting Started
 
-To set up and run this project, follow these instructions:
+To set up and run this project, follow these instructions.
 
 ### 0. Project Initialization
-Clone the repository and set up the server:
 
-The project is initialized from GitHub. You can simply clone this repository.
+Clone the repository:
 
-
-# Clone directly
-```bash 
+```bash
 git clone https://github.com/nathabee/competence_project.git
+cd competence_project
 ```
 
-```bash 
-cd competence_project 
-ln -s tools/*.sh .
-```
+The setup scripts are called directly from `./tools/`.
 
+---
 
 ### 1. Server and Database Setup
 
+Use the environment setup script.
 
-```bash 
-# to install
-./setup_environment.sh -i
+#### Interactive/manual mode
+
+```bash
+./tools/setup_environment.sh --install
 ```
-This installs the web server, Python, pip, MySQL server, and necessary dependencies. It also sets up a virtual environment and database:
 
+This script can:
 
-Create the database with the correct parameters
-- The database will be set up with:
-  - **Database Name**: `competencedb`
-  - **User**: `competence_user`
+* install required system packages
+* create or update the Python virtual environment
+* install Django in the virtual environment
+* create or update the MySQL database and user
+* prepare shared paths such as:
 
- 
-check database is created :
- ```bash  
+  * `/home/<user>/sav`
+  * `/var/www/competence_project/media`
+  * `/var/www/competence_project/staticfiles`
+* ensure the project symlinks for `media` and `staticfiles`
+
+#### Non-interactive mode
+
+For a reproducible setup on a prepared server, use explicit flags.
+
+Example:
+
+```bash
+./tools/setup_environment.sh --install --ci \
+  --project-path /home/nathabee/competence_project \
+  --project-owner nathabee \
+  --project-group www-data \
+  --create-db --db-name competencedb --db-user competence_user --db-pass 'REAL_DB_PASSWORD_HERE' \
+  --prepare-shared-paths
+```
+
+After the database is created, verify access with:
+
+```bash
 mysql -u competence_user -p competencedb
-
 ```
 
-modify the  .env file which is installed in the same repository as manage.py
- 
-```bash
+---
 
+### 2. Configure `.env`
+
+Create the backend environment file in the repository root, next to `manage.py`.
+
+```bash
 cp env.example.prod .env
-# cp env.example.dev .env    (in dev)
+# adapt from a dev example if you use a separate local flow
+```
 
+Generate secrets:
+
+```bash
 python3 -c "import secrets; print(secrets.token_urlsafe(50))"
 python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+```
 
+Use:
 
-#Use:
-#first output for DJANGO_SECRET_KEY
-#second output for JWT_SECRET_KEY
+* first output for `DJANGO_SECRET_KEY`
+* second output for `JWT_SECRET_KEY`
 
+Then edit:
+
+```bash
 nano .env
-``` 
-
-
-
-
-
-### 3. Django Setup , migration and initialisation
-
-
-
-Set up your Python virtual environment and install the necessary dependencies:
-
-```bash
-cd competence_project
-
-source venv/bin/activate
-
-
-
-# start the file from tools/setup_django.sh it start the server in port 8080
-./setup_django.sh -s
-
-after cloning the git (say no to new project and new app):
-Start a new Django project (y/n): n
-Create a new Django app (y/n): n
-Run Django migrations (y/n): y
-
-
-#python manage.py makemigrations competence
-#./setup_django_migration.sh
 ```
 
+Make sure the database settings match the database, user, and password actually created by `setup_environment.sh`.
 
+---
 
-create the source media:
+### 3. Django Setup, Migration, and Initialization
+
+Use the Django setup script.
+
+#### Interactive/manual mode
+
 ```bash
-# adjust if your production checkout lives elsewhere
-PROJECT_DIR=/home/nathabee/competence_project
-MEDIA_TARGET=/var/www/competence_project/media
-
-sudo mkdir -p "$MEDIA_TARGET/origin/competence/header_icons"
-sudo mkdir -p "$MEDIA_TARGET/origin/competence/png"
-sudo mkdir -p "$MEDIA_TARGET/competence/header_icons"
-sudo mkdir -p "$MEDIA_TARGET/competence/png"
-
-sudo chown -R nathabee:www-data /var/www/competence_project
-sudo find /var/www/competence_project -type d -exec chmod 2775 {} \;
-sudo find /var/www/competence_project -type f -exec chmod 664 {} \;
-
-cd "$PROJECT_DIR"
-
-if [ -e media ] && [ ! -L media ]; then
-    mv media media.bak
-fi
-
-ln -sfn "$MEDIA_TARGET" media
-ls -ld media "$MEDIA_TARGET"
- 
-``` 
-
-
-Run the database scripts  directory to initialize the required tables:
- 
-```bash 
-cd /home/nathabee/competence_project
-source venv/bin/activate
-
-python manage.py copy_data_init
-python manage.py populate_data_init
-python manage.py create_groups_and_permissions
-python manage.py populate_teacher
-python manage.py populate_translation
-# python manage.py populate_demo || true
+./tools/setup_django.sh --setup
 ```
 
-Reset password of the example user, with password default of .env
-./reset-django-pwd.sh
+This script can perform Django-side tasks such as:
+
+* install Python requirements
+* run `makemigrations`
+* run `migrate`
+* load fixture data
+* run `copy_data_init`
+* run `populate_data_init`
+* run `create_groups_and_permissions`
+* run `populate_teacher`
+* run `populate_translation`
+* reset example user passwords
+* run `collectstatic`
+
+#### Non-interactive mode
+
+Example for a full Django initialization on an already prepared server:
+
+```bash
+./tools/setup_django.sh --setup --ci \
+  --project-path /home/nathabee/competence_project \
+  --venv-path /home/nathabee/competence_project/venv \
+  --install-requirements \
+  --migrate \
+  --copy-data-init \
+  --populate-data-init \
+  --create-groups \
+  --populate-teacher \
+  --populate-translation
+```
+
+If you want to reset the example users to the password defined in `.env`:
+
+```bash
+./tools/setup_django.sh --setup --ci \
+  --project-path /home/nathabee/competence_project \
+  --venv-path /home/nathabee/competence_project/venv \
+  --reset-passwords
+```
+
+#### Minimal migration-only run
+
+```bash
+./tools/setup_django.sh --setup --ci \
+  --project-path /home/nathabee/competence_project \
+  --venv-path /home/nathabee/competence_project/venv \
+  --migrate
+```
+
+---
 
 ### 4. Run the Backend Server
 
-#### pre-requise
+#### Prerequisite
 
+Configure DNS and Apache first:
 
-Configure DNS and Apache : see [apache.md](https://github.com/nathabee/competence_project/blob/main/docs/apache.md )
+* see [`docs/apache.md`](https://github.com/nathabee/competence_project/blob/main/docs/apache.md)
 
-
-#### install and test
-Start the Django development server locally after activating the virtual environment:
+#### Development server
 
 ```bash
 cd /home/nathabee/competence_project
@@ -208,102 +225,86 @@ At this stage, only the backend endpoints are expected to work.
 
 After DNS and Apache are configured, these URLs should be available:
 
-* `https://competence.nathabee.de/api/` -> Django backend on `127.0.0.1:8080`
-* `https://competence.nathabee.de/admin/` -> Django backend on `127.0.0.1:8080`
-* `https://competence.nathabee.de/media/` -> `/var/www/competence_project/media/`
+* `https://competence.nathabee.de/api/` → Django backend on `127.0.0.1:8080`
+* `https://competence.nathabee.de/admin/` → Django backend on `127.0.0.1:8080`
+* `https://competence.nathabee.de/media/` → `/var/www/competence_project/media/`
 
-The root URL `https://competence.nathabee.de/` is not expected to work yet, because the frontend on port `3000` is configured in the next chapter.
+The root URL `https://competence.nathabee.de/` is not expected to work yet, because the frontend on port `3000` is configured later.
 
- 
+#### Production backend service
 
-#### start Backend server in production
+Install and configure Gunicorn on `127.0.0.1:8080`.
 
-Install and configure Gunicorn on 127.0.0.1:8080 :
+See:
 
-See [gunicorn.md](https://github.com/nathabee/competence_project/blob/main/docs/gunicorn.md)
+* [`docs/gunicorn.md`](https://github.com/nathabee/competence_project/blob/main/docs/gunicorn.md)
 
- 
-
-on production we can configure gunicorn and start django this way after 
-```bash
-sudo systemctl start gunicorn  
-``` 
-
-### 5. Statistics
-
-
-#### 1. Create the real target directory
-
-```bash id="d7uw9z"
-sudo mkdir -p /var/www/competence_project/staticfiles
-sudo chown -R nathabee:www-data /var/www/competence_project
-sudo chmod -R 775 /var/www/competence_project
-```
-
-#### 2. Replace local `staticfiles` with a symlink
+Then start it with:
 
 ```bash
-cd /home/nathabee/competence_project
-
-if [ -e staticfiles ] && [ ! -L staticfiles ]; then
-    mv staticfiles staticfiles.bak
-fi
-
-ln -s /var/www/competence_project/staticfiles staticfiles
-ls -ld staticfiles /var/www/competence_project/staticfiles
+sudo systemctl start gunicorn
 ```
 
-#### 3. Run collectstatic
+---
+
+### 5. Static Files
+
+When `setup_environment.sh --prepare-shared-paths` has been used, the project already uses:
+
+* `/var/www/competence_project/staticfiles` as the real static target
+* `staticfiles` in the project as a symlink to that target
+
+To collect static files:
 
 ```bash
-cd /home/nathabee/competence_project
-source venv/bin/activate
-python manage.py collectstatic --noinput
+./tools/setup_django.sh --setup --ci \
+  --project-path /home/nathabee/competence_project \
+  --venv-path /home/nathabee/competence_project/venv \
+  --collectstatic
 ```
 
-#### 4. Verify that admin CSS is really there
+You can verify that admin CSS was collected:
 
 ```bash
 find /var/www/competence_project/staticfiles/admin/css -maxdepth 1 -type f | head
 ```
 
-You should see files like `base.css`.
+You should see files such as `base.css`.
 
 ---
 
+### 6. Frontend
 
-###  6. Frontend
+#### 6.0 Environment files
 
-#### 6.0 env files
+Create the frontend environment files from the examples and adapt them to your target environment.
 
-tale the necessary value from env.example t create the files
+For development:
 
---- IF YOU ARE ON DEV ---
-.env.demo       : file to create the demo package for the github page (mok , no django)
-.env.demolocal  : file to test the demo locally  (mok , no django)
-.env.local      : file that is use the django (no mok, more the production architecture)
+* `.env.demo` for the GitHub Pages demo build
+* `.env.demolocal` for local demo testing
+* `.env.local` for local development against Django
 
---- IF YOU ARE ON PRODUCTION ---
-.env.production  : file that is use the django on production
+For production:
 
-Modify `competence-app/.env.**` with the correct values.
+* `.env.production`
 
-
+Modify `competence-app/.env.*` with the correct values.
 
 #### 6.1 Production frontend
 
---- IF YOU ARE ON PRODUCTION ---
-
 For production, the frontend is built as a Next.js application and run through the `npm-app` systemd service on `127.0.0.1:3000`, behind Apache.
 
+For manual production installation, follow:
 
+* [`docs/systemctl-install.md`](./docs/systemctl-install.md)
 
-For manual production installation, follow the service installation guide in [`docs/systemctl-install.md`](./docs/systemctl-install.md), which covers:
+That guide covers:
 
-- Node 20 location used for production
-- frontend build with `npm install` and `npm run build`
-- creation of the `npm-app` systemd service
-- local service checks on `127.0.0.1:3000`
+* Node 20 location used for production
+* frontend build with `npm install` and `npm run build`
+* creation of the `npm-app` systemd service
+* local service checks on `127.0.0.1:3000`
 
 Start the frontend service:
 
@@ -317,20 +318,13 @@ Check it locally:
 curl -I http://127.0.0.1:3000/
 ```
 
-In a Jenkins-managed production deployment, Jenkins performs the build and then restarts `npm-app`.
- 
-
- 
+In a Jenkins-managed deployment, Jenkins performs the build and restarts `npm-app`.
 
 #### 6.2 Local development frontend
 
-
---- IF YOU ARE ON DEV ---
-
 For local development, do not use Jenkins and do not use the `npm-app` systemd service.
 
-Check `competence-app/.env.local` exists
-Then run the frontend locally as the development user:
+Check that `competence-app/.env.local` exists, then run:
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -339,59 +333,58 @@ npm run local-build
 npm run local-start
 ```
 
-This development flow is separate from the production service setup.
+---
 
+### 7. Demo Frontend App
 
- 
+The frontend can be compiled as a static site for local testing or GitHub Pages deployment.
 
-### 7. Demo frontend app
+#### Test locally
 
-The front end can be compiled in a static file to generate a static website.
-You can test this build locally or deploy it on github this way.
-
-#### To test locally:
 ```bash
 cd competence-app
 npm run demo-test
- 
 ```
-#### To deploy on github page:
+
+#### Deploy to GitHub Pages
+
 ```bash
-to deploy on github :
+cd competence-app
 npm run demo-deploy
-
 ```
 
+---
 
-### 8. Run tests automatically
+### 8. Automated Tests
 
+#### Backend tests
 
-#### backend test :
-This is using the Django test facilities
-Test are in competence/tests/test*.py
+This uses Django’s test framework.
 
-test_integration_workflow.py  is used to validate in stallation on production environment
+Tests are in `competence/tests/test*.py`.
+
+`test_integration_workflow.py` validates installation behavior in the production environment.
 
 ```bash
 python manage.py test competence.tests.test_integration_workflow
 ```
 
+#### Frontend tests
 
-#### frontend test :
-This is using the JTEST library
-Test files are in competence-app/__tests__
-All the files defined in this directory will be called by JTEST 
-They are used to validate in stallation on production environment
+This uses the frontend test setup in `competence-app/__tests__`.
+
 ```bash
 dotenv -e .env.local jest
 ```
 
 
-
  
 ---
 
-## 🌐 WordPress Frontend Plugin (`competence-frontend`) / no supported with installation => code need to be merged
+## 🌐 WordPress Frontend Plugin (`competence-frontend`)
+
+This part is currently not covered by the main installation flow and still requires additional integration work.
+see TODO list to see features to be modified
 
 This repository also includes a React-based WordPress plugin that brings the frontend into a traditional CMS environment.
 
@@ -437,86 +430,72 @@ competence-frontend/
 
 ---
 
-Let me know if you’d like it placed earlier in the README or broken into two chapters (`competence-frontend` and `competence-wp`).
 
 
-## 🛠️ Jenkins Pipeline Stages 
 
-The production Jenkins pipeline deploys the project from `main` into the live production tree.
+## 🛠️ Jenkins Pipelines
 
-### 1. Backup
-Creates a backup of the current project directory and a MySQL dump of `competencedb`.
+This repository contains two Jenkins pipeline files.
 
-### 2. Checkout
-Checks out the repository in the Jenkins workspace to load the pipeline definition from source control.
+### `Jenkinsfile`
 
-### 3. Update Repository
-Updates the live production repository at `/home/nathabee/competence_project` by fetching from GitHub and resetting to `origin/main`.
+This is the standard deployment pipeline.
 
-### 4. Stop Services
-Stops the production services:
-- `gunicorn`
-- `npm-app`
+It performs the normal deployment flow:
 
-### 5. Check Tool Versions
-Prints the active `PATH`, `node`, and `npm` versions used by the pipeline. This is important because the frontend build requires Node 20.
+1. backup
+2. checkout/update
+3. stop services
+4. install dependencies
+5. migrate database
+6. build frontend
+7. collect static files
+8. start services
+9. run tests
+10. internal health check
+11. external smoke check
 
-### 6. Install Dependencies
-- installs Python dependencies from `requirements.txt`
-- installs frontend dependencies in `competence-app`
+This job is the normal day-to-day deployment job.
 
-### 7. Database Migrations
-Runs Django migrations.
-Optional initialization commands are available through pipeline flags, but the default production run keeps:
-- `RESET_DB = "false"`
-- `INIT_DB = "false"`
-- `POPULATE_TRANSLATION = "false"`
+### `Jenkinsfile.bootstrap`
 
-### 8. Build Frontend
-Builds the production frontend with `npm run build`.
+This is the bootstrap/reset pipeline.
 
-### 9. Collect Static Files
-Runs:
+It is used only when you explicitly need one or more of the following:
 
-```bash
-python manage.py collectstatic --noinput
-```
+- prepare media/shared paths
+- reset the database
+- initialize Django seed data
+- populate translation data
+- reset example user passwords
 
-The project uses `/var/www/competence_project/staticfiles` as the production static target.
+This job is for first setup, environment repair, or controlled reset operations.
 
-### 10. Start Services
+### Jenkins server setup
 
-Starts:
+See:
 
-* `gunicorn`
-* `npm-app`
+- [`docs/jenkins.md`](https://github.com/nathabee/competence_project/blob/main/docs/jenkins.md)
 
-### 11. Run Tests
+That document covers:
 
-Runs:
+- Jenkins installation
+- systemd requirement
+- shared-path preparation
+- Jenkins service override
+- Jenkins rights and sudoers
+- Jenkins MySQL client file
+- Django CI user creation
+- Jenkins credentials
+- creation of the two Jenkins jobs
 
-* Django integration tests
-* frontend test suite
+### Development note
 
-### 12. Internal Health Check
+In development, `/home/nathabee/competence_project` may be a symlink to the real working tree.
 
-Uses a Jenkins credential (`competence-app-teacher-id`) to obtain a JWT token from the Django API and verify:
+If Jenkins is pointed at that path, normal deployment jobs may reset or overwrite local changes depending on the pipeline flow.
 
-* authenticated API access
-* frontend availability on `127.0.0.1:3000`
-
-### 13. External HTTPS Smoke Check
-
-Verifies the public URLs:
-
-* `https://competence.nathabee.de/api/`
-* `https://competence.nathabee.de/admin/`
-* `https://competence.nathabee.de/`
-
-## Post-Deployment Actions
-
-* **Success**: prints `Deployment successful!`
-* **Failure**: prints `Deployment failed.`
+Do not use destructive bootstrap/reset runs on that path unless it is intentionally the source of truth for the test.
 
 ---
 
@@ -530,9 +509,7 @@ Feel free to contribute by submitting issues or pull requests. Your feedback is 
 
 For any inquiries, please contact [nathabee123@gmail.com](mailto:nathabee123@gmail.com).
 
----
-
-**Thank you for your patience!**
+--- 
 
 ## License
 
