@@ -1,11 +1,29 @@
 # TO DO LIST
 
 
-## handle start stop for production
+## 🛠️ Current Status
+ 
+- Initial setup and database model completed.
+- Django API and frontend setup.
+- Automated testing with Jest.
+- CI/CD pipeline implemented.
+- Demo project available on GitHub Pages.
+- plugin in work in progress
 
-write doc and handle start of npm with systemctl
-finish installing systemd
 
+## Anomalies
+
+ - critical  in npm (jspdf)  (to be tested)
+
+## Best documentation
+
+### MEDIA link in README.md
+README.md
+
+- MEDIA: create the real target directories under /var/www/... before linking 
+The symlink works, but it is fragile and documentation-heavy.
+A cleaner production design would be to make MEDIA_ROOT configurable from .env, for example:
+MEDIA_ROOT = config("MEDIA_ROOT", default=os.path.join(BASE_DIR, "media/"))
 
 ## test
 
@@ -79,7 +97,8 @@ and does not handle shared code with a wordpress plugin
 * adapt django : django (migrate test, installation, jenkins, user manual from competence and competence-app to use the structure o django )
 * adapt frontend new structure into docs and jenkins
 
-### history of the mess :
+---
+**history of the mess :**
 
 initially the django is in competence and competence_project
 initially the associated frontend is competence-app

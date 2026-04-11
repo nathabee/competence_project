@@ -3,18 +3,40 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://nathabee.github.io/competence_project",
+
+  "engines": {
+    "node": "20.20.x",
+    "npm": "10.x"
+  },
+
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "20.20.x",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "version": "10.x",
+      "onFail": "error"
+    }
+  },
+
   "scripts": {
     "dev": "dotenv -e .env.local next dev",
-    "local-build": "dotenv -e .env.local next build ",
+    "local-build": "dotenv -e .env.local next build",
     "local-start": "dotenv -e .env.local next start",
     "build": "dotenv -e .env.production next build",
     "start": "dotenv -e .env.production next start",
-    "demo-local-build": "rm -rf ../gh-pages/staticfiles   && cp -rp  ../staticfiles ../gh-pages/ && rm -rf  ../gh-pages/out && dotenv -e .env.demolocal -- npm run build && touch ./out/.nojekyll && mv out ../gh-pages",
-    "demo-local-start": "dotenv -e .env.demolocal npx serve  ../gh-pages --single --prefix /",
-    "demo-deploy": "rm -rf ../gh-pages/staticfiles   && cp -rp  ../staticfiles ../gh-pages/ && rm -rf ../gh-pages/out && dotenv -e .env.demo npm run build && mv out ../gh-pages/out && touch ../gh-pages/out/.nojekyll && touch ../gh-pages/.nojekyll && gh-pages -d ../gh-pages/ -t true",
+    "demo-build": "dotenv -e .env.demo next build",
+    "demo-start": "dotenv -e .env.demo next start",
+    "demo-local-build": "rm -rf ../gh-pages/staticfiles && cp -rp ../staticfiles ../gh-pages/ && rm -rf ../gh-pages/out && dotenv -e .env.demolocal next build && touch ./out/.nojekyll && mv out ../gh-pages",
+    "demo-local-start": "dotenv -e .env.demolocal npx serve ../gh-pages --single --prefix /",
+    "demo-deploy": "rm -rf ../gh-pages/staticfiles && cp -rp ../staticfiles ../gh-pages/ && rm -rf ../gh-pages/out && dotenv -e .env.demo next build && mv out ../gh-pages/out && touch ../gh-pages/out/.nojekyll && touch ../gh-pages/.nojekyll && gh-pages -d ../gh-pages/ -t true",
     "test": "dotenv -e .env.local jest",
     "lint": "next lint"
   },
+
   "dependencies": {
     "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
@@ -24,7 +46,7 @@
     "bootstrap": "^5.3.3",
     "html2canvas": "^1.4.1",
     "jsonwebtoken": "^9.0.2",
-    "jspdf": "^2.5.2",
+    "jspdf": "^4.2.1",
     "jwt-decode": "^4.0.0",
     "next": "^15.0.1",
     "nookies": "^2.5.2",

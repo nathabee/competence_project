@@ -1,0 +1,1 @@
+tools/reset-django-pwd.sh

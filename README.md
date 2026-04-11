@@ -94,11 +94,15 @@ mysql -u competence_user -p competencedb
 ```
 
 modify the  .env file which is installed in the same repository as manage.py
-
+ 
 ```bash
-cp .env.prod .env
+
+cp env.example.prod .env
+# cp env.example.dev .env    (in dev)
+
 python3 -c "import secrets; print(secrets.token_urlsafe(50))"
 python3 -c "import secrets; print(secrets.token_urlsafe(50))"
+
 
 #Use:
 #first output for DJANGO_SECRET_KEY
@@ -106,6 +110,8 @@ python3 -c "import secrets; print(secrets.token_urlsafe(50))"
 
 nano .env
 ``` 
+
+
 
 
 
@@ -119,8 +125,7 @@ Set up your Python virtual environment and install the necessary dependencies:
 cd competence_project
 
 source venv/bin/activate
-python manage.py makemigrations competence
-# ./setup_django_migration.sh
+
 
 
 # start the file from tools/setup_django.sh it start the server in port 8080
@@ -131,29 +136,36 @@ Start a new Django project (y/n): n
 Create a new Django app (y/n): n
 Run Django migrations (y/n): y
 
+
+#python manage.py makemigrations competence
+#./setup_django_migration.sh
 ```
 
 
 
 create the source media:
 ```bash
-cd /home/nathabee/competence_project
-mkdir -p media/competence/header_icons
-mkdir -p media/competence/png
+# adjust if your production checkout lives elsewhere
+PROJECT_DIR=/home/nathabee/competence_project
+MEDIA_TARGET=/var/www/competence_project/media
 
-sudo mkdir -p /var/www/competence_project/media/origin
+sudo mkdir -p "$MEDIA_TARGET/origin/competence/header_icons"
+sudo mkdir -p "$MEDIA_TARGET/origin/competence/png"
+sudo mkdir -p "$MEDIA_TARGET/competence/header_icons"
+sudo mkdir -p "$MEDIA_TARGET/competence/png"
+
 sudo chown -R nathabee:www-data /var/www/competence_project
-sudo chmod -R 775 /var/www/competence_project
-cd /home/nathabee/competence_project
+sudo find /var/www/competence_project -type d -exec chmod 2775 {} \;
+sudo find /var/www/competence_project -type f -exec chmod 664 {} \;
+
+cd "$PROJECT_DIR"
 
 if [ -e media ] && [ ! -L media ]; then
     mv media media.bak
 fi
 
-ln -s /var/www/competence_project/media media
-ls -ld media /var/www/competence_project/media
-
-
+ln -sfn "$MEDIA_TARGET" media
+ls -ld media "$MEDIA_TARGET"
  
 ``` 
 
@@ -169,7 +181,11 @@ python manage.py populate_data_init
 python manage.py create_groups_and_permissions
 python manage.py populate_teacher
 python manage.py populate_translation
+# python manage.py populate_demo || true
 ```
+
+Reset password of the example user, with password default of .env
+./reset-django-pwd.sh
 
 ### 4. Run the Backend Server
 
@@ -258,13 +274,29 @@ You should see files like `base.css`.
 
 ###  6. Frontend
 
+#### 6.0 env files
+
+tale the necessary value from env.example t create the files
+
+--- IF YOU ARE ON DEV ---
+.env.demo       : file to create the demo package for the github page (mok , no django)
+.env.demolocal  : file to test the demo locally  (mok , no django)
+.env.local      : file that is use the django (no mok, more the production architecture)
+
+--- IF YOU ARE ON PRODUCTION ---
+.env.production  : file that is use the django on production
+
+Modify `competence-app/.env.**` with the correct values.
+
+
+
 #### 6.1 Production frontend
 
 --- IF YOU ARE ON PRODUCTION ---
 
 For production, the frontend is built as a Next.js application and run through the `npm-app` systemd service on `127.0.0.1:3000`, behind Apache.
 
-Modify `competence-app/.env.production` with the correct production values.
+
 
 For manual production installation, follow the service installation guide in [`docs/systemctl-install.md`](./docs/systemctl-install.md), which covers:
 
@@ -297,16 +329,7 @@ In a Jenkins-managed production deployment, Jenkins performs the build and then 
 
 For local development, do not use Jenkins and do not use the `npm-app` systemd service.
 
-Create `competence-app/.env.local`:
-
-```bash
-NEXT_PUBLIC_ENV=development
-NEXT_PUBLIC_API_URL=http://localhost:8080/api
-NEXT_PUBLIC_BASE_PATH=/evaluation
-NEXT_PUBLIC_ADMIN_URL=http://localhost:8080/admin/
-NEXT_PUBLIC_MEDIA_URL=http://localhost:8080/media
-```
-
+Check `competence-app/.env.local` exists
 Then run the frontend locally as the development user:
 
 ```bash

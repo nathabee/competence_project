@@ -28,6 +28,7 @@ sudo mkdir -p /home/nathabee/sav
 sudo chown nathabee:www-data /home/nathabee/sav
 sudo chmod 775 /home/nathabee/sav
 
+
 sudo usermod -aG www-data jenkins
 sudo chgrp -R www-data /home/nathabee/competence_project /home/nathabee/sav /var/www/competence_project
 sudo chmod -R g+rwX /home/nathabee/competence_project /home/nathabee/sav /var/www/competence_project
