@@ -3,8 +3,10 @@
 
 
 
-##  Production frontend service
+##  frontend service
 
+
+### prerequise
 Build the frontend first:
 
 ```bash
@@ -13,6 +15,9 @@ cd /home/nathabee/competence_project/competence-app
 /home/nathabee/.nvm/versions/node/v20.20.2/bin/npm run build
 ```
 
+
+
+### Production 
 Create the systemd service:
 
 ```bash
@@ -44,6 +49,39 @@ WantedBy=multi-user.target
 SERVICE
 ```
 
+### Development
+Create the systemd service:
+
+```bash
+sudo tee /etc/systemd/system/npm-app.service >/dev/null <<'SERVICE'
+[Unit]
+Description=Competence Project Next.js frontend
+After=network.target
+
+[Service]
+Type=simple
+User=nathabee
+Group=www-data
+WorkingDirectory=/home/nathabee/competence_project/competence-app
+
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=PATH=/home/nathabee/.nvm/versions/node/v20.20.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+ExecStart=/home/nathabee/.nvm/versions/node/v20.20.2/bin/npm run start
+Restart=always
+RestartSec=5
+
+# optional but sensible
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+SERVICE
+```
+
+### Service activation
 Activate it:
 
 ```bash

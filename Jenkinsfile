@@ -160,7 +160,6 @@ pipeline {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        chmod +x tools/setup_django.sh tools/reset-django-pwd.sh tools/setup_django_migration.sh tools/setup_django_loaddata.sh
                         ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --install-requirements
                     """
                     sh """

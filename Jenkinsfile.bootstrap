@@ -189,8 +189,7 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}
-                        chmod +x tools/setup_environment.sh
+                        cd ${PROJECT_PATH} 
                         ./tools/setup_environment.sh --install --ci \
                           --project-path ${PROJECT_PATH} \
                           --project-owner ${PROJECT_OWNER} \
