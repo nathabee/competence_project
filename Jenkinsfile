@@ -1,3 +1,5 @@
+def cfg = [:]
+
 pipeline {
     agent any
 
@@ -8,13 +10,6 @@ pipeline {
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
         NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
         PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
-
-        DBNAME = ""
-        CI_DEPLOY_ENV = ""
-        CI_UPDATE_DEPLOY_TREE = ""
-        CI_FRONTEND_ENV_FILE = ""
-        CI_FRONTEND_BUILD_CMD = ""
-        CI_RUN_EXTERNAL_SMOKE = ""
 
         PATH = "${NODE_BIN}:${env.PATH}"
         timestamp = new Date().format('yyyyMMdd_HHmmss')
@@ -50,30 +45,38 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
-                    def values = [:]
+                    cfg.clear()
 
                     envText.split("\\r?\\n").each { line ->
                         def idx = line.indexOf("=")
                         if (idx > 0) {
                             def key = line.substring(0, idx)
                             def value = line.substring(idx + 1)
-                            values[key] = value
+                            cfg[key] = value
                         }
                     }
 
-                    env.DBNAME = values['DBNAME']
-                    env.CI_DEPLOY_ENV = values['CI_DEPLOY_ENV']
-                    env.CI_UPDATE_DEPLOY_TREE = values['CI_UPDATE_DEPLOY_TREE']
-                    env.CI_FRONTEND_ENV_FILE = values['CI_FRONTEND_ENV_FILE']
-                    env.CI_FRONTEND_BUILD_CMD = values['CI_FRONTEND_BUILD_CMD']
-                    env.CI_RUN_EXTERNAL_SMOKE = values['CI_RUN_EXTERNAL_SMOKE']
+                    def requiredKeys = [
+                        'DBNAME',
+                        'CI_DEPLOY_ENV',
+                        'CI_UPDATE_DEPLOY_TREE',
+                        'CI_FRONTEND_ENV_FILE',
+                        'CI_FRONTEND_BUILD_CMD',
+                        'CI_RUN_EXTERNAL_SMOKE'
+                    ]
 
-                    echo "DBNAME=${env.DBNAME}"
-                    echo "CI_DEPLOY_ENV=${env.CI_DEPLOY_ENV}"
-                    echo "CI_UPDATE_DEPLOY_TREE=${env.CI_UPDATE_DEPLOY_TREE}"
-                    echo "CI_FRONTEND_ENV_FILE=${env.CI_FRONTEND_ENV_FILE}"
-                    echo "CI_FRONTEND_BUILD_CMD=${env.CI_FRONTEND_BUILD_CMD}"
-                    echo "CI_RUN_EXTERNAL_SMOKE=${env.CI_RUN_EXTERNAL_SMOKE}"
+                    requiredKeys.each { key ->
+                        if (!cfg.containsKey(key) || cfg[key] == null || cfg[key].trim() == '') {
+                            error("Missing ${key} in ${env.PROJECT_ENV_FILE}")
+                        }
+                    }
+
+                    echo "DBNAME=${cfg.DBNAME}"
+                    echo "CI_DEPLOY_ENV=${cfg.CI_DEPLOY_ENV}"
+                    echo "CI_UPDATE_DEPLOY_TREE=${cfg.CI_UPDATE_DEPLOY_TREE}"
+                    echo "CI_FRONTEND_ENV_FILE=${cfg.CI_FRONTEND_ENV_FILE}"
+                    echo "CI_FRONTEND_BUILD_CMD=${cfg.CI_FRONTEND_BUILD_CMD}"
+                    echo "CI_RUN_EXTERNAL_SMOKE=${cfg.CI_RUN_EXTERNAL_SMOKE}"
                 }
             }
         }
@@ -85,7 +88,7 @@ pipeline {
                         set -e
                         mkdir -p '${env.PROJECT_SAV}'
                         cp -r '${env.PROJECT_PATH}' '${env.BACKUPDIR}'
-                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases '${env.DBNAME}' > '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
+                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --no-tablespaces --databases '${cfg.DBNAME}' > '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
                     """
                     echo "Backup of project directory created at ${env.BACKUPDIR}"
                     echo "MySQL database backup created."
@@ -107,7 +110,7 @@ pipeline {
 
         stage('Update Repository') {
             when {
-                expression { return env.CI_UPDATE_DEPLOY_TREE == 'true' }
+                expression { return cfg.CI_UPDATE_DEPLOY_TREE == 'true' }
             }
             steps {
                 script {
@@ -139,8 +142,8 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        echo "DBNAME=${env.DBNAME}"
-                        echo "CI_DEPLOY_ENV=${env.CI_DEPLOY_ENV}"
+                        echo "DBNAME=${cfg.DBNAME}"
+                        echo "CI_DEPLOY_ENV=${cfg.CI_DEPLOY_ENV}"
                         echo "PATH=\$PATH"
                         which node
                         node -v
@@ -187,11 +190,11 @@ pipeline {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}/competence-app'
-                        test -f '${env.CI_FRONTEND_ENV_FILE}' || {
-                            echo "ERROR: Missing frontend env file ${env.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app" >&2
+                        test -f '${cfg.CI_FRONTEND_ENV_FILE}' || {
+                            echo "ERROR: Missing frontend env file ${cfg.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app" >&2
                             exit 1
                         }
-                        ${env.CI_FRONTEND_BUILD_CMD}
+                        ${cfg.CI_FRONTEND_BUILD_CMD}
                     """
                 }
             }
@@ -273,7 +276,7 @@ pipeline {
 
         stage('Smoke Check (external HTTPS)') {
             when {
-                expression { return env.CI_RUN_EXTERNAL_SMOKE == 'true' }
+                expression { return cfg.CI_RUN_EXTERNAL_SMOKE == 'true' }
             }
             steps {
                 sh """
@@ -288,7 +291,7 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment successful!'
+            echo 'Deployment successful.'
         }
         failure {
             echo 'Deployment failed.'
