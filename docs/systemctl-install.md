@@ -64,7 +64,7 @@ User=nathabee
 Group=www-data
 WorkingDirectory=/home/nathabee/competence_project/competence-app
 
-Environment=NODE_ENV=development
+Environment=NODE_ENV=production
 Environment=PORT=3000
 Environment=PATH=/home/nathabee/.nvm/versions/node/v20.20.2/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
