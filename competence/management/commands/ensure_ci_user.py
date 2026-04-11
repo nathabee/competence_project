@@ -11,7 +11,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         username = getattr(settings, "CI_HEALTHCHECK_USERNAME", "compet_ci")
         email = getattr(settings, "CI_HEALTHCHECK_EMAIL", "admin@nathabee.de")
-        password = getattr(settings, "DEFAULT_USER_PASSWORD", "")
+        password = getattr(settings, "CI_HEALTHCHECK_PASSWORD", "")
 
         if not password:
             raise CommandError("DEFAULT_USER_PASSWORD is missing or empty in Django settings.")
