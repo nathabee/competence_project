@@ -105,15 +105,18 @@ pipeline {
 
         stage('Update Repository') {
             when {
-                expression { return cfg.CI_UPDATE_DEPLOY_TREE == 'true' && cfg.CI_DEPLOY_ENV != 'development' }
+                expression {
+                    return cfg.CI_UPDATE_DEPLOY_TREE == 'true' &&
+                        (cfg.CI_DEPLOY_ENV == 'prod' || cfg.CI_DEPLOY_ENV == 'production')
+                }
             }
             steps {
                 script {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        sudo -u '${env.PROJECT_OWNER}' git fetch origin
-                        sudo -u '${env.PROJECT_OWNER}' git reset --hard origin/main
+                        sudo -H -u '${env.PROJECT_OWNER}' git fetch origin
+                        sudo -H -u '${env.PROJECT_OWNER}' git reset --hard origin/main
                     """
                 }
             }
@@ -154,13 +157,18 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --install-requirements
+                        sudo -H -u '${env.PROJECT_OWNER}' env PATH='${env.NODE_BIN}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \\
+                        bash -lc "cd '${env.PROJECT_PATH}' && ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --install-requirements"
                     """
+
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}/competence-app'
-                        npm install
+                        if [ '${cfg.CI_INSTALL_FRONTEND_DEPS}' = 'true' ]; then
+                            sudo -H -u '${env.PROJECT_OWNER}' env PATH='${env.NODE_BIN}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \\
+                            bash -lc "cd '${env.PROJECT_PATH}/competence-app' && npm install"
+                        else
+                            echo 'Skipping npm install because CI_INSTALL_FRONTEND_DEPS=false'
+                        fi
                     """
                 }
             }
@@ -183,12 +191,8 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}/competence-app'
-                        test -f '${cfg.CI_FRONTEND_ENV_FILE}' || {
-                            echo "ERROR: Missing frontend env file ${cfg.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app" >&2
-                            exit 1
-                        }
-                        ${cfg.CI_FRONTEND_BUILD_CMD}
+                        sudo -H -u '${env.PROJECT_OWNER}' env PATH='${env.NODE_BIN}:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' \\
+                        bash -lc "cd '${env.PROJECT_PATH}/competence-app' && test -f '${cfg.CI_FRONTEND_ENV_FILE}' || { echo 'ERROR: Missing frontend env file ${cfg.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app' >&2; exit 1; } && ${cfg.CI_FRONTEND_BUILD_CMD}"
                     """
                 }
             }
