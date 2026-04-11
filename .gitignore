@@ -33,6 +33,7 @@ staticfiles/
 media/
 media
 
+db_backup_*.sql
 
 # Ignore the demo directory inside competence-app-demo/public/
 competence-app-demo/public/demo/
