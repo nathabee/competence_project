@@ -29,19 +29,19 @@ pipeline {
                     def envText = sh(
                         script: """
                             set -e
-                            test -f "${PROJECT_ENV_FILE}" || {
-                                echo "ERROR: Missing ${PROJECT_ENV_FILE}" >&2
+                            test -f "${env.PROJECT_ENV_FILE}" || {
+                                echo "ERROR: Missing ${env.PROJECT_ENV_FILE}" >&2
                                 exit 1
                             }
 
                             set -a
-                            . "${PROJECT_ENV_FILE}"
+                            . "${env.PROJECT_ENV_FILE}"
                             set +a
 
                             for key in DBNAME CI_DEPLOY_ENV CI_UPDATE_DEPLOY_TREE CI_FRONTEND_ENV_FILE CI_FRONTEND_BUILD_CMD CI_RUN_EXTERNAL_SMOKE; do
                                 value=\$(eval "printf '%s' \\"\\\${\$key:-}\\"")
                                 if [ -z "\$value" ]; then
-                                    echo "ERROR: Missing \$key in ${PROJECT_ENV_FILE}" >&2
+                                    echo "ERROR: Missing \$key in ${env.PROJECT_ENV_FILE}" >&2
                                     exit 1
                                 fi
                                 printf '%s=%s\\n' "\$key" "\$value"
@@ -50,14 +50,23 @@ pipeline {
                         returnStdout: true
                     ).trim()
 
+                    def values = [:]
+
                     envText.split("\\r?\\n").each { line ->
                         def idx = line.indexOf("=")
                         if (idx > 0) {
                             def key = line.substring(0, idx)
                             def value = line.substring(idx + 1)
-                            env."${key}" = value
+                            values[key] = value
                         }
                     }
+
+                    env.DBNAME = values['DBNAME']
+                    env.CI_DEPLOY_ENV = values['CI_DEPLOY_ENV']
+                    env.CI_UPDATE_DEPLOY_TREE = values['CI_UPDATE_DEPLOY_TREE']
+                    env.CI_FRONTEND_ENV_FILE = values['CI_FRONTEND_ENV_FILE']
+                    env.CI_FRONTEND_BUILD_CMD = values['CI_FRONTEND_BUILD_CMD']
+                    env.CI_RUN_EXTERNAL_SMOKE = values['CI_RUN_EXTERNAL_SMOKE']
 
                     echo "DBNAME=${env.DBNAME}"
                     echo "CI_DEPLOY_ENV=${env.CI_DEPLOY_ENV}"
@@ -74,11 +83,11 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        mkdir -p ${PROJECT_SAV}
-                        cp -r ${PROJECT_PATH} ${BACKUPDIR}
-                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases ${DBNAME} > '${BACKUPDIR}/db_backup_${timestamp}.sql'
+                        mkdir -p '${env.PROJECT_SAV}'
+                        cp -r '${env.PROJECT_PATH}' '${env.BACKUPDIR}'
+                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases '${env.DBNAME}' > '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
                     """
-                    echo "Backup of project directory created at ${BACKUPDIR}"
+                    echo "Backup of project directory created at ${env.BACKUPDIR}"
                     echo "MySQL database backup created."
                 }
             }
@@ -104,7 +113,7 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}
+                        cd '${env.PROJECT_PATH}'
                         sudo -u nathabee git fetch origin
                         sudo -u nathabee git reset --hard origin/main
                     """
@@ -130,9 +139,9 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        echo "DBNAME=$DBNAME"
-                        echo "CI_DEPLOY_ENV=$CI_DEPLOY_ENV"
-                        echo "PATH=$PATH"
+                        echo "DBNAME=${env.DBNAME}"
+                        echo "CI_DEPLOY_ENV=${env.CI_DEPLOY_ENV}"
+                        echo "PATH=\$PATH"
                         which node
                         node -v
                         which npm
@@ -147,13 +156,13 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}
+                        cd '${env.PROJECT_PATH}'
                         chmod +x tools/setup_django.sh tools/reset-django-pwd.sh tools/setup_django_migration.sh tools/setup_django_loaddata.sh
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --install-requirements
+                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --install-requirements
                     """
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}/competence-app
+                        cd '${env.PROJECT_PATH}/competence-app'
                         npm install
                     """
                 }
@@ -165,8 +174,8 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --migrate
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --migrate
                     """
                 }
             }
@@ -177,12 +186,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}/competence-app
-                        test -f "${CI_FRONTEND_ENV_FILE}" || {
-                            echo "ERROR: Missing frontend env file ${CI_FRONTEND_ENV_FILE} in ${PROJECT_PATH}/competence-app" >&2
+                        cd '${env.PROJECT_PATH}/competence-app'
+                        test -f '${env.CI_FRONTEND_ENV_FILE}' || {
+                            echo "ERROR: Missing frontend env file ${env.CI_FRONTEND_ENV_FILE} in ${env.PROJECT_PATH}/competence-app" >&2
                             exit 1
                         }
-                        ${CI_FRONTEND_BUILD_CMD}
+                        ${env.CI_FRONTEND_BUILD_CMD}
                     """
                 }
             }
@@ -193,8 +202,8 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}
-                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --collectstatic
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --collectstatic
                     """
                 }
             }
@@ -217,13 +226,13 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        . ${VENV_PATH}/bin/activate
-                        cd ${PROJECT_PATH}
+                        . '${env.VENV_PATH}/bin/activate'
+                        cd '${env.PROJECT_PATH}'
                         python manage.py test competence.tests.test_integration_workflow
                     """
                     sh """
                         set -e
-                        cd ${PROJECT_PATH}/competence-app
+                        cd '${env.PROJECT_PATH}/competence-app'
                         export NODE_ENV=test
                         npm run test
                     """
@@ -239,21 +248,21 @@ pipeline {
                             script: '''
                                 set +x
                                 curl -fsS -X POST \
-                                -H "Content-Type: application/json" \
-                                -H "X-Forwarded-Proto: https" \
-                                -d "{\"username\":\"$TEACHER_USER\",\"password\":\"$TEACHER_PASS\"}" \
-                                http://127.0.0.1:8080/api/token/ | jq -r .access
+                                  -H "Content-Type: application/json" \
+                                  -H "X-Forwarded-Proto: https" \
+                                  -d "{\"username\":\"$TEACHER_USER\",\"password\":\"$TEACHER_PASS\"}" \
+                                  http://127.0.0.1:8080/api/token/ | jq -r .access
                             ''',
                             returnStdout: true
                         ).trim()
 
                         sh """
                             set -e
-                            test -n "${accessToken}"
-                            test "${accessToken}" != "null"
+                            test -n '${accessToken}'
+                            test '${accessToken}' != 'null'
                             curl -fsS \
-                              -H "Authorization: Bearer ${accessToken}" \
-                              -H "X-Forwarded-Proto: https" \
+                              -H 'Authorization: Bearer ${accessToken}' \
+                              -H 'X-Forwarded-Proto: https' \
                               http://127.0.0.1:8080/api/
                             curl -fsSI http://127.0.0.1:3000/
                         """
