@@ -1,4 +1,3 @@
-// jest.config.ts
 import nextJest from 'next/jest';
 
 const createJestConfig = nextJest({ dir: './' });
@@ -8,11 +7,11 @@ const customJestConfig = {
   moduleDirectories: ['node_modules', '<rootDir>/'],
   testEnvironment: 'jsdom',
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest', // Transform TypeScript and JavaScript
+    '^.+\\.(ts|tsx|js|jsx)$': 'ts-jest',
   },
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1', // Support for "@/..." imports
-    '^.+\\.(css|scss|sass)$': 'identity-obj-proxy', // Mock CSS imports
+    '^@/(.*)$': '<rootDir>/src/$1',
+    '^.+\\.(css|scss|sass)$': 'identity-obj-proxy',
   },
 };
 

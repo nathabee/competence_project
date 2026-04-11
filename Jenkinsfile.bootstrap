@@ -6,8 +6,10 @@ pipeline {
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
         PROJECT_OWNER = "nathabee"
+        PROJECT_GROUP = "www-data"
         PROJECT_SAV = "/home/nathabee/sav"
         VENV_PATH = "/home/nathabee/competence_project/venv"
+        MEDIA_TARGET = "/var/www/competence_project/media"
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
         NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
         PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
@@ -100,17 +102,7 @@ pipeline {
             }
         }
 
-        stage('Checkout Workspace') {
-            steps {
-                checkout([
-                    $class: 'GitSCM',
-                    branches: [[name: 'main']],
-                    doGenerateSubmoduleConfigurations: false,
-                    extensions: [[$class: 'WipeWorkspace']],
-                    userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
-                ])
-            }
-        }
+ 
 
         stage('Stop Services') {
             steps {
