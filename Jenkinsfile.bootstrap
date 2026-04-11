@@ -1,6 +1,14 @@
 pipeline {
     agent any
 
+    parameters {
+        booleanParam(name: 'PREPARE_MEDIA', defaultValue: false, description: 'Create/check production media layout and media symlink.')
+        booleanParam(name: 'RESET_DB', defaultValue: false, description: 'Drop and recreate competencedb.')
+        booleanParam(name: 'INIT_DB', defaultValue: false, description: 'Run Django init data tasks.')
+        booleanParam(name: 'POPULATE_TRANSLATION', defaultValue: false, description: 'Run populate_translation.')
+        booleanParam(name: 'RESET_PASSWORDS', defaultValue: false, description: 'Reset example Django user passwords from .env DEFAULT_USER_PASSWORD.')
+    }
+
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
         PROJECT_SAV = "/home/nathabee/sav"
@@ -67,6 +75,15 @@ pipeline {
             }
         }
 
+        stage('Manual Confirmation for DB Reset') {
+            when {
+                expression { return params.RESET_DB }
+            }
+            steps {
+                input message: "RESET_DB is enabled. Confirm that competencedb must be dropped and recreated."
+            }
+        }
+
         stage('Check Tool Versions') {
             steps {
                 script {
@@ -100,13 +117,108 @@ pipeline {
             }
         }
 
-        stage('Database Migrations') {
+        stage('Prepare Media Layout') {
+            when {
+                expression { return params.PREPARE_MEDIA }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+
+                        sudo mkdir -p /var/www/competence_project/media/origin/competence/header_icons
+                        sudo mkdir -p /var/www/competence_project/media/origin/competence/png
+                        sudo mkdir -p /var/www/competence_project/media/competence/header_icons
+                        sudo mkdir -p /var/www/competence_project/media/competence/png
+
+                        sudo chown -R nathabee:www-data /var/www/competence_project
+                        sudo find /var/www/competence_project -type d -exec chmod 2775 {} \\;
+                        sudo find /var/www/competence_project -type f -exec chmod 664 {} \\;
+
+                        cd ${PROJECT_PATH}
+
+                        if [ -L media ]; then
+                            ln -sfn /var/www/competence_project/media media
+                        elif [ ! -e media ]; then
+                            ln -s /var/www/competence_project/media media
+                        else
+                            echo "ERROR: ${PROJECT_PATH}/media exists and is not a symlink."
+                            echo "Refusing to modify it automatically in Jenkins."
+                            exit 1
+                        fi
+
+                        ls -ld media /var/www/competence_project/media
+                    """
+                }
+            }
+        }
+
+        stage('Reset Database') {
+            when {
+                expression { return params.RESET_DB }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        mysql --defaults-extra-file=/var/lib/jenkins/.my.cnf -e 'DROP DATABASE IF EXISTS competencedb; CREATE DATABASE competencedb;'
+                    """
+                }
+            }
+        }
+
+        stage('Migrate Database') {
             steps {
                 script {
                     sh """
                         set -e
                         cd ${PROJECT_PATH}
                         ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --migrate
+                    """
+                }
+            }
+        }
+
+        stage('Initialize Django Data') {
+            when {
+                expression { return params.INIT_DB || params.RESET_DB }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd ${PROJECT_PATH}
+                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --copy-data-init --populate-data-init --create-groups --populate-teacher
+                    """
+                }
+            }
+        }
+
+        stage('Populate Translation') {
+            when {
+                expression { return params.POPULATE_TRANSLATION }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd ${PROJECT_PATH}
+                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --populate-translation
+                    """
+                }
+            }
+        }
+
+        stage('Reset Django Passwords') {
+            when {
+                expression { return params.RESET_PASSWORDS }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd ${PROJECT_PATH}
+                        ./tools/setup_django.sh --setup --ci --project-path ${PROJECT_PATH} --venv-path ${VENV_PATH} --reset-passwords
                     """
                 }
             }
@@ -212,10 +324,10 @@ pipeline {
 
     post {
         success {
-            echo 'Deployment successful!'
+            echo 'Bootstrap/reset deployment successful!'
         }
         failure {
-            echo 'Deployment failed.'
+            echo 'Bootstrap/reset deployment failed.'
         }
     }
 }

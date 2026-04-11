@@ -1,6 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
 
-echo "Activating the virtual environment..."
-source venv/bin/activate
-python manage.py makemigrations
-python manage.py migrate
-deactivate
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+"${SCRIPT_DIR}/setup_django.sh" --setup --ci --makemigrations --migrate
