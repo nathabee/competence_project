@@ -87,10 +87,10 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout([
-                    \$class: 'GitSCM',
+                    $class: 'GitSCM',
                     branches: [[name: 'main']],
                     doGenerateSubmoduleConfigurations: false,
-                    extensions: [[\$class: 'WipeWorkspace']],
+                    extensions: [[$class: 'WipeWorkspace']],
                     userRemoteConfigs: [[url: 'https://github.com/nathabee/competence_project.git']]
                 ])
             }

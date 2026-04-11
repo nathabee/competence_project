@@ -205,15 +205,37 @@ Create two Pipeline jobs from SCM.
 
 ### Standard deployment job
 
-* Repository: `https://github.com/nathabee/competence_project.git`
-* Branch: `main`
+ 
+
+For `competence-deploy`:
+
+* Type: **Pipeline**
+* Definition: **Pipeline script from SCM**
+* SCM: **Git**
+* Repository URL: `https://github.com/nathabee/competence_project.git`
+* Credentials: none
+* Branches to build: `*/main`
 * Script Path: `Jenkinsfile`
+* Do not allow concurrent builds: checked
+* Everything else: leave default unless you explicitly need it
+
+
 
 ### Bootstrap/reset job
+ 
 
-* Repository: `https://github.com/nathabee/competence_project.git`
-* Branch: `main`
+For `competence-bootstrap`:
+
+* Type: **Pipeline**
+* Definition: **Pipeline script from SCM**
+* SCM: **Git**
+* Repository URL: `https://github.com/nathabee/competence_project.git`
+* Credentials: none
+* Branches to build: `*/main`
 * Script Path: `Jenkinsfile.bootstrap`
+* Do not allow concurrent builds: checked
+* Everything else: leave default unless you explicitly need it
+
 
 Because the repository is public, no Git credential is required for checkout.
 
