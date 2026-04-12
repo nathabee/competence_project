@@ -28,6 +28,7 @@ DO_ENABLE_JENKINS=false
 DO_GRANT_JENKINS_ACCESS=false
 DO_WRITE_JENKINS_MYCNF=false
 DO_WRITE_JENKINS_SUDOERS=false
+DO_RESET_DB=false
 
 DB_NAME=""
 DB_USER=""
@@ -66,6 +67,7 @@ General flags:
 Database flags:
       --secure-mysql             Run mysql_secure_installation (interactive only)
       --create-db                Create or update the MySQL database and user
+      --reset-db                 Drop and recreate the MySQL database, then recreate/update the user grants
       --db-name NAME             MySQL database name
       --db-user USER             MySQL username
       --db-pass PASS             MySQL password
@@ -146,6 +148,7 @@ prompt_yes_no() {
 has_selected_operations() {
     [[ "${DO_SECURE_MYSQL}" == "true" ]] \
         || [[ "${DO_CREATE_DB}" == "true" ]] \
+        || [[ "${DO_RESET_DB}" == "true" ]] \
         || [[ "${DO_PREPARE_SHARED_PATHS}" == "true" ]] \
         || [[ "${DO_INSTALL_JENKINS}" == "true" ]] \
         || [[ "${DO_WRITE_JENKINS_OVERRIDE}" == "true" ]] \
@@ -275,7 +278,7 @@ collect_db_values_if_needed() {
     fi
 }
 
-create_or_update_mysql_database_and_user() {
+reset_mysql_database_and_user() {
     collect_db_values_if_needed
 
     validate_db_identifier "${DB_NAME}" "Database name"
@@ -286,10 +289,13 @@ create_or_update_mysql_database_and_user() {
     escaped_pass="$(sql_escape_string "${DB_PASS}")"
     test_db_name="test_${DB_NAME}"
 
-    info "Creating/updating MySQL database '${DB_NAME}' and user '${DB_USER}'..."
+    info "Dropping and recreating MySQL database '${DB_NAME}' and refreshing user '${DB_USER}'..."
 
     sudo mysql <<SQL
-CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`
+DROP DATABASE IF EXISTS \`${DB_NAME}\`;
+DROP DATABASE IF EXISTS \`${test_db_name}\`;
+
+CREATE DATABASE \`${DB_NAME}\`
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
 
@@ -301,7 +307,7 @@ GRANT ALL PRIVILEGES ON \`${test_db_name}\`.* TO '${DB_USER}'@'localhost';
 FLUSH PRIVILEGES;
 SQL
 
-    info "MySQL setup complete with database '${DB_NAME}', test database '${test_db_name}', and user '${DB_USER}'."
+    info "MySQL reset complete with database '${DB_NAME}', grant for test database '${test_db_name}', and user '${DB_USER}'."
 }
 
 backup_existing_path_interactive() {
@@ -464,6 +470,7 @@ write_jenkins_sudoers() {
 
     sudo tee "${JENKINS_SUDOERS_PATH}" >/dev/null <<EOF
 jenkins ALL=NOPASSWD: /usr/bin/systemctl start gunicorn, /usr/bin/systemctl stop gunicorn, /usr/bin/systemctl start npm-app, /usr/bin/systemctl stop npm-app
+jenkins ALL=(root) NOPASSWD: /usr/bin/mysql, /usr/bin/mysqldump
 jenkins ALL=(${PROJECT_OWNER}) NOPASSWD: /usr/bin/git
 EOF
 
@@ -546,23 +553,30 @@ install_components() {
         ensure_venv_and_django
     fi
 
+ 
+
     if [[ "${DO_SECURE_MYSQL}" == "true" ]]; then
         run_mysql_secure_installation
     elif [[ "${CI_MODE}" == "false" ]] && prompt_yes_no "Do you want to run mysql_secure_installation?" "n"; then
         run_mysql_secure_installation
     fi
 
-    if [[ "${DO_CREATE_DB}" == "true" ]]; then
+    if [[ "${DO_RESET_DB}" == "true" ]]; then
+        reset_mysql_database_and_user
+    elif [[ "${DO_CREATE_DB}" == "true" ]]; then
         create_or_update_mysql_database_and_user
     elif [[ "${CI_MODE}" == "false" ]] && prompt_yes_no "Do you want to create or update a MySQL database and user?" "n"; then
         create_or_update_mysql_database_and_user
     fi
+
+ 
 
     if [[ "${DO_PREPARE_SHARED_PATHS}" == "true" ]]; then
         prepare_shared_paths
     elif [[ "${CI_MODE}" == "false" ]] && prompt_yes_no "Do you want to prepare sav/media/staticfiles paths and symlinks?" "n"; then
         prepare_shared_paths
     fi
+
 
     if [[ "${DO_INSTALL_JENKINS}" == "true" ]]; then
         install_jenkins
@@ -612,9 +626,13 @@ apply_selected_components() {
         run_mysql_secure_installation
     fi
 
-    if [[ "${DO_CREATE_DB}" == "true" ]]; then
+    if [[ "${DO_RESET_DB}" == "true" ]]; then
+        reset_mysql_database_and_user
+    elif [[ "${DO_CREATE_DB}" == "true" ]]; then
         create_or_update_mysql_database_and_user
     fi
+
+ 
 
     if [[ "${DO_PREPARE_SHARED_PATHS}" == "true" ]]; then
         prepare_shared_paths
@@ -716,6 +734,10 @@ parse_args() {
                 ;;
             --create-db)
                 DO_CREATE_DB=true
+                shift
+                ;;
+            --reset-db)
+                DO_RESET_DB=true
                 shift
                 ;;
             --db-name)
