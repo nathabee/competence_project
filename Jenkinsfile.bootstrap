@@ -1,9 +1,9 @@
-def cfg = [:] 
+def cfg = [:]
 
 pipeline {
     agent any
 
-    parameters { 
+    parameters {
         booleanParam(
             name: 'RESET_DB',
             defaultValue: false,
@@ -19,25 +19,64 @@ pipeline {
             defaultValue: false,
             description: 'Remove all files under the staticfiles target directory.'
         )
+        booleanParam(
+            name: 'RUN_MIGRATE',
+            defaultValue: false,
+            description: 'Run Django migrations after reset/cleanup.'
+        )
+        booleanParam(
+            name: 'COPY_DATA_INIT',
+            defaultValue: false,
+            description: 'Run copy_data_init.'
+        )
+        booleanParam(
+            name: 'POPULATE_DATA_INIT',
+            defaultValue: false,
+            description: 'Run populate_data_init.'
+        )
+        booleanParam(
+            name: 'CREATE_GROUPS',
+            defaultValue: false,
+            description: 'Run create_groups_and_permissions.'
+        )
+        booleanParam(
+            name: 'POPULATE_TEACHER',
+            defaultValue: false,
+            description: 'Run populate_teacher.'
+        )
+        booleanParam(
+            name: 'POPULATE_TRANSLATION',
+            defaultValue: false,
+            description: 'Run populate_translation.'
+        )
+        booleanParam(
+            name: 'ENSURE_CI_USER',
+            defaultValue: false,
+            description: 'Run ensure_ci_user.'
+        )
+        booleanParam(
+            name: 'COLLECTSTATIC',
+            defaultValue: false,
+            description: 'Run collectstatic after initialization.'
+        )
     }
 
-        environment {
-            PROJECT_PATH = "/home/nathabee/competence_project"
-            BACKEND_PATH = "/home/nathabee/competence_project/backend"
-            PROJECT_OWNER = "nathabee"
-            PROJECT_GROUP = "www-data"
-            PROJECT_SAV = "/home/nathabee/sav"
-            VENV_PATH = "/home/nathabee/competence_project/backend/venv"
-            MEDIA_TARGET = "/var/www/competence_project/media"
-            STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
-            NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
-            PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
+    environment {
+        PROJECT_PATH = "/home/nathabee/competence_project"
+        BACKEND_PATH = "/home/nathabee/competence_project/backend"
+        PROJECT_OWNER = "nathabee"
+        PROJECT_GROUP = "www-data"
+        PROJECT_SAV = "/home/nathabee/sav"
+        VENV_PATH = "/home/nathabee/competence_project/backend/venv"
+        MEDIA_TARGET = "/var/www/competence_project/media"
+        STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
+        NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
+        PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
 
-            PATH = "${NODE_BIN}:${env.PATH}"
-            timestamp = new Date().format('yyyyMMdd_HHmmss')
-            BACKUPDIR = "${PROJECT_SAV}/competence_project_${timestamp}"
-        }
- 
+        PATH = "${NODE_BIN}:${env.PATH}"
+        timestamp = new Date().format('yyyyMMdd_HHmmss')
+        BACKUPDIR = "${PROJECT_SAV}/competence_project_${timestamp}"
+    }
 
     stages {
 
@@ -102,42 +141,7 @@ pipeline {
                         cfg.CI_INSTALL_FRONTEND_DEPS = 'false'
                     }
 
-                    def frontendBasePath = sh(
-                        script: """
-                            set +x
-                            set -e
-
-                            FRONTEND_ENV_PATH='${env.PROJECT_PATH}/competence-app/${cfg.CI_FRONTEND_ENV_FILE}'
-
-                            test -f "\$FRONTEND_ENV_PATH" || {
-                                echo "ERROR: Missing frontend env file \$FRONTEND_ENV_PATH" >&2
-                                exit 1
-                            }
-
-                            set -a
-                            . "\$FRONTEND_ENV_PATH"
-                            set +a
-
-                            printf '%s' "\${NEXT_PUBLIC_BASE_PATH:-}"
-                        """,
-                        returnStdout: true
-                    ).trim()
-
-                    if (!frontendBasePath) {
-                        frontendBasePath = '/'
-                    } else {
-                        if (!frontendBasePath.startsWith('/')) {
-                            frontendBasePath = "/${frontendBasePath}"
-                        }
-                        if (!frontendBasePath.endsWith('/')) {
-                            frontendBasePath = "${frontendBasePath}/"
-                        }
-                    }
-
-                    cfg.NEXT_PUBLIC_BASE_PATH = frontendBasePath
-
                     echo "Project .env loaded successfully."
-                    echo "Frontend base path resolved to: ${cfg.NEXT_PUBLIC_BASE_PATH}"
                 }
             }
         }
@@ -150,10 +154,10 @@ pipeline {
                         mkdir -p '${env.PROJECT_SAV}'
                         cp -r '${env.PROJECT_PATH}' '${env.BACKUPDIR}'
                         mysqldump \
-                        --defaults-extra-file=/var/lib/jenkins/.my.cnf \
-                        --no-tablespaces \
-                        --databases '${cfg.DBNAME}' \
-                        > '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
+                          --defaults-extra-file=/var/lib/jenkins/.my.cnf \
+                          --no-tablespaces \
+                          --databases '${cfg.DBNAME}' \
+                          > '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
                         test -s '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
                     """
                     echo "Backup of project directory created at ${env.BACKUPDIR}"
@@ -162,14 +166,24 @@ pipeline {
             }
         }
 
-         stage('Manual Confirmation') {
+        stage('Manual Confirmation') {
             when {
                 expression {
-                    return params.RESET_DB || params.CLEAR_MEDIA || params.CLEAR_STATICFILES
+                    return params.RESET_DB ||
+                           params.CLEAR_MEDIA ||
+                           params.CLEAR_STATICFILES ||
+                           params.RUN_MIGRATE ||
+                           params.COPY_DATA_INIT ||
+                           params.POPULATE_DATA_INIT ||
+                           params.CREATE_GROUPS ||
+                           params.POPULATE_TEACHER ||
+                           params.POPULATE_TRANSLATION ||
+                           params.ENSURE_CI_USER ||
+                           params.COLLECTSTATIC
                 }
             }
             steps {
-                input message: "Bootstrap will modify the environment. Confirm that you want to continue."
+                input message: "Bootstrap will modify the application state. Confirm that you want to continue."
             }
         }
 
@@ -185,8 +199,6 @@ pipeline {
                 }
             }
         }
-
-
 
         stage('Reset Database') {
             when {
@@ -240,11 +252,171 @@ pipeline {
             }
         }
 
+        stage('Run Migrate') {
+            when {
+                expression { return params.RUN_MIGRATE }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --migrate
+                    """
+                }
+            }
+        }
+
+        stage('Copy Data Init') {
+            when {
+                expression { return params.COPY_DATA_INIT }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --copy-data-init
+                    """
+                }
+            }
+        }
+
+        stage('Populate Data Init') {
+            when {
+                expression { return params.POPULATE_DATA_INIT }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --populate-data-init
+                    """
+                }
+            }
+        }
+
+        stage('Create Groups') {
+            when {
+                expression { return params.CREATE_GROUPS }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --create-groups
+                    """
+                }
+            }
+        }
+
+        stage('Populate Teacher') {
+            when {
+                expression { return params.POPULATE_TEACHER }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --populate-teacher
+                    """
+                }
+            }
+        }
+
+        stage('Populate Translation') {
+            when {
+                expression { return params.POPULATE_TRANSLATION }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --populate-translation
+                    """
+                }
+            }
+        }
+
+        stage('Ensure CI Django User') {
+            when {
+                expression { return params.ENSURE_CI_USER }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --ensure-ci-user
+                    """
+                }
+            }
+        }
+
+        stage('Collect Static Files') {
+            when {
+                expression { return params.COLLECTSTATIC }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_django.sh \
+                          --setup --ci \
+                          --project-path '${env.PROJECT_PATH}' \
+                          --backend-path '${env.BACKEND_PATH}' \
+                          --venv-path '${env.VENV_PATH}' \
+                          --collectstatic
+                    """
+                }
+            }
+        }
 
         stage('Summary') {
             steps {
-                echo 'Bootstrap completed. No deploy/build/migrate/test/start was performed.'
-                echo 'Run the normal Jenkinsfile pipeline afterward for the real deployment flow.'
+                echo 'Bootstrap completed.'
+                echo 'This pipeline is for reset, reinitialization, and cleanup operations.'
+                echo 'Run the normal deploy pipeline afterward only if you still need a full deploy/build/test flow.'
             }
         }
     }
