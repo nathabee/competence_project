@@ -230,8 +230,7 @@ pipeline {
                         echo
                         echo "Project DB fallback markers:"
                         grep -n 'project_env_file=' "$PROJECT_PATH/tools/setup_environment.sh" || true
-                        grep -n 'DB_NAME="\${DB_NAME:-\${DBNAME:-}}"' "$PROJECT_PATH/tools/setup_environment.sh" || true
-                        grep -n 'Missing DBNAME. Provide --db-name or set it in' "$PROJECT_PATH/tools/setup_environment.sh" || true
+                        grep -n 'DB_NAME="\${DB_NAME:-\${DBNAME:-}}"' "$PROJECT_PATH/tools/setup_environment.sh" || true 
                     '''
                 }
             }
