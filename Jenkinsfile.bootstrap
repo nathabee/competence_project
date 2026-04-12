@@ -253,7 +253,7 @@ pipeline {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        ./tools/setup_environment.sh --ci \
+                        ./tools/setup_environment.sh --apply --ci \
                         --project-path '${env.PROJECT_PATH}' \
                         --project-owner '${env.PROJECT_OWNER}' \
                         --project-group '${env.PROJECT_GROUP}' \

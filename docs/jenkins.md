@@ -69,13 +69,15 @@ This command does the following:
 If the database password changes later, rerun only the DB-related part:
 
 ```bash
-./tools/setup_environment.sh --install --ci \
+./tools/setup_environment.sh --apply --ci \
   --project-path /home/nathabee/competence_project \
   --project-owner nathabee \
   --project-group www-data \
   --create-db --db-name competencedb --db-user competence_user --db-pass 'REAL_DB_PASSWORD_HERE' \
   --write-jenkins-mycnf --db-host localhost
 ```
+Run `setup_environment.sh` as a normal user with sudo rights.
+Do not normally run the whole script itself with `sudo`, because the script already elevates only the operations that require it.
 
 ---
 
@@ -128,41 +130,19 @@ These are two different things:
 
 ### Create the Django user
 
+set in the `.env` file:
+
+CI_HEALTHCHECK_USERNAME="compet_ci"
+CI_HEALTHCHECK_EMAIL="YOUR_REAL_EMAIL"
+CI_HEALTHCHECK_PASSWORD="YOUR_REAL_PASSWORD"
+
 ```bash
-cd /home/nathabee/competence_project
-source venv/bin/activate
-python manage.py shell
-```
+./tools/setup_django.sh --setup --ci \
+  --project-path /home/nathabee/competence_project \
+  --venv-path /home/nathabee/competence_project/venv \
+  --ensure-ci-user
 
-Then:
-
-```python
-from django.contrib.auth import get_user_model
-
-User = get_user_model()
-
-username = "compet_ci"
-email = "fill_your_adresse_here"
-password = "PUT_A_STRONG_PASSWORD_HERE"
-
-user, created = User.objects.get_or_create(
-    username=username,
-    defaults={"email": email}
-)
-
-user.email = email
-user.is_active = True
-user.is_staff = False
-user.is_superuser = False
-user.set_password(password)
-user.save()
-
-print("created:", created)
-print("username:", user.username)
-print("active:", user.is_active)
-print("staff:", user.is_staff)
-print("superuser:", user.is_superuser)
-```
+``` 
 
 If the API really requires the teacher role, add the user to the correct group afterward.
 

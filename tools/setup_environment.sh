@@ -40,11 +40,12 @@ JENKINS_SUDOERS_PATH="/etc/sudoers.d/jenkins-competence"
 
 show_help() {
     cat <<EOF
-Usage: $0 [option] [flags]
+Usage: $0 [action] [flags]
 
-Options:
+Actions:
   -h, --help                     Show this help message and exit.
-  -i, --install                  Install and/or configure environment components.
+  -i, --install                  Install base environment packages/components, then run selected flags.
+  -a, --apply                    Apply only the selected flags. Do not run base package installation.
   -t, --test                     Test whether required components are installed.
 
 General flags:
@@ -81,20 +82,20 @@ Jenkins flags:
                                  Default: /home/<project-owner>/.nvm/versions/node/v20.20.2/bin
 
 Examples:
-  Manual install:
+  Manual full install:
     $0 --install
 
   CI install for base environment + DB:
     $0 --install --ci --create-db --db-name competencedb --db-user competence_user --db-pass 'secret'
 
-  CI prepare shared paths:
-    $0 --install --ci --prepare-shared-paths
+  CI apply shared paths only:
+    $0 --apply --ci --prepare-shared-paths
 
   CI install and configure Jenkins:
     $0 --install --ci --install-jenkins --write-jenkins-override --grant-jenkins-access --write-jenkins-sudoers
 
-  CI write Jenkins DB client config:
-    $0 --install --ci --write-jenkins-mycnf --db-name competencedb --db-user competence_user --db-pass 'secret'
+  CI write Jenkins DB client config only:
+    $0 --apply --ci --write-jenkins-mycnf --db-name competencedb --db-user competence_user --db-pass 'secret'
 
 Notes:
   - Jenkins package installation requires a machine where systemd is available at runtime.
@@ -136,6 +137,18 @@ prompt_yes_no() {
             *) echo "Invalid choice. Please enter y or n." ;;
         esac
     done
+}
+
+has_selected_operations() {
+    [[ "${DO_SECURE_MYSQL}" == "true" ]] \
+        || [[ "${DO_CREATE_DB}" == "true" ]] \
+        || [[ "${DO_PREPARE_SHARED_PATHS}" == "true" ]] \
+        || [[ "${DO_INSTALL_JENKINS}" == "true" ]] \
+        || [[ "${DO_WRITE_JENKINS_OVERRIDE}" == "true" ]] \
+        || [[ "${DO_ENABLE_JENKINS}" == "true" ]] \
+        || [[ "${DO_GRANT_JENKINS_ACCESS}" == "true" ]] \
+        || [[ "${DO_WRITE_JENKINS_MYCNF}" == "true" ]] \
+        || [[ "${DO_WRITE_JENKINS_SUDOERS}" == "true" ]]
 }
 
 is_installed() {
@@ -580,6 +593,50 @@ install_components() {
     info "Environment setup complete."
 }
 
+apply_selected_components() {
+    ensure_defaults
+
+    has_selected_operations || die "No operation flag provided for --apply."
+
+    if [[ "${DO_SECURE_MYSQL}" == "true" ]]; then
+        run_mysql_secure_installation
+    fi
+
+    if [[ "${DO_CREATE_DB}" == "true" ]]; then
+        create_or_update_mysql_database_and_user
+    fi
+
+    if [[ "${DO_PREPARE_SHARED_PATHS}" == "true" ]]; then
+        prepare_shared_paths
+    fi
+
+    if [[ "${DO_INSTALL_JENKINS}" == "true" ]]; then
+        install_jenkins
+    fi
+
+    if [[ "${DO_WRITE_JENKINS_OVERRIDE}" == "true" ]]; then
+        write_jenkins_override
+    fi
+
+    if [[ "${DO_GRANT_JENKINS_ACCESS}" == "true" ]]; then
+        grant_jenkins_access
+    fi
+
+    if [[ "${DO_WRITE_JENKINS_MYCNF}" == "true" ]]; then
+        write_jenkins_mycnf
+    fi
+
+    if [[ "${DO_WRITE_JENKINS_SUDOERS}" == "true" ]]; then
+        write_jenkins_sudoers
+    fi
+
+    if [[ "${DO_ENABLE_JENKINS}" == "true" ]]; then
+        enable_jenkins
+    fi
+
+    info "Selected environment operations applied."
+}
+
 parse_args() {
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -589,6 +646,10 @@ parse_args() {
                 ;;
             -i|--install)
                 ACTION="install"
+                shift
+                ;;
+            -a|--apply)
+                ACTION="apply"
                 shift
                 ;;
             -t|--test)
@@ -714,7 +775,7 @@ parse_args() {
         esac
     done
 
-    [[ -n "${ACTION}" ]] || die "No action provided. Use --install or --test."
+    [[ -n "${ACTION}" ]] || die "No action provided. Use --install, --apply, or --test."
     ensure_defaults
 }
 
@@ -724,6 +785,9 @@ main() {
     case "${ACTION}" in
         install)
             install_components
+            ;;
+        apply)
+            apply_selected_components
             ;;
         test)
             test_installations

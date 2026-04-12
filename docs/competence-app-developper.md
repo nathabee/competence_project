@@ -76,6 +76,14 @@ nvm use
 npm run test
 ```
 
+ 
+
+This uses the frontend test setup in `competence-app/__tests__`.
+
+ 
+
+
+ 
 ### Run lint
 
 ```bash
@@ -155,7 +163,9 @@ you may make link from /home/nathabee/competence_project to  /home/nathabee/codi
 
 acl does not work on symlink so we need the real directory  /home/nathabee/coding/github/competence_project 
 :
-./tools/setup_environment.sh --install --ci \
+
+```bash
+./tools/setup_environment.sh --apply --ci \
   --project-path /home/nathabee/coding/github/competence_project \
   --project-owner nathabee \
   --project-group www-data \
@@ -163,3 +173,4 @@ acl does not work on symlink so we need the real directory  /home/nathabee/codin
   --media-target /var/www/competence_project/media \
   --static-target /var/www/competence_project/staticfiles \
   --grant-jenkins-access
+``` 

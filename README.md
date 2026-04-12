@@ -333,9 +333,16 @@ sudo systemctl start npm-app
 ```
 
 Check it locally:
+depending on the value of competence-app/.env.*
+
 
 ```bash
-curl -I http://127.0.0.1:3000/
+#NEXT_PUBLIC_BASE_PATH=/evaluation 
+curl -I http://127.0.0.1:3000/evaluation 
+
+
+#NEXT_PUBLIC_BASE_PATH= 
+curl -I http://127.0.0.1:3000 
 ```
 
 In a Jenkins-managed deployment, Jenkins performs the build and restarts `npm-app`.
@@ -389,16 +396,6 @@ Tests are in `competence/tests/test*.py`.
 python manage.py test competence.tests.test_integration_workflow
 ```
 
-#### Frontend tests
-
-This uses the frontend test setup in `competence-app/__tests__`.
-
-```bash
-dotenv -e .env.development jest
-```
-
-
- 
 ---
 
 ## 🌐 WordPress Frontend Plugin (`competence-frontend`)
@@ -483,13 +480,14 @@ This is the bootstrap/reset pipeline.
 
 It is used only when you explicitly need one or more of the following:
 
-- prepare media/shared paths
+- prepare or repair shared paths
 - reset the database
-- initialize Django seed data
-- populate translation data
-- reset example user passwords
+- clear media
+- clear staticfiles
 
-This job is for first setup, environment repair, or controlled reset operations.
+It does not perform the normal deployment flow.
+It does not install system packages.
+It does not currently run Django seed/init tasks.
 
 ### Jenkins server setup
 
