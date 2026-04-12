@@ -30,10 +30,10 @@ DO_WRITE_JENKINS_MYCNF=false
 DO_WRITE_JENKINS_SUDOERS=false
 DO_RESET_DB=false
 
-DB_NAME="${DB_NAME:-${DBNAME:-}}"
-DB_USER="${DB_USER:-${DBUSER:-}}"
-DB_PASS="${DB_PASS:-${DBPASSWORD:-}}"
-DB_HOST="${DB_HOST:-${DBHOST:-localhost}}"
+DB_NAME=""
+DB_USER=""
+DB_PASS=""
+DB_HOST="localhost"
 
 JENKINS_PORT="8081"
 NODE_BIN=""
@@ -259,10 +259,26 @@ run_mysql_secure_installation() {
 }
 
 collect_db_values_if_needed() {
+    local project_env_file
+
+    project_env_file="${PROJECT_PATH}/.env"
+
+    if [[ -f "${project_env_file}" ]]; then
+        set -a
+        # shellcheck disable=SC1090
+        . "${project_env_file}"
+        set +a
+    fi
+
+    DB_NAME="${DB_NAME:-${DBNAME:-}}"
+    DB_USER="${DB_USER:-${DBUSER:-}}"
+    DB_PASS="${DB_PASS:-${DBPASSWORD:-}}"
+    DB_HOST="${DB_HOST:-${DBHOST:-localhost}}"
+
     if [[ "${CI_MODE}" == "true" ]]; then
-        [[ -n "${DB_NAME}" ]] || die "--db-name is required in --ci mode when DB setup is requested."
-        [[ -n "${DB_USER}" ]] || die "--db-user is required in --ci mode when DB setup is requested."
-        [[ -n "${DB_PASS}" ]] || die "--db-pass is required in --ci mode when DB setup is requested."
+        [[ -n "${DB_NAME}" ]] || die "Missing DBNAME. Provide --db-name or set it in ${project_env_file}."
+        [[ -n "${DB_USER}" ]] || die "Missing DBUSER. Provide --db-user or set it in ${project_env_file}."
+        [[ -n "${DB_PASS}" ]] || die "Missing DBPASSWORD. Provide --db-pass or set it in ${project_env_file}."
         return 0
     fi
 

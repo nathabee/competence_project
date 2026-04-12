@@ -217,22 +217,12 @@ pipeline {
                             exit 1
                         }
 
-                        set -a
-                        . "$PROJECT_ENV_FILE"
-                        set +a
-
-                        : "${DBNAME:?Missing DBNAME in $PROJECT_ENV_FILE}"
-                        : "${DBUSER:?Missing DBUSER in $PROJECT_ENV_FILE}"
-                        : "${DBPASSWORD:?Missing DBPASSWORD in $PROJECT_ENV_FILE}"
-
                         ./tools/setup_environment.sh \
                         --apply --ci \
                         --project-path "$PROJECT_PATH" \
                         --backend-path "$BACKEND_PATH" \
                         --venv-path "$VENV_PATH" \
-                        --reset-db \
-                        --db-name "$DBNAME" \
-                        --db-user "$DBUSER"
+                        --reset-db
                     '''
                 }
             }

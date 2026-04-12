@@ -5,11 +5,6 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
 source "${SCRIPT_DIR}/helper/project_paths.sh"
 
-if [[ -f "${PROJECT_ENV_FILE}" ]]; then
-    echo "Reset to value:"
-    grep '^DEFAULT_USER_PASSWORD=' "${PROJECT_ENV_FILE}" || true
-fi
-
 run_manage_py shell <<'PYCODE'
 from django.conf import settings
 from competence.models import CustomUser
