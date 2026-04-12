@@ -47,10 +47,11 @@ Flags:
   -y, --yes                    Auto-approve prompts in interactive mode.
 
       --project-path PATH      Project root path. Default: ${DEFAULT_PROJECT_PATH}
-      --venv-path PATH         Virtual environment path. Default: <project-path>/venv
+      --backend-path PATH      Backend root path. Default: <project-path>/backend
+      --venv-path PATH         Virtual environment path. Default: <backend-path>/venv
       --project-name NAME      Django project name. Default: competence_project
       --app-name NAME          Django app name. Default: competence
-      --fixture-path PATH      Fixture file path relative to project root.
+      --fixture-path PATH      Fixture path relative to backend root.
                                Default: competence/fixtures/initial_data.json
 
       --install-requirements   Install pip requirements from requirements.txt
@@ -69,20 +70,28 @@ Flags:
       --create-superuser       Run python manage.py createsuperuser (interactive only)
       --runserver              Run python manage.py runserver 0.0.0.0:8080 (interactive only)
       --ensure-ci-user         Run python manage.py ensure_ci_user
-      --backend-path PATH      Backend root path. Default: <project-path>/backend
-      --venv-path PATH         Virtual environment path. Default: <backend-path>/venv
-      --fixture-path PATH      Fixture path relative to backend root.
-                               Default: competence/fixtures/initial_data.json
 
 Examples:
   Interactive setup:
     $0 --setup
 
   CI migrate only:
-    $0 --setup --ci --install-requirements --migrate
+    $0 --setup --ci --project-path /path/to/repo --backend-path /path/to/repo/backend --migrate
 
-  CI reset/init path after DB reset:
-    $0 --setup --ci --install-requirements --migrate --copy-data-init --populate-data-init --create-groups --populate-teacher --ensure-ci-user --populate-translation --collectstatic
+  CI full init after DB reset:
+    $0 --setup --ci \\
+      --project-path /path/to/repo \\
+      --backend-path /path/to/repo/backend \\
+      --install-requirements \\
+      --migrate \\
+      --copy-data-init \\
+      --populate-data-init \\
+      --create-groups \\
+      --populate-teacher \\
+      --ensure-ci-user \\
+      --populate-translation \\
+      --collectstatic
+
 Notes:
   - This script is the single entry point for Django-side setup tasks.
   - In CI mode, no prompts are shown.
@@ -146,12 +155,21 @@ ensure_paths() {
     fi
 
     [[ -d "${VENV_PATH}" ]] || die "Virtual environment not found: ${VENV_PATH}"
-    [[ -f "${VENV_PATH}/bin/activate" ]] || die "Virtual environment activation script not found: ${VENV_PATH}/bin/activate"
+    [[ -x "${VENV_PATH}/bin/python" ]] || die "Python executable not found in virtual environment: ${VENV_PATH}/bin/python"
 }
 
-activate_venv() {
-    # shellcheck disable=SC1090
-    source "${VENV_PATH}/bin/activate"
+venv_python() {
+    [[ -x "${VENV_PATH}/bin/python" ]] || die "Python executable not found in virtual environment: ${VENV_PATH}/bin/python"
+    printf '%s' "${VENV_PATH}/bin/python"
+}
+
+run_manage_py() {
+    local py
+    py="$(venv_python)"
+    (
+        cd "${BACKEND_PATH}"
+        "${py}" manage.py "$@"
+    )
 }
 
 test_installations() {
@@ -174,132 +192,98 @@ test_installations() {
     echo -n "Virtual environment (${VENV_PATH}): "
     if [[ -d "${VENV_PATH}" ]]; then echo "Present"; else echo "Missing"; fi
 
-    activate_venv
+    local py
+    py="$(venv_python)"
 
     echo -n "mysqlclient in virtual environment: "
-    if python -m pip show mysqlclient >/dev/null 2>&1; then echo "Installed"; else echo "Not Installed"; fi
+    if "${py}" -m pip show mysqlclient >/dev/null 2>&1; then echo "Installed"; else echo "Not Installed"; fi
 
     echo -n "Django in virtual environment: "
-    if python -c "import django" >/dev/null 2>&1; then echo "Installed"; else echo "Not Installed"; fi
-
-    deactivate
+    if "${py}" -c "import django" >/dev/null 2>&1; then echo "Installed"; else echo "Not Installed"; fi
 }
 
 install_requirements() {
     ensure_paths
-    cd "${BACKEND_PATH}"
+
+    local py
+    py="$(venv_python)"
 
     info "Installing packages from requirements.txt..."
-    activate_venv
-    python -m pip install -r "${BACKEND_PATH}/requirements.txt"
-    deactivate
+    "${py}" -m pip install -r "${BACKEND_PATH}/requirements.txt"
 }
 
 start_django_project() {
     ensure_paths
-    cd "${BACKEND_PATH}"
 
-    activate_venv
+    local py
+    py="$(venv_python)"
+
     info "Starting Django project '${PROJECT_NAME}'..."
-    django-admin startproject "${PROJECT_NAME}" .
-    deactivate
+    (
+        cd "${BACKEND_PATH}"
+        "${py}" -m django startproject "${PROJECT_NAME}" .
+    )
 }
 
 create_django_app() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Creating Django app '${APP_NAME}'..."
-    python manage.py startapp "${APP_NAME}"
-    deactivate
+    run_manage_py startapp "${APP_NAME}"
 }
 
 run_makemigrations() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running Django makemigrations..."
-    python manage.py makemigrations
-    deactivate
+    run_manage_py makemigrations
 }
 
 run_migrate() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running Django migrate..."
-    python manage.py migrate
-    deactivate
+    run_manage_py migrate
 }
 
 run_loaddata() {
     ensure_paths
-    cd "${BACKEND_PATH}"
 
     [[ -f "${BACKEND_PATH}/${FIXTURE_PATH}" ]] || die "Fixture file not found: ${BACKEND_PATH}/${FIXTURE_PATH}"
 
-    activate_venv
     info "Loading fixture '${FIXTURE_PATH}'..."
-    python manage.py loaddata "${FIXTURE_PATH}"
-    deactivate
+    run_manage_py loaddata "${FIXTURE_PATH}"
 }
 
 run_copy_data_init() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running copy_data_init..."
-    python manage.py copy_data_init
-    deactivate
+    run_manage_py copy_data_init
 }
 
 run_populate_data_init() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running populate_data_init..."
-    python manage.py populate_data_init
-    deactivate
+    run_manage_py populate_data_init
 }
 
 run_create_groups() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running create_groups_and_permissions..."
-    python manage.py create_groups_and_permissions
-    deactivate
+    run_manage_py create_groups_and_permissions
 }
 
 run_populate_teacher() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running populate_teacher..."
-    python manage.py populate_teacher
-    deactivate
+    run_manage_py populate_teacher
 }
 
 run_populate_translation() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running populate_translation..."
-    python manage.py populate_translation
-    deactivate
+    run_manage_py populate_translation
 }
 
 run_reset_passwords() {
     ensure_paths
-    cd "${BACKEND_PATH}"
 
     [[ -x "${PROJECT_PATH}/tools/reset-django-pwd.sh" ]] || die "Script not executable or missing: ${PROJECT_PATH}/tools/reset-django-pwd.sh"
 
@@ -309,12 +293,8 @@ run_reset_passwords() {
 
 run_collectstatic() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running collectstatic..."
-    python manage.py collectstatic --noinput
-    deactivate
+    run_manage_py collectstatic --noinput
 }
 
 create_django_superuser() {
@@ -323,12 +303,8 @@ create_django_superuser() {
     fi
 
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Creating Django superuser..."
-    python manage.py createsuperuser
-    deactivate
+    run_manage_py createsuperuser
 }
 
 start_django_server() {
@@ -337,22 +313,14 @@ start_django_server() {
     fi
 
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Starting Django development server on 0.0.0.0:8080..."
-    python manage.py runserver 0.0.0.0:8080
-    deactivate
+    run_manage_py runserver 0.0.0.0:8080
 }
 
 run_ensure_ci_user() {
     ensure_paths
-    cd "${BACKEND_PATH}"
-
-    activate_venv
     info "Running ensure_ci_user..."
-    python manage.py ensure_ci_user
-    deactivate
+    run_manage_py ensure_ci_user
 }
 
 run_selected_tasks() {
@@ -425,6 +393,7 @@ interactive_setup() {
     if prompt_yes_no "Ensure CI health-check user" "n"; then
         DO_ENSURE_CI_USER=true
     fi
+
     run_selected_tasks
 }
 
@@ -455,6 +424,11 @@ parse_args() {
             --project-path)
                 [[ $# -ge 2 ]] || die "--project-path requires a value."
                 PROJECT_PATH="$2"
+                shift 2
+                ;;
+            --backend-path)
+                [[ $# -ge 2 ]] || die "--backend-path requires a value."
+                BACKEND_PATH="$2"
                 shift 2
                 ;;
             --venv-path)
@@ -541,11 +515,6 @@ parse_args() {
                 DO_ENSURE_CI_USER=true
                 shift
                 ;;
-            --backend-path)
-                [[ $# -ge 2 ]] || die "--backend-path requires a value."
-                BACKEND_PATH="$2"
-                shift 2
-                ;;
             *)
                 die "Invalid option: $1"
                 ;;
@@ -553,7 +522,6 @@ parse_args() {
     done
 
     [[ -n "${ACTION}" ]] || die "No action provided. Use --setup or --test."
-
     ensure_paths
 }
 
