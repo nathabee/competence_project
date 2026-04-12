@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "${PROJECT_DIR}"
-
-echo "Reset to value:"
-grep '^DEFAULT_USER_PASSWORD=' ./.env || true
-
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # shellcheck disable=SC1091
-source venv/bin/activate
+source "${SCRIPT_DIR}/helper/project_paths.sh"
 
-python manage.py shell -c "
+if [[ -f "${PROJECT_ENV_FILE}" ]]; then
+    echo "Reset to value:"
+    grep '^DEFAULT_USER_PASSWORD=' "${PROJECT_ENV_FILE}" || true
+fi
+
+run_manage_py shell <<'PYCODE'
 from django.conf import settings
 from competence.models import CustomUser
 
@@ -21,6 +21,4 @@ for username in users:
     u.set_password(settings.DEFAULT_USER_PASSWORD)
     u.save()
     print('reset:', username)
-"
-
-deactivate
+PYCODE

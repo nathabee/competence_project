@@ -9,7 +9,8 @@ ACTION=""
 CI_MODE=false
 ASSUME_YES=false
 
-PROJECT_PATH="${DEFAULT_PROJECT_PATH}"
+PROJECT_PATH="${DEFAULT_PROJECT_PATH}"   # repo root
+BACKEND_PATH=""
 VENV_PATH=""
 PROJECT_NAME="competence_project"
 APP_NAME="competence"
@@ -68,6 +69,11 @@ Flags:
       --create-superuser       Run python manage.py createsuperuser (interactive only)
       --runserver              Run python manage.py runserver 0.0.0.0:8080 (interactive only)
       --ensure-ci-user         Run python manage.py ensure_ci_user
+      --backend-path PATH      Backend root path. Default: <project-path>/backend
+      --venv-path PATH         Virtual environment path. Default: <backend-path>/venv
+      --fixture-path PATH      Fixture path relative to backend root.
+                               Default: competence/fixtures/initial_data.json
+
 Examples:
   Interactive setup:
     $0 --setup
@@ -126,8 +132,17 @@ is_installed() {
 ensure_paths() {
     [[ -d "${PROJECT_PATH}" ]] || die "Project path does not exist: ${PROJECT_PATH}"
 
+    PROJECT_PATH="$(readlink -f "${PROJECT_PATH}")"
+
+    if [[ -z "${BACKEND_PATH}" ]]; then
+        BACKEND_PATH="${PROJECT_PATH}/backend"
+    fi
+
+    [[ -d "${BACKEND_PATH}" ]] || die "Backend path does not exist: ${BACKEND_PATH}"
+    [[ -f "${BACKEND_PATH}/manage.py" ]] || die "manage.py not found under backend path: ${BACKEND_PATH}/manage.py"
+
     if [[ -z "${VENV_PATH}" ]]; then
-        VENV_PATH="${PROJECT_PATH}/venv"
+        VENV_PATH="${BACKEND_PATH}/venv"
     fi
 
     [[ -d "${VENV_PATH}" ]] || die "Virtual environment not found: ${VENV_PATH}"
@@ -172,17 +187,17 @@ test_installations() {
 
 install_requirements() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     info "Installing packages from requirements.txt..."
     activate_venv
-    python -m pip install -r "${PROJECT_PATH}/requirements.txt"
+    python -m pip install -r "${BACKEND_PATH}/requirements.txt"
     deactivate
 }
 
 start_django_project() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Starting Django project '${PROJECT_NAME}'..."
@@ -192,7 +207,7 @@ start_django_project() {
 
 create_django_app() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Creating Django app '${APP_NAME}'..."
@@ -202,7 +217,7 @@ create_django_app() {
 
 run_makemigrations() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running Django makemigrations..."
@@ -212,7 +227,7 @@ run_makemigrations() {
 
 run_migrate() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running Django migrate..."
@@ -222,9 +237,9 @@ run_migrate() {
 
 run_loaddata() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
-    [[ -f "${PROJECT_PATH}/${FIXTURE_PATH}" ]] || die "Fixture file not found: ${PROJECT_PATH}/${FIXTURE_PATH}"
+    [[ -f "${BACKEND_PATH}/${FIXTURE_PATH}" ]] || die "Fixture file not found: ${BACKEND_PATH}/${FIXTURE_PATH}"
 
     activate_venv
     info "Loading fixture '${FIXTURE_PATH}'..."
@@ -234,7 +249,7 @@ run_loaddata() {
 
 run_copy_data_init() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running copy_data_init..."
@@ -244,7 +259,7 @@ run_copy_data_init() {
 
 run_populate_data_init() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running populate_data_init..."
@@ -254,7 +269,7 @@ run_populate_data_init() {
 
 run_create_groups() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running create_groups_and_permissions..."
@@ -264,7 +279,7 @@ run_create_groups() {
 
 run_populate_teacher() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running populate_teacher..."
@@ -274,7 +289,7 @@ run_populate_teacher() {
 
 run_populate_translation() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running populate_translation..."
@@ -284,7 +299,7 @@ run_populate_translation() {
 
 run_reset_passwords() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     [[ -x "${PROJECT_PATH}/tools/reset-django-pwd.sh" ]] || die "Script not executable or missing: ${PROJECT_PATH}/tools/reset-django-pwd.sh"
 
@@ -294,7 +309,7 @@ run_reset_passwords() {
 
 run_collectstatic() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running collectstatic..."
@@ -308,7 +323,7 @@ create_django_superuser() {
     fi
 
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Creating Django superuser..."
@@ -322,7 +337,7 @@ start_django_server() {
     fi
 
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Starting Django development server on 0.0.0.0:8080..."
@@ -332,7 +347,7 @@ start_django_server() {
 
 run_ensure_ci_user() {
     ensure_paths
-    cd "${PROJECT_PATH}"
+    cd "${BACKEND_PATH}"
 
     activate_venv
     info "Running ensure_ci_user..."
@@ -525,6 +540,11 @@ parse_args() {
             --ensure-ci-user)
                 DO_ENSURE_CI_USER=true
                 shift
+                ;;
+            --backend-path)
+                [[ $# -ge 2 ]] || die "--backend-path requires a value."
+                BACKEND_PATH="$2"
+                shift 2
                 ;;
             *)
                 die "Invalid option: $1"

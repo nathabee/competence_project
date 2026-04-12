@@ -5,9 +5,10 @@ pipeline {
 
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
+        BACKEND_PATH = "/home/nathabee/competence_project/backend"
         PROJECT_OWNER = "nathabee"
         PROJECT_SAV = "/home/nathabee/sav"
-        VENV_PATH = "/home/nathabee/competence_project/venv"
+        VENV_PATH = "/home/nathabee/competence_project/backend/venv"
         STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
         NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
         PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
@@ -189,10 +190,15 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    sh """
+                    sh """ 
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --install-requirements
+                        ./tools/setup_django.sh \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --install-requirements
                     """
 
                     sh """
@@ -214,7 +220,12 @@ pipeline {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --migrate
+                        ./tools/setup_django.sh \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --migrate
                     """
                 }
             }
@@ -226,7 +237,12 @@ pipeline {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --ensure-ci-user
+                        ./tools/setup_django.sh \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --ensure-ci-user
                     """
                 }
             }
@@ -255,7 +271,12 @@ pipeline {
                     sh """
                         set -e
                         cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh --setup --ci --project-path '${env.PROJECT_PATH}' --venv-path '${env.VENV_PATH}' --collectstatic
+                        ./tools/setup_django.sh \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --collectstatic
                     """
                 }
             }
@@ -279,7 +300,7 @@ pipeline {
                     sh """
                         set -e
                         . '${env.VENV_PATH}/bin/activate'
-                        cd '${env.PROJECT_PATH}'
+                        cd '${env.BACKEND_PATH}'
                         python manage.py test competence.tests.test_integration_workflow
                     """
                     sh """

@@ -9,7 +9,8 @@ ACTION=""
 CI_MODE=false
 ASSUME_YES=false
 
-PROJECT_PATH="${DEFAULT_PROJECT_PATH}"
+PROJECT_PATH="${DEFAULT_PROJECT_PATH}"   # repo root
+BACKEND_PATH=""
 PROJECT_OWNER="$(stat -c '%U' "${DEFAULT_PROJECT_PATH}" 2>/dev/null || whoami)"
 PROJECT_GROUP="www-data"
 VENV_PATH=""
@@ -58,6 +59,9 @@ General flags:
       --sav-path PATH            Backup/save path. Default: /home/<project-owner>/sav
       --media-target PATH        Media target directory. Default: /var/www/competence_project/media
       --static-target PATH       Staticfiles target directory. Default: /var/www/competence_project/staticfiles
+      --project-path             repo root
+      --backend-path             backend root
+      --venv-path                default <backend-path>/venv
 
 Database flags:
       --secure-mysql             Run mysql_secure_installation (interactive only)
@@ -191,8 +195,14 @@ ensure_defaults() {
     PROJECT_PATH="$(readlink -f "${PROJECT_PATH}")"
     [[ -d "${PROJECT_PATH}" ]] || die "Project path is not a directory: ${PROJECT_PATH}"
 
+    if [[ -z "${BACKEND_PATH}" ]]; then
+        BACKEND_PATH="${PROJECT_PATH}/backend"
+    fi
+
+    [[ -d "${BACKEND_PATH}" ]] || die "Backend path is not a directory: ${BACKEND_PATH}"
+
     if [[ -z "${VENV_PATH}" ]]; then
-        VENV_PATH="${PROJECT_PATH}/venv"
+        VENV_PATH="${BACKEND_PATH}/venv"
     fi
 
     if [[ -z "${SAV_PATH}" ]]; then
@@ -343,11 +353,11 @@ prepare_shared_paths() {
     sudo find "${SAV_PATH}" "${web_root}" -type d -exec chmod 2775 {} \;
 
     cd "${PROJECT_PATH}"
-    ensure_symlink "${PROJECT_PATH}/media" "${MEDIA_TARGET}"
-    ensure_symlink "${PROJECT_PATH}/staticfiles" "${STATIC_TARGET}"
+    ensure_symlink "${BACKEND_PATH}/media" "${MEDIA_TARGET}"
+    ensure_symlink "${BACKEND_PATH}/staticfiles" "${STATIC_TARGET}"
 
     info "Shared paths prepared."
-    ls -ld "${PROJECT_PATH}/media" "${MEDIA_TARGET}" "${PROJECT_PATH}/staticfiles" "${STATIC_TARGET}" "${SAV_PATH}"
+    ls -ld "${BACKEND_PATH}/media" "${MEDIA_TARGET}" "${BACKEND_PATH}/staticfiles" "${STATIC_TARGET}" "${SAV_PATH}"
 }
 
 install_jenkins() {
@@ -767,6 +777,11 @@ parse_args() {
             --node-bin)
                 [[ $# -ge 2 ]] || die "--node-bin requires a value."
                 NODE_BIN="$2"
+                shift 2
+                ;;
+            --backend-path)
+                [[ $# -ge 2 ]] || die "--backend-path requires a value."
+                BACKEND_PATH="$2"
                 shift 2
                 ;;
             *)

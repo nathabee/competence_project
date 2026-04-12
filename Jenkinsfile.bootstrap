@@ -21,21 +21,22 @@ pipeline {
         )
     }
 
-    environment {
-        PROJECT_PATH = "/home/nathabee/competence_project"
-        PROJECT_OWNER = "nathabee"
-        PROJECT_GROUP = "www-data"
-        PROJECT_SAV = "/home/nathabee/sav"
-        VENV_PATH = "/home/nathabee/competence_project/venv"
-        MEDIA_TARGET = "/var/www/competence_project/media"
-        STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
-        NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
-        PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
+        environment {
+            PROJECT_PATH = "/home/nathabee/competence_project"
+            BACKEND_PATH = "/home/nathabee/competence_project/backend"
+            PROJECT_OWNER = "nathabee"
+            PROJECT_GROUP = "www-data"
+            PROJECT_SAV = "/home/nathabee/sav"
+            VENV_PATH = "/home/nathabee/competence_project/backend/venv"
+            MEDIA_TARGET = "/var/www/competence_project/media"
+            STATIC_FILES_PATH = "/var/www/competence_project/staticfiles"
+            NODE_BIN = "/home/nathabee/.nvm/versions/node/v20.20.2/bin"
+            PROJECT_ENV_FILE = "/home/nathabee/competence_project/.env"
 
-        PATH = "${NODE_BIN}:${env.PATH}"
-        timestamp = new Date().format('yyyyMMdd_HHmmss')
-        BACKUPDIR = "${PROJECT_SAV}/competence_project_${timestamp}"
-    }
+            PATH = "${NODE_BIN}:${env.PATH}"
+            timestamp = new Date().format('yyyyMMdd_HHmmss')
+            BACKUPDIR = "${PROJECT_SAV}/competence_project_${timestamp}"
+        }
  
 
     stages {
@@ -164,7 +165,7 @@ pipeline {
          stage('Manual Confirmation') {
             when {
                 expression {
-                    return params.PREPARE_SHARED_PATHS || params.RESET_DB || params.CLEAR_MEDIA || params.CLEAR_STATICFILES
+                    return params.RESET_DB || params.CLEAR_MEDIA || params.CLEAR_STATICFILES
                 }
             }
             steps {

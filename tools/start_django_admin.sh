@@ -1,27 +1,31 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Function to display help
 show_help() {
     echo "Usage: $0 [option]"
     echo
     echo "Options:"
     echo "  -h, --help       Show this help message and exit."
-    echo "  -a, --admin      Start the Django admin console."
+    echo "  -a, --admin      Start the Django shell."
     echo
 }
 
-# Function to start the Django admin console
 start_django_admin() {
-    echo "Activating the virtual environment..."
-    source venv/bin/activate
+    SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    # shellcheck disable=SC1091
+    source "${SCRIPT_DIR}/helper/project_paths.sh"
 
-    echo "Starting Django admin console..."
-    python manage.py shell
+    ensure_backend_root
+    ensure_manage_py
+    ensure_backend_venv
 
-    deactivate
+    echo "Starting Django shell..."
+    (
+        cd "${BACKEND_ROOT}"
+        "${BACKEND_PYTHON}" "${MANAGE_PY}" shell
+    )
 }
 
-# Main script logic
 if [[ "$#" -eq 0 ]]; then
     show_help
     exit 1
