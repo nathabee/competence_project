@@ -194,6 +194,7 @@ pipeline {
                 script {
                     sh """
                         set +e
+                        sudo systemctl daemon-reload
                         sudo systemctl stop gunicorn
                         sudo systemctl stop npm-app
                         exit 0

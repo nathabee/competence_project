@@ -36,7 +36,7 @@ pipeline {
                             . "${env.PROJECT_ENV_FILE}"
                             set +a
 
-                            for key in DBNAME CI_DEPLOY_ENV CI_UPDATE_DEPLOY_TREE CI_FRONTEND_ENV_FILE CI_FRONTEND_BUILD_CMD CI_RUN_EXTERNAL_SMOKE; do
+                            for key in DBNAME DBUSER DBPASSWORD CI_DEPLOY_ENV CI_UPDATE_DEPLOY_TREE CI_FRONTEND_ENV_FILE CI_FRONTEND_BUILD_CMD CI_RUN_EXTERNAL_SMOKE; do
                                 value=\$(eval "printf '%s' \\"\\\${\$key:-}\\"")
                                 if [ -z "\$value" ]; then
                                     echo "ERROR: Missing \$key in ${env.PROJECT_ENV_FILE}" >&2
@@ -64,6 +64,8 @@ pipeline {
 
                     def requiredKeys = [
                         'DBNAME',
+                        'DBUSER',
+                        'DBPASSWORD',
                         'CI_DEPLOY_ENV',
                         'CI_UPDATE_DEPLOY_TREE',
                         'CI_FRONTEND_ENV_FILE',
@@ -162,6 +164,7 @@ pipeline {
                 script {
                     sh """
                         set +e
+                        sudo systemctl daemon-reload
                         sudo systemctl stop gunicorn
                         sudo systemctl stop npm-app
                         exit 0
@@ -281,15 +284,43 @@ pipeline {
                 }
             }
         }
-
+        
         stage('Start Services') {
             steps {
                 script {
                     sh """
                         set -e
+                        sudo systemctl daemon-reload
                         sudo systemctl start gunicorn
                         sudo systemctl start npm-app
                     """
+                }
+            }
+        }
+
+        stage('Ensure Database Grants') {
+            steps {
+                script {
+                    withEnv([
+                        "CFG_DBNAME=${cfg.DBNAME}",
+                        "CFG_DBUSER=${cfg.DBUSER}",
+                        "CFG_DBPASSWORD=${cfg.DBPASSWORD}"
+                    ]) {
+                        sh '''
+                            set -e
+                            cd "$PROJECT_PATH"
+
+                            ./tools/setup_environment.sh \
+                            --apply --ci \
+                            --project-path "$PROJECT_PATH" \
+                            --backend-path "$BACKEND_PATH" \
+                            --venv-path "$VENV_PATH" \
+                            --create-db \
+                            --db-name "$CFG_DBNAME" \
+                            --db-user "$CFG_DBUSER" \
+                            --db-pass "$CFG_DBPASSWORD"
+                        '''
+                    }
                 }
             }
         }

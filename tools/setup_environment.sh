@@ -278,6 +278,35 @@ collect_db_values_if_needed() {
     fi
 }
 
+create_or_update_mysql_database_and_user() {
+    collect_db_values_if_needed
+
+    validate_db_identifier "${DB_NAME}" "Database name"
+    validate_db_identifier "${DB_USER}" "Database user"
+
+    local escaped_pass
+    local test_db_name
+    escaped_pass="$(sql_escape_string "${DB_PASS}")"
+    test_db_name="test_${DB_NAME}"
+
+    info "Creating/updating MySQL database '${DB_NAME}' and user '${DB_USER}'..."
+
+    sudo mysql <<SQL
+CREATE DATABASE IF NOT EXISTS \`${DB_NAME}\`
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+
+CREATE USER IF NOT EXISTS '${DB_USER}'@'localhost' IDENTIFIED BY '${escaped_pass}';
+ALTER USER '${DB_USER}'@'localhost' IDENTIFIED BY '${escaped_pass}';
+
+GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${DB_USER}'@'localhost';
+GRANT ALL PRIVILEGES ON \`${test_db_name}\`.* TO '${DB_USER}'@'localhost';
+FLUSH PRIVILEGES;
+SQL
+
+    info "MySQL setup complete with database '${DB_NAME}', test database '${test_db_name}', and user '${DB_USER}'."
+}
+
 reset_mysql_database_and_user() {
     collect_db_values_if_needed
 
@@ -469,7 +498,7 @@ write_jenkins_sudoers() {
     ensure_defaults
 
     sudo tee "${JENKINS_SUDOERS_PATH}" >/dev/null <<EOF
-jenkins ALL=NOPASSWD: /usr/bin/systemctl start gunicorn, /usr/bin/systemctl stop gunicorn, /usr/bin/systemctl start npm-app, /usr/bin/systemctl stop npm-app
+jenkins ALL=NOPASSWD: /usr/bin/systemctl daemon-reload, /usr/bin/systemctl start gunicorn, /usr/bin/systemctl stop gunicorn, /usr/bin/systemctl start npm-app, /usr/bin/systemctl stop npm-app
 jenkins ALL=(root) NOPASSWD: /usr/bin/mysql, /usr/bin/mysqldump
 jenkins ALL=(${PROJECT_OWNER}) NOPASSWD: /usr/bin/git
 EOF
