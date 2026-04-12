@@ -57,7 +57,7 @@ General flags:
       --project-owner USER       Owner user for project/shared paths. Default: detected project owner
       --project-group GROUP      Group for project/shared paths. Default: www-data
       --venv-path PATH           Virtual environment path. Default: <project-path>/venv
-      --sav-path PATH            Backup/save path. Default: /home/<project-owner>/sav
+      --sav-path PATH            Backup/save path. Default: <project-path>/../sav
       --media-target PATH        Media target directory. Default: /var/www/competence_project/media
       --static-target PATH       Staticfiles target directory. Default: /var/www/competence_project/staticfiles
       --project-path             repo root
@@ -209,7 +209,7 @@ ensure_defaults() {
     fi
 
     if [[ -z "${SAV_PATH}" ]]; then
-        SAV_PATH="/home/${PROJECT_OWNER}/sav"
+        SAV_PATH="$(readlink -f "${PROJECT_PATH}/../sav")"
     fi
 
     if [[ -z "${NODE_BIN}" ]]; then
