@@ -151,17 +151,31 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        mkdir -p ${PROJECT_SAV}
-                        cp -r ${PROJECT_PATH} ${BACKUPDIR}
-                        mysqldump --defaults-extra-file=/var/lib/jenkins/.my.cnf --databases ${cfg.DBNAME} > '${BACKUPDIR}/db_backup_${timestamp}.sql'
+                        mkdir -p '${env.PROJECT_SAV}'
+                        cp -r '${env.PROJECT_PATH}' '${env.BACKUPDIR}'
+                        mysqldump \
+                        --defaults-extra-file=/var/lib/jenkins/.my.cnf \
+                        --no-tablespaces \
+                        --databases '${cfg.DBNAME}' \
+                        > '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
+                        test -s '${env.BACKUPDIR}/db_backup_${env.timestamp}.sql'
                     """
-                    echo "Backup of project directory created at ${BACKUPDIR}"
+                    echo "Backup of project directory created at ${env.BACKUPDIR}"
                     echo "MySQL database backup created."
                 }
             }
         }
 
- 
+         stage('Manual Confirmation') {
+            when {
+                expression {
+                    return params.PREPARE_SHARED_PATHS || params.RESET_DB || params.CLEAR_MEDIA || params.CLEAR_STATICFILES
+                }
+            }
+            steps {
+                input message: "Bootstrap will modify the environment. Confirm that you want to continue."
+            }
+        }
 
         stage('Stop Services') {
             steps {
@@ -176,16 +190,7 @@ pipeline {
             }
         }
 
-        stage('Manual Confirmation') {
-            when {
-                expression {
-                    return params.PREPARE_SHARED_PATHS || params.RESET_DB || params.CLEAR_MEDIA || params.CLEAR_STATICFILES
-                }
-            }
-            steps {
-                input message: "Bootstrap will modify the environment. Confirm that you want to continue."
-            }
-        }
+
 
         stage('Reset Database') {
             when {
