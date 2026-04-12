@@ -1,108 +1,69 @@
-# Byte-compiled / optimized / DLL files
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
+*.pot
+*.db
+*.sqlite3
 
-
-# Ignore .env files (if you store sensitive information there)
+# Environment files
 *.env
 **/.env
 **/.env.*
+.env*
 
-
-# Virtual environment
+# Virtual environments
 venv/
 ENV/
+backend/venv/
 
+# Active backend runtime dirs
+backend/media/
+backend/staticfiles/
 
-
-#debug or old code
-**/to_ignore/**
-wget-log
-
-
-# Django specific files
-*.log
-*.pot
-*.pyc
-*.pyo
-*.pyd
-*.db
-*.sqlite3
-staticfiles/
-media/
-media
-
-db_backup_*.sql
-
-# Ignore the demo directory inside competence-app-demo/public/
-competence-app-demo/public/demo/
-
-# Frontend specific
+# Active frontend runtime/build dirs
 node_modules/
-dist/
-build/
-gh-pages/out/
-gh-pages/staticfiles/
-
-# Django migrations
-**/migrations/**
-
-# IDE specific files
-.vscode/
-.idea/
-
-# System files
-.DS_Store
-Thumbs.db
-
-# Node.js
-node_modules/
+.next/
+out/
 build/
 dist/
-
-# Output zips
-*.zip
-
-# Logs
-*.log
-nohup.out
-
-# IDE files
-.vscode/
-.idea/
-
-# OS
-.DS_Store
-
-# Compiled files
+coverage/
+.vercel/
 *.tsbuildinfo
+*.pem 
 
-# React
-.env*
+# Keep Next generated TS env file tracked
+!competence-app/next-env.d.ts
+
+# Generic JS build dirs
+node_modules/
+build/
+dist/
 .next/
 out/
 
-# WordPress plugin builds
-competence-frontend/competence-wp/build/
-competence-frontend/competence-wp/dist/
-competence-frontend/competence-wp/node_modules/
+# Django migration cache only
+**/migrations/__pycache__/
+**/migrations/*.pyc
 
-# Next.js
-competence-frontend/react-app/.next/
-competence-frontend/react-app/node_modules/
+# Logs / dumps
+*.log
+nohup.out
+db_backup_*.sql
+wget-log
 
-
-#my tools
+# Legacy / temp / local helper stuff
+**/to_ignore/**
 setme
-
-
-# Swaggerdoc  is used to make REST API spec for doc
-# 
-# curl -o swagger.json http://127.0.0.1:8000/swagger/?format=openapi
-#  git clone https://github.com/swagger-api/swagger-ui.git
-# 
-swagger-ui/
- 
-
 resized_*
+swagger-ui/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# GitHub Pages generated output
+gh-pages/out/
+gh-pages/staticfiles/

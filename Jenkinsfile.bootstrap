@@ -3,12 +3,7 @@ def cfg = [:]
 pipeline {
     agent any
 
-    parameters {
-        booleanParam(
-            name: 'PREPARE_SHARED_PATHS',
-            defaultValue: false,
-            description: 'Create/update sav, media, staticfiles paths and project symlinks.'
-        )
+    parameters { 
         booleanParam(
             name: 'RESET_DB',
             defaultValue: false,
@@ -244,27 +239,6 @@ pipeline {
             }
         }
 
-        stage('Prepare Shared Paths') {
-            when {
-                expression { return params.PREPARE_SHARED_PATHS }
-            }
-            steps {
-                script {
-                    sh """
-                        set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_environment.sh --apply --ci \
-                        --project-path '${env.PROJECT_PATH}' \
-                        --project-owner '${env.PROJECT_OWNER}' \
-                        --project-group '${env.PROJECT_GROUP}' \
-                        --sav-path '${env.PROJECT_SAV}' \
-                        --media-target '${env.MEDIA_TARGET}' \
-                        --static-target '${env.STATIC_FILES_PATH}' \
-                        --prepare-shared-paths
-                    """
-                }
-            }
-        }
 
         stage('Summary') {
             steps {

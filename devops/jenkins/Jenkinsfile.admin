@@ -1,0 +1,239 @@
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '20'))
+        timestamps()
+    }
+
+    parameters {
+        booleanParam(
+            name: 'I_UNDERSTAND_THIS_PIPELINE_MODIFIES_THE_HOST',
+            defaultValue: false,
+            description: 'Must be checked. This pipeline performs host-level administrative changes.'
+        )
+
+        booleanParam(
+            name: 'INSTALL_BASE_ENV',
+            defaultValue: false,
+            description: 'Run setup_environment.sh with --install. This includes apt/package installation and base environment setup.'
+        )
+
+        booleanParam(
+            name: 'PREPARE_SHARED_PATHS',
+            defaultValue: false,
+            description: 'Create or repair sav/media/staticfiles paths and project symlinks.'
+        )
+
+        booleanParam(
+            name: 'CREATE_DB',
+            defaultValue: false,
+            description: 'Create or update the application database and DB user.'
+        )
+
+        booleanParam(
+            name: 'INSTALL_JENKINS_PACKAGE',
+            defaultValue: false,
+            description: 'Install Jenkins package and prerequisites.'
+        )
+
+        booleanParam(
+            name: 'WRITE_JENKINS_OVERRIDE',
+            defaultValue: false,
+            description: 'Write the Jenkins systemd override.'
+        )
+
+        booleanParam(
+            name: 'GRANT_JENKINS_ACCESS',
+            defaultValue: false,
+            description: 'Grant Jenkins filesystem access to project/shared paths.'
+        )
+
+        booleanParam(
+            name: 'WRITE_JENKINS_MYCNF',
+            defaultValue: false,
+            description: 'Write /var/lib/jenkins/.my.cnf from Jenkins credentials.'
+        )
+
+        booleanParam(
+            name: 'WRITE_JENKINS_SUDOERS',
+            defaultValue: false,
+            description: 'Write the Jenkins sudoers file used by the deploy/bootstrap flows.'
+        )
+
+        booleanParam(
+            name: 'ENABLE_JENKINS',
+            defaultValue: false,
+            description: 'Run systemctl daemon-reload and enable --now jenkins.'
+        )
+
+        string(
+            name: 'DB_NAME',
+            defaultValue: 'competencedb',
+            trim: true,
+            description: 'Database name, used when CREATE_DB or WRITE_JENKINS_MYCNF is selected.'
+        )
+
+        string(
+            name: 'DB_HOST',
+            defaultValue: 'localhost',
+            trim: true,
+            description: 'Database host, used when WRITE_JENKINS_MYCNF is selected.'
+        )
+
+        string(
+            name: 'DB_CREDENTIALS_ID',
+            defaultValue: 'competence-db-user',
+            trim: true,
+            description: 'Jenkins username/password credential ID for the DB user and password.'
+        )
+
+        string(
+            name: 'JENKINS_PORT',
+            defaultValue: '8081',
+            trim: true,
+            description: 'Jenkins port for --write-jenkins-override.'
+        )
+
+        string(
+            name: 'NODE_BIN',
+            defaultValue: '/home/nathabee/.nvm/versions/node/v20.20.2/bin',
+            trim: true,
+            description: 'Node bin path exposed to the Jenkins service override.'
+        )
+    }
+
+    stages {
+        stage('Validate Request') {
+            steps {
+                script {
+                    if (!params.I_UNDERSTAND_THIS_PIPELINE_MODIFIES_THE_HOST) {
+                        error('You must check I_UNDERSTAND_THIS_PIPELINE_MODIFIES_THE_HOST.')
+                    }
+
+                    def requested = []
+                    if (params.INSTALL_BASE_ENV) requested << 'INSTALL_BASE_ENV'
+                    if (params.PREPARE_SHARED_PATHS) requested << 'PREPARE_SHARED_PATHS'
+                    if (params.CREATE_DB) requested << 'CREATE_DB'
+                    if (params.INSTALL_JENKINS_PACKAGE) requested << 'INSTALL_JENKINS_PACKAGE'
+                    if (params.WRITE_JENKINS_OVERRIDE) requested << 'WRITE_JENKINS_OVERRIDE'
+                    if (params.GRANT_JENKINS_ACCESS) requested << 'GRANT_JENKINS_ACCESS'
+                    if (params.WRITE_JENKINS_MYCNF) requested << 'WRITE_JENKINS_MYCNF'
+                    if (params.WRITE_JENKINS_SUDOERS) requested << 'WRITE_JENKINS_SUDOERS'
+                    if (params.ENABLE_JENKINS) requested << 'ENABLE_JENKINS'
+
+                    if (requested.isEmpty()) {
+                        error('No admin operation selected.')
+                    }
+
+                    if ((params.CREATE_DB || params.WRITE_JENKINS_MYCNF) && !params.DB_CREDENTIALS_ID?.trim()) {
+                        error('DB_CREDENTIALS_ID is required when CREATE_DB or WRITE_JENKINS_MYCNF is selected.')
+                    }
+
+                    env.ADMIN_SUMMARY = requested.join(', ')
+                    echo "Requested admin operations: ${env.ADMIN_SUMMARY}"
+                }
+            }
+        }
+
+        stage('Manual Confirmation') {
+            steps {
+                input message: "Admin pipeline will run: ${env.ADMIN_SUMMARY}. Continue?"
+            }
+        }
+
+        stage('Apply Admin Operations') {
+            steps {
+                script {
+                    def needsInstallAction = params.INSTALL_BASE_ENV || params.INSTALL_JENKINS_PACKAGE
+                    def args = []
+                    args << (needsInstallAction ? '--install' : '--apply')
+                    args << '--ci'
+
+                    if (params.PREPARE_SHARED_PATHS) {
+                        args << '--prepare-shared-paths'
+                    }
+
+                    if (params.INSTALL_JENKINS_PACKAGE) {
+                        args << '--install-jenkins'
+                    }
+
+                    if (params.WRITE_JENKINS_OVERRIDE) {
+                        args << '--write-jenkins-override'
+                        args << '--jenkins-port'
+                        args << params.JENKINS_PORT.trim()
+                        args << '--node-bin'
+                        args << params.NODE_BIN.trim()
+                    }
+
+                    if (params.GRANT_JENKINS_ACCESS) {
+                        args << '--grant-jenkins-access'
+                    }
+
+                    if (params.WRITE_JENKINS_SUDOERS) {
+                        args << '--write-jenkins-sudoers'
+                    }
+
+                    if (params.ENABLE_JENKINS) {
+                        args << '--enable-jenkins'
+                    }
+
+                    def quoteArg = { String value ->
+                        return "'${value.replace("'", "'\"'\"'")}'"
+                    }
+
+                    def runAdmin = { List<String> commandArgs ->
+                        def joined = commandArgs.collect { quoteArg(it) }.join(' ')
+                        sh """
+                            set -e
+                            sudo /usr/local/sbin/competence-admin-runner ${joined}
+                        """
+                    }
+
+                    if (params.CREATE_DB || params.WRITE_JENKINS_MYCNF) {
+                        withCredentials([usernamePassword(
+                            credentialsId: params.DB_CREDENTIALS_ID.trim(),
+                            usernameVariable: 'DB_USER',
+                            passwordVariable: 'DB_PASS'
+                        )]) {
+                            def dbArgs = new ArrayList<String>(args)
+
+                            if (params.CREATE_DB) {
+                                dbArgs << '--create-db'
+                            }
+
+                            if (params.CREATE_DB || params.WRITE_JENKINS_MYCNF) {
+                                dbArgs << '--db-name'
+                                dbArgs << params.DB_NAME.trim()
+                                dbArgs << '--db-user'
+                                dbArgs << env.DB_USER
+                                dbArgs << '--db-pass'
+                                dbArgs << env.DB_PASS
+                            }
+
+                            if (params.WRITE_JENKINS_MYCNF) {
+                                dbArgs << '--write-jenkins-mycnf'
+                                dbArgs << '--db-host'
+                                dbArgs << params.DB_HOST.trim()
+                            }
+
+                            runAdmin(dbArgs)
+                        }
+                    } else {
+                        runAdmin(args)
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Admin pipeline completed successfully.'
+        }
+        failure {
+            echo 'Admin pipeline failed.'
+        }
+    }
+}

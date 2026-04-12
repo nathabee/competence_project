@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# install this way
+# sudo install -o root -g root -m 0755 /tmp/competence-admin-runner /usr/local/sbin/competence-admin-runner
+# or in place:
+# sudo chmod 0755 /usr/local/sbin/competence-admin-runner
+# sudo chown root:root /usr/local/sbin/competence-admin-runner
+
+PROJECT_PATH="/home/nathabee/competence_project"
+SCRIPT="${PROJECT_PATH}/tools/setup_environment.sh"
+
+PROJECT_OWNER="nathabee"
+PROJECT_GROUP="www-data"
+SAV_PATH="/home/nathabee/sav"
+MEDIA_TARGET="/var/www/competence_project/media"
+STATIC_TARGET="/var/www/competence_project/staticfiles"
+
+if [[ ! -x "${SCRIPT}" ]]; then
+    echo "ERROR: Missing or non-executable ${SCRIPT}" >&2
+    exit 1
+fi
+
+exec "${SCRIPT}" \
+  --project-path "${PROJECT_PATH}" \
+  --project-owner "${PROJECT_OWNER}" \
+  --project-group "${PROJECT_GROUP}" \
+  --sav-path "${SAV_PATH}" \
+  --media-target "${MEDIA_TARGET}" \
+  --static-target "${STATIC_TARGET}" \
+  "$@"
