@@ -1,8 +1,31 @@
-def cfg = [:]
+def cfg = [:] 
 
 pipeline {
     agent any
- 
+
+    parameters {
+        booleanParam(
+            name: 'PREPARE_SHARED_PATHS',
+            defaultValue: false,
+            description: 'Create/update sav, media, staticfiles paths and project symlinks.'
+        )
+        booleanParam(
+            name: 'RESET_DB',
+            defaultValue: false,
+            description: 'Drop and recreate the application database.'
+        )
+        booleanParam(
+            name: 'CLEAR_MEDIA',
+            defaultValue: false,
+            description: 'Remove all files under the media target directory.'
+        )
+        booleanParam(
+            name: 'CLEAR_STATICFILES',
+            defaultValue: false,
+            description: 'Remove all files under the staticfiles target directory.'
+        )
+    }
+
     environment {
         PROJECT_PATH = "/home/nathabee/competence_project"
         PROJECT_OWNER = "nathabee"
@@ -18,6 +41,7 @@ pipeline {
         timestamp = new Date().format('yyyyMMdd_HHmmss')
         BACKUPDIR = "${PROJECT_SAV}/competence_project_${timestamp}"
     }
+ 
 
     stages {
 
