@@ -191,11 +191,10 @@ pipeline {
             steps {
                 script {
                     sh """
-                        set +e
+                        set -e
                         sudo systemctl daemon-reload
-                        sudo systemctl stop gunicorn
-                        sudo systemctl stop npm-app
-                        exit 0
+                        sudo systemctl stop gunicorn || true
+                        sudo systemctl stop npm-app || true
                     """
                 }
             }
