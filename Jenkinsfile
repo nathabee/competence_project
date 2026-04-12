@@ -80,7 +80,42 @@ pipeline {
                         cfg.CI_INSTALL_FRONTEND_DEPS = 'false'
                     }
 
+                    def frontendBasePath = sh(
+                        script: """
+                            set +x
+                            set -e
+
+                            FRONTEND_ENV_PATH='${env.PROJECT_PATH}/competence-app/${cfg.CI_FRONTEND_ENV_FILE}'
+
+                            test -f "\$FRONTEND_ENV_PATH" || {
+                                echo "ERROR: Missing frontend env file \$FRONTEND_ENV_PATH" >&2
+                                exit 1
+                            }
+
+                            set -a
+                            . "\$FRONTEND_ENV_PATH"
+                            set +a
+
+                            printf '%s' "\${NEXT_PUBLIC_BASE_PATH:-}"
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    if (!frontendBasePath) {
+                        frontendBasePath = '/'
+                    } else {
+                        if (!frontendBasePath.startsWith('/')) {
+                            frontendBasePath = "/${frontendBasePath}"
+                        }
+                        if (!frontendBasePath.endsWith('/')) {
+                            frontendBasePath = "${frontendBasePath}/"
+                        }
+                    }
+
+                    cfg.NEXT_PUBLIC_BASE_PATH = frontendBasePath
+
                     echo "Project .env loaded successfully."
+                    echo "Frontend base path resolved to: ${cfg.NEXT_PUBLIC_BASE_PATH}"
                 }
             }
         }
@@ -260,28 +295,49 @@ pipeline {
         stage('Health Check (internal)') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'competence-app-teacher-id', usernameVariable: 'TEACHER_USER', passwordVariable: 'TEACHER_PASS')]) {
-                        def accessToken = sh(
-                            script: '''
-                                set +x
-                                curl -fsS -X POST \
-                                  -H "Content-Type: application/json" \
-                                  -H "X-Forwarded-Proto: https" \
-                                  -d "{\"username\":\"$TEACHER_USER\",\"password\":\"$TEACHER_PASS\"}" \
-                                  http://127.0.0.1:8080/api/token/ | jq -r .access
-                            ''',
-                            returnStdout: true
-                        ).trim()
-
+                    withCredentials([usernamePassword(
+                        credentialsId: 'competence-app-teacher-id',
+                        usernameVariable: 'HEALTHCHECK_USER',
+                        passwordVariable: 'HEALTHCHECK_PASS'
+                    )]) {
                         sh """
                             set -e
-                            test -n '${accessToken}'
-                            test '${accessToken}' != 'null'
+
+                            echo "Health check username: \$HEALTHCHECK_USER"
+                            echo "Health check frontend path: ${cfg.NEXT_PUBLIC_BASE_PATH}"
+
+                            token_response_file=\$(mktemp)
+
+                            payload=\$(jq -n \
+                            --arg username "\$HEALTHCHECK_USER" \
+                            --arg password "\$HEALTHCHECK_PASS" \
+                            '{username: \$username, password: \$password}')
+
+                            http_code=\$(curl -sS \
+                            -o "\$token_response_file" \
+                            -w '%{http_code}' \
+                            -X POST \
+                            -H 'Content-Type: application/json' \
+                            -H 'X-Forwarded-Proto: https' \
+                            --data-binary "\$payload" \
+                            http://127.0.0.1:8080/api/token/ || true)
+
+                            echo "Token endpoint HTTP status: \$http_code"
+                            echo "Token endpoint response body:"
+                            cat "\$token_response_file"
+                            echo
+
+                            test "\$http_code" = "200"
+
+                            accessToken=\$(jq -r '.access // empty' "\$token_response_file")
+                            test -n "\$accessToken"
+
                             curl -fsS \
-                              -H 'Authorization: Bearer ${accessToken}' \
-                              -H 'X-Forwarded-Proto: https' \
-                              http://127.0.0.1:8080/api/
-                            curl -fsSI http://127.0.0.1:3000/
+                            -H "Authorization: Bearer \$accessToken" \
+                            -H 'X-Forwarded-Proto: https' \
+                            http://127.0.0.1:8080/api/
+
+                            curl -fsSI "http://127.0.0.1:3000${cfg.NEXT_PUBLIC_BASE_PATH}"
                         """
                     }
                 }

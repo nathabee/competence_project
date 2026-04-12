@@ -106,7 +106,42 @@ pipeline {
                         cfg.CI_INSTALL_FRONTEND_DEPS = 'false'
                     }
 
+                    def frontendBasePath = sh(
+                        script: """
+                            set +x
+                            set -e
+
+                            FRONTEND_ENV_PATH='${env.PROJECT_PATH}/competence-app/${cfg.CI_FRONTEND_ENV_FILE}'
+
+                            test -f "\$FRONTEND_ENV_PATH" || {
+                                echo "ERROR: Missing frontend env file \$FRONTEND_ENV_PATH" >&2
+                                exit 1
+                            }
+
+                            set -a
+                            . "\$FRONTEND_ENV_PATH"
+                            set +a
+
+                            printf '%s' "\${NEXT_PUBLIC_BASE_PATH:-}"
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    if (!frontendBasePath) {
+                        frontendBasePath = '/'
+                    } else {
+                        if (!frontendBasePath.startsWith('/')) {
+                            frontendBasePath = "/${frontendBasePath}"
+                        }
+                        if (!frontendBasePath.endsWith('/')) {
+                            frontendBasePath = "${frontendBasePath}/"
+                        }
+                    }
+
+                    cfg.NEXT_PUBLIC_BASE_PATH = frontendBasePath
+
                     echo "Project .env loaded successfully."
+                    echo "Frontend base path resolved to: ${cfg.NEXT_PUBLIC_BASE_PATH}"
                 }
             }
         }
