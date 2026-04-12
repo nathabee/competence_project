@@ -286,29 +286,31 @@ class PDFLayout(models.Model):
         if self.pk:
             try:
                 previous = PDFLayout.objects.get(pk=self.pk)
-                if previous.header_icon == self.header_icon:  # Image hasn't changed
+                if previous.header_icon == self.header_icon:
                     super(PDFLayout, self).save(*args, **kwargs)
                     return
             except PDFLayout.DoesNotExist:
                 pass
 
-        # Only resize if the image has changed or is new
-        if self.header_icon and not self.header_icon.name.startswith('resized_'):
-            # Open the uploaded image
+        if self.header_icon and not os.path.basename(self.header_icon.name).startswith('resized_'):
             img = Image.open(self.header_icon)
             img.thumbnail((100, 100), Image.LANCZOS)
 
-            # Construct the full path for the resized image, including the 'competence/' prefix
             resized_image_name = f"resized_{os.path.basename(self.header_icon.name)}"
-            temp_file_path = os.path.join(settings.MEDIA_ROOT, 'competence/header_icons', resized_image_name)
+            temp_file_path = os.path.join(
+                settings.MEDIA_ROOT,
+                'competence',
+                'header_icons',
+                resized_image_name,
+            )
+
+            os.makedirs(os.path.dirname(temp_file_path), exist_ok=True)
+
             img.save(temp_file_path)
 
-            # Update the image field with the resized image, ensuring the correct 'competence/' path
             with open(temp_file_path, 'rb') as f:
-                # Save with exact name and path without adding any extra string
-                self.header_icon.save(f"{resized_image_name}", File(f), save=False)
+                self.header_icon.save(resized_image_name, File(f), save=False)
 
-            # Optionally, remove the temporary file after saving the resized image
             os.remove(temp_file_path)
 
         super(PDFLayout, self).save(*args, **kwargs)
