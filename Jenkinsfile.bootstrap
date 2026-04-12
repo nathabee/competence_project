@@ -252,15 +252,15 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd ${PROJECT_PATH} 
-                        ./tools/setup_environment.sh --install --ci \
-                          --project-path ${PROJECT_PATH} \
-                          --project-owner ${PROJECT_OWNER} \
-                          --project-group ${PROJECT_GROUP} \
-                          --sav-path ${PROJECT_SAV} \
-                          --media-target ${MEDIA_TARGET} \
-                          --static-target ${STATIC_FILES_PATH} \
-                          --prepare-shared-paths
+                        cd '${env.PROJECT_PATH}'
+                        ./tools/setup_environment.sh --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --project-owner '${env.PROJECT_OWNER}' \
+                        --project-group '${env.PROJECT_GROUP}' \
+                        --sav-path '${env.PROJECT_SAV}' \
+                        --media-target '${env.MEDIA_TARGET}' \
+                        --static-target '${env.STATIC_FILES_PATH}' \
+                        --prepare-shared-paths
                     """
                 }
             }
