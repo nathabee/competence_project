@@ -1,6 +1,6 @@
-## Developer Guide for competence-app
+# Developer Guide for competence-app
 
-### Node and npm version
+## Node and npm version
 
 This project uses Node `20.20.2` via `nvm`.
 
@@ -22,7 +22,7 @@ which node
 which npm
 ```
 
-### Install dependencies in development
+## Install dependencies in development
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -36,17 +36,17 @@ Example: install a specific package
 npm install jspdf@4.2.1
 ```
 
-### Run the app in development
+## Run the app in development
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
 nvm use
 npm run dev
-``` 
+```
 
 This uses `.env.development`.
 
-### Test the local build
+## Test the local build
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -57,7 +57,7 @@ npm run local-start
 
 These commands use `.env.development`.
 
-### Test the production build locally
+## Test the production build locally
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -66,9 +66,10 @@ npm run build
 npm run start
 ```
 
-These commands use `.env.production`.
+In a standard Next.js production run, these commands use production environment values.
+If a package script explicitly loads another env file, that script definition wins.
 
-### Run tests
+## Run tests
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -76,15 +77,9 @@ nvm use
 npm run test
 ```
 
- 
-
 This uses the frontend test setup in `competence-app/__tests__`.
 
- 
-
-
- 
-### Run lint
+## Run lint
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -92,7 +87,7 @@ nvm use
 npm run lint
 ```
 
-### Audit dependencies
+## Audit dependencies
 
 ```bash
 cd /home/nathabee/competence_project/competence-app
@@ -106,7 +101,7 @@ JSON report:
 npm audit --json > audit.json
 ```
 
-### Important distinction: dev shell vs services
+## Important distinction: dev shell vs services
 
 For interactive developer work, use:
 
@@ -116,13 +111,14 @@ npm ...
 ```
 
 For Jenkins and systemd services, do not rely on `.nvmrc` alone.
-Services must use an explicit Node/npm path or an explicitly configured PATH.
+Services must use an explicit Node/npm path or an explicitly configured `PATH`.
 
-### Jenkins
+## Jenkins
 
-In Jenkins, use `npm ci` for reproducible installs, not `npm install`.
+In Jenkins, prefer `npm ci` for reproducible installs when `package-lock.json` is current and authoritative.
+Use `npm install` only when you intentionally need to regenerate the lockfile.
 
-### Production services
+## Production services
 
 Frontend and backend services are managed by systemd.
 
@@ -154,23 +150,28 @@ sudo systemctl enable gunicorn
 sudo systemctl enable npm-app
 ```
 
-## in case jenkins test on dev
+## In case Jenkins is tested on a development tree
 
-( for the actual developper)
+For local Jenkins/systemd testing, `/home/nathabee/competence_project` may be a symlink to the real repository, for example:
 
-if you test jenkins and systemd on dev
-you may make link from /home/nathabee/competence_project to  /home/nathabee/coding/github/competence_project 
+```text
+/home/nathabee/competence_project -> /home/nathabee/coding/github/competence_project
+```
 
-acl does not work on symlink so we need the real directory  /home/nathabee/coding/github/competence_project 
-:
+ACLs must be applied to the real target directory, not only to the symlink path.
+So for Jenkins access configuration, use the real working tree path.
+
+Example:
 
 ```bash
 ./tools/setup_environment.sh --apply --ci \
   --project-path /home/nathabee/coding/github/competence_project \
+  --backend-path /home/nathabee/coding/github/competence_project/backend \
   --project-owner nathabee \
   --project-group www-data \
   --sav-path /home/nathabee/sav \
   --media-target /var/www/competence_project/media \
   --static-target /var/www/competence_project/staticfiles \
   --grant-jenkins-access
-``` 
+```
+ 

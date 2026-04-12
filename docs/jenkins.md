@@ -1,5 +1,23 @@
 # Jenkins Setup
 
+## Purpose
+
+This document explains how Jenkins is used for the Competence Project.
+
+The repository now uses three different Jenkins roles:
+
+- `Jenkinsfile` for normal deploy, test, and smoke-check flow
+- `Jenkinsfile.bootstrap` for explicit reset/cleanup operations
+- `devops/jenkins/Jenkinsfile.admin` as the reference for host-level admin work
+
+Important:
+
+- the normal deploy and bootstrap jobs can be loaded from SCM
+- the admin job should **not** be executed from the public repository through “Pipeline script from SCM”
+- the admin job should be created as an **inline Pipeline script** in Jenkins
+
+---
+
 ## 1. Prerequisite: this machine must run systemd
 
 The Jenkins Debian package installs Jenkins as a `systemd` service.
@@ -10,7 +28,7 @@ Before installing Jenkins, verify that:
 command -v systemctl
 ps -p 1 -o comm=
 test -d /run/systemd/system && echo "systemd runtime present" || echo "no systemd runtime"
-```
+````
 
 Expected result:
 
@@ -31,6 +49,7 @@ cd /home/nathabee/competence_project
 
 ./tools/setup_environment.sh --install --ci \
   --project-path /home/nathabee/competence_project \
+  --backend-path /home/nathabee/competence_project/backend \
   --project-owner nathabee \
   --project-group www-data \
   --create-db --db-name competencedb --db-user competence_user --db-pass 'REAL_DB_PASSWORD_HERE' \
@@ -46,17 +65,17 @@ cd /home/nathabee/competence_project
 This command does the following:
 
 * installs required system packages
-* creates or updates the Python virtual environment and Django base install
+* creates or updates the backend Python virtual environment and Django base install
 * creates or updates the MySQL database/user
 * prepares shared paths:
 
   * `/home/nathabee/sav`
   * `/var/www/competence_project/media`
   * `/var/www/competence_project/staticfiles`
-* ensures project symlinks:
+* ensures backend symlinks:
 
-  * `/home/nathabee/competence_project/media`
-  * `/home/nathabee/competence_project/staticfiles`
+  * `/home/nathabee/competence_project/backend/media`
+  * `/home/nathabee/competence_project/backend/staticfiles`
 * installs Jenkins
 * writes the Jenkins systemd override
 * grants Jenkins access to the project/shared paths
@@ -66,18 +85,21 @@ This command does the following:
 
 ### Note
 
+Run `setup_environment.sh` as a normal user with sudo rights.
+
+Do not normally run the whole script itself with `sudo`, because the script already elevates only the operations that require it.
+
 If the database password changes later, rerun only the DB-related part:
 
 ```bash
 ./tools/setup_environment.sh --apply --ci \
   --project-path /home/nathabee/competence_project \
+  --backend-path /home/nathabee/competence_project/backend \
   --project-owner nathabee \
   --project-group www-data \
   --create-db --db-name competencedb --db-user competence_user --db-pass 'REAL_DB_PASSWORD_HERE' \
   --write-jenkins-mycnf --db-host localhost
 ```
-Run `setup_environment.sh` as a normal user with sudo rights.
-Do not normally run the whole script itself with `sudo`, because the script already elevates only the operations that require it.
 
 ---
 
@@ -96,28 +118,33 @@ curl -I http://127.0.0.1:8081/
 sudo cat /var/lib/jenkins/secrets/initialAdminPassword
 ```
 
-Open:
+Before Apache reverse proxy is configured, open:
 
 ```text
 http://YOUR_SERVER_IP:8081/
 ```
 
-After unlocking Jenkins, use **Install suggested plugins**.
+After Apache + HTTPS for Jenkins are configured, prefer:
 
-After that:
+```text
+https://jenkins.nathabee.de/
+```
 
-choose Install suggested plugins
-wait for plugin installation
-Jenkins then asks you to create the first admin user
+Then:
 
-This is where you create the Jenkins web admin account, for example:
+* unlock Jenkins with the initial admin password
+* choose **Install suggested plugins**
+* wait for plugin installation
+* create the first Jenkins web admin account
 
-username: jenkins-admin
-password: your chosen password
-full name: optional
-email: optional but useful
+Example:
 
-This account is only for logging into the Jenkins web UI and administering Jenkins itself.
+* username: `jenkins-admin`
+* password: your chosen password
+* full name: optional
+* email: optional but useful
+
+This account is only for the Jenkins web UI and Jenkins administration.
 
 ---
 
@@ -128,21 +155,25 @@ These are two different things:
 1. a Django application user in the app database
 2. a Jenkins credential storing that username/password
 
-### Create the Django user
+### Create the Django CI user
 
-set in the `.env` file:
+Set these values in the repository root `.env` file:
 
+```env
 CI_HEALTHCHECK_USERNAME="compet_ci"
 CI_HEALTHCHECK_EMAIL="YOUR_REAL_EMAIL"
 CI_HEALTHCHECK_PASSWORD="YOUR_REAL_PASSWORD"
+```
+
+Then run:
 
 ```bash
 ./tools/setup_django.sh --setup --ci \
   --project-path /home/nathabee/competence_project \
-  --venv-path /home/nathabee/competence_project/venv \
+  --backend-path /home/nathabee/competence_project/backend \
+  --venv-path /home/nathabee/competence_project/backend/venv \
   --ensure-ci-user
-
-``` 
+```
 
 If the API really requires the teacher role, add the user to the correct group afterward.
 
@@ -156,11 +187,11 @@ curl -sS -X POST \
   http://127.0.0.1:8080/api/token/
 ```
 
-If this returns access/refresh tokens, the Django-side user is correct.
+If this returns access and refresh tokens, the Django-side user is correct.
 
 ### Create the Jenkins credential
 
-In Jenkins UI:
+In the Jenkins UI:
 
 * **Manage Jenkins**
 * **Credentials**
@@ -181,11 +212,9 @@ Use:
 
 ## 6. Create the pipeline jobs
 
-Create two Pipeline jobs from SCM.
+## 6.1 Standard deployment job
 
-### Standard deployment job
-
- 
+Create a Pipeline job from SCM.
 
 For `competence-deploy`:
 
@@ -199,10 +228,13 @@ For `competence-deploy`:
 * Do not allow concurrent builds: checked
 * Everything else: leave default unless you explicitly need it
 
+Because the repository is public, no Git credential is required for checkout.
 
+---
 
-### Bootstrap/reset job
- 
+## 6.2 Bootstrap/reset job
+
+Create a second Pipeline job from SCM.
 
 For `competence-bootstrap`:
 
@@ -216,39 +248,155 @@ For `competence-bootstrap`:
 * Do not allow concurrent builds: checked
 * Everything else: leave default unless you explicitly need it
 
-
 Because the repository is public, no Git credential is required for checkout.
 
 ---
 
-## 7. First run: keep it conservative
+## 6.3 Admin job
 
-For the first proof run, use the standard deployment job and do not reset anything.
+Create the admin job manually as an inline Pipeline script.
 
-The expected first successful run is:
+Do **not** use “Pipeline script from SCM” from the public repository for this one.
 
-* backup
-* checkout/update
-* stop services
-* install dependencies
-* migrate
-* build frontend
-* collectstatic
-* start services
-* health check
-* smoke check
+For `competence-admin`:
 
-Use the bootstrap job only when you explicitly want:
+* Type: **Pipeline**
+* Definition: **Pipeline script**
+* Paste the content of `devops/jenkins/Jenkinsfile.admin`
+* Do not configure automatic triggers
+* Keep it manual only
 
-* media preparation
-* DB reset
-* init data
-* translation population
-* password reset
+This job is for host-level operations such as:
+
+* prepare shared paths
+* create or update DB user and DB
+* write Jenkins `.my.cnf`
+* grant Jenkins access
+* write Jenkins sudoers
+* write Jenkins systemd override
+* enable Jenkins
+* optionally install base packages
+
+### Important
+
+The admin job depends on the host-side installed files:
+
+* `/usr/local/sbin/competence-admin-runner`
+* `/etc/sudoers.d/jenkins-competence-admin`
+
+and, if you use the hardened setup, the installed root-owned admin script copy outside the repo.
+
+This admin path is separate from the normal deploy/bootstrap jobs.
 
 ---
 
-## 8. Smoke checks
+## 7. Access control
+
+The admin job should not be available to regular developers.
+
+Restrict at least these permissions for `competence-admin`:
+
+* Configure
+* Build
+* Cancel
+* Workspace access
+
+Only trusted admins should be able to run or edit it.
+
+The normal deploy/bootstrap jobs can have broader access depending on your workflow.
+
+---
+
+## 8. What each job is for
+
+### `competence-deploy`
+
+Normal day-to-day deployment job.
+
+Expected flow:
+
+1. backup
+2. optional deploy-tree update
+3. stop services
+4. install backend and frontend dependencies
+5. database migration
+6. ensure CI Django user
+7. frontend build
+8. collect static files
+9. start services
+10. backend and frontend tests
+11. internal health check
+12. optional external smoke check
+
+### `competence-bootstrap`
+
+Explicit reset/cleanup job.
+
+Used only when you intentionally want operations such as:
+
+* database reset
+* media cleanup
+* staticfiles cleanup
+
+It does **not** do the normal deploy/build/test flow.
+
+### `competence-admin`
+
+Host-level admin and repair job.
+
+Used only for privileged infrastructure actions.
+
+It is not for normal deploys or daily app usage.
+
+---
+
+## 9. First run: keep it conservative
+
+For the first proof run, use the normal deployment job and avoid destructive reset operations.
+
+The expected first successful deploy run is:
+
+* backup
+* checkout/update if enabled
+* stop services
+* install dependencies
+* migrate
+* ensure CI user
+* build frontend
+* collectstatic
+* start services
+* run tests
+* internal health check
+* external smoke check if enabled
+
+Use the bootstrap job only when you explicitly want reset/cleanup behavior.
+
+Use the admin job only for host-level setup or repair.
+
+### Safe first admin test
+
+For the first admin test, keep it narrow:
+
+* check `I_UNDERSTAND_THIS_PIPELINE_MODIFIES_THE_HOST`
+* check `PREPARE_SHARED_PATHS`
+* leave everything else off
+
+Then test:
+
+* `GRANT_JENKINS_ACCESS`
+
+Only later move on to:
+
+* `WRITE_JENKINS_OVERRIDE`
+* `WRITE_JENKINS_SUDOERS`
+* `WRITE_JENKINS_MYCNF`
+* `ENABLE_JENKINS`
+
+Use `INSTALL_BASE_ENV` and `INSTALL_JENKINS_PACKAGE` only in explicit admin sessions.
+
+---
+
+## 10. Smoke checks
 
 After Jenkins starts:
 
@@ -265,17 +413,49 @@ curl -I https://competence.nathabee.de/admin/
 curl -I https://competence.nathabee.de/static/admin/css/base.css
 ```
 
+If the frontend is served at `/evaluation`, also test:
+
+```bash
+curl -I https://competence.nathabee.de/evaluation/
+```
+
+If Jenkins is reverse-proxied through Apache, also test:
+
+```bash
+curl -I https://jenkins.nathabee.de/
+```
+
 ---
 
-## 9. Long-term note
+## 11. Operational notes
 
-The current paths are workable, but the project still lives under a private home directory.
+### Deploy tree caution
+
+In development, `/home/nathabee/competence_project` may be a symlink to the real working tree.
+
+If Jenkins points at that path, deploy jobs may reset or overwrite local changes depending on pipeline settings.
+
+Do not run destructive bootstrap/admin actions against that path unless it is intentionally the source of truth for the environment.
+
+### First Jenkins install on a fresh machine
+
+The admin pipeline is useful only **after Jenkins already exists**.
+
+For the very first Jenkins installation on a completely fresh machine, Jenkins obviously is not there yet to run a Jenkins job.
+
+So the first Jenkins installation must still be done manually or through a separate infra tool. After that, the admin pipeline becomes useful for controlled maintenance and repair.
+
+---
+
+## 12. Long-term note
+
+The current layout is workable, but the project still lives under a private home directory.
 
 A cleaner long-term layout would be something like:
 
-```bash
 * `/srv/competence_project`
 * `/srv/competence_backups`
 * `/var/www/competence_project`
 
-```
+That is not required now, but it is the cleaner server layout for the future.
+ 

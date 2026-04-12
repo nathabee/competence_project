@@ -1,57 +1,64 @@
-# user manual
+# Operation Manual
 
-## start stop services
+## Start and stop services
 
-
-### jenkins
+### Jenkins
 
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl restart jenkins
 sudo systemctl show jenkins -p Environment
 sudo -u jenkins /bin/sh -lc 'which node && node -v && which npm && npm -v'
+````
 
-``` 
+This is useful after changing the Jenkins systemd override or checking whether the Jenkins service really sees the expected Node.js path.
 
-### stop services
-
+### Stop application services
 
 ```bash
 sudo systemctl stop npm-app
 sudo systemctl stop gunicorn
- 
 ```
 
-### start services
+### Start application services
 
-Start the frontend service: npm-app , backend : gunicorn
+Frontend service: `npm-app`
+Backend service: `gunicorn`
 
 ```bash
 sudo systemctl start npm-app
 sudo systemctl start gunicorn
- 
 ```
 
+### Enable services at boot
 
-
-### who makes services restart ?
-
-
-* **systemd** owns service lifecycle: boot start, restart on crash, logs, status
-* **Jenkins** owns CI/CD: pull, test, build, then restart/reload the services after a successful deployment
-
-enable restart of service, fater reboot:
+To make the application services start automatically after reboot:
 
 ```bash
 sudo systemctl enable npm-app
 sudo systemctl enable gunicorn
 ```
 
-and in Jenkins later, after a successful deploy:
+### Who restarts services?
+
+* **systemd** manages the service lifecycle:
+
+  * start at boot
+  * restart on crash if configured
+  * logs
+  * status
+* **Jenkins** manages CI/CD:
+
+  * update code
+  * run tests
+  * build frontend
+  * run migrations or collectstatic if needed
+  * restart services after a successful deployment
+
+Typical restart commands used during deployment:
 
 ```bash
 sudo systemctl restart gunicorn
 sudo systemctl restart npm-app
 ```
-
  
