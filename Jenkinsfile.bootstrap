@@ -201,6 +201,43 @@ pipeline {
             }
         }
 
+        stage('Debug Script Versions') {
+            steps {
+                script {
+                    sh '''
+                        set -e
+
+                        echo "Workspace directory: $WORKSPACE"
+                        echo "Project path: $PROJECT_PATH"
+
+                        echo
+                        echo "Workspace setup_environment.sh:"
+                        ls -l "$WORKSPACE/tools/setup_environment.sh"
+                        sha256sum "$WORKSPACE/tools/setup_environment.sh"
+
+                        echo
+                        echo "Project setup_environment.sh:"
+                        ls -l "$PROJECT_PATH/tools/setup_environment.sh"
+                        sha256sum "$PROJECT_PATH/tools/setup_environment.sh"
+
+                        echo
+                        echo "Workspace collect_db_values_if_needed:"
+                        grep -n "collect_db_values_if_needed" "$WORKSPACE/tools/setup_environment.sh" || true
+
+                        echo
+                        echo "Project collect_db_values_if_needed:"
+                        grep -n "collect_db_values_if_needed" "$PROJECT_PATH/tools/setup_environment.sh" || true
+
+                        echo
+                        echo "Project DB fallback markers:"
+                        grep -n 'project_env_file=' "$PROJECT_PATH/tools/setup_environment.sh" || true
+                        grep -n 'DB_NAME="\${DB_NAME:-\${DBNAME:-}}"' "$PROJECT_PATH/tools/setup_environment.sh" || true
+                        grep -n 'Missing DBNAME. Provide --db-name or set it in' "$PROJECT_PATH/tools/setup_environment.sh" || true
+                    '''
+                }
+            }
+        }
+
         stage('Reset Database') {
             when {
                 expression { return params.RESET_DB }
