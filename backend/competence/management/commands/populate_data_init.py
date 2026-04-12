@@ -288,28 +288,17 @@ class Command(BaseCommand):
  
   
 
-        with open('script_db/pdflayout.csv', mode='r') as file: 
-            reader = csv.DictReader(file) 
+        with open('script_db/pdflayout.csv', mode='r') as file:
+            reader = csv.DictReader(file)
             for row in reader:
-
-
-                # Log the header_icon_path to check its correctness
-                print(f"Processing header_icon: { row['header_icon']}")
- 
+                print(f"Processing header_icon: {row['header_icon']}")
                 header_icon_path = os.path.join('origin', row['header_icon'])
- 
- 
-                
-                # Log the header_icon_path to check its correctness
                 print(f"Processing image at path: {header_icon_path}")
-                try:
-                    # Resize the image and save
-                    #resized_image_path = self.resize_image(header_icon_path)
 
+                try:
                     PDFLayout.objects.update_or_create(
                         id=row['id'],
                         defaults={
-                            #'header_icon': resized_image_path,  # Save the path of the resized image
                             'header_icon': header_icon_path,
                             'schule_name': row['schule_name'],
                             'header_message': row['header_message'],
@@ -317,12 +306,17 @@ class Command(BaseCommand):
                             'footer_message2': row['footer_message2'],
                         }
                     )
-
                 except Exception as e:
-                    self.stderr.write(self.style.ERROR(f"Error processing row {row['id']}: {str(e)}"))
+                    msg = f"Error processing PDFLayout row {row['id']}: {str(e)}"
+                    self.stderr.write(self.style.ERROR(msg))
+                    errors.append(msg)
 
+        if errors:
+            raise CommandError(
+                f"populate_data_init failed with {len(errors)} error(s)."
+            )
 
         self.stdout.write(self.style.SUCCESS('Successfully imported PDFLayout data'))
-
+ 
 
 
