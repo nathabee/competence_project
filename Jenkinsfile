@@ -299,9 +299,8 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        . '${env.VENV_PATH}/bin/activate'
                         cd '${env.BACKEND_PATH}'
-                        python manage.py test competence.tests.test_integration_workflow
+                        '${env.VENV_PATH}/bin/python' manage.py test competence.tests.test_integration_workflow
                     """
                     sh """
                         set -e
