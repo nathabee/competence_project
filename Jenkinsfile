@@ -163,11 +163,9 @@ pipeline {
             steps {
                 script {
                     sh """
-                        set +e
-                        sudo systemctl daemon-reload
-                        sudo systemctl stop gunicorn
-                        sudo systemctl stop npm-app
-                        exit 0
+                        set -e
+                        sudo systemctl stop gunicorn || true
+                        sudo systemctl stop npm-app || true
                     """
                 }
             }
@@ -195,8 +193,7 @@ pipeline {
                 script {
                     sh """ 
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
                         --setup --ci \
                         --project-path '${env.PROJECT_PATH}' \
                         --backend-path '${env.BACKEND_PATH}' \
@@ -222,8 +219,7 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
                         --setup --ci \
                         --project-path '${env.PROJECT_PATH}' \
                         --backend-path '${env.BACKEND_PATH}' \
@@ -239,8 +235,7 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
                         --setup --ci \
                         --project-path '${env.PROJECT_PATH}' \
                         --backend-path '${env.BACKEND_PATH}' \
@@ -273,8 +268,7 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
                         --setup --ci \
                         --project-path '${env.PROJECT_PATH}' \
                         --backend-path '${env.BACKEND_PATH}' \
@@ -290,7 +284,6 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        sudo systemctl daemon-reload
                         sudo systemctl start gunicorn
                         sudo systemctl start npm-app
                     """
@@ -301,26 +294,22 @@ pipeline {
         stage('Ensure Database Grants') {
             steps {
                 script {
-                    withEnv([
-                        "CFG_DBNAME=${cfg.DBNAME}",
-                        "CFG_DBUSER=${cfg.DBUSER}",
-                        "CFG_DBPASSWORD=${cfg.DBPASSWORD}"
-                    ]) {
-                        sh '''
-                            set -e
-                            cd "$PROJECT_PATH"
+                    sh '''
+                        set +x
+                        set -e
 
-                            ./tools/setup_environment.sh \
-                            --apply --ci \
-                            --project-path "$PROJECT_PATH" \
-                            --backend-path "$BACKEND_PATH" \
-                            --venv-path "$VENV_PATH" \
-                            --create-db \
-                            --db-name "$CFG_DBNAME" \
-                            --db-user "$CFG_DBUSER" \
-                            --db-pass "$CFG_DBPASSWORD"
-                        '''
-                    }
+                        test -f "$PROJECT_ENV_FILE" || {
+                            echo "ERROR: Missing $PROJECT_ENV_FILE" >&2
+                            exit 1
+                        }
+
+                        "$WORKSPACE/tools/setup_environment.sh" \
+                        --apply --ci \
+                        --project-path "$PROJECT_PATH" \
+                        --backend-path "$BACKEND_PATH" \
+                        --venv-path "$VENV_PATH" \
+                        --create-db
+                    '''
                 }
             }
         }

@@ -6,7 +6,7 @@ pipeline {
     parameters {
         booleanParam(
             name: 'RESET_DB',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Drop and recreate the application database.'
         )
         booleanParam(
@@ -20,43 +20,48 @@ pipeline {
             description: 'Remove all files under the staticfiles target directory.'
         )
         booleanParam(
-            name: 'RUN_MIGRATE',
+            name: 'UPDATE_DEPLOY_TREE',
             defaultValue: false,
+            description: 'Fetch and reset the deployed project tree before bootstrap tasks.'
+        )
+        booleanParam(
+            name: 'RUN_MIGRATE',
+            defaultValue: true,
             description: 'Run Django migrations after reset/cleanup.'
         )
         booleanParam(
             name: 'COPY_DATA_INIT',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Run copy_data_init.'
         )
         booleanParam(
             name: 'POPULATE_DATA_INIT',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Run populate_data_init.'
         )
         booleanParam(
             name: 'CREATE_GROUPS',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Run create_groups_and_permissions.'
         )
         booleanParam(
             name: 'POPULATE_TEACHER',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Run populate_teacher.'
         )
         booleanParam(
             name: 'POPULATE_TRANSLATION',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Run populate_translation.'
         )
         booleanParam(
             name: 'ENSURE_CI_USER',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Run ensure_ci_user.'
         )
         booleanParam(
             name: 'COLLECTSTATIC',
-            defaultValue: false,
+            defaultValue: true,
             description: 'Run collectstatic after initialization.'
         )
     }
@@ -188,6 +193,22 @@ pipeline {
             }
         }
         */
+
+        stage('Update Repository') {
+            when {
+                expression { return params.UPDATE_DEPLOY_TREE }
+            }
+            steps {
+                script {
+                    sh """
+                        set -e
+                        cd '${env.PROJECT_PATH}'
+                        sudo -u '${env.PROJECT_OWNER}' git fetch origin
+                        sudo -u '${env.PROJECT_OWNER}' git reset --hard origin/main
+                    """
+                }
+            }
+        }
 
         stage('Stop Services') {
             steps {
@@ -434,7 +455,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Collect Static Files') {
             when {
                 expression { return params.COLLECTSTATIC }
