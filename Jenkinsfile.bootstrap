@@ -146,6 +146,7 @@ pipeline {
             }
         }
 
+        /*
         stage('BackUp') {
             steps {
                 script {
@@ -186,13 +187,13 @@ pipeline {
                 input message: "Bootstrap will modify the application state. Confirm that you want to continue."
             }
         }
+        */
 
         stage('Stop Services') {
             steps {
                 script {
                     sh """
                         set -e
-                        sudo systemctl daemon-reload
                         sudo systemctl stop gunicorn || true
                         sudo systemctl stop npm-app || true
                     """
@@ -200,6 +201,7 @@ pipeline {
             }
         }
 
+        /*
         stage('Debug Script Versions') {
             steps {
                 script {
@@ -234,7 +236,7 @@ pipeline {
                     '''
                 }
             }
-        }
+        }*/
 
         stage('Reset Database') {
             when {
@@ -308,13 +310,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --migrate
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --migrate
                     """
                 }
             }
@@ -328,13 +329,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --copy-data-init
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --copy-data-init
                     """
                 }
             }
@@ -348,13 +348,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --populate-data-init
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --populate-data-init
                     """
                 }
             }
@@ -368,13 +367,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --create-groups
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --create-groups
                     """
                 }
             }
@@ -388,13 +386,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --populate-teacher
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --populate-teacher
                     """
                 }
             }
@@ -408,13 +405,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --populate-translation
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --populate-translation
                     """
                 }
             }
@@ -428,18 +424,17 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --ensure-ci-user
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --ensure-ci-user
                     """
                 }
             }
         }
-
+        
         stage('Collect Static Files') {
             when {
                 expression { return params.COLLECTSTATIC }
@@ -448,13 +443,12 @@ pipeline {
                 script {
                     sh """
                         set -e
-                        cd '${env.PROJECT_PATH}'
-                        ./tools/setup_django.sh \
-                          --setup --ci \
-                          --project-path '${env.PROJECT_PATH}' \
-                          --backend-path '${env.BACKEND_PATH}' \
-                          --venv-path '${env.VENV_PATH}' \
-                          --collectstatic
+                        '${env.WORKSPACE}/tools/setup_django.sh' \
+                        --setup --ci \
+                        --project-path '${env.PROJECT_PATH}' \
+                        --backend-path '${env.BACKEND_PATH}' \
+                        --venv-path '${env.VENV_PATH}' \
+                        --collectstatic
                     """
                 }
             }
