@@ -245,14 +245,13 @@ pipeline {
                     sh '''
                         set +x
                         set -e
-                        cd "$PROJECT_PATH"
 
                         test -f "$PROJECT_ENV_FILE" || {
                             echo "ERROR: Missing $PROJECT_ENV_FILE" >&2
                             exit 1
                         }
 
-                        ./tools/setup_environment.sh \
+                        "$WORKSPACE/tools/setup_environment.sh" \
                         --apply --ci \
                         --project-path "$PROJECT_PATH" \
                         --backend-path "$BACKEND_PATH" \
